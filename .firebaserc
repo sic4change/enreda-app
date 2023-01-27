@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "enreda-d3b41"
+  },
+  "targets": {
+    "enreda-d3b41": {
+      "hosting": {
+        "enredapp": [
+          "enredawebapp"
+        ]
+      }
+    }
+  }
+}

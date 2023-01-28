@@ -14,6 +14,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../utils/adaptive.dart';
+import '../../values/values.dart';
+
 class EmailSignInFormChangeNotifier extends StatefulWidget {
   final EmailSignInChangeModel model;
 
@@ -85,9 +88,7 @@ class _EmailSignInFormChangeNotifierState
       ),
       SpaceH12(),
       _buildForgotPassword(context),
-      SizedBox(
-        height: 32.0,
-      ),
+      SpaceH12(),
       _buildCreateAccount(context),
       SizedBox(
         height: 8.0,
@@ -96,6 +97,8 @@ class _EmailSignInFormChangeNotifierState
   }
 
   TextField _buildEmailTextField() {
+    double fontSize = responsiveSize(context, 14, 16, md: 15);
+    TextTheme textTheme = Theme.of(context).textTheme;
     return TextField(
       controller: _emailController,
       focusNode: _emailFocusNode,
@@ -105,21 +108,47 @@ class _EmailSignInFormChangeNotifierState
         hintText: 'email@email.com',
         errorText: model.emailErrorText,
         enabled: model.isLoading == false,
+        focusColor: AppColors.primaryColor,
+        labelStyle: textTheme.button?.copyWith(
+          height: 1.5,
+          color: AppColors.greyDark,
+          fontWeight: FontWeight.w400,
+          fontSize: fontSize,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5.0),
+          borderSide: BorderSide(
+            color: AppColors.greyUltraLight,
+          ),
+        ),
         border: OutlineInputBorder(),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(color: Constants.turquoise, width: 1.0),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5.0),
+          borderSide: BorderSide(
+            color: AppColors.greyUltraLight,
+            width: 1.0,
+          ),
         ),
         floatingLabelStyle: TextStyle(color: Constants.turquoise),
+
       ),
       autocorrect: false,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       onChanged: model.updateEmail,
       onEditingComplete: () => _emailEditingComplete(),
+      style: textTheme.button?.copyWith(
+        height: 1.5,
+        color: AppColors.greyDark,
+        fontWeight: FontWeight.w400,
+        fontSize: fontSize,
+      ),
     );
   }
 
   TextField _buildPasswordTextField() {
+    double fontSize = responsiveSize(context, 14, 16, md: 15);
+    TextTheme textTheme = Theme.of(context).textTheme;
     return TextField(
       controller: _passwordController,
       focusNode: _passwordFocusNode,
@@ -128,9 +157,23 @@ class _EmailSignInFormChangeNotifierState
         labelText: 'Contraseña',
         errorText: model.passwordErrorText,
         enabled: model.isLoading == false,
+        focusColor: AppColors.primaryColor,
+        labelStyle: textTheme.button?.copyWith(
+          height: 1.5,
+          color: AppColors.greyDark,
+          fontWeight: FontWeight.w400,
+          fontSize: fontSize,
+        ),
         border: OutlineInputBorder(),
         focusedBorder: const OutlineInputBorder(
           borderSide: const BorderSide(color: Constants.turquoise, width: 1.0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5.0),
+          borderSide: BorderSide(
+            color: AppColors.greyUltraLight,
+            width: 1.0,
+          ),
         ),
         floatingLabelStyle: TextStyle(color: Constants.turquoise),
       ),
@@ -138,6 +181,12 @@ class _EmailSignInFormChangeNotifierState
       textInputAction: TextInputAction.done,
       onChanged: model.updatePassword,
       onEditingComplete: _submit,
+      style: textTheme.button?.copyWith(
+        height: 1.5,
+        color: AppColors.greyDark,
+        fontWeight: FontWeight.w400,
+        fontSize: fontSize,
+      ),
     );
   }
 

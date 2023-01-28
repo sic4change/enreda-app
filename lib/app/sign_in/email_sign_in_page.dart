@@ -2,6 +2,7 @@ import 'package:enreda_app/app/sign_in/email_sign_in_form_change_notifier.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
@@ -12,7 +13,7 @@ class EmailSignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double largeHeight = 800;
-    return Responsive.isMobile(context)
+    return Responsive.isMobile(context) || Responsive.isTablet(context)
         ? _buildMobileLayout(context)
         : Scaffold(
             body: LayoutBuilder(builder: (context, constraints) {
@@ -43,60 +44,7 @@ class EmailSignInPage extends StatelessWidget {
           ],
         ),
         _buildBackButton(context),
-        Row(
-          children: [
-            Expanded(
-              flex: 15,
-              child: Container(),
-            ),
-            Expanded(
-              flex: 70,
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 15,
-                    child: Container(),
-                  ),
-                  Expanded(
-                    flex: 60,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border:
-                            Border.all(color: Constants.lightGray, width: 1),
-                        borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                        color: Colors.white,
-                      ),
-                      child: Stack(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(flex: 4, child: Container()),
-                              Expanded(
-                                  flex: 6,
-                                  child: Image.asset(
-                                    ImagePath.LEARNING_GIRL,
-                                    height: heightOfScreen(context) * 0.4,
-                                  )),
-                            ],
-                          ),
-                          _buildMainContent(context),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 25,
-                    child: Container(),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 15,
-              child: Container(),
-            ),
-          ],
-        ),
+        _buildMainContent(context),
       ],
     );
   }
@@ -118,94 +66,94 @@ class EmailSignInPage extends StatelessWidget {
           ],
         ),
         _buildBackButton(context),
-        Row(
-          children: [
-            Expanded(
-              flex: 15,
-              child: Container(),
-            ),
-            Expanded(
-              flex: 70,
-              child: Column(
-                children: [
-                  Container(
-                    height: 120.0,
-                  ),
-                  Container(
-                    height: 480.0,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Constants.lightGray, width: 1),
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      color: Colors.white,
-                    ),
-                    child: Stack(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(flex: 4, child: Container()),
-                            Expanded(
-                                flex: 6,
-                                child: Image.asset(
-                                  ImagePath.LEARNING_GIRL,
-                                  height: 400.0,
-                                )),
-                          ],
-                        ),
-                        _buildMainContent(context),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 25,
-                    child: Container(),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 15,
-              child: Container(),
-            ),
-          ],
-        ),
+        _buildMainContent(context),
       ],
     );
   }
 
   Widget _buildMainContent(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left: 30.0, top: 30.0, bottom: 20.0),
-          child: Image.asset(
-            ImagePath.LOGO,
-            height: 20,
-          ),
-        ),
-        Divider(),
-        Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Text(
-            StringConst.LOOKING_FOR_JOB,
-            style: TextStyle(
-              fontSize: 32.0,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+    final textTheme = Theme.of(context).textTheme;
+    double fontSize = responsiveSize(context, 20, 30, md: 22);
+    final double widthSize = MediaQuery.of(context).size.width;
+    final double heightSize = MediaQuery.of(context).size.height;
+    return Center(
+      child: Container(
+        height: heightSize * 0.80,
+        width: widthSize * 0.80,
+        child: Card(
+          elevation: 5,
           child: Row(
             children: [
               Expanded(
-                child: EmailSignInFormChangeNotifier.create(context),
+                flex: 5,
+                child: Padding(
+                  padding: EdgeInsets.all(Constants.mainPadding),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              ImagePath.LOGO,
+                              height: Sizes.HEIGHT_32,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Divider(),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Text(
+                              StringConst.LOOKING_FOR_JOB,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: fontSize,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          SpaceH12(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                            child: EmailSignInFormChangeNotifier.create(context),
+                          ),
+                          SpaceH4(),
+                          _buildStoresButtons(180, 75),
+                          SpaceH4(),
+                          Text(
+                            StringConst.BETTER_FROM_APPS,
+                            style: textTheme.bodyText2,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              Expanded(child: Container()),
+              Expanded(
+                flex: 5,
+                child: Stack(
+                  children: [
+                    Container(color: Constants.turquoise,),
+                    Padding(
+                      padding: const EdgeInsets.all(48.0),
+                      child: Center(
+                        child: Image.asset(
+                          ImagePath.LEARNING_GIRL,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -231,6 +179,7 @@ class EmailSignInPage extends StatelessWidget {
   }
 
   Widget _buildMobileLayout(BuildContext context) {
+    double fontSize = responsiveSize(context, 20, 30, md: 22);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size(double.infinity, 60),
@@ -267,7 +216,7 @@ class EmailSignInPage extends StatelessWidget {
               child: Text(
                 StringConst.LOOKING_FOR_JOB,
                 style: TextStyle(
-                  fontSize: 32.0,
+                  fontSize: fontSize,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -282,4 +231,30 @@ class EmailSignInPage extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildStoresButtons(double buttonWidth, double buttonHeight) {
+    return Wrap(
+      children: [
+        InkWell(
+          onTap: () => openUrlLink(StringConst.URL_APPSTORE),
+          child: Image.asset(
+            ImagePath.APP_STORE_BUTTON,
+            width: buttonWidth,
+            height: buttonHeight,
+            fit: BoxFit.fill,
+          ),
+        ),
+        InkWell(
+          onTap: () => openUrlLink(StringConst.URL_GOOGLE_PLAY),
+          child: Image.asset(
+            ImagePath.PLAY_STORE_BUTTON,
+            width: buttonWidth,
+            height: buttonHeight,
+            fit: BoxFit.fill,
+          ),
+        ),
+      ],
+    );
+  }
+
 }

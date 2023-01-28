@@ -1,10 +1,6 @@
-import 'dart:io';
 import 'package:enreda_app/app/sign_in/email_sign_in_form_change_notifier.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/values.dart';
-import 'package:external_app_launcher/external_app_launcher.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../common_widgets/spaces.dart';
 import '../../../values/strings.dart';
@@ -26,14 +22,9 @@ class _AccessPageMobileState extends State<AccessPageMobile> {
               padding: const EdgeInsets.all(10.0),
               child: Row(
                 children: [
-                  InkWell(
-                    onTap: () => {
-                      Navigator.of(context).pop(true)
-                    },
-                    child: Image.asset(
-                      ImagePath.LOGO,
-                      height: 25.0,
-                    ),
+                  Image.asset(
+                    ImagePath.LOGO,
+                    height: 25.0,
                   ),
                 ],
               ),

@@ -10,7 +10,6 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/build_share_button.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/common_widgets/background_web.dart';
-import 'package:enreda_app/common_widgets/show_toast.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';

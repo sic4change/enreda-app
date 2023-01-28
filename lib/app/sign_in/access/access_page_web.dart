@@ -35,13 +35,13 @@ class _AccessPageWebState extends State<AccessPageWeb> {
     final textTheme = Theme.of(context).textTheme;
     final double widthSize = MediaQuery.of(context).size.width;
     final double heightSize = MediaQuery.of(context).size.height;
-    double fontSize = responsiveSize(context, 20, 30, md: 25);
+    double fontSize = responsiveSize(context, 20, 30, md: 22);
     return Stack(
       children: [
         AccessBackgroundWeb(),
         Center(
           child: Container(
-            height: heightSize * 0.80,
+            height: heightSize * 0.70,
             width: widthSize * 0.80,
             child: Card(
               elevation: 5,

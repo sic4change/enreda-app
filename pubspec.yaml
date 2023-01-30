@@ -91,7 +91,6 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - images/enreda-logo.png
-    - images/enreda-fondo.jpg
     - images/boy_illustration.png
     - images/researching.png
     - images/ic_enreda_bn.png

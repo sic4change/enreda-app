@@ -60,30 +60,6 @@ class EnredaButton extends StatelessWidget {
       Sizes.TEXT_SIZE_16,
       md: Sizes.TEXT_SIZE_15,
     );
-    // if (opensUrl) {
-    //   return MouseRegion(
-    //     cursor: SystemMouseCursors.click,
-    //     child: Link(
-    //       uri: Uri.parse(url),
-    //       target: linkTarget,
-    //       builder: (context, followLink) {
-    //         return GestureDetector(
-    //           onTap: followLink,
-    //           child: Text(
-    //             buttonTitle,
-    //             style: titleStyle ??
-    //                 textTheme.button?.copyWith(
-    //                   color: titleColor,
-    //                   fontSize: textSize,
-    //                   letterSpacing: 1.1,
-    //                   fontWeight: FontWeight.bold,
-    //                 ),
-    //           ),
-    //         );
-    //       },
-    //     ),
-    //   );
-    // } else {
       return Text(
         buttonTitle,
         style: titleStyle ??

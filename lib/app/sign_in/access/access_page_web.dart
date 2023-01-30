@@ -2,13 +2,12 @@ import 'package:enreda_app/app/home/home_page.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_form_change_notifier.dart';
 import 'package:enreda_app/app/sign_in/access/sections/background_web.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import '../../../common_widgets/spaces.dart';
+import '../../../common_widgets/stores_buttons.dart';
 import '../../../utils/adaptive.dart';
 
 class AccessPageWeb extends StatefulWidget {
@@ -85,7 +84,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                                   child: EmailSignInFormChangeNotifier.create(context),
                                 ),
                                 SpaceH4(),
-                                _buildStoresButtons(180, 75),
+                                buildStoresButtons(180, 75),
                                 SpaceH4(),
                                 Text(
                                   StringConst.BETTER_FROM_APPS,
@@ -183,7 +182,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                                   child: EmailSignInFormChangeNotifier.create(context),
                                 ),
                                 SpaceH4(),
-                                kIsWeb ? _buildStoresButtons(180, 75) : Container(),
+                                kIsWeb ? buildStoresButtons(180, 75) : Container(),
                                 SpaceH4(),
                                 Text(
                                   StringConst.BETTER_FROM_APPS,
@@ -219,31 +218,6 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                 ],
               ),
             ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStoresButtons(double buttonWidth, double buttonHeight) {
-    return Wrap(
-      children: [
-        InkWell(
-          onTap: () => openUrlLink(StringConst.URL_APPSTORE),
-          child: Image.asset(
-            ImagePath.APP_STORE_BUTTON,
-            width: buttonWidth,
-            height: buttonHeight,
-            fit: BoxFit.fill,
-          ),
-        ),
-        InkWell(
-          onTap: () => openUrlLink(StringConst.URL_GOOGLE_PLAY),
-          child: Image.asset(
-            ImagePath.PLAY_STORE_BUTTON,
-            width: buttonWidth,
-            height: buttonHeight,
-            fit: BoxFit.fill,
           ),
         ),
       ],

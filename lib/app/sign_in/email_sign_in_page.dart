@@ -6,8 +6,11 @@ import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../common_widgets/stores_buttons.dart';
 
 class EmailSignInPage extends StatelessWidget {
   @override
@@ -122,7 +125,7 @@ class EmailSignInPage extends StatelessWidget {
                             child: EmailSignInFormChangeNotifier.create(context),
                           ),
                           SpaceH4(),
-                          _buildStoresButtons(180, 75),
+                          buildStoresButtons(180, 75),
                           SpaceH4(),
                           Text(
                             StringConst.BETTER_FROM_APPS,
@@ -180,6 +183,7 @@ class EmailSignInPage extends StatelessWidget {
 
   Widget _buildMobileLayout(BuildContext context) {
     double fontSize = responsiveSize(context, 20, 30, md: 22);
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size(double.infinity, 60),
@@ -226,34 +230,15 @@ class EmailSignInPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 30.0),
               child: EmailSignInFormChangeNotifier.create(context),
             ),
+            kIsWeb ? buildStoresButtons(180, 75) : Container(),
+            SpaceH4(),
+            kIsWeb ? Text(
+              StringConst.BETTER_FROM_APPS,
+              style: textTheme.bodyText2,
+            ) : Container(),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildStoresButtons(double buttonWidth, double buttonHeight) {
-    return Wrap(
-      children: [
-        InkWell(
-          onTap: () => openUrlLink(StringConst.URL_APPSTORE),
-          child: Image.asset(
-            ImagePath.APP_STORE_BUTTON,
-            width: buttonWidth,
-            height: buttonHeight,
-            fit: BoxFit.fill,
-          ),
-        ),
-        InkWell(
-          onTap: () => openUrlLink(StringConst.URL_GOOGLE_PLAY),
-          child: Image.asset(
-            ImagePath.PLAY_STORE_BUTTON,
-            width: buttonWidth,
-            height: buttonHeight,
-            fit: BoxFit.fill,
-          ),
-        ),
-      ],
     );
   }
 

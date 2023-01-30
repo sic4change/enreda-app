@@ -1,7 +1,6 @@
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_change_model.dart';
 import 'package:enreda_app/app/sign_up/unemployedUser/unemployed_registering.dart';
-import 'package:enreda_app/common_widgets/card_access.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_exception_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -12,7 +11,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/adaptive.dart';
 import '../../values/values.dart';
@@ -57,11 +55,17 @@ class _EmailSignInFormChangeNotifierState
 
   List<Widget> _buildChildren(BuildContext context) {
     return [
-      _buildEmailTextField(),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: _buildEmailTextField(),
+      ),
       SizedBox(
         height: 16.0,
       ),
-      _buildPasswordTextField(),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: _buildPasswordTextField(),
+      ),
       SpaceH20(),
       Center(
         child: TextButton(
@@ -290,12 +294,6 @@ class _EmailSignInFormChangeNotifierState
       content: 'Debes introducir un correo electrónico válido',
       defaultActionText: 'Ok',
     );
-  }
-
-  void _toggleFormType() {
-    model.toggleFormType();
-    _emailController.clear();
-    _passwordController.clear();
   }
 
   @override

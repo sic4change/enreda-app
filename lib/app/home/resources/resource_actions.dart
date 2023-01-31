@@ -15,6 +15,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/adaptive.dart';
+import '../../../values/values.dart';
 
 Future<void> addUserToLike(
     {required BuildContext context,
@@ -50,7 +51,7 @@ Future<void> addUserToResource(
   await database.setResource(resource);
   showToast(context,
       title: 'Se ha apuntado satisfactoriamente al recurso',
-      color: Colors.lightGreen);
+      color: Constants.chatDarkBlue);
   Navigator.of(context).pop();
 }
 
@@ -64,7 +65,7 @@ Future<void> removeUserToResource(
   await database.setResource(resource);
   showToast(context,
       title: 'Ha sido eliminado satisfactoriamente al recurso',
-      color: Colors.red);
+      color: Constants.chatDarkBlue);
   Navigator.of(context).pop();
 }
 
@@ -87,16 +88,30 @@ void showAlertNullUser(BuildContext context) async {
   }
 }
 
-void launchURL(String url) async {
-  if (!url.contains('http://') && !url.contains('https://')) {
-    url = 'http://' + url;
-  }
-  if (await canLaunch(url)) {
-    await launch(url, enableJavaScript: true, forceWebView: true);
-  } else {
-    throw 'Could not launch $url';
+// void launchURL(String url) async {
+//   if (!url.contains('http://') && !url.contains('https://')) {
+//     url = 'http://' + url;
+//   }
+//   if (await canLaunch(url)) {
+//     await launch(url, enableJavaScript: true, forceWebView: true);
+//   } else {
+//     throw 'Could not launch $url';
+//   }
+// }
+
+Future<void> launchURL(String url) async {
+  if (!await launch(
+    url,
+    forceSafariVC: false,
+    forceWebView: true,
+    enableJavaScript: true,
+    headers: <String, String>{'my_header_key': 'my_header_value'},
+  )) {
+    throw 'No se puede mostrar la dirección $url';
   }
 }
+
+
 
 Future<dynamic> showContactDialog(
     {required BuildContext context, required Resource resource}) {

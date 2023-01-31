@@ -88,6 +88,17 @@ void showAlertNullUser(BuildContext context) async {
   }
 }
 
+// void launchURL(String url) async {
+//   if (!url.contains('http://') && !url.contains('https://')) {
+//     url = 'http://' + url;
+//   }
+//   if (await canLaunch(url)) {
+//     await launch(url, enableJavaScript: true, forceWebView: true);
+//   } else {
+//     throw 'Could not launch $url';
+//   }
+// }
+
 Future<void> launchURL(String url) async {
   if (!await launch(
     url,
@@ -99,6 +110,8 @@ Future<void> launchURL(String url) async {
     throw 'No se puede mostrar la dirección $url';
   }
 }
+
+
 
 Future<dynamic> showContactDialog(
     {required BuildContext context, required Resource resource}) {

@@ -88,17 +88,6 @@ void showAlertNullUser(BuildContext context) async {
   }
 }
 
-// void launchURL(String url) async {
-//   if (!url.contains('http://') && !url.contains('https://')) {
-//     url = 'http://' + url;
-//   }
-//   if (await canLaunch(url)) {
-//     await launch(url, enableJavaScript: true, forceWebView: true);
-//   } else {
-//     throw 'Could not launch $url';
-//   }
-// }
-
 Future<void> launchURL(String url) async {
   if (!await launch(
     url,
@@ -110,7 +99,6 @@ Future<void> launchURL(String url) async {
     throw 'No se puede mostrar la dirección $url';
   }
 }
-
 
 
 Future<dynamic> showContactDialog(
@@ -142,17 +130,16 @@ Future<dynamic> showContactDialog(
                     size: fontSize,
                   ),
                   SpaceW4(),
-                  InkWell(
-                    onTap: () => launch(
-                        'mailto:${resource.contactEmail}?subject=Inscripción ${resource.title}'),
-                    child:
-                    Text(
-                        resource.contactEmail!,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                          color: Constants.darkLilac,
-                          fontSize: fontSize,
-                        )),
+                  TextButton(
+                      onPressed: () => launch('mailto:${resource.contactEmail}?subject=Inscripción ${resource.title}'),
+                      child: Text(
+                          resource.contactEmail!,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                            color: Constants.darkLilac,
+                            fontSize: fontSize,
+                          )
+                      ),
                   ),
                 ],
               ),
@@ -174,17 +161,17 @@ Future<dynamic> showContactDialog(
                   SpaceW4(),
                   kIsWeb
                       ? Text(resource.contactPhone!)
-                      : InkWell(
-                          onTap: () => launch("tel://${resource.contactPhone}"),
-                          child:
-                          Text(
-                              resource.contactPhone!,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                                color: Constants.darkLilac,
-                                fontSize: fontSize,
-                              )),
-                        ),
+                      :
+                    TextButton(
+                        onPressed: () => launch("tel://${resource.contactPhone}"),
+                        child: Text(
+                            resource.contactPhone!,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                              color: Constants.darkLilac,
+                              fontSize: fontSize,
+                            )),
+                    )
                 ],
               ),
             ),

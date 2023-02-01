@@ -251,17 +251,15 @@ class _ResourceListTileState extends State<ResourceListTile> {
                     child: widget.resource.resourcePhoto == null ||
                         widget.resource.resourcePhoto == ""
                         ? Container()
-                        : Center(
-                            child: CachedNetworkImage(
-                                width: 400,
-                                fit: BoxFit.cover,
-                                progressIndicatorBuilder:
-                                    (context, url, downloadProgress) => Container(
-                                      child: Image.asset(ImagePath.IMAGE_DEFAULT),
-                                ),
-                                alignment: Alignment.center,
-                                imageUrl: widget.resource.resourcePhoto!),
-                          ),
+                        : CachedNetworkImage(
+                            width: 400,
+                            fit: BoxFit.cover,
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) => Container(
+                                  child: Image.asset(ImagePath.IMAGE_DEFAULT),
+                            ),
+                            alignment: Alignment.center,
+                            imageUrl: widget.resource.resourcePhoto!),
                   ):
                   Expanded(
                     child: widget.resource.resourcePhoto == null ||

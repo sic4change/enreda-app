@@ -1,9 +1,9 @@
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
-import '../../../../../../utils/functions.dart';
 import '../../../../../../utils/responsive.dart';
 import '../../../../../../values/values.dart';
 import '../../../utils/adaptive.dart';
+import '../../../utils/functions.dart';
 
 Widget checkboxForm(BuildContext context, _checkFieldKey, bool _isChecked, functionSetState) {
   TextTheme textTheme = Theme.of(context).textTheme;
@@ -33,7 +33,7 @@ Widget checkboxForm(BuildContext context, _checkFieldKey, bool _isChecked, funct
                         fontSize: fontSize,
                       ),),
                     TextButton(
-                        onPressed: () => openUrlLink(StringConst.PRIVACITY_URL),
+                        onPressed: () => launchURL(StringConst.PRIVACY_URL),
                         child: Flex(
                           direction: Responsive.isMobile(context) ? Axis.vertical : Axis.horizontal,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +61,7 @@ Widget checkboxForm(BuildContext context, _checkFieldKey, bool _isChecked, funct
                         fontSize: fontSize,
                       ),),
                     TextButton(
-                        onPressed: () => openUrlLink(StringConst.USE_CONDITIONS_URL),
+                        onPressed: () => launchURL(StringConst.USE_CONDITIONS_URL),
                         child: Flex(
                           direction: Responsive.isMobile(context) ? Axis.vertical : Axis.horizontal,
                           crossAxisAlignment: CrossAxisAlignment.start,

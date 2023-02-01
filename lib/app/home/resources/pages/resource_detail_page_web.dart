@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import '../../../../common_widgets/show_alert_dialog.dart';
 import '../../../../common_widgets/show_exception_alert_dialog.dart';
 import '../../../../utils/adaptive.dart';
+import '../../../../utils/functions.dart';
 import '../../../../values/values.dart';
 
 class ResourceDetailPageWeb extends StatefulWidget {
@@ -317,6 +318,7 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 14.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SpaceH30(),
                   Text(
@@ -456,7 +458,8 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                   ),
                   style: ButtonStyle(
                       backgroundColor:
-                          MaterialStateProperty.all(Constants.turquoise),
+                          MaterialStateProperty.all(resource.participants.contains(userId)
+                              ? Constants.chatDarkBlue : Constants.turquoise),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),

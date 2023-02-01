@@ -30,6 +30,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../utils/functions.dart';
+import '../resource_actions.dart';
+
 class ResourcesPage extends StatefulWidget {
   @override
   State<ResourcesPage> createState() => _ResourcesPageState();
@@ -489,15 +492,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
         cancelActionText: 'Ok',
         defaultActionText: 'Ir a la Web');
     if (didRequestNotValidUser == true) {
-      _launchURL('https://enreda-d3b41.web.app');
-    }
-  }
-
-  _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url, enableJavaScript: true, forceWebView: true);
-    } else {
-      throw 'Could not launch $url';
+      launchURL('https://enreda-d3b41.web.app');
     }
   }
 

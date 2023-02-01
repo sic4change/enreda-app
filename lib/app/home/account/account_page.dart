@@ -24,6 +24,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../utils/functions.dart';
+import '../resources/resource_actions.dart';
+
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
 
@@ -392,13 +395,11 @@ class _AccountPageState extends State<AccountPage> {
             ),
             _buildMyProfileRow(
               text: 'Política de privacidad',
-              onTap: () => _launchURL(
-                  'https://firebasestorage.googleapis.com/v0/b/enreda-d3b41.appspot.com/o/politica_de_privacidad.html?alt=media&token=e4f95240-f9ef-4874-9642-d550eb26e96f'),
+              onTap: () => launchURL(StringConst.PRIVACY_URL),
             ),
             _buildMyProfileRow(
               text: 'Condiciones de uso',
-              onTap: () => _launchURL(
-                  'https://firebasestorage.googleapis.com/v0/b/enreda-d3b41.appspot.com/o/condiciones_de_uso.html?alt=media&token=3a2040f1-1d6e-4aea-9f73-ce176307fec1'),
+              onTap: () => launchURL(StringConst.USE_CONDITIONS_URL),
             ),
             _buildMyProfileRow(
               text: 'Ayúdanos a mejorar',
@@ -669,14 +670,6 @@ class _AccountPageState extends State<AccountPage> {
         defaultActionText: 'Aceptar');
     if (didRequestSignOut == true) {
       _deleteAccount(context);
-    }
-  }
-
-  _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url, enableJavaScript: true, forceWebView: true);
-    } else {
-      throw 'Could not launch $url';
     }
   }
 

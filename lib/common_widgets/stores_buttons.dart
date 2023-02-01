@@ -8,7 +8,7 @@ Widget buildStoresButtons(double buttonWidth, double buttonHeight) {
   return Wrap(
     children: [
       InkWell(
-        onTap: () => openUrlLink(StringConst.URL_APPSTORE),
+        onTap: () => launchURL(StringConst.URL_APPSTORE),
         child: Image.asset(
           ImagePath.APP_STORE_BUTTON,
           width: buttonWidth,
@@ -17,7 +17,7 @@ Widget buildStoresButtons(double buttonWidth, double buttonHeight) {
         ),
       ),
       InkWell(
-        onTap: () => openUrlLink(StringConst.URL_GOOGLE_PLAY),
+        onTap: () => launchURL(StringConst.URL_GOOGLE_PLAY),
         child: Image.asset(
           ImagePath.PLAY_STORE_BUTTON,
           width: buttonWidth,

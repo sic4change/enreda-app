@@ -88,19 +88,6 @@ void showAlertNullUser(BuildContext context) async {
   }
 }
 
-Future<void> launchURL(String url) async {
-  if (!await launch(
-    url,
-    forceSafariVC: false,
-    forceWebView: true,
-    enableJavaScript: true,
-    headers: <String, String>{'my_header_key': 'my_header_value'},
-  )) {
-    throw 'No se puede mostrar la dirección $url';
-  }
-}
-
-
 Future<dynamic> showContactDialog(
     {required BuildContext context, required Resource resource}) {
   double fontSize = responsiveSize(context, 15, 20, md: 18);
@@ -109,6 +96,9 @@ Future<dynamic> showContactDialog(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          SizedBox(
+            height: Constants.mainPadding,
+          ),
           Text(
               StringConst.INTERESTED,
               textAlign: TextAlign.center,
@@ -117,63 +107,61 @@ Future<dynamic> showContactDialog(
                 fontSize: fontSize,
               )),
           SizedBox(
-            height: Constants.mainPadding,
+            height: Constants.mainPadding * 1.5,
           ),
           if (resource.contactEmail != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.mail,
-                    color: Constants.darkLilac,
-                    size: fontSize,
-                  ),
-                  SpaceW4(),
-                  TextButton(
-                      onPressed: () => launch('mailto:${resource.contactEmail}?subject=Inscripción ${resource.title}'),
-                      child: Text(
-                          resource.contactEmail!,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                            color: Constants.darkLilac,
-                            fontSize: fontSize,
-                          )
-                      ),
-                  ),
-                ],
-              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.mail,
+                  color: Constants.darkLilac,
+                  size: fontSize,
+                ),
+                SpaceW4(),
+                TextButton(
+                    onPressed: () => launch('mailto:${resource.contactEmail}?subject=Inscripción ${resource.title}'),
+                    child: Text(
+                        resource.contactEmail!,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                          color: Constants.darkLilac,
+                          fontSize: fontSize,
+                        )
+                    ),
+                ),
+              ],
             ),
           if (resource.contactEmail != null && resource.contactPhone != null)
             SizedBox(
               height: Constants.mainPadding,
             ),
           if (resource.contactPhone != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.phone,
-                    color: Constants.darkLilac,
-                    size: fontSize,
-                  ),
-                  SpaceW4(),
-                  kIsWeb
-                      ? Text(resource.contactPhone!)
-                      :
-                    TextButton(
-                        onPressed: () => launch("tel://${resource.contactPhone}"),
-                        child: Text(
-                            resource.contactPhone!,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                              color: Constants.darkLilac,
-                              fontSize: fontSize,
-                            )),
-                    )
-                ],
-              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.phone,
+                  color: Constants.darkLilac,
+                  size: fontSize,
+                ),
+                SpaceW4(),
+                kIsWeb
+                    ? Text(resource.contactPhone!)
+                    :
+                  TextButton(
+                      onPressed: () => launch("tel://${resource.contactPhone}"),
+                      child: Text(
+                          resource.contactPhone!,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                            color: Constants.darkLilac,
+                            fontSize: fontSize,
+                          )),
+                  )
+              ],
             ),
         ],
       ),

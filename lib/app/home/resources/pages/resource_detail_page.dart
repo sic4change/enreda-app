@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import '../../../../common_widgets/show_alert_dialog.dart';
 import '../../../../common_widgets/show_exception_alert_dialog.dart';
 import '../../../../utils/adaptive.dart';
+import '../../../../utils/functions.dart';
 import '../../../../values/values.dart';
 
 class ResourceDetailPage extends StatefulWidget {
@@ -428,7 +429,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
             ),
           ),
           style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Constants.turquoise),
+              backgroundColor: MaterialStateProperty.all(resource.participants.contains(userId)
+                  ? Constants.chatDarkBlue : Constants.turquoise),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),

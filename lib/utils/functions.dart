@@ -3,16 +3,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 const kDuration = Duration(milliseconds: 600);
 
-Future<void> openUrlLink(String url) async {
-  if (await canLaunch(url)) {
-    await launch(
-      url,
-      forceSafariVC: false,
-      forceWebView: false,
-    );
-  } else {
-    throw 'Could not launch $url';
+void launchURL(url) async {
+  if (!url.contains('http://') && !url.contains('https://')) {
+    url = 'http://' + url;
   }
+  final Uri _url = Uri.parse(url);
+  if (!await launchUrl(_url)) throw 'No se puede mostrar la dirección $_url';
 }
 
 scrollToSection(BuildContext context) {

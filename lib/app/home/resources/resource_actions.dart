@@ -84,7 +84,8 @@ void showAlertNullUser(BuildContext context) async {
       cancelActionText: 'Cancelar',
       defaultActionText: 'Entrar');
   if (signIn == true) {
-    _signIn(context);
+    Navigator.of(context).pop((false));
+    context.push(StringConst.PATH_LOGIN);
   }
 }
 
@@ -177,7 +178,8 @@ _showAlertUserAnonimousLike(BuildContext context) async {
       cancelActionText: 'Cancelar',
       defaultActionText: 'Entrar');
   if (signIn == true) {
-    _signIn(context);
+    Navigator.of(context).pop((false));
+    context.push(StringConst.PATH_LOGIN);
   }
 }
 

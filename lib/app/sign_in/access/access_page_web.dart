@@ -66,6 +66,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                             Divider(),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(20.0),
@@ -84,12 +85,12 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                                   child: EmailSignInFormChangeNotifier.create(context),
                                 ),
                                 SpaceH4(),
-                                buildStoresButtons(180, 75),
+                                kIsWeb ? buildStoresButtons(context) : Container(),
                                 SpaceH4(),
-                                Text(
+                                kIsWeb ? Text(
                                   StringConst.BETTER_FROM_APPS,
                                   style: textTheme.bodyText2,
-                                ),
+                                ) : Container(),
                               ],
                             ),
                           ],
@@ -164,6 +165,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                             Divider(),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(20.0),
@@ -182,12 +184,12 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                                   child: EmailSignInFormChangeNotifier.create(context),
                                 ),
                                 SpaceH4(),
-                                kIsWeb ? buildStoresButtons(180, 75) : Container(),
+                                kIsWeb ? buildStoresButtons(context) : Container(),
                                 SpaceH4(),
-                                Text(
+                                kIsWeb ? Text(
                                   StringConst.BETTER_FROM_APPS,
                                   style: textTheme.bodyText2,
-                                ),
+                                ) : Container(),
                               ],
                             ),
                           ],

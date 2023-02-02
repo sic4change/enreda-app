@@ -2,7 +2,6 @@ import 'package:enreda_app/app/sign_in/email_sign_in_form_change_notifier.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
@@ -107,6 +106,7 @@ class EmailSignInPage extends StatelessWidget {
                       Divider(),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(20.0),
@@ -125,12 +125,12 @@ class EmailSignInPage extends StatelessWidget {
                             child: EmailSignInFormChangeNotifier.create(context),
                           ),
                           SpaceH4(),
-                          buildStoresButtons(180, 75),
+                          kIsWeb ? buildStoresButtons(context) : Container(),
                           SpaceH4(),
-                          Text(
+                          kIsWeb ? Text(
                             StringConst.BETTER_FROM_APPS,
                             style: textTheme.bodyText2,
-                          ),
+                          ) : Container(),
                         ],
                       ),
                     ],
@@ -211,33 +211,32 @@ class EmailSignInPage extends StatelessWidget {
         ),
       ),
       backgroundColor: Constants.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Text(
-                StringConst.LOOKING_FOR_JOB,
-                style: TextStyle(
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.w600,
-                ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Text(
+              StringConst.LOOKING_FOR_JOB,
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            SpaceH20(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-              child: EmailSignInFormChangeNotifier.create(context),
-            ),
-            kIsWeb ? buildStoresButtons(180, 75) : Container(),
-            SpaceH4(),
-            kIsWeb ? Text(
-              StringConst.BETTER_FROM_APPS,
-              style: textTheme.bodyText2,
-            ) : Container(),
-          ],
-        ),
+          ),
+          SpaceH20(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: EmailSignInFormChangeNotifier.create(context),
+          ),
+          kIsWeb ? buildStoresButtons(context) : Container(),
+          SpaceH4(),
+          kIsWeb ? Text(
+            StringConst.BETTER_FROM_APPS,
+            style: textTheme.bodyText2,
+          ) : Container(),
+        ],
       ),
     );
   }

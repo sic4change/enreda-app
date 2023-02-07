@@ -21,17 +21,13 @@ import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/my_scroll_behaviour.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
-import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import '../../../../utils/functions.dart';
-import '../resource_actions.dart';
 
 class ResourcesPage extends StatefulWidget {
   @override
@@ -245,7 +241,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                     'resource-${resource.resourceId}'),
                                                 child: ResourceListTile(
                                                   resource: resource,
-                                                  onTap: () => context.push(
+                                                  onTap: () => context.go(
                                                       '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                 ),
                                               );
@@ -298,7 +294,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                     'resource-${resource.resourceId}'),
                                                 child: ResourceListTile(
                                                   resource: resource,
-                                                  onTap: () => context.push(
+                                                  onTap: () => context.go(
                                                       '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                 ),
                                               );
@@ -396,7 +392,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                           'resource-${resource.resourceId}'),
                                                       child: ResourceListTile(
                                                         resource: resource,
-                                                        onTap: () => context.push(
+                                                        onTap: () => context.go(
                                                             '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                       ),
                                                     );
@@ -456,7 +452,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                           'resource-${resource.resourceId}'),
                                                       child: ResourceListTile(
                                                         resource: resource,
-                                                        onTap: () => context.push(
+                                                        // onTap: () => context.push(
+                                                        //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                                        onTap: () => context.go(
                                                             '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                       ),
                                                     );

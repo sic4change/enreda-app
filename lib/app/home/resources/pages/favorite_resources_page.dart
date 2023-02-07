@@ -34,7 +34,7 @@ class FavoriteResourcesPage extends StatelessWidget {
                 snapshot.hasData && snapshot.data!.isNotEmpty?
             ListItemBuilderGrid<Resource>(
               snapshot: snapshot,
-              fitSmallerLayout: true,
+              fitSmallerLayout: false,
               itemBuilder: (context, resource) {
                 if (resource.organizerType == 'Organización') {
                   return StreamBuilder<Organization>(
@@ -66,12 +66,12 @@ class FavoriteResourcesPage extends StatelessWidget {
                                       resource.cityName =
                                           city == null ? '' : city.name;
                                       return Container(
-                                        margin: EdgeInsets.all(Constants.mainPadding - 10),
+                                        //margin: EdgeInsets.all(Constants.mainPadding - 10),
                                         key: Key(
                                             'resource-${resource.resourceId}'),
                                         child: ResourceListTile(
                                           resource: resource,
-                                          onTap: () => context.push(
+                                          onTap: () => context.go(
                                               '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                         ),
                                       );
@@ -116,7 +116,7 @@ class FavoriteResourcesPage extends StatelessWidget {
                                             'resource-${resource.resourceId}'),
                                         child: ResourceListTile(
                                           resource: resource,
-                                          onTap: () => context.push(
+                                          onTap: () => context.go(
                                               '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                         ),
                                       );

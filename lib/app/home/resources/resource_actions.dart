@@ -15,30 +15,25 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/adaptive.dart';
+import '../../../utils/functions.dart';
 import '../../../values/values.dart';
 
 Future<void> addUserToLike(
     {required BuildContext context,
     required String userId,
     required Resource resource}) async {
-  final database = Provider.of<Database>(context, listen: false);
-  final auth = Provider.of<AuthBase>(context, listen: false);
-
-  if (auth.isNullUser) {
-    _showAlertUserAnonimousLike(context);
-  } else {
+    final database = Provider.of<Database>(context, listen: false);
     resource.likes.add(userId);
     await database.setResource(resource);
   }
-}
 
 Future<void> removeUserToLike(
     {required BuildContext context,
     required String userId,
     required Resource resource}) async {
-  final database = Provider.of<Database>(context, listen: false);
-  resource.likes.remove(userId);
-  await database.setResource(resource);
+    final database = Provider.of<Database>(context, listen: false);
+    resource.likes.remove(userId);
+    await database.setResource(resource);
 }
 
 Future<void> addUserToResource(
@@ -52,7 +47,7 @@ Future<void> addUserToResource(
   showToast(context,
       title: 'Se ha apuntado satisfactoriamente al recurso',
       color: Constants.chatDarkBlue);
-  Navigator.of(context).pop();
+  context.pop();
 }
 
 Future<void> removeUserToResource(
@@ -66,7 +61,7 @@ Future<void> removeUserToResource(
   showToast(context,
       title: 'Ha sido eliminado satisfactoriamente al recurso',
       color: Constants.chatDarkBlue);
-  Navigator.of(context).pop();
+  context.pop();
 }
 
 Future<void> shareResource(Resource resource) async {
@@ -84,8 +79,9 @@ void showAlertNullUser(BuildContext context) async {
       cancelActionText: 'Cancelar',
       defaultActionText: 'Entrar');
   if (signIn == true) {
-    Navigator.of(context).pop((false));
-    context.push(StringConst.PATH_LOGIN);
+    context.canPop()
+        ? context.pop()
+        : context.go(StringConst.PATH_LOGIN);
   }
 }
 
@@ -120,9 +116,9 @@ Future<dynamic> showContactDialog(
                   color: Constants.darkLilac,
                   size: fontSize,
                 ),
-                SpaceW4(),
+                SpaceH8(),
                 TextButton(
-                    onPressed: () => launch('mailto:${resource.contactEmail}?subject=Inscripción ${resource.title}'),
+                    onPressed: () => launchURL('mailto:${resource.contactEmail}?subject=Inscripción ${resource.title}'),
                     child: Text(
                         resource.contactEmail!,
                         textAlign: TextAlign.center,
@@ -148,12 +144,18 @@ Future<dynamic> showContactDialog(
                   color: Constants.darkLilac,
                   size: fontSize,
                 ),
-                SpaceW4(),
+                SpaceH8(),
                 kIsWeb
-                    ? Text(resource.contactPhone!)
+                    ? Text(
+                        resource.contactPhone!,
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                        color: Constants.darkLilac,
+                        fontSize: fontSize,
+                      )
+                )
                     :
                   TextButton(
-                      onPressed: () => launch("tel://${resource.contactPhone}"),
+                      onPressed: () => launchURL("tel://${resource.contactPhone}"),
                       child: Text(
                           resource.contactPhone!,
                           textAlign: TextAlign.center,
@@ -169,18 +171,3 @@ Future<dynamic> showContactDialog(
       defaultActionText: 'Ok',
   onDefaultActionPressed: (context) => Navigator.of(context).pop(true));
 }
-
-_showAlertUserAnonimousLike(BuildContext context) async {
-  final signIn = await showAlertDialog(context,
-      title: 'Acción no permitida',
-      content:
-          'Solo los usuarios registrados pueden guardar como favoritos los recursos. ¿Desea entrar como usuario registrado?',
-      cancelActionText: 'Cancelar',
-      defaultActionText: 'Entrar');
-  if (signIn == true) {
-    Navigator.of(context).pop((false));
-    context.push(StringConst.PATH_LOGIN);
-  }
-}
-
-_signIn(BuildContext context) => context.push(StringConst.PATH_LOGIN);

@@ -17,26 +17,26 @@ import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../common_widgets/show_alert_dialog.dart';
+import '../../../../common_widgets/show_back_icon.dart';
 import '../../../../common_widgets/show_exception_alert_dialog.dart';
 import '../../../../utils/adaptive.dart';
 import '../../../../utils/functions.dart';
 import '../../../../values/values.dart';
 
-class ResourceDetailPage extends StatefulWidget {
-  const ResourceDetailPage({Key? key, required this.resourceId})
+class ResourceDetailPageMobile extends StatefulWidget {
+  const ResourceDetailPageMobile({Key? key, required this.resourceId})
       : super(key: key);
   final String resourceId;
 
   @override
-  _ResourceDetailPageState createState() => _ResourceDetailPageState();
+  _ResourceDetailPageMobileState createState() => _ResourceDetailPageMobileState();
 }
 
-class _ResourceDetailPageState extends State<ResourceDetailPage> {
+class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
   TextEditingController _textFieldController = TextEditingController();
   late Resource resource;
 
@@ -59,38 +59,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 100),
-        child: SafeArea(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Container(
-                margin: new EdgeInsets.only(
-                    right: Constants.mainPadding,
-                    left: Constants.mainPadding,
-                    top: Constants.mainPadding,
-                    bottom: 0),
-                height: 44,
-                width: 44,
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Constants.lightTurquoise,
-                    shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: Icon(Icons.keyboard_backspace, color: Constants.white),
-                  onPressed: () {
-                    context.canPop()
-                        ? context.pop()
-                        : context.go(StringConst.PATH_HOME);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        leading: showBackIconButton(context, Colors.white),
       ),
       body: Stack(
         children: <Widget>[

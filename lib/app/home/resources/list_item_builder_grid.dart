@@ -39,26 +39,24 @@ class ListItemBuilderGrid<T> extends StatelessWidget {
 
   Widget _build(BuildContext context, List<T> items) {
     return LayoutBuilder(builder: (context, constraints) {
-      var crossAxisCount = constraints.maxWidth < 650
-          ? 1
-          : constraints.maxWidth > 650 && constraints.maxWidth < 900
-              ? 3
-              : constraints.maxWidth > 650 && constraints.maxWidth < 1321
-                  ? 4
+      var crossAxisCount =
+      constraints.maxWidth < 550 ? 1
+          : constraints.maxWidth > 550 && constraints.maxWidth < 650 ? 2
+          : constraints.maxWidth >= 650 && constraints.maxWidth < 900 ? 3
+              : constraints.maxWidth >= 900 && constraints.maxWidth < 1321 ? 4
                   : 5;
       if (fitSmallerLayout ?? false) {
-        crossAxisCount = constraints.maxWidth < 650
-            ? 1
-            : constraints.maxWidth > 650 && constraints.maxWidth < 900
-                ? 3
-                : 4;
+        crossAxisCount =
+        constraints.maxWidth < 650 ? 1
+            : constraints.maxWidth > 650 && constraints.maxWidth < 900 ? 3
+                  : 4;
       }
 
       final tileWidth = (constraints.maxWidth / crossAxisCount) + 60;
 
       return MasonryGridView.count(
         controller: ScrollController(),
-        shrinkWrap: constraints.maxWidth < 650 ? true : false,
+        shrinkWrap: constraints.maxWidth < 550 ? true : false,
         padding: EdgeInsets.all(4.0),
         itemCount: items.length,
         crossAxisCount: crossAxisCount,
@@ -66,7 +64,7 @@ class ListItemBuilderGrid<T> extends StatelessWidget {
         crossAxisSpacing: 15,
         itemBuilder: (context, index) {
           return Container(
-              height: index.isEven || constraints.maxWidth < 650
+              height: index.isEven || constraints.maxWidth < 550
                   ? tileWidth / 1.3
                   : tileWidth * 1.5,
               child: itemBuilder(context, items[index]));

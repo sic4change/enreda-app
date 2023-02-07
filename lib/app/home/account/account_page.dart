@@ -22,10 +22,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import '../../../utils/functions.dart';
-import '../resources/resource_actions.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -73,7 +70,7 @@ class _AccountPageState extends State<AccountPage> {
                   _photo = (_userEnreda.profilePic?.src == null || _userEnreda.profilePic?.src == ""
                       ? ImagePath.USER_DEFAULT : _userEnreda.profilePic?.src)!;
                   _userId = _userEnreda.userId ?? '';
-                  return Responsive.isDesktop(context)
+                  return Responsive.isDesktop(context) || Responsive.isDesktopS(context)
                       ? _buildDesktopLayout(_userEnreda)
                       : _buildMobileLayout(_userEnreda, context);
                 } else {
@@ -91,7 +88,7 @@ class _AccountPageState extends State<AccountPage> {
 
   Widget _buildDesktopLayout(UserEnreda userEnreda) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 52.0),
+      padding: const EdgeInsets.symmetric(horizontal: 40.0),
       child:
       Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +110,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
             ),
           ),
-          SpaceW30(),
+          SpaceW20(),
           Expanded(
             child: _currentPageTitle == StringConst.PERSONAL_DATA.toUpperCase()
                 ? Padding(
@@ -124,14 +121,14 @@ class _AccountPageState extends State<AccountPage> {
                     ? Stack(
                         children: [
                           _currentPage,
-                          Positioned(
-                            top: -50,
+                          Responsive.isTablet(context) ? Container() : Positioned(
+                            top: -80,
                             left: 80,
                             child: Image.asset(ImagePath.CLIP_CV),
                             width: 100.0,
                           ),
-                          Positioned(
-                            top: -50,
+                          Responsive.isTablet(context) ? Container() : Positioned(
+                            top: -80,
                             right: 80,
                             child: Image.asset(ImagePath.CLIP_CV),
                             width: 100.0,
@@ -139,7 +136,7 @@ class _AccountPageState extends State<AccountPage> {
                         ],
                       )
                     : Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 32.0),
+                        padding: const EdgeInsets.symmetric(vertical: 20.0),
                         child: Container(
                           padding: EdgeInsets.all(Constants.mainPadding),
                           decoration: BoxDecoration(
@@ -215,7 +212,6 @@ class _AccountPageState extends State<AccountPage> {
 
   Widget _buildMyProfile(UserEnreda? userEnreda) {
     return Container(
-      margin: EdgeInsets.all(Constants.mainPadding),
       padding: EdgeInsets.symmetric(vertical: Constants.mainPadding),
       decoration: BoxDecoration(
         border: Border.all(color: Constants.lightGray, width: 1),
@@ -371,7 +367,6 @@ class _AccountPageState extends State<AccountPage> {
 
   Widget _buildMyParameters() {
     return Container(
-        margin: EdgeInsets.all(Constants.mainPadding),
         padding: EdgeInsets.symmetric(vertical: Constants.mainPadding),
         decoration: BoxDecoration(
           border: Border.all(color: Constants.lightGray, width: 1),

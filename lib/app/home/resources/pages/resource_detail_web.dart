@@ -22,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../common_widgets/show_alert_dialog.dart';
+import '../../../../common_widgets/show_back_icon.dart';
 import '../../../../common_widgets/show_exception_alert_dialog.dart';
 import '../../../../utils/adaptive.dart';
 import '../../../../utils/functions.dart';
@@ -59,36 +60,10 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 100),
-        child: SafeArea(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Container(
-                margin: new EdgeInsets.symmetric(
-                    horizontal: Constants.mainPadding,
-                    vertical: Constants.mainPadding),
-                height: 44,
-                width: 44,
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Constants.lightTurquoise,
-                    shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: Icon(Icons.keyboard_backspace, color: Colors.white),
-                  onPressed: () {
-                    context.canPop()
-                        ? context.pop()
-                        : context.go(StringConst.PATH_HOME);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        leading: showBackIconButton(context, Colors.white),
       ),
       body: Stack(
         children: <Widget>[

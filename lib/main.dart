@@ -34,7 +34,7 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   final _router = GoRouter(
     initialLocation: StringConst.PATH_HOME,
-    urlPathStrategy: UrlPathStrategy.path,
+    //urlPathStrategy: UrlPathStrategy.path,
     routes: [
       GoRoute(
         path: StringConst.PATH_HOME,

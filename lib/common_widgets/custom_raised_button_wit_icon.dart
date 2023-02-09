@@ -20,15 +20,19 @@ class CustomRaisedButtonWithIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton.icon(
+    return ElevatedButton.icon(
       onPressed: onPressed,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0))),
-      label: Text(label,
-        style: TextStyle(color: Colors.white),),
       icon: icon,
-      textColor: textColor,
-      splashColor: splashColor,
-      color: color);
+      label: Text(label,
+      style: TextStyle(color: Colors.white),),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        foregroundColor: textColor,
+        disabledBackgroundColor: color,
+        shadowColor: Colors.greenAccent,
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      ));
   }
 }

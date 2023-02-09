@@ -61,7 +61,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
             }
             return Container(
               margin: EdgeInsets.only(
-                  top: 100.0, left: 4.0, right: 4.0, bottom: 4.0),
+                  top: 60.0, left: 4.0, right: 4.0, bottom: 4.0),
               padding: const EdgeInsets.only(
                   left: 48.0, top: 72.0, right: 48.0, bottom: 48.0),
               decoration: BoxDecoration(

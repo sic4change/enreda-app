@@ -1,7 +1,7 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:enreda_app/app/home/home_page.dart';
-import 'package:enreda_app/app/home/resources/pages/resource_detail_page.dart';
-import 'package:enreda_app/app/home/resources/pages/resource_detail_page_web.dart';
+import 'package:enreda_app/app/home/resources/pages/resource_detail_mobile.dart';
+import 'package:enreda_app/app/home/resources/pages/resource_detail_web.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_page.dart';
 import 'package:enreda_app/app_theme.dart';
 import 'package:enreda_app/firebase_options.dart';
@@ -34,7 +34,7 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   final _router = GoRouter(
     initialLocation: StringConst.PATH_HOME,
-    urlPathStrategy: UrlPathStrategy.path,
+    //urlPathStrategy: UrlPathStrategy.path,
     routes: [
       GoRoute(
         path: StringConst.PATH_HOME,
@@ -50,13 +50,13 @@ class MyApp extends StatelessWidget {
       ),
       GoRoute(
         path: '${StringConst.PATH_RESOURCES}/:rid',
-        builder: (context, state) {
-          return LayoutBuilder(builder: (context, constraints) {
-            return Responsive.isDesktop(context)
-                ? ResourceDetailPageWeb(resourceId: state.params['rid']!)
-                : ResourceDetailPage(resourceId: state.params['rid']!);
-          });
-        },
+        pageBuilder: (context, state) => MaterialPage(
+          fullscreenDialog: false,
+          child: Responsive.isMobile(context) || Responsive.isTablet(context)
+              ? ResourceDetailPageMobile(resourceId: state.params['rid']!)
+              : ResourceDetailPageWeb(resourceId: state.params['rid']!),
+        ),
+
       ),
       GoRoute(
         path: '${StringConst.PATH_COMPETENCIES}/:rid',

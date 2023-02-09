@@ -11,6 +11,7 @@ import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -26,8 +27,6 @@ class MyResourcesPage extends StatelessWidget {
   Widget _buildContents(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
-    final textTheme = Theme.of(context).textTheme;
-
     return StreamBuilder<List<Resource>>(
         stream: database.myResourcesStream(auth.currentUser?.uid ?? ''),
         builder: (context, snapshot) {
@@ -35,7 +34,7 @@ class MyResourcesPage extends StatelessWidget {
                   snapshot.hasData && snapshot.data!.isNotEmpty
               ? ListItemBuilderGrid<Resource>(
                   snapshot: snapshot,
-                  fitSmallerLayout: true,
+                  fitSmallerLayout: false,
                   itemBuilder: (context, resource) {
                     if (resource.organizerType == 'Organización') {
                       return StreamBuilder<Organization>(
@@ -68,12 +67,12 @@ class MyResourcesPage extends StatelessWidget {
                                           resource.cityName =
                                               city == null ? '' : city.name;
                                           return Container(
-                                            margin: EdgeInsets.all(Constants.mainPadding - 10),
+                                            //margin: EdgeInsets.all(Constants.mainPadding - 10),
                                             key: Key(
                                                 'resource-${resource.resourceId}'),
                                             child: ResourceListTile(
                                               resource: resource,
-                                              onTap: () => context.push(
+                                              onTap: () => context.go(
                                                   '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                             ),
                                           );
@@ -119,7 +118,7 @@ class MyResourcesPage extends StatelessWidget {
                                                 'resource-${resource.resourceId}'),
                                             child: ResourceListTile(
                                               resource: resource,
-                                              onTap: () => context.push(
+                                              onTap: () => context.go(
                                                   '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                             ),
                                           );

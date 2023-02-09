@@ -57,6 +57,7 @@ class MyCurriculumPage extends StatelessWidget {
                 }
                 return SingleChildScrollView(
                   child: Container(
+                    margin: Responsive.isTablet(context) ? EdgeInsets.only(top: 30, bottom: Constants.mainPadding * 3 ) : EdgeInsets.symmetric(vertical: 0.0),
                     decoration: BoxDecoration(
                       border: Border.all(color: Constants.lightGray, width: 1),
                       borderRadius: BorderRadius.all(Radius.circular(40.0)),

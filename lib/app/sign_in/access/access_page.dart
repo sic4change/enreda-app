@@ -1,7 +1,6 @@
 import 'package:enreda_app/app/sign_in/access/access_page_mobile.dart';
 import 'package:enreda_app/app/sign_in/access/access_page_web.dart';
 import 'package:enreda_app/services/auth.dart';
-import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';

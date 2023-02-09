@@ -26,19 +26,21 @@ class CustomRaisedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: height,
-      // ignore: deprecated_member_use
-      child: RaisedButton(
+      child: ElevatedButton(
         child: child,
-        color: color,
-        disabledColor: color,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(borderRadius,),
-          ),
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: color,
+          shadowColor: Colors.greenAccent,
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(borderRadius,),),
             side: BorderSide(color: borderColor?? color)
         ),
-        onPressed: onPressed,
       ),
+    )
     );
   }
 }

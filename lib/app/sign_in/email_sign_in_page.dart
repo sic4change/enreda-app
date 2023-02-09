@@ -8,7 +8,7 @@ import 'package:enreda_app/values/values.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
+import '../../common_widgets/show_back_icon.dart';
 import '../../common_widgets/stores_buttons.dart';
 
 class EmailSignInPage extends StatelessWidget {
@@ -18,6 +18,11 @@ class EmailSignInPage extends StatelessWidget {
     return Responsive.isMobile(context) || Responsive.isTablet(context)
         ? _buildMobileLayout(context)
         : Scaffold(
+            appBar: AppBar(
+              backgroundColor: Constants.turquoise,
+              elevation: 0.0,
+              leading: showBackIconButton(context, Colors.white),
+            ),
             body: LayoutBuilder(builder: (context, constraints) {
               return constraints.maxHeight > largeHeight
                   ? _buildLargeBody(context)
@@ -45,7 +50,6 @@ class EmailSignInPage extends StatelessWidget {
             )
           ],
         ),
-        _buildBackButton(context),
         _buildMainContent(context),
       ],
     );
@@ -67,7 +71,6 @@ class EmailSignInPage extends StatelessWidget {
             )
           ],
         ),
-        _buildBackButton(context),
         _buildMainContent(context),
       ],
     );
@@ -156,27 +159,6 @@ class EmailSignInPage extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildBackButton(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 20.0, left: 20.0),
-      width: 44.0,
-      height: 44.0,
-      child: TextButton(
-        style: TextButton.styleFrom(
-          padding: EdgeInsets.all(0),
-          backgroundColor: Colors.white.withOpacity(0.3),
-          shape: new RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10.0),
-          ),
-        ),
-        child: Icon(Icons.keyboard_backspace, color: Colors.white),
-        onPressed: () {
-          context.canPop() ? context.pop() : context.go(StringConst.PATH_HOME);
-        },
       ),
     );
   }

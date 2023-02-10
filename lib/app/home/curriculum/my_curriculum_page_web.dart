@@ -3,6 +3,7 @@ import 'package:chips_choice/chips_choice.dart';
 import 'package:enreda_app/app/home/competencies/competency_tile.dart';
 import 'package:enreda_app/app/home/curriculum/experience_form.dart';
 import 'package:enreda_app/app/home/curriculum/experience_tile.dart';
+import 'package:enreda_app/app/home/curriculum/pdf_generator/pdf_preview.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/province.dart';
@@ -41,6 +42,9 @@ class MyCurriculumPageWeb extends StatefulWidget {
 class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
   UserEnreda? user;
   String? myLocation;
+  String? city;
+  String? province;
+  String? country;
   List<Competency> myCompetencies = [];
   List<Experience> myExperiences = [];
   List<Experience> myEducation = [];
@@ -381,6 +385,9 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
                       myCity = snapshot.data;
                       myLocation =
                           '${myCity?.name ?? ''}, ${myProvince?.name ?? ''}, ${myCountry?.name ?? ''}';
+                      city = '${myCity?.name ?? ''}';
+                      province = '${myProvince?.name ?? ''}';
+                      country = '${myCountry?.name ?? ''}';
                       return Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
@@ -456,7 +463,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
               user?.aboutMe != null && user!.aboutMe!.isNotEmpty
                   ? user!.aboutMe!
                   : 'Aún no has añadido información adicional sobre ti',
-              style: textTheme.bodyText1?.copyWith(
+              style: textTheme.bodyLarge?.copyWith(
                   fontSize: Responsive.isDesktop(context) ? 14 : 11.0,
                   color: Constants.darkGray),
             ),
@@ -466,7 +473,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
               focusNode: focusNode,
               minLines: 1,
               maxLines: null,
-              style: textTheme.bodyText1?.copyWith(
+              style: textTheme.bodyLarge?.copyWith(
                   fontSize: Responsive.isDesktop(context) ? 14 : 11.0,
                   color: Constants.darkGray),
             )
@@ -486,8 +493,14 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
             CustomTextBody(text: StringConst.MY_CV.toUpperCase()),
             Spacer(),
             InkWell(
-              onTap: () async {
-                if (await _hasEnoughExperiences(context)) _createPDF(context);
+              // onTap: () async {
+              //   if (await _hasEnoughExperiences(context)) _createPDF(context);
+              // },
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyCv(user: user!, city: city!, province: province!, country: country!, myExperiences: myExperiences, myEducation: myEducation,)),
+                );
               },
               child: Image.asset(
                 ImagePath.DOWNLOAD,
@@ -503,7 +516,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
         SpaceH20(),
         Text(
           '${user?.firstName} ${user?.lastName}',
-          style: textTheme.bodyText1?.copyWith(
+          style: textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
               fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
               color: Constants.penBlue),
@@ -511,7 +524,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
         SpaceH20(),
         Text(
           user?.education?.toUpperCase() ?? '',
-          style: textTheme.bodyText1?.copyWith(
+          style: textTheme.bodyLarge?.copyWith(
               fontSize: Responsive.isDesktop(context) ? 16 : 12.0,
               color: Constants.darkGray),
         ),
@@ -529,7 +542,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
           children: [
             Text(
               StringConst.MY_EXPERIENCES.toUpperCase(),
-              style: textTheme.bodyText1?.copyWith(
+              style: textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: Responsive.isDesktop(context) ? 18 : 14.0,
                 color: Constants.darkLilac,
@@ -582,7 +595,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
                       )
                     : Text(
                         'Todavía no has añadido ninguna experiencia, ¡chatea con nuestro asistente para añadir una!',
-                        style: textTheme.bodyText1,
+                        style: textTheme.bodyLarge,
                       );
               } else {
                 return Center(child: CircularProgressIndicator());
@@ -602,7 +615,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
           children: [
             Text(
               StringConst.EDUCATION.toUpperCase(),
-              style: textTheme.bodyText1?.copyWith(
+              style: textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: Responsive.isDesktop(context) ? 18 : 14.0,
                 color: Constants.darkLilac,
@@ -655,7 +668,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
                       )
                     : Text(
                         'Todavía no has añadido ninguna formación, ¡chatea con nuestro asistente para añadir una!',
-                        style: textTheme.bodyText1,
+                        style: textTheme.bodyLarge,
                       );
               } else {
                 return Center(child: CircularProgressIndicator());
@@ -678,7 +691,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
             Expanded(
               child: Text(
                 StringConst.DATA_OF_INTEREST.toUpperCase(),
-                style: textTheme.bodyText1?.copyWith(
+                style: textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: Responsive.isDesktop(context) ? 18 : 14.0,
                   color: Constants.darkLilac,
@@ -706,7 +719,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
                   showCustomDialog(context,
                       content: Text(
                         '¿Quieres eliminar este dato de interés?',
-                        style: textTheme.bodyText1,
+                        style: textTheme.bodyLarge,
                       ),
                       defaultActionText: 'Eliminar',
                       cancelActionText: 'Cancelar',
@@ -731,7 +744,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
             : Center(
                 child: Text(
                 StringConst.NO_DATA_OF_INTEREST,
-                style: textTheme.bodyText1,
+                style: textTheme.bodyLarge,
               )),
       ],
     );
@@ -750,7 +763,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
             Expanded(
               child: Text(
                 StringConst.LANGUAGES.toUpperCase(),
-                style: textTheme.bodyText1?.copyWith(
+                style: textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: Responsive.isDesktop(context) ? 18 : 14.0,
                   color: Constants.darkLilac,
@@ -787,7 +800,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
                                     onTap: () => showCustomDialog(context,
                                             content: Text(
                                               '¿Quieres eliminar $choice de tus idiomas?',
-                                              style: textTheme.bodyText1,
+                                              style: textTheme.bodyLarge,
                                             ),
                                             defaultActionText: 'Eliminar',
                                             cancelActionText: 'Cancelar',
@@ -807,7 +820,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
             : Center(
                 child: Text(
                 StringConst.NO_DATA_OF_INTEREST,
-                style: textTheme.bodyText1,
+                style: textTheme.bodyLarge,
               )),
       ],
     );
@@ -827,7 +840,7 @@ class _MyCurriculumPageWebState extends State<MyCurriculumPageWeb> {
           children: [
             Text(
               StringConst.NEW_DATA_OF_INTEREST,
-              style: textTheme.bodyText1,
+              style: textTheme.bodyLarge,
             ),
             SpaceH12(),
             TextField(

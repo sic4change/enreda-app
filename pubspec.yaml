@@ -70,6 +70,7 @@ dependencies:
   dots_indicator: ^2.1.0
   pdf: ^3.9.0
   cached_network_image: ^3.2.3
+  printing: ^5.10.1
 
 dev_dependencies:
   flutter_test:
@@ -133,6 +134,8 @@ flutter:
     - images/identified_900x503.png
     - images/validated_900x503.png
     - images/certified_900x503.png
+    - images/user_default.jpg
+    - images/resume.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

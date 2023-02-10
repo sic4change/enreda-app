@@ -26,7 +26,7 @@ class StringConst {
   static const String MY_EXPERIENCES = "Mis Experiencias";
   static const String ABILITIES = "Destrezas";
   static const String EDUCATION = "Formación";
-  static const String EXPERIENCES = "Experiencias";
+  static const String EXPERIENCES = "Experiencia de trabajo";
   static const String COMPETENCIES = "Competencias";
   static const String DATA_OF_INTEREST = "Datos de interés";
   static const String LANGUAGES = "Idiomas";

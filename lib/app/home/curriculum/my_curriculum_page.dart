@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/competencies/competency_tile.dart';
 import 'package:enreda_app/app/home/curriculum/experience_form.dart';
 import 'package:enreda_app/app/home/curriculum/experience_tile.dart';
+import 'package:enreda_app/app/home/curriculum/pdf_generator/pdf_preview.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/country.dart';
@@ -34,6 +35,9 @@ import '../../../values/values.dart';
 class MyCurriculumPage extends StatelessWidget {
   UserEnreda? user;
   String? myLocation;
+  String? city;
+  String? province;
+  String? country;
   List<Competency> myCompetencies = [];
   List<Experience> myExperiences = [];
   List<Experience> myEducation = [];
@@ -52,9 +56,6 @@ class MyCurriculumPage extends StatelessWidget {
                   snapshot.connectionState == ConnectionState.active) {
                 user = snapshot.data!.isNotEmpty ? snapshot.data!.first : null;
                 var profilePic = user?.profilePic?.src ?? "";
-                if (profilePic == "" ) {
-                  profilePic = ImagePath.USER_DEFAULT;
-                }
                 return SingleChildScrollView(
                   child: Container(
                     margin: Responsive.isTablet(context) ? EdgeInsets.only(top: 30, bottom: Constants.mainPadding * 3 ) : EdgeInsets.symmetric(vertical: 0.0),
@@ -80,8 +81,14 @@ class MyCurriculumPage extends StatelessWidget {
                               Expanded(
                                 flex: 1,
                                 child: InkWell(
-                                  onTap: () async {
-                                    if (await _hasEnoughExperiences(context)) _createPDF(context);
+                                  // onTap: () async {
+                                  //   if (await _hasEnoughExperiences(context)) _createPDF(context);
+                                  // },
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => MyCv(user: user!, city: city!, province: province!, country: country!, myExperiences: myExperiences, myEducation: myEducation,)),
+                                    );
                                   },
                                   child: Image.asset(
                                     ImagePath.DOWNLOAD,
@@ -107,7 +114,15 @@ class MyCurriculumPage extends StatelessWidget {
                                     children: <Widget>[
                                       const Center(child: CircularProgressIndicator()),
                                       Center(
-                                        child: CachedNetworkImage(
+                                        child:
+                                        profilePic == "" ?
+                                        Container(
+                                          color:  Colors.transparent,
+                                          height: 120,
+                                          width: 120,
+                                          child: Image.asset(ImagePath.USER_DEFAULT),
+                                        ):
+                                        CachedNetworkImage(
                                             width: 120,
                                             height: 120,
                                             fit: BoxFit.cover,
@@ -146,7 +161,7 @@ class MyCurriculumPage extends StatelessWidget {
                             children: [
                               Text(
                                 '${user?.firstName} ${user?.lastName}',
-                                style: textTheme.bodyText1?.copyWith(
+                                style: textTheme.bodyLarge?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
                                     color: Constants.penBlue),
@@ -218,6 +233,10 @@ class MyCurriculumPage extends StatelessWidget {
 
                       myLocation =
                           '${myCity?.name ?? ''}, ${myProvince?.name ?? ''}, ${myCountry?.name ?? ''}';
+                      city = '${myCity?.name ?? ''}';
+                      province = '${myProvince?.name ?? ''}';
+                      country = '${myCountry?.name ?? ''}';
+
                       return Row(
                         children: [
                           Icon(

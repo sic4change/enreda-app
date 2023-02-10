@@ -68,7 +68,7 @@ class _AccountPageState extends State<AccountPage> {
                 if (snapshot.hasData) {
                   _userEnreda = snapshot.data!;
                   _photo = (_userEnreda.profilePic?.src == null || _userEnreda.profilePic?.src == ""
-                      ? ImagePath.USER_DEFAULT : _userEnreda.profilePic?.src)!;
+                      ? "" : _userEnreda.profilePic?.src)!;
                   _userId = _userEnreda.userId ?? '';
                   return Responsive.isDesktop(context) || Responsive.isDesktopS(context)
                       ? _buildDesktopLayout(_userEnreda)
@@ -245,7 +245,15 @@ class _AccountPageState extends State<AccountPage> {
                           children: <Widget>[
                             const Center(child: CircularProgressIndicator()),
                             Center(
-                              child: CachedNetworkImage(
+                              child:
+                              _photo == "" ?
+                              Container(
+                                color:  Colors.transparent,
+                                height: 120,
+                                width: 120,
+                                child: Image.asset(ImagePath.USER_DEFAULT),
+                              ):
+                              CachedNetworkImage(
                                   width: 120,
                                   height: 120,
                                   fit: BoxFit.cover,

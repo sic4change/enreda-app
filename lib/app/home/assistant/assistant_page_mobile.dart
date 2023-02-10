@@ -71,55 +71,56 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Constants.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15.0),
-                    topRight: Radius.circular(15.0)),
-              ),
-              clipBehavior: Clip.hardEdge,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Container(
-                    height: 60,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [
-                            Constants.penLightBlue,
-                            Constants.penBlue,
-                          ],
-                          begin: const FractionalOffset(0.0, 0.0),
-                          end: const FractionalOffset(0.5, 0.0),
-                          stops: [0.0, 1.0],
-                          tileMode: TileMode.clamp),
+            return SafeArea(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Constants.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0)),
+                ),
+                clipBehavior: Clip.hardEdge,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                      height: 60,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [
+                              Constants.penLightBlue,
+                              Constants.penBlue,
+                            ],
+                            begin: const FractionalOffset(0.0, 0.0),
+                            end: const FractionalOffset(0.5, 0.0),
+                            stops: [0.0, 1.0],
+                            tileMode: TileMode.clamp),
+                      ),
+                      child: Row(
+                        children: [
+                          SpaceW20(),
+                          Image.asset(ImagePath.LOGO_MDPI,
+                              color: Constants.white, width: 30),
+                          SpaceW20(),
+                          Text(
+                            'Redas Chat',
+                            style: TextStyle(
+                                color: Constants.white,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Row(
-                      children: [
-                        SpaceW20(),
-                        Image.asset(ImagePath.LOGO_MDPI,
-                            color: Constants.white, width: 30),
-                        SpaceW20(),
-                        Text(
-                          'Redas Chat',
-                          style: TextStyle(
-                              color: Constants.white,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ],
+                    Expanded(child: _buildChat(context)),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 30.0),
+                      child: _buildIsWritingAnimation(),
                     ),
-                  ),
-                  Expanded(child: _buildChat(context)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 30.0),
-                    child: _buildIsWritingAnimation(),
-                  ),
-                  _buildWriteMessageContainer(database),
-                  SpaceH60(),
-                ],
+                    _buildWriteMessageContainer(database),
+                  ],
+                ),
               ),
             );
           } else {

@@ -271,7 +271,7 @@ class _PersonalDataState extends State<PersonalData> {
             padding: EdgeInsets.all(Constants.mainPadding),
             child: Text(
               StringConst.PERSONAL_DATA.toUpperCase(),
-              style: textTheme.bodyText1?.copyWith(
+              style: textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Constants.penBlue,
                   fontSize: 16.0),

@@ -9,13 +9,13 @@ class CustomTextTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = responsiveSize(context, 18, 25, md: 20);
+    double fontSize = responsiveSize(context, 14, 18, md: 16);
     TextTheme textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 4.0),
       child: Text(
         title,
-        style: textTheme.bodyText2?.copyWith(
+        style: textTheme.bodyText1?.copyWith(
           color: AppColors.greyViolet,
           height: 1.5,
           fontWeight: FontWeight.w600,
@@ -28,7 +28,6 @@ class CustomTextTitle extends StatelessWidget {
   }
 }
 
-
 class CustomTextBody extends StatelessWidget {
 
   CustomTextBody({ required this.text });
@@ -36,7 +35,7 @@ class CustomTextBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = responsiveSize(context, 15, 18, md: 16);
+    double fontSize = responsiveSize(context, 14, 15, md: 14);
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(
       text,
@@ -56,7 +55,7 @@ class CustomText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = responsiveSize(context, 18, 25, md: 20);
+    double fontSize = responsiveSize(context, 14, 15, md: 14);
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(
       title,
@@ -78,7 +77,7 @@ class CustomTextSmall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = responsiveSize(context, 12, 16, md: 14);
+    double fontSize = responsiveSize(context, 12, 15, md: 14);
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(
       text,

@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/competencies/my_competencies_page.dart';
 import 'package:enreda_app/app/home/curriculum/my_curriculum_page.dart';
 import 'package:enreda_app/app/home/account/personal_data_page.dart';
-import 'package:enreda_app/app/home/curriculum/my_curriculum_page_web.dart';
 import 'package:enreda_app/app/home/models/contact.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/pages/favorite_resources_page.dart';
@@ -34,14 +33,15 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   TextEditingController _textFieldController = TextEditingController();
   ImagePicker _imagePicker = ImagePicker();
+  BuildContext? myContext;
   String _userId = '';
   String _photo = '';
   String codeDialog = '';
   String valueText = '';
+  Widget? _currentPage = MyCurriculumPage();
 
-  Widget _currentPage = PersonalData();
-  String _currentPageTitle = StringConst.PERSONAL_DATA.toUpperCase();
-  String _selectedPageName = StringConst.PERSONAL_DATA;
+  String _currentPageTitle = StringConst.MY_CV.toUpperCase();
+  String _selectedPageName = StringConst.MY_CV;
 
   late UserEnreda _userEnreda;
   late TextTheme textTheme;
@@ -120,7 +120,7 @@ class _AccountPageState extends State<AccountPage> {
                 : _currentPageTitle == StringConst.MY_CV.toUpperCase()
                     ? Stack(
                         children: [
-                          _currentPage,
+                          _currentPage!,
                           Responsive.isTablet(context) ? Container() : Positioned(
                             top: -80,
                             left: 80,
@@ -158,7 +158,7 @@ class _AccountPageState extends State<AccountPage> {
                                       fontSize: 16.0),
                                 ),
                               ),
-                              Expanded(child: _currentPage),
+                              Expanded(child: _currentPage!),
                             ],
                           ),
                         ),
@@ -189,7 +189,7 @@ class _AccountPageState extends State<AccountPage> {
                     child: Text(
                       _currentPageTitle,
                       textAlign: TextAlign.center,
-                      style: textTheme.bodyText1?.copyWith(
+                      style: textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Constants.penBlue,
                           fontSize: 16.0),
@@ -309,7 +309,7 @@ class _AccountPageState extends State<AccountPage> {
           if (userEnreda?.firstName != null)
             Text(
               '${userEnreda!.firstName} ${userEnreda.lastName}',
-              style: textTheme.bodyText1?.copyWith(
+              style: textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.bold, color: Constants.chatDarkGray),
             ),
           SpaceH48(),
@@ -317,10 +317,19 @@ class _AccountPageState extends State<AccountPage> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               StringConst.MY_PROFILE.toUpperCase(),
-              style: textTheme.bodyText1?.copyWith(color: Constants.penBlue),
+              style: textTheme.bodyLarge?.copyWith(color: Constants.penBlue),
             ),
           ),
           Divider(),
+          _buildMyProfileRow(
+            text: StringConst.MY_CV,
+            imagePath: ImagePath.ICON_CV,
+            onTap: () => setState(() {
+              _currentPage = MyCurriculumPage();
+              _currentPageTitle = StringConst.MY_CV.toUpperCase();
+              _selectedPageName = StringConst.MY_CV;
+            }),
+          ),
           _buildMyProfileRow(
             text: StringConst.PERSONAL_DATA,
             imagePath: ImagePath.ICON_PROFILE_BLUE,
@@ -328,17 +337,6 @@ class _AccountPageState extends State<AccountPage> {
               _currentPage = PersonalData();
               _currentPageTitle = StringConst.PERSONAL_DATA.toUpperCase();
               _selectedPageName = StringConst.PERSONAL_DATA;
-            }),
-          ),
-          _buildMyProfileRow(
-            text: StringConst.MY_CV,
-            imagePath: ImagePath.ICON_CV,
-            onTap: () => setState(() {
-              _currentPage = Responsive.isDesktop(context)
-                  ? MyCurriculumPageWeb()
-                  : MyCurriculumPage();
-              _currentPageTitle = StringConst.MY_CV.toUpperCase();
-              _selectedPageName = StringConst.MY_CV;
             }),
           ),
           _buildMyProfileRow(
@@ -388,7 +386,7 @@ class _AccountPageState extends State<AccountPage> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 'CONFIGURACIÓN DE LA CUENTA',
-                style: textTheme.bodyText1?.copyWith(color: Constants.penBlue),
+                style: textTheme.bodyLarge?.copyWith(color: Constants.penBlue),
               ),
             ),
             Divider(),
@@ -444,7 +442,7 @@ class _AccountPageState extends State<AccountPage> {
                   child: Text(
                 text,
                 style: textStyle ??
-                    textTheme.bodyText1?.copyWith(
+                    textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Constants.penBlue,
                         fontSize: 16.0),
@@ -667,7 +665,7 @@ class _AccountPageState extends State<AccountPage> {
     final didRequestSignOut = await showAlertDialog(context,
         title: 'Eliminar cuenta',
         content: 'Si pulsa en Aceptar se procederá a la eliminación completa '
-            'de su cuenta, esta acción no se puede rehacer, '
+            'de su cuenta, esta acción no se podrá deshacer, '
             '¿Está seguro que quiere continuar?',
         cancelActionText: 'Cancelar',
         defaultActionText: 'Aceptar');

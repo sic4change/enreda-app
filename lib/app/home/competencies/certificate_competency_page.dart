@@ -155,7 +155,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
             Text(
               'Ingrese los datos de quien certificará su competencia:',
               textAlign: TextAlign.center,
-              style: textTheme.bodyText1?.copyWith(
+              style: textTheme.bodyLarge?.copyWith(
                 color: Constants.grey,
                 height: 1.5,
                 fontWeight: FontWeight.w800,
@@ -209,7 +209,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                   decoration: InputDecoration(
                     labelText: StringConst.FORM_EMAIL_CERTIFIER,
                     focusColor: AppColors.primaryColor,
-                    labelStyle: textTheme.button?.copyWith(
+                    labelStyle: textTheme.labelLarge?.copyWith(
                       height: 1.5,
                       color: AppColors.greyDark,
                       fontWeight: FontWeight.w400,
@@ -235,7 +235,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                   onSaved: (value) => _email = value,
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) => setState(() => this._email = value),
-                  style: textTheme.bodyText1?.copyWith(
+                  style: textTheme.bodyLarge?.copyWith(
                     height: 1.5,
                     color: AppColors.greyDark,
                     fontWeight: FontWeight.w400,
@@ -255,7 +255,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                       showFlagDialog: true,
                     ),
                     focusColor: AppColors.primaryColor,
-                    labelStyle: textTheme.button?.copyWith(
+                    labelStyle: textTheme.labelLarge?.copyWith(
                       height: 1.5,
                       color: AppColors.greyDark,
                       fontWeight: FontWeight.w400,

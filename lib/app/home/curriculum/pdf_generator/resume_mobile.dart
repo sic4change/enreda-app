@@ -33,6 +33,8 @@ Future<Uint8List> generateResume(
     List<Experience>? myEducation,
     List<String>? dataOfInterest,
     List<String>? languages,
+    List<String>? competenciesImages,
+    List<String>? competenciesNames,
     ) async {
   final doc = pw.Document(title: 'Mi Currículum');
 
@@ -62,7 +64,7 @@ Future<Uint8List> generateResume(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: <pw.Widget>[
                   pw.Container(
-                    padding: const pw.EdgeInsets.only(left: 30, bottom: 20),
+                    padding: const pw.EdgeInsets.only(left: 20, bottom: 20, right: 10),
                     child: pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: <pw.Widget>[
@@ -129,9 +131,13 @@ Future<Uint8List> generateResume(
                           ? formatter.format(education.endDate!.toDate())
                           : 'Actualmente'}',
                     ),
+                  competenciesNames != null ? _Category(title: StringConst.COMPETENCIES) : pw.Container(),
+                  for (var data in competenciesNames!)
+                    _Block(
+                      description: data,
+                    ),
                   user?.aboutMe != null ? _Category(title: StringConst.ABOUT_ME) : pw.Container(),
                   user?.aboutMe != null ? _Block(
-                    title: '',
                     description: user?.aboutMe != null && user!.aboutMe!.isNotEmpty
                         ? user.aboutMe!
                         : '',
@@ -139,13 +145,11 @@ Future<Uint8List> generateResume(
                   user?.dataOfInterest != null ? _Category(title: StringConst.DATA_OF_INTEREST) : pw.Container(),
                   for (var data in dataOfInterest!)
                     _Block(
-                      title: '',
                       description: data,
                     ),
                   user?.languages != null ? _Category(title: StringConst.LANGUAGES) : pw.Container(),
                   for (var data in languages!)
                     _Block(
-                      title: '',
                       description: data,
                     ),
                 ],
@@ -169,13 +173,8 @@ Future<Uint8List> generateResume(
                             child: pw.Image(profileImage),
                           ),
                         ),
-                        pw.Column(children: <pw.Widget>[
-                          _Percent(size: 60, value: .7, title: pw.Text('Word')),
-                          _Percent(
-                              size: 60, value: .4, title: pw.Text('Excel')),
-                        ]),
                         pw.BarcodeWidget(
-                          data: '${user?.firstName} ${user?.lastName}',
+                          data: 'mailto:<${user?.email}>?subject=&body=',
                           width: 60,
                           height: 60,
                           barcode: pw.Barcode.qrCode(),
@@ -235,11 +234,11 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
 
 class _Block extends pw.StatelessWidget {
   _Block({
-    required this.title,
+    this.title,
     required this.description,
   });
 
-  final String title;
+  final String? title;
   final String description;
 
 
@@ -260,13 +259,13 @@ class _Block extends pw.StatelessWidget {
                     shape: pw.BoxShape.circle,
                   ),
                 ),
-                pw.Expanded(
+                title != null ? pw.Expanded(
                   child: pw.Text(
-                      title,
+                      title!,
                       style: pw.Theme.of(context)
                           .defaultTextStyle
                           .copyWith(fontWeight: pw.FontWeight.bold)),
-                )
+                ) : pw.Container()
               ]),
           pw.Container(
             decoration: const pw.BoxDecoration(

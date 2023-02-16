@@ -284,7 +284,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                     });
                     showAlertDialog(
                       context,
-                      title: 'Competencia ${certificationRequest.competencyName} ha sido certificada con éxito!',
+                      title: '¡Competencia ${certificationRequest.competencyName} ha sido certificada con éxito!',
                       content: 'Muchas gracias por tu información.',
                       defaultActionText: 'ACEPTAR',
                     );

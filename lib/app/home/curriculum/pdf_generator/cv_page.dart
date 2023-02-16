@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:pdf/pdf.dart';
 
+import '../../models/competency.dart';
 import '../../models/experience.dart';
 import 'data.dart';
 
@@ -26,6 +27,8 @@ typedef LayoutCallbackWithData = Future<Uint8List> Function(
     List<Experience> myEducation,
     List<String>? dataOfInterest,
     List<String>? languages,
+    List<String>? competenciesImages,
+    List<String>? competenciesNames,
     );
 
 class Example {

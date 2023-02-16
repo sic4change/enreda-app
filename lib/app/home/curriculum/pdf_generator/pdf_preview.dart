@@ -13,6 +13,7 @@ import 'package:printing/printing.dart';
 import '../../models/experience.dart';
 import 'data.dart';
 
+
 class MyCv extends StatefulWidget {
   const MyCv({
     Key? key,
@@ -24,7 +25,8 @@ class MyCv extends StatefulWidget {
     required this.myEducation,
     this.dataOfInterest,
     this.languages,
-    //required this.myCompetencies,
+    this.competenciesImages,
+    this.competenciesNames,
   }) : super(key: key);
 
   final UserEnreda? user;
@@ -32,10 +34,11 @@ class MyCv extends StatefulWidget {
   final String? province;
   final String? country;
   final List<Experience> myExperiences;
-  //final List<Competency> myCompetencies;
   final List<Experience> myEducation;
   final List<String>? dataOfInterest;
   final List<String>? languages;
+  final List<String>? competenciesImages;
+  final List<String>? competenciesNames;
 
   @override
   MyAppState createState() {
@@ -47,11 +50,8 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
 
   int _tab = 0;
   TabController? _tabController;
-
   PrintingInfo? printingInfo;
-
   var _data = const CustomData();
-
 
   @override
   void initState() {
@@ -116,6 +116,7 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
     await OpenFile.open(file.path);
   }
 
+
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -161,6 +162,8 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
             widget.myEducation,
             widget.dataOfInterest,
             widget.languages,
+            widget.competenciesImages,
+            widget.competenciesNames,
         ),
         actions: actions,
         canDebug: false,

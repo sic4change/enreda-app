@@ -11,7 +11,7 @@ import 'package:printing/printing.dart';
 import '../../../../values/strings.dart';
 import '../../../../values/values.dart';
 import '../../models/experience.dart';
-
+import 'package:http/http.dart';
 
 const PdfColor lilac = PdfColor.fromInt(0xFF6768AB);
 const PdfColor lightLilac = PdfColor.fromInt(0xFFF4F5FB);
@@ -29,21 +29,31 @@ Future<Uint8List> generateResume(
     List<Experience>? myEducation,
     List<String>? dataOfInterest,
     List<String>? languages,
+    List<String>? competenciesImages,
+    List<String>? competenciesNames,
     ) async {
   final doc = pw.Document(title: 'Mi Currículum');
+
   var url = user?.profilePic?.src ?? "";
-  if (url == "" ) {
-    url = ImagePath.USER_DEFAULT;
+
+  Future<Uint8List> imageFromUrl(String url) async {
+    final uri = Uri.parse(url);
+    final Response response = await get(uri);
+    return response.bodyBytes;
   }
 
-  final profileImageWeb = pw.MemoryImage(
-    (await rootBundle.load(ImagePath.USER_DEFAULT)).buffer.asUint8List(),
-  );
+  Future<Uint8List> myFutureUint8List = imageFromUrl(url);
+  Uint8List myUint8List = await myFutureUint8List;
+
+  final profileImageWeb = url == ""
+      ? pw.MemoryImage((await rootBundle.load(ImagePath.USER_DEFAULT)).buffer.asUint8List(),)
+      : pw.MemoryImage(myUint8List);
 
   final pageTheme = await _myPageTheme(format);
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
   dataOfInterest = user?.dataOfInterest;
   languages = user?.languages;
+
 
   doc.addPage(
     pw.MultiPage(
@@ -56,7 +66,7 @@ Future<Uint8List> generateResume(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: <pw.Widget>[
                   pw.Container(
-                    padding: const pw.EdgeInsets.only(left: 30, bottom: 20),
+                    padding: const pw.EdgeInsets.only(left: 20, bottom: 20, right: 10),
                     child: pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: <pw.Widget>[
@@ -123,9 +133,13 @@ Future<Uint8List> generateResume(
                           ? formatter.format(education.endDate!.toDate())
                           : 'Actualmente'}',
                     ),
+                  competenciesNames != null ? _Category(title: StringConst.COMPETENCIES) : pw.Container(),
+                  for (var data in competenciesNames!)
+                    _Block(
+                      description: data,
+                    ),
                   user?.aboutMe != null ? _Category(title: StringConst.ABOUT_ME) : pw.Container(),
                   user?.aboutMe != null ? _Block(
-                    title: '',
                     description: user?.aboutMe != null && user!.aboutMe!.isNotEmpty
                         ? user.aboutMe!
                         : '',
@@ -133,13 +147,11 @@ Future<Uint8List> generateResume(
                   user?.dataOfInterest != null ? _Category(title: StringConst.DATA_OF_INTEREST) : pw.Container(),
                   for (var data in dataOfInterest!)
                     _Block(
-                      title: '',
                       description: data,
                     ),
                   user?.languages != null ? _Category(title: StringConst.LANGUAGES) : pw.Container(),
                   for (var data in languages!)
                     _Block(
-                      title: '',
                       description: data,
                     ),
                 ],
@@ -163,13 +175,8 @@ Future<Uint8List> generateResume(
                             child: pw.Image(profileImageWeb),
                           ),
                         ),
-                        pw.Column(children: <pw.Widget>[
-                          _Percent(size: 60, value: .7, title: pw.Text('Word')),
-                          _Percent(
-                              size: 60, value: .4, title: pw.Text('Excel')),
-                        ]),
                         pw.BarcodeWidget(
-                          data: '${user?.firstName} ${user?.lastName}',
+                          data: 'mailto:<${user?.email}>?subject=&body=',
                           width: 60,
                           height: 60,
                           barcode: pw.Barcode.qrCode(),
@@ -229,11 +236,11 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
 
 class _Block extends pw.StatelessWidget {
   _Block({
-    required this.title,
+    this.title,
     required this.description,
   });
 
-  final String title;
+  final String? title;
   final String description;
 
 
@@ -254,13 +261,13 @@ class _Block extends pw.StatelessWidget {
                     shape: pw.BoxShape.circle,
                   ),
                 ),
-                pw.Expanded(
+                title != null ? pw.Expanded(
                   child: pw.Text(
-                      title,
+                      title!,
                       style: pw.Theme.of(context)
                           .defaultTextStyle
                           .copyWith(fontWeight: pw.FontWeight.bold)),
-                )
+                ) : pw.Container()
               ]),
           pw.Container(
             decoration: const pw.BoxDecoration(

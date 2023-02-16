@@ -24,7 +24,7 @@ class CompetencyTile extends StatelessWidget {
 
     if (mini){
       containerWidth /= 1.6;
-      containerHeight /= 1.6;
+      containerHeight /= Responsive.isMobile(context) || Responsive.isTablet(context) ? 1.6 : 1.8;
       imageWidth /= 1.6;
       textContainerHeight /= 1.9;
       fontSize /= 1.6;

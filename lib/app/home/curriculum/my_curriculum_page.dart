@@ -20,19 +20,18 @@ import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
-
-import 'package:enreda_app/utils/save_pdf_mobile.dart'
-    if (dart.library.html) 'package:enreda_app/utils/save_pdf_web.dart';
-
 import '../../../common_widgets/custom_text.dart';
+import '../../../common_widgets/precached_avatar.dart';
 import '../../../utils/my_scroll_behaviour.dart';
 import '../../../values/values.dart';
 
-class MyCurriculumPage extends StatelessWidget {
+class MyCurriculumPage extends StatefulWidget {
+  @override
+  State<MyCurriculumPage> createState() => _MyCurriculumPageState();
+}
+
+class _MyCurriculumPageState extends State<MyCurriculumPage> {
   UserEnreda? user;
   String? myLocation;
   String? city;
@@ -41,12 +40,19 @@ class MyCurriculumPage extends StatelessWidget {
   List<Competency> myCompetencies = [];
   List<Experience> myExperiences = [];
   List<Experience> myEducation = [];
+  List<String> competenciesImages = [];
+  List<String> competenciesNames = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
-    final textTheme = Theme.of(context).textTheme;
+
     return Stack(
       children: [
         StreamBuilder<List<UserEnreda>>(
@@ -56,156 +62,482 @@ class MyCurriculumPage extends StatelessWidget {
                   snapshot.connectionState == ConnectionState.active) {
                 user = snapshot.data!.isNotEmpty ? snapshot.data!.first : null;
                 var profilePic = user?.profilePic?.src ?? "";
-                return SingleChildScrollView(
-                  child: Container(
-                    margin: Responsive.isTablet(context) ? EdgeInsets.only(top: 30, bottom: Constants.mainPadding * 3 ) : EdgeInsets.symmetric(vertical: 0.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Constants.lightGray, width: 1),
-                      borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                      color: Constants.lightLilac,
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(Constants.mainPadding),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                  flex: 1,
-                                  child: SizedBox(width: Responsive.isTablet(context) || Responsive.isMobile(context) ? 26: 50,)),
-                              Expanded(
-                                  flex: 6,
-                                  child: Center(child: CustomTextBody(text: StringConst.MY_CV.toUpperCase()))),
-                              Expanded(
-                                flex: 1,
-                                child: InkWell(
-                                  // onTap: () async {
-                                  //   if (await _hasEnoughExperiences(context)) _createPDF(context);
-                                  // },
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => MyCv(user: user!, city: city!, province: province!, country: country!, myExperiences: myExperiences, myEducation: myEducation,)),
-                                    );
-                                  },
-                                  child: Image.asset(
-                                    ImagePath.DOWNLOAD,
-                                    height: Responsive.isTablet(context) || Responsive.isMobile(context) ? Sizes.ICON_SIZE_30 : Sizes.ICON_SIZE_50,
-                                  ),),
-                              ),
-                            ],
-                          ),
-                          SpaceH20(),
-                          Padding(
-                            padding: Responsive.isMobile(context)
-                                ? const EdgeInsets.all(8.0)
-                                : const EdgeInsets.all(20.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                !kIsWeb ?
-                                ClipRRect(
-                                  borderRadius: BorderRadius.all(Radius.circular(60)),
-                                  child:
-                                  Stack(
-                                    children: <Widget>[
-                                      const Center(child: CircularProgressIndicator()),
-                                      Center(
-                                        child:
-                                        profilePic == "" ?
-                                        Container(
-                                          color:  Colors.transparent,
-                                          height: 120,
-                                          width: 120,
-                                          child: Image.asset(ImagePath.USER_DEFAULT),
-                                        ):
-                                        CachedNetworkImage(
-                                            width: 120,
-                                            height: 120,
-                                            fit: BoxFit.cover,
-                                            alignment: Alignment.center,
-                                            imageUrl: profilePic),
-                                      ),
-                                    ],
-                                  ),
-                                ):
-                                ClipRRect(
-                                  borderRadius: BorderRadius.all(Radius.circular(60)),
-                                  child:
-                                  Stack(
-                                    children: <Widget>[
-                                      const Center(child: CircularProgressIndicator()),
-                                      Center(
-                                        child:
-                                        FadeInImage.assetNetwork(
-                                          placeholder: ImagePath.USER_DEFAULT,
-                                          width: 120,
-                                          height: 120,
-                                          fit: BoxFit.cover,
-                                          image: profilePic,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Responsive.isMobile(context) ? SpaceH12() : SpaceH24(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                '${user?.firstName} ${user?.lastName}',
-                                style: textTheme.bodyLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-                                    color: Constants.penBlue),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                          SpaceH24(),
-                          CustomText(title: user?.education!.toUpperCase() ?? ''),
-                          SpaceH24(),
-                          CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase()),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.mail,
-                                color: Colors.black.withOpacity(0.7),
-                                size: 16,
-                              ),
-                              SpaceW4(),
-                              CustomTextSmall(text: user?.email ?? ''),
-                            ],
-                          ),
-                          SpaceH2(),
-                          _buildMyLocation(context, user),
-                          SpaceH24(),
-                          _buildMyEducation(context, user),
-                          SpaceH24(),
-                          _buildMyExperiences(context, user),
-                          SpaceH24(),
-                          _buildMyCompetencies(context, user),
-                          SpaceH24(),
-                          _buildMyDataOfInterest(context),
-                          SpaceH24(),
-                          _buildMyLanguages(context),
-                          SpaceH24(),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+                return StreamBuilder<List<Competency>>(
+                    stream: database.competenciesStream(),
+                    builder: (context, snapshot) {
+                      if (snapshot.data != null) {
+                        List<Competency> competencies = snapshot.data!;
+                        final competenciesIds = user!.competencies.keys.toList();
+                        competencies = competencies
+                            .where((competency) => competenciesIds.any((id) => competency.id == id))
+                            .toList();
+                        competencies.forEach((competency) {
+                          final status =
+                              user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
+                          if (competency.badgesImages[status] != null &&
+                              status != StringConst.BADGE_EMPTY &&
+                              status != StringConst.BADGE_IDENTIFIED) {
+                            competenciesImages.add(competency.badgesImages[status]!);
+                          }
+                          if (competency.name !="") {
+                            competenciesNames.add(competency.name);
+                          }
+                        });
+                      }
+                      return Responsive.isDesktop(context)
+                          ? _myCurriculumWeb(context, user, profilePic, competenciesImages, competenciesNames)
+                          : _myCurriculumMobile(context, user, profilePic, competenciesImages, competenciesNames);
+                    });
               } else {
                 return Center(child: CircularProgressIndicator());
               }
             }),
+      ],
+    );
+  }
+
+  Widget _myCurriculumWeb(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesImages, List<String> competenciesNames){
+    return Container(
+      margin: EdgeInsets.only(
+          top: 60.0, left: 4.0, right: 4.0, bottom: 4.0),
+      padding: const EdgeInsets.only(
+          left: 48.0, top: 72.0, right: 48.0, bottom: 48.0),
+      decoration: BoxDecoration(
+        color: Constants.lightLilac,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(20.0),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 4.0,
+            offset: Offset(0.0, 1.0),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+              padding: EdgeInsets.only(
+                  top: 20.0, bottom: 20, right: 5, left: 20),
+              width: Responsive.isDesktop(context) ? 330 : Responsive.isDesktopS(context) ? 290.0 : 290,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                color: Constants.white,
+                shape: BoxShape.rectangle,
+                border: Border.all(color: Constants.lilac, width: 1),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: SingleChildScrollView(
+                controller: ScrollController(),
+                child: Padding(
+                  padding: EdgeInsets.only(right: 10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: Responsive.isMobile(context)
+                            ? const EdgeInsets.all(8.0)
+                            : const EdgeInsets.all(20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            !kIsWeb ?
+                            ClipRRect(
+                              borderRadius: BorderRadius.all(Radius.circular(60)),
+                              child:
+                              Stack(
+                                children: <Widget>[
+                                  const Center(child: CircularProgressIndicator()),
+                                  Center(
+                                    child: CachedNetworkImage(
+                                        width: 120,
+                                        height: 120,
+                                        fit: BoxFit.cover,
+                                        alignment: Alignment.center,
+                                        imageUrl: profilePic),
+                                  ),
+                                ],
+                              ),
+                            ):
+                            PrecacheAvatarCard(
+                              imageUrl: profilePic,
+                            )
+                          ],
+                        ),
+                      ),
+                      SpaceH20(),
+                      _buildPersonalData(context),
+                      SpaceH20(),
+                      _buildAboutMe(context),
+                      SpaceH20(),
+                      _buildMyDataOfInterest(context),
+                      SpaceH20(),
+                      _buildMyLanguages(context),
+                    ],
+                  ),
+                ),
+              )),
+          SpaceW40(),
+          Expanded(
+              child: SingleChildScrollView(
+                controller: ScrollController(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildCVHeader(context),
+                    SpaceH40(),
+                    _buildMyEducation(context, user),
+                    SpaceH40(),
+                    _buildMyExperiences(context, user),
+                    SpaceH40(),
+                    _buildMyCompetencies(context, user),
+                  ],
+                ),
+              ))
+        ],
+      ),
+    );
+  }
+
+  Widget _myCurriculumMobile(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesImages, List<String> competenciesNames) {
+    final textTheme = Theme.of(context).textTheme;
+    return SingleChildScrollView(
+      child: Container(
+        margin: Responsive.isTablet(context) ? EdgeInsets.only(top: 30, bottom: Constants.mainPadding * 3 ) : EdgeInsets.symmetric(vertical: 0.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Constants.lightGray, width: 1),
+          borderRadius: BorderRadius.all(Radius.circular(40.0)),
+          color: Constants.lightLilac,
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constants.mainPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: SizedBox(width: Responsive.isTablet(context) || Responsive.isMobile(context) ? 26: 50,)),
+                  Expanded(
+                      flex: 6,
+                      child: Center(child: CustomTextBody(text: StringConst.MY_CV.toUpperCase()))),
+                  Expanded(
+                    flex: 1,
+                    child: InkWell(
+                      onTap: () async {
+                        if (await _hasEnoughExperiences(context))
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyCv(
+                                      user: user!,
+                                      city: city!,
+                                      province: province!,
+                                      country: country!,
+                                      myExperiences: myExperiences,
+                                      myEducation: myEducation,
+                                      competenciesImages: competenciesImages,
+                                      competenciesNames: competenciesNames,
+                                    )),
+                          );
+                      },
+                      child: Image.asset(
+                        ImagePath.DOWNLOAD,
+                        height: Responsive.isTablet(context) || Responsive.isMobile(context) ? Sizes.ICON_SIZE_30 : Sizes.ICON_SIZE_50,
+                      ),),
+                  ),
+                ],
+              ),
+              SpaceH20(),
+              Padding(
+                padding: Responsive.isMobile(context)
+                    ? const EdgeInsets.all(8.0)
+                    : const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    !kIsWeb ?
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(60)),
+                      child:
+                      Stack(
+                        children: <Widget>[
+                          const Center(child: CircularProgressIndicator()),
+                          Center(
+                            child:
+                            profilePic == "" ?
+                            Container(
+                              color:  Colors.transparent,
+                              height: 120,
+                              width: 120,
+                              child: Image.asset(ImagePath.USER_DEFAULT),
+                            ):
+                            CachedNetworkImage(
+                                width: 120,
+                                height: 120,
+                                fit: BoxFit.cover,
+                                alignment: Alignment.center,
+                                imageUrl: profilePic),
+                          ),
+                        ],
+                      ),
+                    ):
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(60)),
+                      child:
+                      Stack(
+                        children: <Widget>[
+                          const Center(child: CircularProgressIndicator()),
+                          Center(
+                            child:
+                            FadeInImage.assetNetwork(
+                              placeholder: ImagePath.USER_DEFAULT,
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                              image: profilePic,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Responsive.isMobile(context) ? SpaceH12() : SpaceH24(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '${user?.firstName} ${user?.lastName}',
+                    style: textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
+                        color: Constants.penBlue),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              SpaceH24(),
+              CustomText(title: user?.education!.toUpperCase() ?? ''),
+              SpaceH24(),
+              CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase()),
+              Row(
+                children: [
+                  Icon(
+                    Icons.mail,
+                    color: Colors.black.withOpacity(0.7),
+                    size: 16,
+                  ),
+                  SpaceW4(),
+                  CustomTextSmall(text: user?.email ?? ''),
+                ],
+              ),
+              SpaceH2(),
+              _buildMyLocation(context, user),
+              SpaceH24(),
+              _buildMyEducation(context, user),
+              SpaceH24(),
+              _buildMyExperiences(context, user),
+              SpaceH24(),
+              _buildMyCompetencies(context, user),
+              SpaceH24(),
+              _buildMyDataOfInterest(context),
+              SpaceH24(),
+              _buildMyLanguages(context),
+              SpaceH24(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCVHeader(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            CustomTextBody(text: StringConst.MY_CV.toUpperCase()),
+            Spacer(),
+            InkWell(
+              onTap: () async {
+                if (await _hasEnoughExperiences(context))
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyCv(
+                              user: user!,
+                              city: city!,
+                              province: province!,
+                              country: country!,
+                              myExperiences: myExperiences,
+                              myEducation: myEducation,
+                              competenciesImages: competenciesImages,
+                              competenciesNames: competenciesNames,
+                            )),
+                  );
+              },
+              child: Image.asset(
+                ImagePath.DOWNLOAD,
+                height:
+                Responsive.isTablet(context) || Responsive.isMobile(context)
+                    ? Sizes.ICON_SIZE_26
+                    : Sizes.ICON_SIZE_50,
+              ),
+            ),
+            SpaceW8(),
+          ],
+        ),
+        SpaceH20(),
+        Text(
+          '${user?.firstName} ${user?.lastName}',
+          style: textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
+              color: Constants.penBlue),
+        ),
+        SpaceH20(),
+        Text(
+          user?.education?.toUpperCase() ?? '',
+          style: textTheme.bodyLarge?.copyWith(
+              fontSize: Responsive.isDesktop(context) ? 16 : 12.0,
+              color: Constants.darkGray),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAboutMe(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+    final textTheme = Theme.of(context).textTheme;
+    var isEditable = false;
+    final textController = TextEditingController();
+    final focusNode = FocusNode();
+    textController.text = user?.aboutMe ?? '';
+
+    return StatefulBuilder(builder: (context, setState) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  StringConst.ABOUT_ME.toUpperCase(),
+                  style: textTheme.bodyText1?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: Responsive.isDesktop(context) ? 18 : 14.0,
+                    color: Constants.darkLilac,
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  if (isEditable)
+                    database.setUserEnreda(
+                        user!.copyWith(aboutMe: textController.text));
+                  setState(() {
+                    isEditable = !isEditable;
+                    if (isEditable) focusNode.requestFocus();
+                  });
+                },
+                child: Icon(
+                  isEditable ? Icons.save : Icons.edit_outlined,
+                  size: Responsive.isDesktop(context) ? 18 : 14.0,
+                  color: Constants.darkGray,
+                ),
+              ),
+            ],
+          ),
+          SpaceH20(),
+          if (!isEditable)
+            Text(
+              user?.aboutMe != null && user!.aboutMe!.isNotEmpty
+                  ? user!.aboutMe!
+                  : 'Aún no has añadido información adicional sobre ti',
+              style: textTheme.bodyLarge?.copyWith(
+                  fontSize: Responsive.isDesktop(context) ? 14 : 11.0,
+                  color: Constants.darkGray),
+            ),
+          if (isEditable)
+            TextField(
+              controller: textController,
+              focusNode: focusNode,
+              minLines: 1,
+              maxLines: null,
+              style: textTheme.bodyLarge?.copyWith(
+                  fontSize: Responsive.isDesktop(context) ? 14 : 11.0,
+                  color: Constants.darkGray),
+            )
+        ],
+      );
+    });
+  }
+
+  Widget _buildPersonalData(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          StringConst.PERSONAL_DATA.toUpperCase(),
+          style: textTheme.bodyText1?.copyWith(
+            fontWeight: FontWeight.w600,
+            fontSize: Responsive.isDesktop(context) ? 18 : 14.0,
+            color: Constants.darkLilac,
+          ),
+        ),
+        SpaceH20(),
+        Row(
+          children: [
+            Icon(
+              Icons.mail,
+              color: Constants.darkGray,
+              size: 12.0,
+            ),
+            SpaceW4(),
+            Flexible(
+              child: Text(
+                user?.email ?? '',
+                style: textTheme.bodyText1?.copyWith(
+                    fontSize: Responsive.isDesktop(context) ? 14 : 11.0,
+                    color: Constants.darkGray),
+              ),
+            ),
+          ],
+        ),
+        SpaceH8(),
+        Row(
+          children: [
+            Icon(
+              Icons.phone,
+              color: Constants.darkGray,
+              size: 12.0,
+            ),
+            SpaceW4(),
+            Text(
+              user?.phone ?? '',
+              style: textTheme.bodyText1?.copyWith(
+                  fontSize: Responsive.isDesktop(context) ? 14 : 11.0,
+                  color: Constants.darkGray),
+            ),
+          ],
+        ),
+        SpaceH8(),
+        _buildMyLocation(context, user),
       ],
     );
   }
@@ -311,8 +643,7 @@ class MyCurriculumPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: Container(
-                        height: 160.0,
-                        //padding: const EdgeInsets.all(10.0),
+                        height: 180.0,
                         color: Colors.white,
                         child: ScrollConfiguration(
                           behavior: MyCustomScrollBehavior(),
@@ -562,7 +893,7 @@ class MyCurriculumPage extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30.0),
-            color: Constants.lightLilac,
+            color: Colors.transparent,
           ),
           child: myDataOfInterest.isNotEmpty
               ? Wrap(
@@ -633,7 +964,7 @@ class MyCurriculumPage extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30.0),
-            color: Constants.lightLilac,
+            color: Colors.transparent,
           ),
           child: myLanguages.isNotEmpty
               ? Wrap(
@@ -736,275 +1067,10 @@ class MyCurriculumPage extends StatelessWidget {
     });
   }
 
-  Future<void> _createPDF(BuildContext context) async {
-    showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (_) {
-          return AlertDialog(
-            content: SizedBox(
-              width: 400.0,
-              child: Padding(
-                padding: EdgeInsets.all(Constants.mainPadding * 2),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Center(
-                        child: Text(
-                          'Espere unos segundos mientras se genera el PDF...',
-                        )),
-                    SpaceH48(),
-                    Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-     });
-
-    final database = Provider.of<Database>(context, listen: false);
-    double y = 0.0;
-    double x = 0.0;
-    double mainSpacing = 16.0;
-    double fontSize = 11.0;
-
-    PdfDocument document = PdfDocument();
-    PdfPage page = document.pages.add();
-
-    var url = user?.profilePic?.src ?? "";
-    if (url == "" ) {
-      url = ImagePath.USER_DEFAULT;
-    }
-
-    var response = await get(Uri.parse(url));
-    PdfBitmap imageProfile = PdfBitmap(response.bodyBytes);
-    PdfBitmap image = PdfBitmap(response.bodyBytes);
-    page.graphics.drawImage(imageProfile, Rect.fromLTWH(0, y, 100, 100));
-    y += 120;
-
-    page.graphics.drawString(
-        '${user?.firstName} ${user?.lastName}',
-        PdfStandardFont(PdfFontFamily.helvetica, fontSize * 2.5,
-          style: PdfFontStyle.bold,
-        ),
-        brush: PdfBrushes.darkBlue,
-        bounds: Rect.fromLTWH(0, y, 0, 0));
-    y += mainSpacing * 3;
-
-    page.graphics.drawString('${user?.education}',
-      PdfStandardFont(PdfFontFamily.helvetica, fontSize),
-      brush: PdfBrushes.slateGray,
-      bounds: Rect.fromLTWH(0, y, 0, 0),
-    );
-    y += mainSpacing;
-
-    page.graphics.drawString(
-      '${user?.email}',
-      PdfStandardFont(PdfFontFamily.helvetica, fontSize),
-      bounds: Rect.fromLTWH(0, y, 0, 0),
-      brush: PdfBrushes.slateGray,
-    );
-    y += mainSpacing;
-
-    page.graphics.drawString(
-      user?.phone ?? '',
-      PdfStandardFont(PdfFontFamily.helvetica, fontSize),
-      bounds: Rect.fromLTWH(0, y, 0, 0),
-      brush: PdfBrushes.slateGray,
-    );
-    y += mainSpacing;
-
-    page.graphics.drawString(
-      '$myLocation',
-      PdfStandardFont(PdfFontFamily.helvetica, fontSize),
-      bounds: Rect.fromLTWH(0, y, 0, 0),
-      brush: PdfBrushes.slateGray,
-    );
-    y += mainSpacing * 2;
-
-
-    page.graphics.drawString(
-      StringConst.EDUCATION.toUpperCase(),
-      PdfStandardFont(PdfFontFamily.helvetica, fontSize * 1.2),
-      brush: PdfBrushes.darkSlateBlue,
-      bounds: Rect.fromLTWH(0, y, 0, 0),
-    );
-    y += mainSpacing * 1.5;
-
-    myEducation.forEach((education) {
-      final DateFormat formatter = DateFormat('yyyy-MM-dd');
-      String startDate = formatter.format(education.startDate.toDate());
-      String endDate = education.endDate != null
-          ? formatter.format(education.endDate!.toDate())
-          : 'Actualmente';
-      String activityText = education.activityRole == null
-          ? education.activity!
-          : '${education.activityRole!} - ${education.activity!}';
-
-      if (y + 100 >= page.getClientSize().height) {
-        page = document.pages.add();
-        y = 0;
-      }
-      if (education.activity != null) {
-        page.graphics.drawString(
-            '$activityText, ${education.location}, $startDate - $endDate',
-            PdfStandardFont(PdfFontFamily.helvetica, fontSize, style: PdfFontStyle.italic),
-            brush: PdfBrushes.slateGray,
-            bounds: Rect.fromLTWH(0, y, 0, 0));
-        y += mainSpacing;
-      }
-
-    });
-    y += mainSpacing;
-
-    page.graphics.drawString(
-      StringConst.EXPERIENCES.toUpperCase(),
-      PdfStandardFont(PdfFontFamily.helvetica, fontSize * 1.2),
-      brush: PdfBrushes.darkSlateBlue,
-      bounds: Rect.fromLTWH(0, y, 0, 0),
-    );
-    y += mainSpacing * 1.5;
-    myExperiences.forEach((experience) {
-      final DateFormat formatter = DateFormat('yyyy-MM-dd');
-      String endDate = experience.endDate != null
-          ? formatter.format(experience.endDate!.toDate())
-          : 'Actualmente';
-      if (y + 100 >= page.getClientSize().height) {
-        page = document.pages.add();
-        y = 0;
-      }
-      if (experience.activity != null) {
-        String activityText = experience.activityRole == null
-            ? experience.activity!
-            : '${experience.activityRole!} - ${experience.activity!}';
-
-        page.graphics.drawString(
-          '$activityText, ${experience.location}, ${formatter.format(experience.startDate.toDate())} - $endDate',
-          PdfStandardFont(PdfFontFamily.helvetica, fontSize, style: PdfFontStyle.italic),
-          brush: PdfBrushes.slateGray,
-          bounds: Rect.fromLTWH(0, y, page.getClientSize().width, 0),
-          //bounds: Rect.fromLTWH(0, y, 0, 0),
-        );
-        y += mainSpacing * 1.5;
-      }
-
-    });
-    y += mainSpacing * 1.5;
-
-
-    page.graphics.drawString(
-      StringConst.COMPETENCIES.toUpperCase(),
-      PdfStandardFont(PdfFontFamily.helvetica, fontSize * 1.2),
-      brush: PdfBrushes.darkSlateBlue,
-      bounds: Rect.fromLTWH(0, y, 0, 0),
-    );
-    y += mainSpacing;
-
-    List<Competency> competencies = await database.competenciesStream().first;
-    final competenciesIds = user!.competencies.keys.toList();
-    competencies = competencies.where((competency) => competenciesIds.any((id) => competency.id == id )).toList();
-    List<String> competenciesImages = [];
-    competencies.forEach((competency) {
-      final status =
-          user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
-      if (competency.badgesImages[status] != null &&
-          status != StringConst.BADGE_EMPTY &&
-          status != StringConst.BADGE_IDENTIFIED) {
-        competenciesImages.add(competency.badgesImages[status]!);
-      }
-    });
-    var leftMargin = 0.0;
-    for (int i = 0; i < competenciesImages.length; i++) {
-      url = competenciesImages[i];
-      response = await get(Uri.parse(url));
-      image = PdfBitmap(response.bodyBytes);
-      page.graphics
-          .drawImage(image, Rect.fromLTWH(0 + leftMargin, y, 60, 60));
-      leftMargin += 60;
-    }
-    y += 80;
-
-    if (user?.aboutMe != null && user!.aboutMe!.isNotEmpty) {
-      page.graphics.drawString(
-        StringConst.ABOUT_ME.toUpperCase(),
-        PdfStandardFont(PdfFontFamily.helvetica, fontSize * 1.2),
-        brush: PdfBrushes.darkSlateBlue,
-        bounds: Rect.fromLTWH(0, y, 0, 0),
-      );
-      y += mainSpacing * 1.5;
-    }
-
-    if (y + 100 >= page.getClientSize().height) {
-      page = document.pages.add();
-      y = 0;
-    }
-    page.graphics.drawString(
-      user?.aboutMe != null && user!.aboutMe!.isNotEmpty
-          ? user!.aboutMe!
-          : '',
-      PdfStandardFont(PdfFontFamily.helvetica, fontSize),
-      bounds: Rect.fromLTWH(0, y, page.getClientSize().width, 0),
-      brush: PdfBrushes.slateGray,
-    );
-    y += mainSpacing * 3.5;
-
-    page.graphics.drawString(
-      StringConst.DATA_OF_INTEREST.toUpperCase(),
-      PdfStandardFont(PdfFontFamily.helvetica, fontSize * 1.2),
-      brush: PdfBrushes.darkSlateBlue,
-      bounds: Rect.fromLTWH(0, y, 0, 0),
-    );
-    y += mainSpacing * 1.5;
-
-    final dataOfInterest = user?.dataOfInterest ?? [];
-    dataOfInterest.forEach((data) {
-      if (y + 100 >= page.getClientSize().height) {
-        page = document.pages.add();
-        y = 0;
-      }
-      page.graphics.drawString(
-          data, PdfStandardFont(PdfFontFamily.helvetica, fontSize),
-          brush: PdfBrushes.slateGray,
-          bounds: Rect.fromLTWH(0, y, 0, 0));
-      y += mainSpacing;
-    });
-    y += mainSpacing;
-
-    page.graphics.drawString(
-      StringConst.LANGUAGES.toUpperCase(),
-      PdfStandardFont(PdfFontFamily.helvetica, fontSize * 1.2),
-      brush: PdfBrushes.darkSlateBlue,
-      bounds: Rect.fromLTWH(0, y, 0, 0),
-    );
-    y += mainSpacing * 1.5;
-    final languages = user?.languages ?? [];
-    languages.forEach((language) {
-      if (y + 100 >= page.getClientSize().height) {
-        page = document.pages.add();
-        y = 0;
-      }
-      page.graphics.drawString(
-          language, PdfStandardFont(PdfFontFamily.helvetica, fontSize),
-          brush: PdfBrushes.slateGray,
-          bounds: Rect.fromLTWH(0, y, 0, 0));
-      y += mainSpacing;
-    });
-    y += mainSpacing * 1.5;
-
-    List<int> bytes = await document.save();
-    document.dispose();
-
-    savePDF(bytes, 'myCV.pdf');
-    Navigator.of(context, rootNavigator: true).pop();
-  }
-
   Future<bool> _hasEnoughExperiences(BuildContext context) async {
     if (myCompetencies.length < 3 || myExperiences.length < 2) {
       showCustomDialog(context,
-          content: Text(StringConst.ADD_MORE_EXPERIENCES),
+          content: CustomTextBody(text: StringConst.ADD_MORE_EXPERIENCES),
           defaultActionText: StringConst.OK,
           onDefaultActionPressed: (context) => Navigator.of(context).pop(true));
       return false;

@@ -58,7 +58,6 @@ dependencies:
   flutter_staggered_grid_view: ^0.6.2
   loading_indicator: ^3.1.0
   flutter_rating_bar: 4.0.1
-  syncfusion_flutter_pdf: ^20.4.49
   path_provider: ^2.0.1
   open_file: ^3.1.0
   http: ^0.13.4
@@ -71,6 +70,7 @@ dependencies:
   pdf: ^3.9.0
   cached_network_image: ^3.2.3
   printing: ^5.10.1
+  universal_io: ^2.0.4
 
 dev_dependencies:
   flutter_test:

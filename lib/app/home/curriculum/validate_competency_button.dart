@@ -163,7 +163,7 @@ class ValidateCompetencyButton extends StatelessWidget {
               showAlertDialog(context,
                   title: '¡Lo sentimos!',
                   content:
-                  'No has conseguido evaluar la competencia ${competency.name}, te animamos a que lo intentes de nuevo',
+                  'No has conseguido evaluar la competencia ${competency.name}, te animamos a que lo intentes de nuevo.',
                   defaultActionText: 'Ok');
             }
           },

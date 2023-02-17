@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import '../../../../utils/const.dart';
 import '../../models/experience.dart';
 import 'data.dart';
 
@@ -25,7 +26,6 @@ class MyCv extends StatefulWidget {
     required this.myEducation,
     this.dataOfInterest,
     this.languages,
-    this.competenciesImages,
     this.competenciesNames,
   }) : super(key: key);
 
@@ -37,7 +37,6 @@ class MyCv extends StatefulWidget {
   final List<Experience> myEducation;
   final List<String>? dataOfInterest;
   final List<String>? languages;
-  final List<String>? competenciesImages;
   final List<String>? competenciesNames;
 
   @override
@@ -88,6 +87,7 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
   void _showPrintedToast(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
+        backgroundColor: Constants.penLightBlue,
         content: Text('Documento impreso con éxito'),
       ),
     );
@@ -96,6 +96,7 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
   void _showSharedToast(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
+        backgroundColor: Constants.penLightBlue,
         content: Text('Documento compartido con éxito'),
       ),
     );
@@ -110,12 +111,11 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
 
     final appDocDir = await getApplicationDocumentsDirectory();
     final appDocPath = appDocDir.path;
-    final file = File('$appDocPath/document.pdf');
+    final file = File('$appDocPath/miCurriculum.pdf');
     print('Save as file ${file.path} ...');
     await file.writeAsBytes(bytes);
     await OpenFile.open(file.path);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +162,6 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
             widget.myEducation,
             widget.dataOfInterest,
             widget.languages,
-            widget.competenciesImages,
             widget.competenciesNames,
         ),
         actions: actions,

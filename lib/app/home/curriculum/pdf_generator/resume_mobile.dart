@@ -33,7 +33,6 @@ Future<Uint8List> generateResume(
     List<Experience>? myEducation,
     List<String>? dataOfInterest,
     List<String>? languages,
-    List<String>? competenciesImages,
     List<String>? competenciesNames,
     ) async {
   final doc = pw.Document(title: 'Mi Currículum');

@@ -40,7 +40,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   List<Competency> myCompetencies = [];
   List<Experience> myExperiences = [];
   List<Experience> myEducation = [];
-  List<String> competenciesImages = [];
   List<String> competenciesNames = [];
 
   @override
@@ -65,28 +64,25 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 return StreamBuilder<List<Competency>>(
                     stream: database.competenciesStream(),
                     builder: (context, snapshot) {
-                      if (snapshot.data != null) {
-                        List<Competency> competencies = snapshot.data!;
-                        final competenciesIds = user!.competencies.keys.toList();
-                        competencies = competencies
-                            .where((competency) => competenciesIds.any((id) => competency.id == id))
-                            .toList();
-                        competencies.forEach((competency) {
-                          final status =
-                              user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
-                          if (competency.badgesImages[status] != null &&
-                              status != StringConst.BADGE_EMPTY &&
-                              status != StringConst.BADGE_IDENTIFIED) {
-                            competenciesImages.add(competency.badgesImages[status]!);
-                          }
-                          if (competency.name !="") {
-                            competenciesNames.add(competency.name);
-                          }
-                        });
-                      }
+                      if (!snapshot.hasData) return Container();
+                      if (snapshot.hasError)
+                        return Center(child: Text('Ocurrió un error'));
+                      List<Competency> competencies = snapshot.data!;
+                      final competenciesIds = user!.competencies.keys.toList();
+                      competencies = competencies
+                          .where((competency) => competenciesIds.any((id) => competency.id == id))
+                          .toList();
+                      competencies.forEach((competency) {
+                        final status =
+                            user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
+                        if (competency.name !="" && status != StringConst.BADGE_EMPTY && status != StringConst.BADGE_IDENTIFIED ) {
+                          final index1 = competenciesNames.indexWhere((element) => element == competency.name);
+                          if (index1 == -1) competenciesNames.add(competency.name);
+                        }
+                      });
                       return Responsive.isDesktop(context)
-                          ? _myCurriculumWeb(context, user, profilePic, competenciesImages, competenciesNames)
-                          : _myCurriculumMobile(context, user, profilePic, competenciesImages, competenciesNames);
+                          ? _myCurriculumWeb(context, user, profilePic, competenciesNames)
+                          : _myCurriculumMobile(context, user, profilePic, competenciesNames);
                     });
               } else {
                 return Center(child: CircularProgressIndicator());
@@ -96,7 +92,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     );
   }
 
-  Widget _myCurriculumWeb(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesImages, List<String> competenciesNames){
+  Widget _myCurriculumWeb(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames){
     return Container(
       margin: EdgeInsets.only(
           top: 60.0, left: 4.0, right: 4.0, bottom: 4.0),
@@ -202,7 +198,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     );
   }
 
-  Widget _myCurriculumMobile(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesImages, List<String> competenciesNames) {
+  Widget _myCurriculumMobile(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames) {
     final textTheme = Theme.of(context).textTheme;
     return SingleChildScrollView(
       child: Container(
@@ -241,7 +237,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                       country: country!,
                                       myExperiences: myExperiences,
                                       myEducation: myEducation,
-                                      competenciesImages: competenciesImages,
                                       competenciesNames: competenciesNames,
                                     )),
                           );
@@ -383,7 +378,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                               country: country!,
                               myExperiences: myExperiences,
                               myEducation: myEducation,
-                              competenciesImages: competenciesImages,
                               competenciesNames: competenciesNames,
                             )),
                   );

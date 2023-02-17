@@ -75,7 +75,7 @@ class ImagePath {
   static const String COMPETENCIES = "$imageDir/ilustracion-competencias.png";
   static const String FAVORITES_ILLUSTRATION = '$imageDir/favorites-illustration.png';
   static const String CLIP_CV = '$imageDir/clip-cv.png';
-  static const String CHICA_LATERAL = '$imageDir/chica-lateral-formulario.png';
+  static const String CHICA_LATERAL = '$imageDir/chica-lateral.png';
 
   // Icons
   static const String CHAT_ICON = '$imageDir/icon-chat.png';

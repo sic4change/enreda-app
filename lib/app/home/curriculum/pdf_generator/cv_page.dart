@@ -27,7 +27,6 @@ typedef LayoutCallbackWithData = Future<Uint8List> Function(
     List<Experience> myEducation,
     List<String>? dataOfInterest,
     List<String>? languages,
-    List<String>? competenciesImages,
     List<String>? competenciesNames,
     );
 

@@ -37,10 +37,10 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   String? city;
   String? province;
   String? country;
-  List<Competency> myCompetencies = [];
-  List<Experience> myExperiences = [];
-  List<Experience> myEducation = [];
-  List<String> competenciesNames = [];
+  List<Competency>? myCompetencies = [];
+  List<Experience>? myExperiences = [];
+  List<Experience>? myEducation = [];
+  List<String>? competenciesNames = [];
 
   @override
   void initState() {
@@ -76,13 +76,13 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                         final status =
                             user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
                         if (competency.name !="" && status != StringConst.BADGE_EMPTY && status != StringConst.BADGE_IDENTIFIED ) {
-                          final index1 = competenciesNames.indexWhere((element) => element == competency.name);
-                          if (index1 == -1) competenciesNames.add(competency.name);
+                          final index1 = competenciesNames!.indexWhere((element) => element == competency.name);
+                          if (index1 == -1) competenciesNames!.add(competency.name);
                         }
                       });
                       return Responsive.isDesktop(context)
-                          ? _myCurriculumWeb(context, user, profilePic, competenciesNames)
-                          : _myCurriculumMobile(context, user, profilePic, competenciesNames);
+                          ? _myCurriculumWeb(context, user, profilePic, competenciesNames!)
+                          : _myCurriculumMobile(context, user, profilePic, competenciesNames!);
                     });
               } else {
                 return Center(child: CircularProgressIndicator());
@@ -147,7 +147,15 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                 children: <Widget>[
                                   const Center(child: CircularProgressIndicator()),
                                   Center(
-                                    child: CachedNetworkImage(
+                                    child:
+                                    profilePic == "" ?
+                                    Container(
+                                      color:  Colors.transparent,
+                                      height: 120,
+                                      width: 120,
+                                      child: Image.asset(ImagePath.USER_DEFAULT),
+                                    ):
+                                    CachedNetworkImage(
                                         width: 120,
                                         height: 120,
                                         fit: BoxFit.cover,
@@ -157,8 +165,19 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                 ],
                               ),
                             ):
-                            PrecacheAvatarCard(
-                              imageUrl: profilePic,
+                            ClipRRect(
+                              borderRadius: BorderRadius.all(Radius.circular(60)),
+                              child:
+                              profilePic == "" ?
+                              Container(
+                                color:  Colors.transparent,
+                                height: 120,
+                                width: 120,
+                                child: Image.asset(ImagePath.USER_DEFAULT),
+                              ):
+                              PrecacheAvatarCard(
+                                imageUrl: profilePic,
+                              ),
                             )
                           ],
                         ),
@@ -235,8 +254,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                       city: city!,
                                       province: province!,
                                       country: country!,
-                                      myExperiences: myExperiences,
-                                      myEducation: myEducation,
+                                      myExperiences: myExperiences!,
+                                      myEducation: myEducation!,
                                       competenciesNames: competenciesNames,
                                     )),
                           );
@@ -290,7 +309,13 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                         children: <Widget>[
                           const Center(child: CircularProgressIndicator()),
                           Center(
-                            child:
+                            child: profilePic == "" ?
+                            Container(
+                              color:  Colors.transparent,
+                              height: 120,
+                              width: 120,
+                              child: Image.asset(ImagePath.USER_DEFAULT),
+                            ):
                             FadeInImage.assetNetwork(
                               placeholder: ImagePath.USER_DEFAULT,
                               width: 120,
@@ -615,7 +640,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                         fontSize: 18.0),
                   ),
                 ),
-                myCompetencies.isNotEmpty
+                myCompetencies!.isNotEmpty
                     ? Row(
                   children: [
                     Padding(
@@ -644,7 +669,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                           child: ListView(
                             controller: controller,
                             scrollDirection: Axis.horizontal,
-                            children: myCompetencies.map((competency) {
+                            children: myCompetencies!.map((competency) {
                               final status =
                                   user.competencies[competency.id] ??
                                       StringConst.BADGE_EMPTY;
@@ -757,9 +782,9 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                     borderRadius: BorderRadius.circular(30.0),
                     color: Constants.lightLilac,
                   ),
-                  child: myEducation.isNotEmpty
+                  child: myEducation!.isNotEmpty
                       ? Wrap(
-                          children: myEducation
+                          children: myEducation!
                               .map((e) => Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -829,9 +854,9 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                     borderRadius: BorderRadius.circular(30.0),
                     color: Constants.lightLilac,
                   ),
-                  child: myExperiences.isNotEmpty
+                  child: myExperiences!.isNotEmpty
                       ? Wrap(
-                          children: myExperiences
+                          children: myExperiences!
                               .map((e) => Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -1062,7 +1087,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   }
 
   Future<bool> _hasEnoughExperiences(BuildContext context) async {
-    if (myCompetencies.length < 3 || myExperiences.length < 2) {
+    if (myCompetencies!.length < 3 || myExperiences!.length < 2) {
       showCustomDialog(context,
           content: CustomTextBody(text: StringConst.ADD_MORE_EXPERIENCES),
           defaultActionText: StringConst.OK,

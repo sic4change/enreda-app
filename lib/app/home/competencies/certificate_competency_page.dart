@@ -60,116 +60,82 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    double fontSize = responsiveSize(context, 20, 22, md: 22);
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 100),
-        child: SafeArea(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Responsive.isMobile(context) ? Container() : Container(
-                margin: new EdgeInsets.symmetric(
-                    horizontal: Constants.mainPadding,
-                  vertical: Responsive.isMobile(context) ? 0 : Constants.mainPadding,),
-                height: 44,
-                width: 44,
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Constants.lightTurquoise,
-                    shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: Icon(Icons.keyboard_backspace, color: Constants.white),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-            ],
+      appBar: AppBar(
+        title: Text(
+          'Certificación de competencias',
+          textAlign: TextAlign.center,
+          style: textTheme.bodyText1?.copyWith(
+            color: Constants.white,
+            height: 1.5,
+            letterSpacing: 0.8,
+            fontWeight: FontWeight.w800,
+            fontSize: fontSize,
           ),
         ),
+        backgroundColor: AppColors.primaryColor,
+        elevation: 0.0,
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
       ),
-      body: Stack(
-        alignment: AlignmentDirectional.topCenter,
-        children: <Widget>[
-          BackgroundMobile(backgroundHeight: BackgroundHeight.ExtraLarge),
-          _buildContent(context, widget.competency)
-        ],
-      ),
+      body: _buildContent(context, widget.competency)
     );
   }
 
+
   Widget _buildContent(BuildContext context, Competency competency) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 14, 18, md: 15);
-    return Container(
-      width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.6,
-      margin: EdgeInsets.only(top: Responsive.isMobile(context) ? 10 : 80),
-      decoration: BoxDecoration(
-          color: Constants.white,
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(20.0),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 4.0,
-              offset: Offset(0.0, 1.0),
-            ),
-          ]),
-      padding: EdgeInsets.all(Constants.mainPadding),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SpaceH12(),
-            Row(
+    double fontSize = responsiveSize(context, 15, 18, md: 16);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.6,
+          margin: EdgeInsets.only(top: Responsive.isMobile(context) ? 10 : 80),
+          decoration: BoxDecoration(
+              color: Constants.white,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(20.0),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 4.0,
+                  offset: Offset(0.0, 1.0),
+                ),
+              ]),
+          padding: EdgeInsets.all(Constants.mainPadding),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Responsive.isMobile(context) ? Expanded(
-                  flex: 1,
-                  child: showBackIconButton(context, Constants.darkGray) ): Container(),
-                Expanded(
-                  flex: 6,
-                  child: Text(
-                    'Solicitud de certificación de competencias',
-                    textAlign: TextAlign.center,
-                    style: textTheme.bodyText1?.copyWith(
-                      color: Constants.grey,
-                      height: 1.5,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 20,
-                    ),
+                SpaceH12(),
+                CustomTextTitle(title: competency.name.toUpperCase()),
+                SpaceH12(),
+                Text(
+                  'Ingrese los datos de quien certificará su competencia:',
+                  textAlign: TextAlign.center,
+                  style: textTheme.bodyLarge?.copyWith(
+                    color: Constants.grey,
+                    height: 1.5,
+                    fontWeight: FontWeight.w800,
+                    fontSize: fontSize,
                   ),
                 ),
-                Responsive.isMobile(context) ? Expanded(
-                    flex: 1,
-                    child: Container()) : Container()
+                _buildForm(context),
+                SpaceH12(),
+                Divider(),
+
               ],
             ),
-            SpaceH20(),
-            CustomTextTitle(title: competency.name),
-            SpaceH20(),
-            Text(
-              'Ingrese los datos de quien certificará su competencia:',
-              textAlign: TextAlign.center,
-              style: textTheme.bodyLarge?.copyWith(
-                color: Constants.grey,
-                height: 1.5,
-                fontWeight: FontWeight.w800,
-                fontSize: fontSize,
-              ),
-            ),
-            _buildForm(context),
-            SpaceH12(),
-            Divider(),
+          )
 
-          ],
         ),
-      )
-
+      ],
     );
   }
 
@@ -198,7 +164,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: Constants.mainPadding),
+              SizedBox(height: Constants.mainPadding / 2),
               CustomFlexRowColumn(
                 childLeft: customTextFormFieldName(context, _certifierName!, StringConst.FORM_NAME_CERTIFIER, StringConst.NAME_ERROR, _certifierNameSetState),
                 childRight: customTextFormFieldName(context, _certifierCompany!, StringConst.FORM_COMPANY_CERTIFIER, StringConst.FORM_COMPANY_ERROR, _certifierCompanySetState),

@@ -271,6 +271,13 @@ class _AccountPageState extends State<AccountPage> {
                                 const Center(child: CircularProgressIndicator()),
                                 Center(
                                   child:
+                                  _photo == "" ?
+                                  Container(
+                                    color:  Colors.transparent,
+                                    height: 120,
+                                    width: 120,
+                                    child: Image.asset(ImagePath.USER_DEFAULT),
+                                  ):
                                   FadeInImage.assetNetwork(
                                     placeholder: ImagePath.USER_DEFAULT,
                                     width: 120,

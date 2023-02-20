@@ -109,7 +109,7 @@ Future<Uint8List> generateResume(
                       ],
                     ),
                   ),
-                  _Category(title: StringConst.EXPERIENCES),
+                  myExperiences != null ? _Category(title: StringConst.EXPERIENCES) : pw.Container(),
                   for (var experience in myExperiences!)
                     _Block(
                       title: experience.activityRole == null
@@ -120,8 +120,8 @@ Future<Uint8List> generateResume(
                           : 'Actualmente'}',
                     ),
                   pw.SizedBox(height: 20),
-                  _Category(title: StringConst.EDUCATION),
-                  for (var education in myEducation!)
+                  myEducation!.isNotEmpty ? _Category(title: StringConst.EDUCATION) : pw.Container(),
+                  for (var education in myEducation)
                     _Block(
                       title: education.activityRole == null
                           ? education.activity!
@@ -141,12 +141,12 @@ Future<Uint8List> generateResume(
                         ? user.aboutMe!
                         : '',
                   ) : pw.Container(),
-                  user?.dataOfInterest != null ? _Category(title: StringConst.DATA_OF_INTEREST) : pw.Container(),
+                  user?.dataOfInterest.length != 0 ? _Category(title: StringConst.DATA_OF_INTEREST) : pw.Container(),
                   for (var data in dataOfInterest!)
                     _Block(
                       description: data,
                     ),
-                  user?.languages != null ? _Category(title: StringConst.LANGUAGES) : pw.Container(),
+                  user?.languages.length != 0 ? _Category(title: StringConst.LANGUAGES) : pw.Container(),
                   for (var data in languages!)
                     _Block(
                       description: data,

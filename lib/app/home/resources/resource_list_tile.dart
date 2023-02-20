@@ -16,7 +16,6 @@ import '../../../../services/database.dart';
 import '../../../common_widgets/precached_avatar.dart';
 import '../../../common_widgets/show_alert_dialog.dart';
 import '../../../common_widgets/show_exception_alert_dialog.dart';
-import '../../../common_widgets/spaces.dart';
 import '../../../services/auth.dart';
 import '../../../values/strings.dart';
 import '../models/contact.dart';

@@ -397,7 +397,7 @@ class StringConst {
   static const String NEW_DATA_OF_INTEREST = 'Introduce el nuevo dato de interés:';
   static const String NO_LANGUAGES = 'Todavía no has añadido ningún idioma';
   static const String NEW_LANGUAGE = 'Introduce un nuevo idioma:';
-  static const String ADD_MORE_EXPERIENCES = 'Añade 3 competencias y 2 experiencias para descargar tu CV';
+  static const String ADD_MORE_EXPERIENCES = 'Añade 2 experiencias y evalúa o certifica 3 competencias para descargar tu CV ';
   static const String EXPERIENCE_ADDED = '¡Hemos terminado! Esta experiencia ha sido añadida a tu perfil';
   static const List<String> EXPERIENCE_WORK_TYPES = ['Individual', 'Equipo', 'Ambos'];
   static const List<String> EXPERIENCE_CONTEXT = [

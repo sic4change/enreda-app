@@ -33,8 +33,8 @@ class MyCv extends StatefulWidget {
   final String? city;
   final String? province;
   final String? country;
-  final List<Experience> myExperiences;
-  final List<Experience> myEducation;
+  final List<Experience>? myExperiences;
+  final List<Experience>? myEducation;
   final List<String>? dataOfInterest;
   final List<String>? languages;
   final List<String>? competenciesNames;
@@ -158,8 +158,8 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
             widget.city!,
             widget.province!,
             widget.country!,
-            widget.myExperiences,
-            widget.myEducation,
+            widget.myExperiences!,
+            widget.myEducation!,
             widget.dataOfInterest,
             widget.languages,
             widget.competenciesNames,

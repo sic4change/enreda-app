@@ -167,36 +167,20 @@ class EmailSignInPage extends StatelessWidget {
     double fontSize = responsiveSize(context, 20, 30, md: 22);
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 60),
-        child: AppBar(
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextButton(
-                  style: TextButton.styleFrom(
-                    shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: Icon(Icons.keyboard_backspace, color: Constants.turquoise),
-                  onPressed: () {
-                    context.canPop() ? context.pop() : context.go(StringConst.PATH_HOME);
-                  },
-                ),
-          ),
-          title: Image.asset(
-              ImagePath.LOGO,
-              height: 25,
-          ),
-          backgroundColor: Constants.white,
-          elevation: 1.0,
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        leading: showBackIconButton(context, Constants.penBlue),
+        title: Image.asset(
+            ImagePath.LOGO,
+            height: 25,
         ),
+        backgroundColor: Constants.white,
+        elevation: 1.0,
       ),
       backgroundColor: Constants.white,
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SpaceH20(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Text(

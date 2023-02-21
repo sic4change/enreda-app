@@ -199,7 +199,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       SpaceW4(),
                       TextButton(
                           onPressed: () {
-                            context.push(StringConst.PATH_ACCESS);
+                            context.push(StringConst.PATH_LOGIN);
                           },
                           child: Text(StringConst.LOG_IN,
                               textAlign: TextAlign.center,

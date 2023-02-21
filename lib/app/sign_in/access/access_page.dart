@@ -10,19 +10,8 @@ import 'package:provider/provider.dart';
 class AccessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: Provider.of<AuthBase>(context).authStateChanges(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData && snapshot.connectionState == ConnectionState.active) {
-            return Responsive.isMobile(context) || Responsive.isTablet(context)
-                ? AccessPageMobile()
-                : AccessPageWeb();
-          } else if (snapshot.hasData) {
-            context.go(StringConst.PATH_HOME);
-            return Center(child: CircularProgressIndicator(),);
-          } else {
-            return Center(child: CircularProgressIndicator(),);
-          }
-        });
+    return Responsive.isMobile(context) || Responsive.isTablet(context)
+        ? AccessPageMobile()
+        : AccessPageWeb();
   }
 }

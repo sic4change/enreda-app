@@ -33,7 +33,7 @@ class _AccessPageMobileState extends State<AccessPageMobile> {
                 ),
               ),
             ),
-            SpaceH20(),
+            SpaceH30(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30.0),
               child: EmailSignInFormChangeNotifier.create(context),

@@ -167,6 +167,7 @@ class EmailSignInPage extends StatelessWidget {
     double fontSize = responsiveSize(context, 20, 30, md: 22);
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: showBackIconButton(context, Constants.penBlue),
         title: Image.asset(

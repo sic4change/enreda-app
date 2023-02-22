@@ -77,7 +77,7 @@ class CustomTextSmall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = responsiveSize(context, 12, 15, md: 14);
+    double fontSize = responsiveSize(context, 14, 15, md: 14);
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(
       text,

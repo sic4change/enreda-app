@@ -31,8 +31,6 @@ Future<Uint8List> generateResume(
     List<Experience>?
     myExperiences,
     List<Experience>? myEducation,
-    List<String>? dataOfInterest,
-    List<String>? languages,
     List<String>? competenciesNames,
     ) async {
   final doc = pw.Document(title: 'Mi Currículum');
@@ -49,8 +47,8 @@ Future<Uint8List> generateResume(
 
   final pageTheme = await _myPageTheme(format);
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
-  dataOfInterest = user?.dataOfInterest;
-  languages = user?.languages;
+  List<String>? dataOfInterest = user?.dataOfInterest;
+  List<String>? languages = user?.languages;
 
   doc.addPage(
     pw.MultiPage(
@@ -113,8 +111,8 @@ Future<Uint8List> generateResume(
                   for (var experience in myExperiences!)
                     _Block(
                       title: experience.activityRole == null
-                          ? experience.activity!
-                          : '${experience.activityRole!} - ${experience.activity!}',
+                          ? experience.activity
+                          : '${experience.activityRole} - ${experience.activity}',
                       description:'${experience.location}, ${formatter.format(experience.startDate.toDate())} - ${experience.endDate != null
                           ? formatter.format(experience.endDate!.toDate())
                           : 'Actualmente'}',
@@ -124,8 +122,8 @@ Future<Uint8List> generateResume(
                   for (var education in myEducation)
                     _Block(
                       title: education.activityRole == null
-                          ? education.activity!
-                          : '${education.activityRole!} - ${education.activity!}',
+                          ? education.activity
+                          : '${education.activityRole} - ${education.activity}',
                       description:'${education.location}, ${formatter.format(education.startDate.toDate())} - ${education.endDate != null
                           ? formatter.format(education.endDate!.toDate())
                           : 'Actualmente'}',
@@ -169,7 +167,7 @@ Future<Uint8List> generateResume(
                             width: 100,
                             height: 100,
                             color: lightLilac,
-                            child: pw.Image(profileImage),
+                            child: pw.Image(profileImage, fit: pw.BoxFit.fitWidth),
                           ),
                         ),
                         pw.BarcodeWidget(

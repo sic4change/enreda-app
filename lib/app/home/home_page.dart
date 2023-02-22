@@ -45,7 +45,6 @@ class _HomePageState extends State<HomePage> {
             return Stack(
               children: [
                 !snapshot.hasData && !kIsWeb
-                //!snapshot.hasData && !isBigScreen
                     ? OnboardingCarrusel()
                     : isBigScreen
                         ? WebHomeScaffold(showChatNotifier: showChatNotifier)

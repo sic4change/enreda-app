@@ -8,11 +8,14 @@ import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/custom_icons_icons.dart';
+import '../../services/database.dart';
+import 'models/userEnreda.dart';
 
 class WebHomeScaffold extends StatefulWidget {
   const WebHomeScaffold({Key? key, required this.showChatNotifier})
@@ -33,6 +36,9 @@ class WebHomeScaffold extends StatefulWidget {
 class _WebHomeScaffoldState extends State<WebHomeScaffold> {
   Color _underlineColor = Constants.lilac;
   var bodyWidget = [];
+  late UserEnreda _userEnreda;
+  String _userName = "";
+  late TextTheme textTheme;
 
   @override
   void initState() {
@@ -42,6 +48,55 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
       AccountPage()
     ];
     super.initState();
+  }
+
+  Widget _buildMyUserName(BuildContext context) {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    final database = Provider.of<Database>(context, listen: false);
+    textTheme = Theme.of(context).textTheme;
+    return StreamBuilder<User?>(
+        stream: Provider.of<AuthBase>(context).authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return StreamBuilder<UserEnreda>(
+              stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  _userEnreda = snapshot.data!;
+                  _userName = '${_userEnreda.firstName} ${_userEnreda.lastName}';
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Text(_userName,
+                          style: textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Constants.penBlue,
+                                  fontSize: 16.0,)
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return Center(child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: SizedBox(
+                      child: CircularProgressIndicator(),
+                      height: 20.0,
+                      width: 20.0,
+                    ),
+                  ),);
+                }
+              },
+            );
+          } else if (!snapshot.hasData) {
+            return Container();
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        });
   }
 
   @override
@@ -65,7 +120,6 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                     ),
                   ),
                   SpaceW24(),
-                  // TODO: Grey divider
                   Container(
                     decoration: BoxDecoration(
                         border: Border(
@@ -118,7 +172,11 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                 ],
               ),
               actions: <Widget>[
-                // TODO: Grey divider
+                if (!auth.isNullUser)
+                VerticalDivider(
+                  color: AppColors.grey100,
+                  thickness: 1,
+                ),
                 IconButton(
                   icon: const Icon(
                     CustomIcons.cuenta,
@@ -131,6 +189,19 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                       WebHomeScaffold.selectedIndex.value = 2;
                     });
                   },
+                ),
+                InkWell(
+                    onTap: () {
+                      setState(() {
+                        WebHomeScaffold.selectedIndex.value = 2;
+                      });
+                    },
+                    child: _buildMyUserName(context)
+                ),
+                if (!auth.isNullUser)
+                VerticalDivider(
+                  color: AppColors.grey100,
+                  thickness: 1,
                 ),
                 SizedBox(width: 10),
                 if (!auth.isNullUser)

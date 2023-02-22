@@ -3,8 +3,6 @@ import 'dart:typed_data';
 
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:pdf/pdf.dart';
-
-import '../../models/competency.dart';
 import '../../models/experience.dart';
 import 'data.dart';
 
@@ -14,6 +12,7 @@ if (dart.library.html) 'package:enreda_app/app/home/curriculum/pdf_generator/res
 
 const examples = <Example>[
   Example('Mi Currículum', 'resume_mobile.dart', my_worker.generateResume),
+  Example('Mi Currículum', 'resume_web.dart', my_worker.generateResume),
 ];
 
 typedef LayoutCallbackWithData = Future<Uint8List> Function(
@@ -25,9 +24,7 @@ typedef LayoutCallbackWithData = Future<Uint8List> Function(
     String? country,
     List<Experience>? myExperiences,
     List<Experience>? myEducation,
-    List<String>? dataOfInterest,
-    List<String>? languages,
-    List<String>? competenciesNames,
+    List<String> competenciesNames,
     );
 
 class Example {

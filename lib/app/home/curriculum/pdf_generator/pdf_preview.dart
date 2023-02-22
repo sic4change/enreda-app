@@ -24,9 +24,7 @@ class MyCv extends StatefulWidget {
     required this.country,
     required this.myExperiences,
     required this.myEducation,
-    this.dataOfInterest,
-    this.languages,
-    this.competenciesNames,
+    required this.competenciesNames,
   }) : super(key: key);
 
   final UserEnreda? user;
@@ -35,9 +33,7 @@ class MyCv extends StatefulWidget {
   final String? country;
   final List<Experience>? myExperiences;
   final List<Experience>? myEducation;
-  final List<String>? dataOfInterest;
-  final List<String>? languages;
-  final List<String>? competenciesNames;
+  final List<String> competenciesNames;
 
   @override
   MyAppState createState() {
@@ -160,8 +156,6 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
             widget.country!,
             widget.myExperiences!,
             widget.myEducation!,
-            widget.dataOfInterest,
-            widget.languages,
             widget.competenciesNames,
         ),
         actions: actions,

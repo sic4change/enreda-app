@@ -40,7 +40,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   List<Competency>? myCompetencies = [];
   List<Experience>? myExperiences = [];
   List<Experience>? myEducation = [];
-  List<String>? competenciesNames = [];
+  List<String> competenciesNames = [];
 
   @override
   void initState() {
@@ -76,13 +76,13 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                         final status =
                             user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
                         if (competency.name !="" && status != StringConst.BADGE_EMPTY && status != StringConst.BADGE_IDENTIFIED ) {
-                          final index1 = competenciesNames!.indexWhere((element) => element == competency.name);
-                          if (index1 == -1) competenciesNames!.add(competency.name);
+                          final index1 = competenciesNames.indexWhere((element) => element == competency.name);
+                          if (index1 == -1) competenciesNames.add(competency.name);
                         }
                       });
                       return Responsive.isDesktop(context)
-                          ? _myCurriculumWeb(context, user, profilePic, competenciesNames!)
-                          : _myCurriculumMobile(context, user, profilePic, competenciesNames!);
+                          ? _myCurriculumWeb(context, user, profilePic, competenciesNames)
+                          : _myCurriculumMobile(context, user, profilePic, competenciesNames);
                     });
               } else {
                 return Center(child: CircularProgressIndicator());
@@ -202,7 +202,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildCVHeader(context),
+                    _buildCVHeader(context, user, profilePic, competenciesNames),
                     SpaceH40(),
                     _buildMyEducation(context, user),
                     SpaceH40(),
@@ -360,7 +360,24 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   CustomTextSmall(text: user?.email ?? ''),
                 ],
               ),
-              SpaceH2(),
+              SpaceH8(),
+              Row(
+                children: [
+                  Icon(
+                    Icons.phone,
+                    color: Constants.darkGray,
+                    size: 12.0,
+                  ),
+                  SpaceW4(),
+                  Text(
+                    user?.phone ?? '',
+                    style: textTheme.bodyText1?.copyWith(
+                        fontSize: Responsive.isDesktop(context) ? 16 : 14.0,
+                        color: Constants.darkGray),
+                  ),
+                ],
+              ),
+              SpaceH8(),
               _buildMyLocation(context, user),
               SpaceH24(),
               _buildMyEducation(context, user),
@@ -368,6 +385,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               _buildMyExperiences(context, user),
               SpaceH24(),
               _buildMyCompetencies(context, user),
+              SpaceH24(),
+              _buildAboutMe(context),
               SpaceH24(),
               _buildMyDataOfInterest(context),
               SpaceH24(),
@@ -380,7 +399,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     );
   }
 
-  Widget _buildCVHeader(BuildContext context) {
+  Widget _buildCVHeader(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames) {
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
@@ -401,8 +420,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                               city: city!,
                               province: province!,
                               country: country!,
-                              myExperiences: myExperiences,
-                              myEducation: myEducation,
+                              myExperiences: myExperiences!,
+                              myEducation: myEducation!,
                               competenciesNames: competenciesNames,
                             )),
                   );
@@ -452,14 +471,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  StringConst.ABOUT_ME.toUpperCase(),
-                  style: textTheme.bodyText1?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: Responsive.isDesktop(context) ? 18 : 14.0,
-                    color: Constants.darkLilac,
-                  ),
-                ),
+                child:
+                CustomTextTitle(title: StringConst.ABOUT_ME.toUpperCase()),
               ),
               InkWell(
                 onTap: () {
@@ -473,7 +486,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 },
                 child: Icon(
                   isEditable ? Icons.save : Icons.edit_outlined,
-                  size: Responsive.isDesktop(context) ? 18 : 14.0,
+                  size: Responsive.isDesktop(context) ? 18 : 15.0,
                   color: Constants.darkGray,
                 ),
               ),
@@ -481,14 +494,10 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ),
           SpaceH20(),
           if (!isEditable)
-            Text(
-              user?.aboutMe != null && user!.aboutMe!.isNotEmpty
-                  ? user!.aboutMe!
-                  : 'Aún no has añadido información adicional sobre ti',
-              style: textTheme.bodyLarge?.copyWith(
-                  fontSize: Responsive.isDesktop(context) ? 14 : 11.0,
-                  color: Constants.darkGray),
-            ),
+          CustomTextBody(
+            text: user?.aboutMe != null && user!.aboutMe!.isNotEmpty
+                ? user!.aboutMe!
+                : 'Aún no has añadido información adicional sobre ti'),
           if (isEditable)
             TextField(
               controller: textController,
@@ -496,7 +505,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               minLines: 1,
               maxLines: null,
               style: textTheme.bodyLarge?.copyWith(
-                  fontSize: Responsive.isDesktop(context) ? 14 : 11.0,
+                  fontSize: Responsive.isDesktop(context) ? 15 : 14,
                   color: Constants.darkGray),
             )
         ],
@@ -589,6 +598,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                       country = '${myCountry?.name ?? ''}';
 
                       return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(
                             Icons.location_on,
@@ -596,7 +607,15 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                             size: 16,
                           ),
                           SpaceW4(),
-                          CustomTextSmall(text: myLocation ?? ''),
+                          Responsive.isMobile(context) ? CustomTextSmall(text: myLocation ?? '') :
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomTextSmall(text: city ?? ''),
+                              CustomTextSmall(text: province ?? ''),
+                              CustomTextSmall(text: country ?? ''),
+                            ],
+                          ),
                         ],
                       );
                     });

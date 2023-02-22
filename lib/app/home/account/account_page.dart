@@ -241,9 +241,26 @@ class _AccountPageState extends State<AccountPage> {
                       ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(60)),
                         child:
-                        Stack(
-                          children: <Widget>[
-                            const Center(child: CircularProgressIndicator()),
+                        Center(
+                          child:
+                          _photo == "" ?
+                          Container(
+                            color:  Colors.transparent,
+                            height: 120,
+                            width: 120,
+                            child: Image.asset(ImagePath.USER_DEFAULT),
+                          ):
+                          CachedNetworkImage(
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center,
+                              imageUrl: _photo),
+                        ),
+                      ):
+                      ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(60)),
+                            child:
                             Center(
                               child:
                               _photo == "" ?
@@ -253,40 +270,13 @@ class _AccountPageState extends State<AccountPage> {
                                 width: 120,
                                 child: Image.asset(ImagePath.USER_DEFAULT),
                               ):
-                              CachedNetworkImage(
-                                  width: 120,
-                                  height: 120,
-                                  fit: BoxFit.cover,
-                                  alignment: Alignment.center,
-                                  imageUrl: _photo),
-                            ),
-                          ],
-                        ),
-                      ):
-                      ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(60)),
-                            child:
-                            Stack(
-                              children: <Widget>[
-                                const Center(child: CircularProgressIndicator()),
-                                Center(
-                                  child:
-                                  _photo == "" ?
-                                  Container(
-                                    color:  Colors.transparent,
-                                    height: 120,
-                                    width: 120,
-                                    child: Image.asset(ImagePath.USER_DEFAULT),
-                                  ):
-                                  FadeInImage.assetNetwork(
-                                    placeholder: ImagePath.USER_DEFAULT,
-                                    width: 120,
-                                    height: 120,
-                                    fit: BoxFit.cover,
-                                    image: _photo,
-                                  ),
-                                ),
-                              ],
+                              FadeInImage.assetNetwork(
+                                placeholder: ImagePath.USER_DEFAULT,
+                                width: 120,
+                                height: 120,
+                                fit: BoxFit.cover,
+                                image: _photo,
+                              ),
                             ),
                           ),
                   ),

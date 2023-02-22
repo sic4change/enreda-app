@@ -280,51 +280,41 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                     ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(60)),
                       child:
-                      Stack(
-                        children: <Widget>[
-                          const Center(child: CircularProgressIndicator()),
-                          Center(
-                            child:
-                            profilePic == "" ?
-                            Container(
-                              color:  Colors.transparent,
-                              height: 120,
-                              width: 120,
-                              child: Image.asset(ImagePath.USER_DEFAULT),
-                            ):
-                            CachedNetworkImage(
-                                width: 120,
-                                height: 120,
-                                fit: BoxFit.cover,
-                                alignment: Alignment.center,
-                                imageUrl: profilePic),
-                          ),
-                        ],
+                      Center(
+                        child:
+                        profilePic == "" ?
+                        Container(
+                          color:  Colors.transparent,
+                          height: 120,
+                          width: 120,
+                          child: Image.asset(ImagePath.USER_DEFAULT),
+                        ):
+                        CachedNetworkImage(
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.cover,
+                            alignment: Alignment.center,
+                            imageUrl: profilePic),
                       ),
                     ):
                     ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(60)),
                       child:
-                      Stack(
-                        children: <Widget>[
-                          const Center(child: CircularProgressIndicator()),
-                          Center(
-                            child: profilePic == "" ?
-                            Container(
-                              color:  Colors.transparent,
-                              height: 120,
-                              width: 120,
-                              child: Image.asset(ImagePath.USER_DEFAULT),
-                            ):
-                            FadeInImage.assetNetwork(
-                              placeholder: ImagePath.USER_DEFAULT,
-                              width: 120,
-                              height: 120,
-                              fit: BoxFit.cover,
-                              image: profilePic,
-                            ),
-                          ),
-                        ],
+                      Center(
+                        child: profilePic == "" ?
+                        Container(
+                          color:  Colors.transparent,
+                          height: 120,
+                          width: 120,
+                          child: Image.asset(ImagePath.USER_DEFAULT),
+                        ):
+                        FadeInImage.assetNetwork(
+                          placeholder: ImagePath.USER_DEFAULT,
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.cover,
+                          image: profilePic,
+                        ),
                       ),
                     ),
                   ],

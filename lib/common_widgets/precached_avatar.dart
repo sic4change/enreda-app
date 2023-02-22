@@ -46,13 +46,8 @@ class _PrecacheAvatarCardState extends State<PrecacheAvatarCard> {
       return ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(60)),
         child:
-        Stack(
-          children: <Widget>[
-            const Center(child: CircularProgressIndicator()),
-            Center(
-              child: profileImage,
-            ),
-          ],
+        Center(
+          child: profileImage,
         ),
       );
   }

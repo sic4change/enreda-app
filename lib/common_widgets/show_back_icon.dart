@@ -12,36 +12,40 @@ Widget showBackIconButton(BuildContext context, Color color) {
       return IconButton(
           icon: Icon(Icons.arrow_back, color: color,),
           onPressed: () {
-            context.canPop()
-                ? context.pop()
-                : context.go(StringConst.PATH_HOME);
+            GoRouter.of(context).go(StringConst.PATH_HOME);
+            // context.canPop()
+            //     ? context.pop()
+            //     : context.go(StringConst.PATH_HOME);
           });
     }
     if (Platform.isIOS) {
       return IconButton(
           icon: Icon(CupertinoIcons.back, color: color,),
           onPressed: () {
-            context.canPop()
-                ? context.pop()
-                : context.go(StringConst.PATH_HOME);
+            GoRouter.of(context).go(StringConst.PATH_HOME);
+            // context.canPop()
+            //     ? context.pop()
+            //     : context.go(StringConst.PATH_HOME);
           });
     }
     if (Platform.isAndroid) {
       return IconButton(
           icon: Icon(Icons.arrow_back, color: color,),
           onPressed: () {
-            context.canPop()
-                ? context.pop()
-                : context.go(StringConst.PATH_HOME);
+            GoRouter.of(context).go(StringConst.PATH_HOME);
+            // context.canPop()
+            //     ? context.pop()
+            //     : context.go(StringConst.PATH_HOME);
           });
     }
   } catch (e) {
     return IconButton(
         icon: Icon(Icons.arrow_back, color: color,),
         onPressed: () {
-          context.canPop()
-              ? context.pop()
-              : context.go(StringConst.PATH_HOME);
+          GoRouter.of(context).go(StringConst.PATH_HOME);
+          // context.canPop()
+          //     ? context.pop()
+          //     : context.go(StringConst.PATH_HOME);
         });
   }
   return CircularProgressIndicator();

@@ -254,7 +254,8 @@ class _EmailSignInFormChangeNotifierState
     try {
       await model.submit();
       CupertinoScaffold.controller.index = 3;
-      context.canPop() ? context.pop() : context.go(StringConst.PATH_HOME);
+      GoRouter.of(context).go(StringConst.PATH_HOME);
+      //context.canPop() ? context.pop() : context.go(StringConst.PATH_HOME);
     } on FirebaseAuthException catch (e) {
       showExceptionAlertDialog(
         context,

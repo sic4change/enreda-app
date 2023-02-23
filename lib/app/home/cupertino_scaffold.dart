@@ -7,7 +7,6 @@ import 'package:enreda_app/common_widgets/background_mobile.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -126,7 +125,6 @@ class CupertinoScaffold extends StatelessWidget {
 
   BottomNavigationBarItem _buildItem(TabItem tabItem) {
     final itemData = TabItemData.allTabs[tabItem]!;
-    //final color = currentTab == tabItem ? Colors.indigo : Colors.grey;
     return BottomNavigationBarItem(
       icon: Icon(
         itemData.icon,
@@ -143,7 +141,7 @@ class CupertinoScaffold extends StatelessWidget {
         defaultActionText: 'Cerrar');
     if (didRequestSignOut == true) {
       final auth = Provider.of<AuthBase>(context, listen: false);
-      auth.signOut();
+      await auth.signOut();
     }
   }
 }

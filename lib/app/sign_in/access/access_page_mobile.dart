@@ -19,35 +19,34 @@ class _AccessPageMobileState extends State<AccessPageMobile> {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       backgroundColor: Constants.white,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SpaceH20(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text(
-                  StringConst.LOOKING_FOR_JOB,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.w600,
-                  ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                StringConst.LOOKING_FOR_JOB,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              SpaceH30(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                child: EmailSignInFormChangeNotifier.create(context),
-              ),
-              SpaceH20(),
-              kIsWeb ? buildStoresButtons(context) : Container(),
-              SpaceH4(),
-              kIsWeb ? Text(
-                StringConst.BETTER_FROM_APPS,
-                style: textTheme.bodyText2,
-              ) : Container(),
-            ],
-          ),
+            ),
+            SpaceH30(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: EmailSignInFormChangeNotifier.create(context),
+            ),
+            SpaceH20(),
+            kIsWeb ? buildStoresButtons(context) : Container(),
+            SpaceH4(),
+            kIsWeb ? Text(
+              StringConst.BETTER_FROM_APPS,
+              style: textTheme.bodyText2,
+            ) : Container(),
+          ],
         ),
     );
   }

@@ -179,8 +179,9 @@ class EmailSignInPage extends StatelessWidget {
       ),
       backgroundColor: Constants.white,
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SpaceH20(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Text(

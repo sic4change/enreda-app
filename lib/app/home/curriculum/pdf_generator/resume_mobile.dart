@@ -133,8 +133,8 @@ Future<Uint8List> generateResume(
                     _Block(
                       description: data,
                     ),
-                  user?.aboutMe != null ? _Category(title: StringConst.ABOUT_ME) : pw.Container(),
-                  user?.aboutMe != null ? _Block(
+                  user?.aboutMe != null && user?.aboutMe != "" ? _Category(title: StringConst.ABOUT_ME) : pw.Container(),
+                  user?.aboutMe != null && user?.aboutMe != "" ? _Block(
                     description: user?.aboutMe != null && user!.aboutMe!.isNotEmpty
                         ? user.aboutMe!
                         : '',

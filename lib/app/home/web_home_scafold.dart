@@ -1,5 +1,6 @@
 import 'package:enreda_app/app/home/account/account_page.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
+import 'package:enreda_app/app/home/home_page.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
 import 'package:enreda_app/common_widgets/background_web.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
@@ -10,6 +11,7 @@ import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -228,16 +230,15 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
   }
 
   Future<void> _confirmSignOut(BuildContext context) async {
+    final auth = Provider.of<AuthBase>(context, listen: false);
     final didRequestSignOut = await showAlertDialog(context,
         title: 'Cerrar sesión',
         content: '¿Estás seguro que quieres cerrar sesión?',
         cancelActionText: 'Cancelar',
         defaultActionText: 'Cerrar');
     if (didRequestSignOut == true) {
-      final auth = Provider.of<AuthBase>(context, listen: false);
-      setState(() {
-        auth.signOut();
-      });
+      await auth.signOut();
+      GoRouter.of(context).go(StringConst.PATH_HOME);
     }
   }
 }

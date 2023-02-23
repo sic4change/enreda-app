@@ -1,13 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:enreda_app/app/home/onboarding/onboarding_page.dart';
-import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../values/values.dart';
-import '../../../common_widgets/enreda_button.dart';
-import '../../../values/strings.dart';
 
 const double kSpacing = 28.0;
 const double kRunSpacing = 16.0;

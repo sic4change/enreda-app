@@ -47,7 +47,6 @@ Future<void> addUserToResource(
   showToast(context,
       title: 'Se ha apuntado satisfactoriamente al recurso',
       color: Constants.chatDarkBlue);
-  context.pop();
 }
 
 Future<void> removeUserToResource(
@@ -61,7 +60,6 @@ Future<void> removeUserToResource(
   showToast(context,
       title: 'Ha sido eliminado satisfactoriamente al recurso',
       color: Constants.chatDarkBlue);
-  context.pop();
 }
 
 Future<void> shareResource(Resource resource) async {
@@ -79,9 +77,7 @@ void showAlertNullUser(BuildContext context) async {
       cancelActionText: 'Cancelar',
       defaultActionText: 'Entrar');
   if (signIn == true) {
-    context.canPop()
-        ? context.pop()
-        : context.go(StringConst.PATH_LOGIN);
+    GoRouter.of(context).go(StringConst.PATH_LOGIN);
   }
 }
 

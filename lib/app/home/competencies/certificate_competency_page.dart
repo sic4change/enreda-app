@@ -3,7 +3,6 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
-import 'package:enreda_app/common_widgets/background_mobile.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
@@ -19,7 +18,6 @@ import '../../../common_widgets/custom_raised_button.dart';
 import '../../../common_widgets/custom_text.dart';
 import '../../../common_widgets/flex_row_column.dart';
 import '../../../common_widgets/show_alert_dialog.dart';
-import '../../../common_widgets/show_back_icon.dart';
 import '../../../common_widgets/show_exception_alert_dialog.dart';
 import '../../../common_widgets/text_form_field.dart';
 import '../models/userEnreda.dart';
@@ -66,11 +64,11 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
       appBar: AppBar(
         title: Text(
           'Certificación de competencias',
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.left,
           style: textTheme.bodyText1?.copyWith(
             color: Constants.white,
             height: 1.5,
-            letterSpacing: 0.8,
+            letterSpacing: 0.3,
             fontWeight: FontWeight.w800,
             fontSize: fontSize,
           ),
@@ -89,53 +87,55 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
   Widget _buildContent(BuildContext context, Competency competency) {
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 15, 18, md: 16);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.6,
-          margin: EdgeInsets.only(top: Responsive.isMobile(context) ? 10 : 80),
-          decoration: BoxDecoration(
-              color: Constants.white,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(20.0),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 4.0,
-                  offset: Offset(0.0, 1.0),
-                ),
-              ]),
-          padding: EdgeInsets.all(Constants.mainPadding),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SpaceH12(),
-                CustomTextTitle(title: competency.name.toUpperCase()),
-                SpaceH12(),
-                Text(
-                  'Ingrese los datos de quien certificará su competencia:',
-                  textAlign: TextAlign.center,
-                  style: textTheme.bodyLarge?.copyWith(
-                    color: Constants.grey,
-                    height: 1.5,
-                    fontWeight: FontWeight.w800,
-                    fontSize: fontSize,
+    return SafeArea(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.6,
+            margin: EdgeInsets.only(top: Responsive.isMobile(context) ? 10 : 80),
+            decoration: BoxDecoration(
+                color: Constants.white,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(20.0),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 4.0,
+                    offset: Offset(0.0, 1.0),
                   ),
-                ),
-                _buildForm(context),
-                SpaceH12(),
-                Divider(),
+                ]),
+            padding: EdgeInsets.all(Constants.mainPadding),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SpaceH12(),
+                  CustomTextTitle(title: competency.name.toUpperCase()),
+                  SpaceH12(),
+                  Text(
+                    'Ingrese los datos de quien certificará su competencia:',
+                    textAlign: TextAlign.center,
+                    style: textTheme.bodyLarge?.copyWith(
+                      color: Constants.grey,
+                      height: 1.5,
+                      fontWeight: FontWeight.w800,
+                      fontSize: fontSize,
+                    ),
+                  ),
+                  _buildForm(context),
+                  SpaceH12(),
+                  Divider(),
 
-              ],
-            ),
-          )
+                ],
+              ),
+            )
 
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 

@@ -1,4 +1,3 @@
-import 'package:enreda_app/app/home/home_page.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_form_change_notifier.dart';
 import 'package:enreda_app/app/sign_in/access/sections/background_web.dart';
 import 'package:enreda_app/utils/const.dart';
@@ -6,6 +5,7 @@ import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../common_widgets/spaces.dart';
 import '../../../common_widgets/stores_buttons.dart';
 import '../../../utils/adaptive.dart';
@@ -65,8 +65,6 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                             ),
                             Divider(),
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(20.0),
@@ -147,13 +145,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                               child: Row(
                                 children: [
                                   InkWell(
-                                    onTap: () => {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => HomePage()),
-                                      )
-                                    },
+                                    onTap: () => GoRouter.of(context).go(StringConst.PATH_HOME),
                                     child: Image.asset(
                                       ImagePath.LOGO,
                                       height: Sizes.HEIGHT_32,

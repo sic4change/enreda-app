@@ -34,7 +34,7 @@ android {
         applicationId "org.sic4change.enreda_app"
         minSdkVersion 23
         targetSdkVersion 33
-        versionCode 15
+        versionCode 16
         versionName '1.0.0'
         multiDexEnabled true
     }

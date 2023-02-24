@@ -241,7 +241,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                     'resource-${resource.resourceId}'),
                                                 child: ResourceListTile(
                                                   resource: resource,
-                                                  onTap: () => context.go(
+                                                  onTap: () => context.push(
                                                       '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                 ),
                                               );
@@ -294,7 +294,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                     'resource-${resource.resourceId}'),
                                                 child: ResourceListTile(
                                                   resource: resource,
-                                                  onTap: () => context.go(
+                                                  onTap: () => context.push(
                                                       '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                 ),
                                               );
@@ -392,7 +392,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                           'resource-${resource.resourceId}'),
                                                       child: ResourceListTile(
                                                         resource: resource,
-                                                        onTap: () => context.go(
+                                                        onTap: () => context.push(
                                                             '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                       ),
                                                     );
@@ -452,9 +452,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                           'resource-${resource.resourceId}'),
                                                       child: ResourceListTile(
                                                         resource: resource,
-                                                        // onTap: () => context.push(
-                                                        //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                                        onTap: () => context.go(
+                                                        onTap: () => context.push(
                                                             '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                       ),
                                                     );

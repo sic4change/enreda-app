@@ -84,6 +84,7 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
               snapshotResource.connectionState == ConnectionState.active) {
             resource = snapshotResource.data!;
             resource.setResourceTypeName();
+            resource.setResourceCategoryName();
             return StreamBuilder(
                 stream: resource.organizerType == 'Organización'
                     ? database.organizationStream(resource.organizer)

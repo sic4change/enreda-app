@@ -55,6 +55,7 @@ class RecommendedResourcesPage extends StatelessWidget {
                                   ? ''
                                   : organization.photo;
                               resource.setResourceTypeName();
+                              resource.setResourceCategoryName();
                               return StreamBuilder<Country>(
                                   stream:
                                       database.countryStream(resource.country),
@@ -103,6 +104,7 @@ class RecommendedResourcesPage extends StatelessWidget {
                               resource.organizerImage =
                                   mentor == null ? '' : mentor.photo;
                               resource.setResourceTypeName();
+                              resource.setResourceCategoryName();
                               return StreamBuilder<Country>(
                                   stream:
                                       database.countryStream(resource.country),

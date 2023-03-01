@@ -41,7 +41,8 @@ import '../app/home/models/question.dart';
 abstract class Database {
   Stream<Resource> resourceStream(String resourceId);
   Stream<List<Resource>> resourcesStream();
-  Stream<List<Resource>> filteredResourcesStream(FilterResource filter);
+  //Stream<List<Resource>> filteredResourcesStream(FilterResource filter);
+  Stream<List<Resource>> filteredResourcesCategoryStream(FilterResource filter);
   Stream<List<Resource>> myResourcesStream(String userId);
   Stream<List<Resource>> likeResourcesStream(String userId);
   Stream<List<Resource>> recommendedResourcesStream(UserEnreda? user);
@@ -134,8 +135,59 @@ class FirestoreDatabase implements Database {
     );
   }
 
+  // @override
+  // Stream<List<Resource>> filteredResourcesStream(FilterResource filter) {
+  //   return _service.filteredCollectionStream(
+  //     path: APIPath.resources(),
+  //     queryBuilder: (query) {
+  //       query = query
+  //           .where('status', isEqualTo: 'Disponible')
+  //           .where('trust', isEqualTo: true);
+  //       return query;
+  //     },
+  //     builder: (data, documentId) {
+  //       final searchTextResource =
+  //           removeDiacritics((data['searchText'] ?? '').toLowerCase());
+  //       final searchListResource = searchTextResource.split(';');
+  //       final searchTextFilter =
+  //           removeDiacritics(filter.searchText.toLowerCase());
+  //       final searchListFilter = searchTextFilter.split(' ');
+  //       bool isValid = true;
+  //       if (filter.searchText != '') {
+  //         searchListFilter.forEach((filterElement) {
+  //           if (!searchListResource.any(
+  //               (resourceElement) => resourceElement.contains(filterElement))) {
+  //             isValid = false;
+  //           }
+  //         });
+  //       }
+  //       if (filter.resourceTypes.isNotEmpty &&
+  //           !filter.resourceTypes
+  //               .contains(getResourceTypeName(data['resourceType'])))
+  //         isValid = false;
+  //
+  //       return isValid ? Resource.fromMap(data, documentId) : null;
+  //     },
+  //     sort: (lhs, rhs) {
+  //       int cmp = 0;
+  //       if ((rhs.modality == StringConst.FACE_TO_FACE ||
+  //               rhs.modality == StringConst.BLENDED) &&
+  //           (lhs.modality != StringConst.FACE_TO_FACE &&
+  //               lhs.modality != StringConst.BLENDED)) cmp = 1;
+  //       if ((lhs.modality == StringConst.FACE_TO_FACE ||
+  //               lhs.modality == StringConst.BLENDED) &&
+  //           (rhs.modality != StringConst.FACE_TO_FACE &&
+  //               rhs.modality != StringConst.BLENDED)) cmp = -1;
+  //
+  //       if (cmp != 0) return cmp;
+  //
+  //       return lhs.maximumDate.compareTo(rhs.maximumDate);
+  //     },
+  //   );
+  // }
+
   @override
-  Stream<List<Resource>> filteredResourcesStream(FilterResource filter) {
+  Stream<List<Resource>> filteredResourcesCategoryStream(FilterResource filter) {
     return _service.filteredCollectionStream(
       path: APIPath.resources(),
       queryBuilder: (query) {
@@ -146,23 +198,23 @@ class FirestoreDatabase implements Database {
       },
       builder: (data, documentId) {
         final searchTextResource =
-            removeDiacritics((data['searchText'] ?? '').toLowerCase());
+        removeDiacritics((data['searchText'] ?? '').toLowerCase());
         final searchListResource = searchTextResource.split(';');
         final searchTextFilter =
-            removeDiacritics(filter.searchText.toLowerCase());
+        removeDiacritics(filter.searchText.toLowerCase());
         final searchListFilter = searchTextFilter.split(' ');
         bool isValid = true;
         if (filter.searchText != '') {
           searchListFilter.forEach((filterElement) {
             if (!searchListResource.any(
-                (resourceElement) => resourceElement.contains(filterElement))) {
+                    (resourceElement) => resourceElement.contains(filterElement))) {
               isValid = false;
             }
           });
         }
-        if (filter.resourceTypes.isNotEmpty &&
-            !filter.resourceTypes
-                .contains(getResourceTypeName(data['resourceType'])))
+        if (filter.resourceCategories.isNotEmpty &&
+            !filter.resourceCategories
+                .contains(getResourceCategoryName(data['resourceCategory'])))
           isValid = false;
 
         return isValid ? Resource.fromMap(data, documentId) : null;
@@ -170,11 +222,11 @@ class FirestoreDatabase implements Database {
       sort: (lhs, rhs) {
         int cmp = 0;
         if ((rhs.modality == StringConst.FACE_TO_FACE ||
-                rhs.modality == StringConst.BLENDED) &&
+            rhs.modality == StringConst.BLENDED) &&
             (lhs.modality != StringConst.FACE_TO_FACE &&
                 lhs.modality != StringConst.BLENDED)) cmp = 1;
         if ((lhs.modality == StringConst.FACE_TO_FACE ||
-                lhs.modality == StringConst.BLENDED) &&
+            lhs.modality == StringConst.BLENDED) &&
             (rhs.modality != StringConst.FACE_TO_FACE &&
                 rhs.modality != StringConst.BLENDED)) cmp = -1;
 

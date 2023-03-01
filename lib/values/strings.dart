@@ -365,6 +365,15 @@ class StringConst {
     'Otros',
   ];
 
+  static const List<String> RESOURCE_CATEGORIES = [
+    'Empleo',
+    'Formación',
+    'Ocio y tiempo libre',
+    'Otros',
+    'Prácticas',
+    'Voluntariado',
+  ];
+
   // Go Router Navigation
   static const String PATH_HOME = "/";
   static const String PATH_LOGIN = "/login";

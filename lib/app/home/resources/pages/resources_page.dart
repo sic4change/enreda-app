@@ -161,14 +161,14 @@ class _ResourcesPageState extends State<ResourcesPage> {
             child: ChipsChoice<String>.multiple(
               alignment: WrapAlignment.start,
               padding: EdgeInsets.only(left: 0.0, right: 0.0),
-              value: filterResource.resourceTypes,
+              value: filterResource.resourceCategories,
               onChanged: (val) {
                 setState(() {
-                  filterResource.resourceTypes = val;
+                  filterResource.resourceCategories = val;
                 });
               },
               choiceItems: C2Choice.listFrom<String, String>(
-                source: StringConst.RESOURCE_TYPES,
+                source: StringConst.RESOURCE_CATEGORIES,
                 value: (i, v) => v,
                 label: (i, v) => v,
               ),
@@ -199,7 +199,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
           horizontal: Responsive.isDesktop(context) ? 48.0 : 8.0,
         ),
         child: StreamBuilder<List<Resource>>(
-            stream: database.filteredResourcesStream(filterResource),
+            stream: database.filteredResourcesCategoryStream(filterResource),
             builder: (context, snapshot) {
               return ListItemBuilderGrid<Resource>(
                 snapshot: snapshot,
@@ -214,6 +214,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                         resource.organizerImage =
                             organization == null ? '' : organization.photo;
                         resource.setResourceTypeName();
+                        resource.setResourceCategoryName();
                         return StreamBuilder<Country>(
                             stream: database.countryStream(resource.country),
                             builder: (context, snapshot) {
@@ -263,6 +264,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                         resource.organizerImage =
                             mentor == null ? '' : mentor.photo;
                         resource.setResourceTypeName();
+                        resource.setResourceCategoryName();
                         return StreamBuilder<Country>(
                             stream: database.countryStream(resource.country),
                             builder: (context, snapshot) {
@@ -340,7 +342,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 }
               }
               return StreamBuilder<List<Resource>>(
-                  stream: database.filteredResourcesStream(filterResource),
+                  stream: database.filteredResourcesCategoryStream(filterResource),
                   builder: (context, snapshot) {
                     return ListItemBuilderGrid<Resource>(
                       snapshot: snapshot,
@@ -357,6 +359,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                   ? ''
                                   : organization.photo;
                               resource.setResourceTypeName();
+                              resource.setResourceCategoryName();
                               return StreamBuilder<Country>(
                                   stream:
                                       database.countryStream(resource.country),
@@ -414,6 +417,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                               resource.organizerImage =
                                   mentor == null ? '' : mentor.photo;
                               resource.setResourceTypeName();
+                              resource.setResourceCategoryName();
                               return StreamBuilder<Country>(
                                   stream:
                                       database.countryStream(resource.country),
@@ -505,7 +509,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
     setState(() {
       _searchTextController.clear();
       filterResource.searchText = '';
-      filterResource.resourceTypes = [];
+      filterResource.resourceCategories = [];
     });
   }
 }

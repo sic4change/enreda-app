@@ -91,3 +91,42 @@ String getResourceTypeName(String resourceTypeId) {
       break;
   }
 }
+
+String getResourceCategoryName(String resourceTypeId) {
+  switch (resourceTypeId) {
+    case 'POUBGFk5gU6c5X1DKo1b':
+      {
+        return 'Empleo';
+      }
+
+    case '6ag9Px7zkFpHgRe17PQk':
+      {
+        return 'Formación';
+      }
+
+    case 'PlaaW4L4Z36Wu1V6HuBa':
+      {
+        return 'Ocio y tiempo libre';
+      }
+
+    case 'LNj2FMTEBsNtBYCRo0MQ':
+      {
+        return 'Otros';
+      }
+
+    case 'zVusrwQkVoAca9R6iuQo':
+      {
+        return 'Prácticas';
+      }
+
+    case 'FNAcayruXghBMjj3RD9h':
+      {
+        return 'Voluntariado';
+      }
+
+    default:
+      {
+        return 'Otros';
+      }
+  }
+}

@@ -5,6 +5,7 @@ import 'package:enreda_app/app/home/models/filterResource.dart';
 import 'package:enreda_app/app/home/models/organization.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
+import 'package:enreda_app/app/home/models/resourceCategory.dart';
 import 'package:enreda_app/app/home/models/resourcePicture.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/filter_text_field_row.dart';
@@ -42,6 +43,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
   FilterResource filterResource = FilterResource("", []);
   bool isAlertboxOpened = false;
   final _searchTextController = TextEditingController();
+  List<ResourceCategory> resourceCategoriesList = [];
+
 
   void setStateIfMounted(f) {
     if (mounted) setState(f);
@@ -56,10 +59,18 @@ class _ResourcesPageState extends State<ResourcesPage> {
     }
   }
 
+  getResourceCategories() {
+    final database = Provider.of<Database>(context, listen: false);
+    database.getCategoriesResources().listen((categoriesList) {
+      setState(() => resourceCategoriesList = categoriesList);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     getMessage();
+    getResourceCategories();
   }
 
   void getMessage() {
@@ -106,6 +117,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
     _searchTextController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -156,21 +168,23 @@ class _ResourcesPageState extends State<ResourcesPage> {
         Container(
           height: 50.0,
           margin: EdgeInsets.symmetric(horizontal: margin),
-          child: ScrollConfiguration(
+          child:
+          resourceCategoriesList.isEmpty ? Center(child: LinearProgressIndicator()) :
+          ScrollConfiguration(
             behavior: MyCustomScrollBehavior(),
             child: ChipsChoice<String>.multiple(
               alignment: WrapAlignment.start,
               padding: EdgeInsets.only(left: 0.0, right: 0.0),
-              value: filterResource.resourceTypes,
+              value: filterResource.resourceCategories,
               onChanged: (val) {
                 setState(() {
-                  filterResource.resourceTypes = val;
+                  filterResource.resourceCategories = val;
                 });
               },
-              choiceItems: C2Choice.listFrom<String, String>(
-                source: StringConst.RESOURCE_TYPES,
-                value: (i, v) => v,
-                label: (i, v) => v,
+              choiceItems: C2Choice.listFrom<String, ResourceCategory>(
+                source: resourceCategoriesList,
+                value: (i, v) => v.id,
+                label: (i, v) => v.name,
               ),
               choiceBuilder: (item, i) => Row(
                 children: [
@@ -199,7 +213,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
           horizontal: Responsive.isDesktop(context) ? 48.0 : 8.0,
         ),
         child: StreamBuilder<List<Resource>>(
-            stream: database.filteredResourcesStream(filterResource),
+            stream: database.filteredResourcesCategoryStream(filterResource),
             builder: (context, snapshot) {
               return ListItemBuilderGrid<Resource>(
                 snapshot: snapshot,
@@ -214,6 +228,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                         resource.organizerImage =
                             organization == null ? '' : organization.photo;
                         resource.setResourceTypeName();
+                        resource.setResourceCategoryName();
                         return StreamBuilder<Country>(
                             stream: database.countryStream(resource.country),
                             builder: (context, snapshot) {
@@ -263,6 +278,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                         resource.organizerImage =
                             mentor == null ? '' : mentor.photo;
                         resource.setResourceTypeName();
+                        resource.setResourceCategoryName();
                         return StreamBuilder<Country>(
                             stream: database.countryStream(resource.country),
                             builder: (context, snapshot) {
@@ -340,7 +356,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 }
               }
               return StreamBuilder<List<Resource>>(
-                  stream: database.filteredResourcesStream(filterResource),
+                  stream: database.filteredResourcesCategoryStream(filterResource),
                   builder: (context, snapshot) {
                     return ListItemBuilderGrid<Resource>(
                       snapshot: snapshot,
@@ -357,6 +373,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                   ? ''
                                   : organization.photo;
                               resource.setResourceTypeName();
+                              resource.setResourceCategoryName();
                               return StreamBuilder<Country>(
                                   stream:
                                       database.countryStream(resource.country),
@@ -414,6 +431,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                               resource.organizerImage =
                                   mentor == null ? '' : mentor.photo;
                               resource.setResourceTypeName();
+                              resource.setResourceCategoryName();
                               return StreamBuilder<Country>(
                                   stream:
                                       database.countryStream(resource.country),
@@ -505,7 +523,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
     setState(() {
       _searchTextController.clear();
       filterResource.searchText = '';
-      filterResource.resourceTypes = [];
+      filterResource.resourceCategories = [];
     });
   }
 }

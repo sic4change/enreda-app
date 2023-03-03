@@ -46,6 +46,7 @@ class MyResourcesPage extends StatelessWidget {
                           resource.organizerImage =
                               organization == null ? '' : organization.photo;
                           resource.setResourceTypeName();
+                          resource.setResourceCategoryName();
                           return StreamBuilder<Country>(
                               stream: database.countryStream(resource.country),
                               builder: (context, snapshot) {
@@ -93,6 +94,7 @@ class MyResourcesPage extends StatelessWidget {
                           resource.organizerImage =
                               mentor == null ? '' : mentor.photo;
                           resource.setResourceTypeName();
+                          resource.setResourceCategoryName();
                           return StreamBuilder<Country>(
                               stream: database.countryStream(resource.country),
                               builder: (context, snapshot) {

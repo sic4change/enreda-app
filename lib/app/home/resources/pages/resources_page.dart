@@ -5,6 +5,7 @@ import 'package:enreda_app/app/home/models/filterResource.dart';
 import 'package:enreda_app/app/home/models/organization.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
+import 'package:enreda_app/app/home/models/resourceCategory.dart';
 import 'package:enreda_app/app/home/models/resourcePicture.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/filter_text_field_row.dart';
@@ -42,6 +43,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
   FilterResource filterResource = FilterResource("", []);
   bool isAlertboxOpened = false;
   final _searchTextController = TextEditingController();
+  List<ResourceCategory> resourceCategoriesList = [];
+
 
   void setStateIfMounted(f) {
     if (mounted) setState(f);
@@ -56,10 +59,18 @@ class _ResourcesPageState extends State<ResourcesPage> {
     }
   }
 
+  getResourceCategories() {
+    final database = Provider.of<Database>(context, listen: false);
+    database.getCategoriesResources().listen((categoriesList) {
+      setState(() => resourceCategoriesList = categoriesList);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     getMessage();
+    getResourceCategories();
   }
 
   void getMessage() {
@@ -106,6 +117,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
     _searchTextController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +168,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
         Container(
           height: 50.0,
           margin: EdgeInsets.symmetric(horizontal: margin),
-          child: ScrollConfiguration(
+          child:
+          resourceCategoriesList.isEmpty ? Center(child: LinearProgressIndicator()) :
+          ScrollConfiguration(
             behavior: MyCustomScrollBehavior(),
             child: ChipsChoice<String>.multiple(
               alignment: WrapAlignment.start,
@@ -167,10 +181,10 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   filterResource.resourceCategories = val;
                 });
               },
-              choiceItems: C2Choice.listFrom<String, String>(
-                source: StringConst.RESOURCE_CATEGORIES,
-                value: (i, v) => v,
-                label: (i, v) => v,
+              choiceItems: C2Choice.listFrom<String, ResourceCategory>(
+                source: resourceCategoriesList,
+                value: (i, v) => v.id,
+                label: (i, v) => v.name,
               ),
               choiceBuilder: (item, i) => Row(
                 children: [

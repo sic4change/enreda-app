@@ -19,6 +19,7 @@ import 'package:enreda_app/app/home/models/organization.dart';
 import 'package:enreda_app/app/home/models/organizationUser.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
+import 'package:enreda_app/app/home/models/resourceCategory.dart';
 import 'package:enreda_app/app/home/models/scope.dart';
 import 'package:enreda_app/app/home/models/size.dart';
 import 'package:enreda_app/app/home/models/specificinterest.dart';
@@ -30,7 +31,6 @@ import 'package:enreda_app/app/home/models/chatQuestion.dart';
 import 'package:enreda_app/common_widgets/remove_diacritics.dart';
 import 'package:enreda_app/services/api_path.dart';
 import 'package:enreda_app/services/firestore_service.dart';
-import 'package:enreda_app/utils/resourceTypeMapping.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../app/home/models/certificationRequest.dart';
@@ -104,6 +104,7 @@ abstract class Database {
   Future<void> deleteExperience(Experience experience);
   Future<void> addCertificationRequest(CertificationRequest certificationRequest);
   Future<void> updateCertificationRequest(CertificationRequest certificationRequest, bool selected);
+  Stream<List<ResourceCategory>> getCategoriesResources();
 }
 
 class FirestoreDatabase implements Database {
@@ -187,6 +188,16 @@ class FirestoreDatabase implements Database {
   // }
 
   @override
+  Stream<List<ResourceCategory>> getCategoriesResources() {
+    return _service.collectionStream(
+      path: APIPath.resourcesCategories(),
+      queryBuilder: (query) => query.where('name', isNotEqualTo: null),
+      builder: (data, documentId) => ResourceCategory.fromMap(data, documentId),
+      sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+    );
+  }
+
+  @override
   Stream<List<Resource>> filteredResourcesCategoryStream(FilterResource filter) {
     return _service.filteredCollectionStream(
       path: APIPath.resources(),
@@ -203,21 +214,27 @@ class FirestoreDatabase implements Database {
         final searchTextFilter =
         removeDiacritics(filter.searchText.toLowerCase());
         final searchListFilter = searchTextFilter.split(' ');
-        bool isValid = true;
+        // The following code checks if a resource is selected by applying filters
+        bool resourceSelected = true; // Initialize resourceSelected to true
+        
+        // If search text exists in filter, filter through the search list
         if (filter.searchText != '') {
           searchListFilter.forEach((filterElement) {
+            // For each element in searchListFilter, check against each element in searchListResource
             if (!searchListResource.any(
                     (resourceElement) => resourceElement.contains(filterElement))) {
-              isValid = false;
+              resourceSelected = false; // Set resourceSelected false if a match isn't found
             }
           });
         }
+        
+        // If resourceCategory filter (array of Categories Ids) exists and it doesn't contain the category Id of the 'resourceCategory' from data, 
+        // set resourceSelected to false
         if (filter.resourceCategories.isNotEmpty &&
-            !filter.resourceCategories
-                .contains(getResourceCategoryName(data['resourceCategory'])))
-          isValid = false;
-
-        return isValid ? Resource.fromMap(data, documentId) : null;
+            !filter.resourceCategories.contains((data['resourceCategory'])))
+          resourceSelected = false;
+        
+        return resourceSelected ? Resource.fromMap(data, documentId) : null;
       },
       sort: (lhs, rhs) {
         int cmp = 0;

@@ -32,6 +32,11 @@ Future<Uint8List> generateResume(
     myExperiences,
     List<Experience>? myEducation,
     List<String>? competenciesNames,
+    List<String>? languagesNames,
+    String? aboutMe,
+    List<String>? myDataOfInterest,
+    String myCustomEmail,
+    String myCustomPhone,
     ) async {
   final doc = pw.Document(title: 'Mi Currículum');
 
@@ -47,8 +52,8 @@ Future<Uint8List> generateResume(
 
   final pageTheme = await _myPageTheme(format);
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
-  List<String>? dataOfInterest = user?.dataOfInterest;
-  List<String>? languages = user?.languages;
+  List<String>? dataOfInterest = myDataOfInterest;
+  List<String>? languages = languagesNames;
 
   doc.addPage(
     pw.MultiPage(
@@ -94,9 +99,9 @@ Future<Uint8List> generateResume(
                             pw.Column(
                               crossAxisAlignment: pw.CrossAxisAlignment.start,
                               children: <pw.Widget>[
-                                pw.Text(user?.phone ?? ''),
-                                _UrlText(user?.email ?? '',
-                                    'mailto:${user?.email ?? ''}'),
+                                myCustomPhone != "" ? pw.Text(myCustomPhone) : pw.Container(),
+                                myCustomEmail != "" ? _UrlText(myCustomEmail,
+                                    'mailto: $myCustomEmail') : pw.Container(),
                                 // _UrlText(
                                 //     'wholeprices.ca', 'https://wholeprices.ca'),
                               ],
@@ -107,7 +112,7 @@ Future<Uint8List> generateResume(
                       ],
                     ),
                   ),
-                  myExperiences != null ? _Category(title: StringConst.EXPERIENCES) : pw.Container(),
+                  myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.EXPERIENCES) : pw.Container(),
                   for (var experience in myExperiences!)
                     _Block(
                       title: experience.activityRole == null
@@ -128,23 +133,22 @@ Future<Uint8List> generateResume(
                           ? formatter.format(education.endDate!.toDate())
                           : 'Actualmente'}',
                     ),
-                  competenciesNames != null ? _Category(title: StringConst.COMPETENCIES) : pw.Container(),
+                  competenciesNames != null && competenciesNames.isNotEmpty ? _Category(title: StringConst.COMPETENCIES) : pw.Container(),
                   for (var data in competenciesNames!)
                     _Block(
                       description: data,
                     ),
-                  user?.aboutMe != null && user?.aboutMe != "" ? _Category(title: StringConst.ABOUT_ME) : pw.Container(),
-                  user?.aboutMe != null && user?.aboutMe != "" ? _Block(
-                    description: user?.aboutMe != null && user!.aboutMe!.isNotEmpty
-                        ? user.aboutMe!
-                        : '',
+                  aboutMe != null && aboutMe != "" ? _Category(title: StringConst.ABOUT_ME) : pw.Container(),
+                  aboutMe != null && aboutMe != "" ?
+                  _Block(
+                    description: aboutMe != "" ? aboutMe : '',
                   ) : pw.Container(),
-                  user?.dataOfInterest.length != 0 ? _Category(title: StringConst.DATA_OF_INTEREST) : pw.Container(),
+                  myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST) : pw.Container(),
                   for (var data in dataOfInterest!)
                     _Block(
                       description: data,
                     ),
-                  user?.languages.length != 0 ? _Category(title: StringConst.LANGUAGES) : pw.Container(),
+                  languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES) : pw.Container(),
                   for (var data in languages!)
                     _Block(
                       description: data,

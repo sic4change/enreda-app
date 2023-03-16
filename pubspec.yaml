@@ -136,6 +136,9 @@ flutter:
     - images/certified_900x503.png
     - images/user_default.jpg
     - images/resume.svg
+    - images/cv-dots-1.svg
+    - images/cv-dots-2.svg
+    - images/cv-dots-3.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

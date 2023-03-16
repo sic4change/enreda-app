@@ -38,6 +38,9 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   String? city;
   String? province;
   String? country;
+  String myCustomCity = "";
+  String myCustomProvince = "";
+  String myCustomCountry = "";
   String myCustomAboutMe = "";
   String myCustomEmail = "";
   String myCustomPhone = "";
@@ -279,19 +282,31 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MyCv(
+                                builder: (context) =>
+                                    MyCvModelsPage(
                                       user: user!,
                                       city: city!,
                                       province: province!,
                                       country: country!,
+                                      myCustomAboutMe: myCustomAboutMe,
+                                      myCustomEmail: myCustomEmail,
+                                      myCustomPhone: myCustomPhone,
                                       myExperiences: myExperiences!,
+                                      myCustomExperiences: myCustomExperiences,
+                                      mySelectedExperiences: mySelectedExperiences,
                                       myEducation: myEducation!,
+                                      myCustomEducation: myCustomEducation,
+                                      mySelectedEducation: mySelectedEducation,
                                       competenciesNames: competenciesNames,
-                                      languagesNames: [],
-                                      aboutMe: "",
-                                      myDataOfInterest:[],
-                                      myCustomEmail: "",
-                                      myCustomPhone: "",
+                                      myCustomCompetencies: myCustomCompetencies,
+                                      mySelectedCompetencies: mySelectedCompetencies,
+                                      myCustomDataOfInterest: myCustomDataOfInterest,
+                                      mySelectedDataOfInterest: mySelectedDataOfInterest,
+                                      myCustomLanguages: myCustomLanguages,
+                                      mySelectedLanguages: mySelectedLanguages,
+                                      myCustomCity: myCustomCity,
+                                      myCustomProvince: myCustomProvince,
+                                      myCustomCountry: myCustomCountry,
                                     )),
                           );
                       },
@@ -437,19 +452,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             InkWell(
               onTap: () async {
                 if (await _hasEnoughExperiences(context))
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => MyCv(
-                  //             user: user!,
-                  //             city: city!,
-                  //             province: province!,
-                  //             country: country!,
-                  //             myExperiences: myExperiences!,
-                  //             myEducation: myEducation!,
-                  //             competenciesNames: competenciesNames,
-                  //           )),
-                  // );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -475,6 +477,9 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                               mySelectedDataOfInterest: mySelectedDataOfInterest,
                               myCustomLanguages: myCustomLanguages,
                               mySelectedLanguages: mySelectedLanguages,
+                              myCustomCity: myCustomCity,
+                              myCustomProvince: myCustomProvince,
+                              myCustomCountry: myCustomCountry,
                             )),
                   );
               },
@@ -648,6 +653,10 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                       city = '${myCity?.name ?? ''}';
                       province = '${myProvince?.name ?? ''}';
                       country = '${myCountry?.name ?? ''}';
+
+                      myCustomCity = city!;
+                      myCustomProvince = province!;
+                      myCustomCountry = country!;
 
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.start,

@@ -35,12 +35,18 @@ class MyCvModelsPage extends StatefulWidget {
     required this.mySelectedDataOfInterest,
     required this.myCustomLanguages,
     required this.mySelectedLanguages,
+    required this.myCustomCity,
+    required this.myCustomProvince,
+    required this.myCustomCountry,
   }) : super(key: key);
 
   final UserEnreda? user;
   final String? city;
   final String? province;
   final String? country;
+  String myCustomCity;
+  String myCustomProvince;
+  String myCustomCountry;
   String myCustomAboutMe;
   String myCustomEmail;
   String myCustomPhone;
@@ -71,6 +77,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
   bool _isSelectedAboutMe = true;
   bool _isSelectedEmail = true;
   bool _isSelectedPhone = true;
+  bool _isSelectedMyCity = true;
+  bool _isSelectedMyProvince = true;
+  bool _isSelectedMyCountry = true;
+  bool _isSelectedPhoto = true;
 
   @override
   void initState() {
@@ -158,35 +168,55 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: Responsive.isMobile(context)
-                            ? const EdgeInsets.all(8.0)
-                            : const EdgeInsets.all(20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                      InkWell(
+                        onTap: (){
+                          setState(() {
+                            _isSelectedPhoto = !_isSelectedPhoto;
+                          });
+                        },
+                        child: Stack(
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.all(Radius.circular(60)),
-                              child:
-                              Center(
-                                child:
-                                widget.user?.profilePic?.src == "" ?
-                                Container(
-                                  color:  Colors.transparent,
-                                  height: 120,
-                                  width: 120,
-                                  child: Image.asset(ImagePath.USER_DEFAULT),
-                                ) :
-                                Image.network(
-                                    widget.user?.profilePic?.src ?? ImagePath.USER_DEFAULT,
-                                    width: 120,
-                                    height: 120,
-                                    fit: BoxFit.cover,
-                                    alignment: Alignment.center,
+                            Padding(
+                              padding: Responsive.isMobile(context)
+                                  ? const EdgeInsets.all(8.0)
+                                  : const EdgeInsets.all(20.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.all(Radius.circular(60)),
+                                    child:
+                                    Center(
+                                      child:
+                                      widget.user?.profilePic?.src == "" ?
+                                      Container(
+                                        color:  Colors.transparent,
+                                        height: 120,
+                                        width: 120,
+                                        child: Image.asset(ImagePath.USER_DEFAULT),
+                                      ) :
+                                      Image.network(
+                                          widget.user?.profilePic?.src ?? ImagePath.USER_DEFAULT,
+                                          width: 120,
+                                          height: 120,
+                                          fit: BoxFit.cover,
+                                          alignment: Alignment.center,
+                                          ),
                                     ),
+                                  )
+                                ],
                               ),
-                            )
+                            ),
+                            Positioned(
+                              right: 20,
+                              top: 20,
+                              child: Icon(
+                                _isSelectedPhoto ? Icons.check_box : Icons.crop_square,
+                                color: Constants.darkGray,
+                                size: 20.0,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -229,8 +259,9 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
     final textTheme = Theme.of(context).textTheme;
     return SingleChildScrollView(
       child: Container(
-        margin: Responsive.isTablet(context) ? EdgeInsets.only(top: 30, bottom: Constants.mainPadding * 3 ) : EdgeInsets.symmetric(vertical: 0.0),
-        decoration: BoxDecoration(
+        width: MediaQuery.of(context).size.width * 0.95,
+        margin: EdgeInsets.only(top: Constants.mainPadding, bottom: Constants.mainPadding),
+            decoration: BoxDecoration(
           border: Border.all(color: Constants.lightGray, width: 1),
           borderRadius: BorderRadius.all(Radius.circular(40.0)),
           color: Constants.lightLilac,
@@ -244,67 +275,88 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               Row(
                 children: [
                   Expanded(
-                      flex: 1,
-                      child: SizedBox(width: Responsive.isTablet(context) || Responsive.isMobile(context) ? 26: 50,)),
+                      flex: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: CustomTextBody(text: StringConst.MY_CV.toUpperCase()),
+                      )),
                   Expanded(
-                      flex: 6,
-                      child: Center(child: CustomTextBody(text: StringConst.MY_CV.toUpperCase()))),
-                  Expanded(
-                    flex: 1,
-                    child: InkWell(
-                      onTap: () async {
+                    flex: Responsive.isMobile(context) ? 4 : 2,
+                    child: EnredaButton(
+                      buttonTitle: "Vista previa",
+                      width: 80,
+                      onPressed: () async {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => MyCv(
-                                user: widget.user!,
-                                city: widget.city!,
-                                province: widget.province!,
-                                country: widget.country!,
-                                myCustomEmail: widget.myCustomEmail,
-                                myCustomPhone: widget.myCustomPhone,
-                                myExperiences: widget.myExperiences!,
-                                myEducation: widget.myEducation!,
-                                competenciesNames: widget.competenciesNames,
-                                languagesNames: widget.myCustomLanguages,
-                                aboutMe: widget.myCustomAboutMe,
-                                myDataOfInterest: widget.myCustomDataOfInterest,
-                              )),
+                              builder: (context) =>
+                                  MyCv(
+                                    user: widget.user!,
+                                    myPhoto: _isSelectedPhoto,
+                                    city: widget.myCustomCity,
+                                    province: widget.myCustomProvince,
+                                    country: widget.myCustomCountry,
+                                    myExperiences: widget.myCustomExperiences,
+                                    myEducation: widget.myCustomEducation,
+                                    competenciesNames: widget.myCustomCompetencies,
+                                    aboutMe: widget.myCustomAboutMe,
+                                    languagesNames: widget.myCustomLanguages,
+                                    myDataOfInterest: widget.myCustomDataOfInterest,
+                                    myCustomEmail: widget.myCustomEmail,
+                                    myCustomPhone: widget.myCustomPhone,
+                                  )),
                         );
                       },
-                      child: Image.asset(
-                        ImagePath.DOWNLOAD,
-                        height: Responsive.isTablet(context) || Responsive.isMobile(context) ? Sizes.ICON_SIZE_30 : Sizes.ICON_SIZE_50,
-                      ),),
+                    ),
                   ),
                 ],
               ),
               SpaceH20(),
-              Padding(
-                padding: Responsive.isMobile(context)
-                    ? const EdgeInsets.all(8.0)
-                    : const EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+              InkWell(
+                onTap: (){
+                  setState(() {
+                    _isSelectedPhoto = !_isSelectedPhoto;
+                  });
+                },
+                child: Stack(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(60)),
-                      child:
-                      Center(
-                        child: widget.user?.profilePic?.src == "" ?
-                        Container(
-                          color:  Colors.transparent,
-                          height: 120,
-                          width: 120,
-                          child: Image.asset(ImagePath.USER_DEFAULT),
-                        ):
-                        Image.network(
-                          widget.user?.profilePic?.src ?? ImagePath.USER_DEFAULT,
-                          width: 120,
-                          height: 120,
-                          fit: BoxFit.cover,
-                        ),
+                    Padding(
+                      padding: Responsive.isMobile(context)
+                          ? const EdgeInsets.all(8.0)
+                          : const EdgeInsets.all(20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(60)),
+                            child:
+                            Center(
+                              child: widget.user?.profilePic?.src == "" ?
+                              Container(
+                                color:  Colors.transparent,
+                                height: 120,
+                                width: 120,
+                                child: Image.asset(ImagePath.USER_DEFAULT),
+                              ):
+                              Image.network(
+                                widget.user?.profilePic?.src ?? ImagePath.USER_DEFAULT,
+                                width: 120,
+                                height: 120,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      right: 20,
+                      top: 20,
+                      child: Icon(
+                        _isSelectedPhoto ? Icons.check_box : Icons.crop_square,
+                        color: Constants.darkGray,
+                        size: 20.0,
                       ),
                     ),
                   ],
@@ -326,39 +378,9 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 ],
               ),
               SpaceH24(),
-              CustomText(title: widget.user?.education!.toUpperCase() ?? ''),
+              Center(child: CustomText(title: widget.user?.education!.toUpperCase() ?? '')),
               SpaceH24(),
-              CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase()),
-              Row(
-                children: [
-                  Icon(
-                    Icons.mail,
-                    color: Colors.black.withOpacity(0.7),
-                    size: 16,
-                  ),
-                  SpaceW4(),
-                  CustomTextSmall(text: widget.user?.email ?? ''),
-                ],
-              ),
-              SpaceH8(),
-              Row(
-                children: [
-                  Icon(
-                    Icons.phone,
-                    color: Constants.darkGray,
-                    size: 12.0,
-                  ),
-                  SpaceW4(),
-                  Text(
-                    widget.user?.phone ?? '',
-                    style: textTheme.bodyText1?.copyWith(
-                        fontSize: Responsive.isDesktop(context) ? 16 : 14.0,
-                        color: Constants.darkGray),
-                  ),
-                ],
-              ),
-              SpaceH8(),
-              _buildMyLocation(context),
+              _buildPersonalData(context),
               SpaceH24(),
               _buildMyEducation(context),
               SpaceH24(),
@@ -398,9 +420,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                       builder: (context) =>
                           MyCv(
                             user: widget.user!,
-                            city: widget.city!,
-                            province: widget.province!,
-                            country: widget.country!,
+                            myPhoto: _isSelectedPhoto,
+                            city: widget.myCustomCity,
+                            province: widget.myCustomProvince,
+                            country: widget.myCustomCountry,
                             myExperiences: widget.myCustomExperiences,
                             myEducation: widget.myCustomEducation,
                             competenciesNames: widget.myCustomCompetencies,
@@ -438,21 +461,24 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
   Widget _buildAboutMe(BuildContext context) {
     String aboutMe = widget.user?.aboutMe ?? '';
     return StatefulBuilder(builder: (context, setState) {
-      return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child:
-                  CustomTextTitle(title: StringConst.ABOUT_ME.toUpperCase()),
-                ),
-              ],
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child:
+                CustomTextTitle(title: StringConst.ABOUT_ME.toUpperCase()),
+              ),
+            ],
+          ),
+          Container(
+            padding: const EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.0),
+              color: Constants.white,
             ),
-            SpaceH20(),
-            InkWell(
+            child: InkWell(
               onTap: (){
                 setState(() {
                   _isSelectedAboutMe = !_isSelectedAboutMe;
@@ -480,8 +506,8 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       );
     });
   }
@@ -490,103 +516,107 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
     final textTheme = Theme.of(context).textTheme;
     String email = widget.user?.email ?? '';
     String phone = widget.user?.phone ?? '';
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            StringConst.PERSONAL_DATA.toUpperCase(),
-            style: textTheme.bodyText1?.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: Responsive.isDesktop(context) ? 18 : 14.0,
-              color: Constants.darkLilac,
-            ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase()),
+        SpaceH4(),
+        Container(
+          padding: const EdgeInsets.all(20.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Constants.white,
           ),
-          SpaceH20(),
-          InkWell(
-            onTap: (){
-              setState(() {
-                _isSelectedEmail = !_isSelectedEmail;
-                if (widget.myCustomEmail == ""){
-                  widget.myCustomEmail = email;
-                } else {
-                  widget.myCustomEmail = "";
-                }
-              });
-            },
-            child: Row(
-              children: [
-                Icon(
-                  Icons.mail,
-                  color: Constants.darkGray,
-                  size: 12.0,
+          child: Column(
+            children: [
+              InkWell(
+                onTap: (){
+                  setState(() {
+                    _isSelectedEmail = !_isSelectedEmail;
+                    if (widget.myCustomEmail == ""){
+                      widget.myCustomEmail = email;
+                    } else {
+                      widget.myCustomEmail = "";
+                    }
+                  });
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.mail,
+                      color: Constants.darkGray,
+                      size: 12.0,
+                    ),
+                    SpaceW4(),
+                    Expanded(
+                      child: Text(
+                        widget.user?.email ?? '',
+                        style: textTheme.bodyText1?.copyWith(
+                            fontSize: Responsive.isDesktop(context) ? 14 : 14.0,
+                            color: Constants.darkGray),
+                      ),
+                    ),
+                    SpaceW8(),
+                    Icon(
+                      _isSelectedEmail ? Icons.check_box : Icons.crop_square,
+                      color: Constants.darkGray,
+                      size: 20.0,
+                    ),
+                  ],
                 ),
-                SpaceW4(),
-                Expanded(
-                  child: Text(
-                    widget.user?.email ?? '',
-                    style: textTheme.bodyText1?.copyWith(
-                        fontSize: Responsive.isDesktop(context) ? 14 : 11.0,
-                        color: Constants.darkGray),
-                  ),
+              ),
+              SpaceH8(),
+              InkWell(
+                onTap: (){
+                  setState(() {
+                    _isSelectedPhone = !_isSelectedPhone;
+                    if (widget.myCustomPhone == ""){
+                      widget.myCustomPhone = phone;
+                    } else {
+                      widget.myCustomPhone = "";
+                    }
+                  });
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.phone,
+                      color: Constants.darkGray,
+                      size: 12.0,
+                    ),
+                    SpaceW4(),
+                    Expanded(
+                      child: Text(
+                        widget.user?.phone ?? '',
+                        style: textTheme.bodyText1?.copyWith(
+                            fontSize: Responsive.isDesktop(context) ? 14 : 14.0,
+                            color: Constants.darkGray),
+                      ),
+                    ),
+                    SpaceW8(),
+                    Icon(
+                      _isSelectedPhone ? Icons.check_box : Icons.crop_square,
+                      color: Constants.darkGray,
+                      size: 20.0,
+                    ),
+                  ],
                 ),
-                SpaceW8(),
-                Icon(
-                  _isSelectedEmail ? Icons.check_box : Icons.crop_square,
-                  color: Constants.darkGray,
-                  size: 20.0,
-                ),
-              ],
-            ),
+              ),
+              SpaceH8(),
+              _buildMyLocation(context),
+            ],
           ),
-          SpaceH8(),
-          InkWell(
-            onTap: (){
-              setState(() {
-                _isSelectedPhone = !_isSelectedPhone;
-                if (widget.myCustomPhone == ""){
-                  widget.myCustomPhone = phone;
-                } else {
-                  widget.myCustomPhone = "";
-                }
-              });
-            },
-            child: Row(
-              children: [
-                Icon(
-                  Icons.phone,
-                  color: Constants.darkGray,
-                  size: 12.0,
-                ),
-                SpaceW4(),
-                Expanded(
-                  child: Text(
-                    widget.user?.phone ?? '',
-                    style: textTheme.bodyText1?.copyWith(
-                        fontSize: Responsive.isDesktop(context) ? 14 : 11.0,
-                        color: Constants.darkGray),
-                  ),
-                ),
-                SpaceW8(),
-                Icon(
-                  _isSelectedPhone ? Icons.check_box : Icons.crop_square,
-                  color: Constants.darkGray,
-                  size: 20.0,
-                ),
-              ],
-            ),
-          ),
-          SpaceH8(),
-          _buildMyLocation(context),
-        ],
-      ),
+        ),
+
+      ],
     );
   }
 
   Widget _buildMyLocation(BuildContext context) {
-    String myLocation = '${widget.city ?? ''}, ${widget.province ?? ''}, ${widget.country ?? ''}';
+    String myCity = widget.city ?? '';
+    String myProvince = widget.province ?? '';
+    String myCountry = widget.country ?? '';
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -597,13 +627,78 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           size: 16,
         ),
         SpaceW4(),
-        Responsive.isMobile(context) ? CustomTextSmall(text: myLocation) :
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomTextSmall(text: widget.city ?? ''),
-            CustomTextSmall(text: widget.province ?? ''),
-            CustomTextSmall(text: widget.country ?? ''),
+            InkWell(
+              onTap: (){
+                setState(() {
+                  _isSelectedMyCity = !_isSelectedMyCity;
+                  if (widget.myCustomCity == ""){
+                    widget.myCustomCity = myCity;
+                  } else {
+                    widget.myCustomCity = "";
+                  }
+                });
+              },
+              child: Row(
+                children: [
+                  CustomTextSmall(text: widget.city ?? ''),
+                  SpaceW8(),
+                  Icon(
+                    _isSelectedMyCity ? Icons.check_box : Icons.crop_square,
+                    color: Constants.darkGray,
+                    size: 20.0,
+                  ),
+                ],
+              ),
+            ),
+            InkWell(
+              onTap: (){
+                setState(() {
+                  _isSelectedMyProvince = !_isSelectedMyProvince;
+                  if (widget.myCustomProvince == ""){
+                    widget.myCustomProvince = myProvince;
+                  } else {
+                    widget.myCustomProvince = "";
+                  }
+                });
+              },
+              child: Row(
+                children: [
+                  CustomTextSmall(text: widget.province ?? ''),
+                  SpaceW8(),
+                  Icon(
+                    _isSelectedMyProvince ? Icons.check_box : Icons.crop_square,
+                    color: Constants.darkGray,
+                    size: 20.0,
+                  ),
+                ],
+              ),
+            ),
+            InkWell(
+              onTap: (){
+                setState(() {
+                  _isSelectedMyCountry = !_isSelectedMyCountry;
+                  if (widget.myCustomCountry == ""){
+                    widget.myCustomCountry = myCountry;
+                  } else {
+                    widget.myCustomCountry = "";
+                  }
+                });
+              },
+              child: Row(
+                children: [
+                  CustomTextSmall(text: widget.country ?? ''),
+                  SpaceW8(),
+                  Icon(
+                    _isSelectedMyCountry ? Icons.check_box : Icons.crop_square,
+                    color: Constants.darkGray,
+                    size: 20.0,
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ],
@@ -614,12 +709,11 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
   Widget _buildMyCompetencies(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            CustomTextTitle(title: StringConst.COMPETENCIES.toUpperCase()),
-          ],
-        ),
+        CustomTextTitle(title: StringConst.COMPETENCIES.toUpperCase()),
+        SpaceH4(),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -697,12 +791,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
     final textTheme = Theme.of(context).textTheme;
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            CustomTextTitle(title: StringConst.EDUCATION.toUpperCase()),
-          ],
-        ),
+        CustomTextTitle(title: StringConst.EDUCATION.toUpperCase()),
         SpaceH4(),
         Container(
           width: double.infinity,
@@ -808,12 +900,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
     final textTheme = Theme.of(context).textTheme;
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            CustomTextTitle(title: StringConst.MY_EXPERIENCES.toUpperCase()),
-          ],
-        ),
+        CustomTextTitle(title: StringConst.MY_EXPERIENCES.toUpperCase()),
         SpaceH4(),
         Container(
           width: double.infinity,
@@ -919,12 +1009,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
     final textTheme = Theme.of(context).textTheme;
     final myDataOfInterest = widget.user?.dataOfInterest ?? [];
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            CustomTextTitle(title: StringConst.DATA_OF_INTEREST.toUpperCase()),
-          ],
-        ),
+        CustomTextTitle(title: StringConst.DATA_OF_INTEREST.toUpperCase()),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -998,12 +1086,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
     final textTheme = Theme.of(context).textTheme;
     final myLanguages = widget.user?.languages ?? [];
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            CustomTextTitle(title: StringConst.LANGUAGES.toUpperCase()),
-          ],
-        ),
+        CustomTextTitle(title: StringConst.LANGUAGES.toUpperCase()),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(

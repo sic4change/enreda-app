@@ -37,6 +37,7 @@ Future<Uint8List> generateResume(
     List<String>? myDataOfInterest,
     String myCustomEmail,
     String myCustomPhone,
+    bool myPhoto,
     ) async {
   final doc = pw.Document(title: 'Mi Currículum');
 
@@ -166,14 +167,14 @@ Future<Uint8List> generateResume(
                       crossAxisAlignment: pw.CrossAxisAlignment.center,
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: <pw.Widget>[
-                        pw.ClipOval(
+                        myPhoto == true ? pw.ClipOval(
                           child: pw.Container(
                             width: 100,
                             height: 100,
                             color: lightLilac,
                             child: pw.Image(profileImage, fit: pw.BoxFit.fitWidth),
                           ),
-                        ),
+                        ): pw.Container(),
                         pw.BarcodeWidget(
                           data: 'mailto:<${user?.email}>?subject=&body=',
                           width: 60,

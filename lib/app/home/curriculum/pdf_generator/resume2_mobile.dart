@@ -19,10 +19,12 @@ const PdfColor lilac = PdfColor.fromInt(0xFF6768AB);
 const PdfColor lightLilac = PdfColor.fromInt(0xFFF4F5FB);
 const PdfColor blue = PdfColor.fromInt(0xFF002185);
 const PdfColor grey = PdfColor.fromInt(0xFF535A5F);
+const PdfColor greyDark = PdfColor.fromInt(0xFF44494B);
+const PdfColor white = PdfColor.fromInt(0xFFFFFFFF);
 const leftWidth = 200.0;
-const rightWidth = 300.0;
+const rightWidth = 350.0;
 
-Future<Uint8List> generateResume1(
+Future<Uint8List> generateResume2(
     PdfPageFormat format,
     CustomData data,
     UserEnreda? user,
@@ -52,7 +54,13 @@ Future<Uint8List> generateResume1(
     (await NetworkAssetBundle(Uri.parse(url)).load(url)).buffer.asUint8List(),
   );
 
-  final pageTheme = await _myPageTheme(format);
+  PdfPageFormat format1 = format.applyMargin(
+      left: 0,
+      top: 0,
+      right: 2.0 * PdfPageFormat.cm,
+      bottom: 2.0 * PdfPageFormat.cm);
+
+  final pageTheme = await _myPageTheme(format1, myPhoto, profileImage);
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
   List<String>? dataOfInterest = myDataOfInterest;
   List<String>? languages = languagesNames;
@@ -70,8 +78,132 @@ Future<Uint8List> generateResume1(
                 children: <pw.Widget>[
                   pw.Container(
                     height: pageTheme.pageFormat.availableHeight,
+                    child: pw.Padding(
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 30.0),
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: <pw.Widget>[
+                          pw.Padding(padding: const pw.EdgeInsets.only(top: 20)),
+                          pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: <pw.Widget>[
+                              pw.SizedBox(height: 180),
+                              myCustomEmail != "" ?
+                              _Category(title: StringConst.PERSONAL_DATA, color: white) : pw.Container(),
+                              pw.SizedBox(height: 5),
+                              myCustomEmail != "" ?
+                              pw.Row(
+                                children: [
+                                  pw.Icon(pw.IconData(0xe0be), size: 10.0, color: white),
+                                  pw.SizedBox(width: 4),
+                                  _UrlText(myCustomEmail, 'mailto: $myCustomEmail')
+                                ],
+                              ) : pw.Container(),
+                              pw.Divider(color: white),
+                              myCustomPhone != "" ?
+                              pw.Row(
+                                  children: [
+                                    pw.Icon(pw.IconData(0xe0b0), size: 10.0, color: white),
+                                    pw.SizedBox(width: 4),
+                                    pw.Text(myCustomPhone,
+                                        textScaleFactor: 0.8,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                            fontWeight: pw.FontWeight.normal,
+                                            color: white)) ,
+                                  ]
+                              ) : pw.Container(),
+                              pw.Divider(color: white),
+                              city != "" || province != "" || country != "" ?
+                              pw.Row(
+                                  children: [
+                                    pw.Row(
+                                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                        mainAxisAlignment: pw.MainAxisAlignment.start,
+                                        children: [
+                                          pw.Icon(pw.IconData(0xe8b4), size: 10.0, color: white),
+                                          pw.Column(
+                                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                              children: [
+                                                pw.Text('${city ?? ''}',
+                                                    textScaleFactor: 0.8,
+                                                    style: pw.Theme.of(context)
+                                                        .defaultTextStyle
+                                                        .copyWith(
+                                                        fontWeight: pw.FontWeight.normal,
+                                                        color: white)),
+                                                pw.Text('${province ?? ''}',
+                                                    textScaleFactor: 0.8,
+                                                    style: pw.Theme.of(context)
+                                                        .defaultTextStyle
+                                                        .copyWith(
+                                                        fontWeight: pw.FontWeight.normal,
+                                                        color: white)),
+                                                pw.Text('${country ?? ''}',
+                                                    textScaleFactor: 0.8,
+                                                    style: pw.Theme.of(context)
+                                                        .defaultTextStyle
+                                                        .copyWith(
+                                                        fontWeight: pw.FontWeight.normal,
+                                                        color: white)),
+                                              ]
+                                          )
+                                        ]
+                                    ),
+                                    // _UrlText(
+                                    //     'wholeprices.ca', 'https://wholeprices.ca'),
+                                  ]
+                              ) : pw.Container(),
+                              pw.SizedBox(height: 15),
+                              languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES, color: white) : pw.Container(),
+                              for (var data in languages!)
+                                _BlockSimpleList(
+                                  title: data,
+                                ),
+                              pw.SizedBox(height: 15),
+                              myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST, color: white) : pw.Container(),
+                              for (var data in dataOfInterest!)
+                                _BlockSimpleList(
+                                  title: data,
+                                ),
+                              pw.SizedBox(height: 15),
+                              competenciesNames != null && competenciesNames.isNotEmpty ? _Category(title: StringConst.COMPETENCIES, color: white) : pw.Container(),
+                              for (var data in competenciesNames!)
+                                _BlockSimpleList(
+                                  title: data.toUpperCase(),
+                                ),
+                              pw.SizedBox(height: 15),
+                              pw.Center(
+                                child: pw.BarcodeWidget(
+                                    data: 'mailto:<${user?.email}>?subject=&body=',
+                                    width: 60,
+                                    height: 60,
+                                    barcode: pw.Barcode.qrCode(),
+                                    drawText: false,
+                                    color: white
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            pw.Partition(
+              width: rightWidth,
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Container(
+                    height: pageTheme.pageFormat.availableHeight,
+                    padding: const pw.EdgeInsets.only(left: 50, right: 30),
                     child: pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: <pw.Widget>[
                         pw.Text('${user?.firstName} ${user?.lastName}',
                             textScaleFactor: 3,
@@ -86,117 +218,8 @@ Future<Uint8List> generateResume1(
                                 .copyWith(
                                 fontWeight: pw.FontWeight.normal,
                                 color: grey)),
-                        pw.Padding(padding: const pw.EdgeInsets.only(top: 20)),
-                        pw.Column(
-                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          children: <pw.Widget>[
-                            myCustomEmail != "" ?
-                            _Category(title: StringConst.PERSONAL_DATA) : pw.Container(),
-                            myCustomEmail != "" ?
-                            pw.Row(
-                              children: [
-                                pw.Icon(pw.IconData(0xe0be), size: 10.0, color:grey),
-                                pw.SizedBox(width: 4),
-                                _UrlText(myCustomEmail, 'mailto: $myCustomEmail')
-                              ],
-                            ) : pw.Container(),
-                            myCustomPhone != "" ?
-                            pw.Row(
-                                children: [
-                                  pw.Icon(pw.IconData(0xe0b0), size: 10.0, color:grey),
-                                  pw.SizedBox(width: 4),
-                                  pw.Text(myCustomPhone,
-                                      textScaleFactor: 0.8,
-                                      style: pw.Theme.of(context)
-                                          .defaultTextStyle
-                                          .copyWith(
-                                          fontWeight: pw.FontWeight.normal,
-                                          color: grey)) ,
-                                ]
-                            ) : pw.Container(),
-                            city != "" || province != "" || country != "" ?
-                            pw.Row(
-                                children: [
-                                  pw.Icon(pw.IconData(0xe8b4), size: 10.0, color:grey),
-                                  pw.SizedBox(width: 4),
-                                  pw.Text('${city ?? ''}, ${province ?? ''}, ${country ?? ''}',
-                                      textScaleFactor: 0.8,
-                                      style: pw.Theme.of(context)
-                                          .defaultTextStyle
-                                          .copyWith(
-                                          fontWeight: pw.FontWeight.normal,
-                                          color: grey)),
-                                  // _UrlText(
-                                  //     'wholeprices.ca', 'https://wholeprices.ca'),
-                                ]
-                            ) : pw.Container(),
-                            pw.SizedBox(height: 20),
-                            aboutMe != null && aboutMe != "" ?
-                            _BlockSimple(
-                              title: StringConst.ABOUT_ME,
-                              description: aboutMe,) : pw.Container(),
-                            pw.SizedBox(height: 15),
-                            myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST) : pw.Container(),
-                            for (var data in dataOfInterest!)
-                              _BlockSimpleList(
-                                title: data,
-                              ),
-                            pw.SizedBox(height: 15),
-                            languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES) : pw.Container(),
-                            for (var data in languages!)
-                              _BlockSimpleList(
-                                title: data,
-                              ),
-                            pw.SizedBox(height: 15),
-                            competenciesNames != null && competenciesNames.isNotEmpty ? _Category(title: StringConst.COMPETENCIES) : pw.Container(),
-                            for (var data in competenciesNames!)
-                              _BlockSimpleList(
-                                title: data.toUpperCase(),
-                              ),
-                            pw.SizedBox(height: 15),
-                            pw.BarcodeWidget(
-                              data: 'mailto:<${user?.email}>?subject=&body=',
-                              width: 60,
-                              height: 60,
-                              barcode: pw.Barcode.qrCode(),
-                              drawText: false,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            pw.Partition(
-              width: rightWidth,
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Container(
-                    height: pageTheme.pageFormat.availableHeight,
-                    padding: const pw.EdgeInsets.only(left: 30, right: 30),
-                    child: pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.center,
-                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                      children: <pw.Widget>[
-                        pw.Center(
-                            child: pw.Column(
-                                children: [
-                                  myPhoto == true ? pw.ClipOval(
-                                    child: pw.Container(
-                                      width: 120,
-                                      height: 120,
-                                      color: lightLilac,
-                                      child: pw.Image(profileImage, fit: pw.BoxFit.fitWidth),
-                                    ),
-                                  ) : pw.Container(),
-                                ]
-                            )
-                        ),
-                        pw.SizedBox(height: 55),
-                        myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_EXPERIENCES) : pw.Container(),
+                        pw.SizedBox(height: 30),
+                        myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_EXPERIENCES, color: lilac) : pw.Container(),
                         for (var experience in myExperiences!)
                           _Block(
                             title: experience.activityRole == null
@@ -208,7 +231,7 @@ Future<Uint8List> generateResume1(
                             descriptionPlace: '${experience.location}',
                           ),
                         pw.SizedBox(height: 5),
-                        myEducation!.isNotEmpty ? _Category(title: StringConst.EDUCATION) : pw.Container(),
+                        myEducation!.isNotEmpty ? _Category(title: StringConst.EDUCATION, color: lilac) : pw.Container(),
                         for (var education in myEducation)
                           _Block(
                             title: education.activityRole == null
@@ -219,6 +242,10 @@ Future<Uint8List> generateResume1(
                                 : 'Actualmente'}',
                             descriptionPlace: '${education.location}',
                           ),
+                        aboutMe != null && aboutMe != "" ?
+                        _BlockSimple(
+                          title: StringConst.ABOUT_ME,
+                          description: aboutMe,) : pw.Container(),
                       ],
                     ),
                   ),
@@ -233,11 +260,7 @@ Future<Uint8List> generateResume1(
   return doc.save();
 }
 
-Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
-  final bgShape = await rootBundle.loadString('images/cv-dots-1.svg');
-  final bgShape2 = await rootBundle.loadString('images/cv-dots-2.svg');
-  final bgShape3 = await rootBundle.loadString('images/cv-dots-3.svg');
-
+Future<pw.PageTheme> _myPageTheme(PdfPageFormat format, bool myPhoto, profileImageWeb) async {
   format = format.applyMargin(
       left: 2.0 * PdfPageFormat.cm,
       top: 3.0 * PdfPageFormat.cm,
@@ -245,6 +268,7 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
       bottom: 2.0 * PdfPageFormat.cm);
   return pw.PageTheme(
     pageFormat: format,
+    margin: pw.EdgeInsets.only(top: 70, left: 0.0, right: 20),
     theme: pw.ThemeData.withFont(
       base: await PdfGoogleFonts.openSansRegular(),
       bold: await PdfGoogleFonts.openSansBold(),
@@ -256,23 +280,30 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
         child: pw.Stack(
           children: [
             pw.Container(
-              width: 250,
-              height: 250,
+              width: 200,
+              decoration: pw.BoxDecoration(
+                color: greyDark,
+                shape: pw.BoxShape.rectangle,
+              ),
               child: pw.Positioned(
-                child: pw.SvgImage(svg: bgShape),
+                child: pw.Container(),
+                left: 0,
+                top: 0,
+                bottom: 0,
+              ),
+            ),
+            pw.Container(
+              child: pw.Positioned(
+                child: myPhoto == true ? pw.ClipRect(
+                  child: pw.Container(
+                    width: 200,
+                    height: 250,
+                    child: pw.Image(profileImageWeb, fit: pw.BoxFit.cover),
+                  ),
+                ) : pw.Container(),
                 left: 0,
                 top: 0,
               ),
-            ),
-            pw.Positioned(
-              child: pw.SvgImage(svg: bgShape2),
-              right: 0,
-              top: 0,
-            ),
-            pw.Positioned(
-              child: pw.SvgImage(svg: bgShape3),
-              right: 0,
-              bottom: 0,
             ),
           ],
         ),
@@ -343,9 +374,10 @@ class _Block extends pw.StatelessWidget {
 }
 
 class _Category extends pw.StatelessWidget {
-  _Category({required this.title});
+  _Category({required this.title, required this.color});
 
   final String title;
+  final PdfColor color;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -359,7 +391,7 @@ class _Category extends pw.StatelessWidget {
               .defaultTextStyle
               .copyWith(
               fontWeight: pw.FontWeight.bold,
-              color: lilac)),
+              color: color)),
     );
   }
 }
@@ -434,7 +466,7 @@ class _UrlText extends pw.StatelessWidget {
                 .defaultTextStyle
                 .copyWith(
                 fontWeight: pw.FontWeight.normal,
-                color: grey))
+                color: white))
     );
   }
 }
@@ -506,7 +538,7 @@ class _BlockSimpleList extends pw.StatelessWidget {
                   height: 3,
                   margin: const pw.EdgeInsets.only(top: 5.5, left: 2, right: 5),
                   decoration: const pw.BoxDecoration(
-                    color: lilac,
+                    color: white,
                     shape: pw.BoxShape.circle,
                   ),
                 ),
@@ -517,12 +549,11 @@ class _BlockSimpleList extends pw.StatelessWidget {
                       textScaleFactor: 0.8,
                       style: pw.Theme.of(context)
                           .defaultTextStyle
-                          .copyWith(fontWeight: pw.FontWeight.normal)),
+                          .copyWith(fontWeight: pw.FontWeight.normal, color: white)),
                 ) : pw.Container()
               ]),
           pw.SizedBox(height: 5),
         ]);
   }
 }
-
 

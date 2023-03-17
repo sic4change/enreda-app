@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:enreda_app/app/home/curriculum/pdf_generator/data.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
@@ -21,7 +20,7 @@ const PdfColor grey = PdfColor.fromInt(0xFF535A5F);
 const leftWidth = 200.0;
 const rightWidth = 300.0;
 
-Future<Uint8List> generateResume2(
+Future<Uint8List> generateResume1(
     PdfPageFormat format,
     CustomData data,
     UserEnreda? user,

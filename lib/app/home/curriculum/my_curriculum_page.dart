@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/competencies/competency_tile.dart';
 import 'package:enreda_app/app/home/curriculum/experience_form.dart';
 import 'package:enreda_app/app/home/curriculum/experience_tile.dart';
+import 'package:enreda_app/app/home/curriculum/my-custom_cv.dart';
 import 'package:enreda_app/app/home/curriculum/pdf_generator/pdf_preview.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
@@ -37,10 +38,26 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   String? city;
   String? province;
   String? country;
+  String myCustomCity = "";
+  String myCustomProvince = "";
+  String myCustomCountry = "";
+  String myCustomAboutMe = "";
+  String myCustomEmail = "";
+  String myCustomPhone = "";
   List<Competency>? myCompetencies = [];
   List<Experience>? myExperiences = [];
+  List<Experience> myCustomExperiences = [];
+  List<int> mySelectedExperiences = [];
   List<Experience>? myEducation = [];
+  List<Experience> myCustomEducation = [];
+  List<int> mySelectedEducation = [];
   List<String> competenciesNames = [];
+  List<String> myCustomCompetencies = [];
+  List<int> mySelectedCompetencies = [];
+  List<String> myCustomDataOfInterest = [];
+  List<int> mySelectedDataOfInterest = [];
+  List<String> myCustomLanguages = [];
+  List<int> mySelectedLanguages = [];
 
   @override
   void initState() {
@@ -80,8 +97,29 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                           if (index1 == -1) competenciesNames.add(competency.name);
                         }
                       });
+
+                      final myAboutMe = user?.aboutMe ?? "";
+                      myCustomAboutMe = myAboutMe;
+
+                      final myEmail = user?.email ?? "";
+                      myCustomEmail = myEmail;
+
+                      final myPhone = user?.phone ?? "";
+                      myCustomPhone = myPhone;
+
+                      myCustomCompetencies = competenciesNames.map((element) => element).toList();
+                      mySelectedCompetencies = List.generate(myCustomCompetencies.length, (i) => i);
+
+                      final myDataOfInterest = user?.dataOfInterest ?? [];
+                      myCustomDataOfInterest = myDataOfInterest.map((element) => element).toList();
+                      mySelectedDataOfInterest = List.generate(myCustomDataOfInterest.length, (i) => i);
+
+                      final myLanguages = user?.languages ?? [];
+                      myCustomLanguages = myLanguages.map((element) => element).toList();
+                      mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
+
                       return Responsive.isDesktop(context)
-                          ? _myCurriculumWeb(context, user, profilePic, competenciesNames)
+                          ? _myCurriculumWeb(context, user, profilePic, competenciesNames )
                           : _myCurriculumMobile(context, user, profilePic, competenciesNames);
                     });
               } else {
@@ -244,14 +282,31 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MyCv(
+                                builder: (context) =>
+                                    MyCvModelsPage(
                                       user: user!,
                                       city: city!,
                                       province: province!,
                                       country: country!,
+                                      myCustomAboutMe: myCustomAboutMe,
+                                      myCustomEmail: myCustomEmail,
+                                      myCustomPhone: myCustomPhone,
                                       myExperiences: myExperiences!,
+                                      myCustomExperiences: myCustomExperiences,
+                                      mySelectedExperiences: mySelectedExperiences,
                                       myEducation: myEducation!,
+                                      myCustomEducation: myCustomEducation,
+                                      mySelectedEducation: mySelectedEducation,
                                       competenciesNames: competenciesNames,
+                                      myCustomCompetencies: myCustomCompetencies,
+                                      mySelectedCompetencies: mySelectedCompetencies,
+                                      myCustomDataOfInterest: myCustomDataOfInterest,
+                                      mySelectedDataOfInterest: mySelectedDataOfInterest,
+                                      myCustomLanguages: myCustomLanguages,
+                                      mySelectedLanguages: mySelectedLanguages,
+                                      myCustomCity: myCustomCity,
+                                      myCustomProvince: myCustomProvince,
+                                      myCustomCountry: myCustomCountry,
                                     )),
                           );
                       },
@@ -400,14 +455,31 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => MyCv(
+                        builder: (context) =>
+                            MyCvModelsPage(
                               user: user!,
                               city: city!,
                               province: province!,
                               country: country!,
+                              myCustomAboutMe: myCustomAboutMe,
+                              myCustomEmail: myCustomEmail,
+                              myCustomPhone: myCustomPhone,
                               myExperiences: myExperiences!,
+                              myCustomExperiences: myCustomExperiences,
+                              mySelectedExperiences: mySelectedExperiences,
                               myEducation: myEducation!,
+                              myCustomEducation: myCustomEducation,
+                              mySelectedEducation: mySelectedEducation,
                               competenciesNames: competenciesNames,
+                              myCustomCompetencies: myCustomCompetencies,
+                              mySelectedCompetencies: mySelectedCompetencies,
+                              myCustomDataOfInterest: myCustomDataOfInterest,
+                              mySelectedDataOfInterest: mySelectedDataOfInterest,
+                              myCustomLanguages: myCustomLanguages,
+                              mySelectedLanguages: mySelectedLanguages,
+                              myCustomCity: myCustomCity,
+                              myCustomProvince: myCustomProvince,
+                              myCustomCountry: myCustomCountry,
                             )),
                   );
               },
@@ -581,6 +653,10 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                       city = '${myCity?.name ?? ''}';
                       province = '${myProvince?.name ?? ''}';
                       country = '${myCountry?.name ?? ''}';
+
+                      myCustomCity = city!;
+                      myCustomProvince = province!;
+                      myCustomCountry = country!;
 
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -780,6 +856,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 myEducation = snapshot.data!
                     .where((experience) => experience.type == 'Formativa')
                     .toList();
+                myCustomEducation = myEducation!.map((element) => element).toList();
+                mySelectedEducation = List.generate(myCustomEducation.length, (i) => i);
                 return Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -852,6 +930,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 myExperiences = snapshot.data!
                     .where((experience) => experience.type != 'Formativa')
                     .toList();
+                myCustomExperiences = myExperiences!.map((element) => element).toList();
+                mySelectedExperiences = List.generate(myCustomExperiences.length, (i) => i);
                 return Container(
                   width: double.infinity,
                   decoration: BoxDecoration(

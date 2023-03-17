@@ -25,6 +25,12 @@ class MyCv extends StatefulWidget {
     required this.myExperiences,
     required this.myEducation,
     required this.competenciesNames,
+    required this.languagesNames,
+    required this.aboutMe,
+    required this.myDataOfInterest,
+    required this.myCustomEmail,
+    required this.myCustomPhone,
+    required this.myPhoto,
   }) : super(key: key);
 
   final UserEnreda? user;
@@ -34,6 +40,12 @@ class MyCv extends StatefulWidget {
   final List<Experience>? myExperiences;
   final List<Experience>? myEducation;
   final List<String> competenciesNames;
+  final List<String> languagesNames;
+  final String? aboutMe;
+  final List<String> myDataOfInterest;
+  final String myCustomEmail;
+  final String myCustomPhone;
+  final bool myPhoto;
 
   @override
   MyAppState createState() {
@@ -138,12 +150,13 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
             fontWeight: FontWeight.bold,
             color: Colors.white,
             fontSize: 22.0),
-        // bottom: TabBar(
-        //   controller: _tabController,
-        //   tabs: examples.map<Tab>((e) => Tab(text: e.name)).toList(),
-        //   labelStyle: TextStyle(fontSize: 25),
-        //   isScrollable: true,
-        // ),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: examples.map<Tab>((e) => Tab(text: e.name)).toList(),
+          labelColor: Colors.white,
+          labelStyle: TextStyle(fontSize: 20),
+          isScrollable: true,
+        ),
       ),
       body: PdfPreview(
         maxPageWidth: 700,
@@ -157,6 +170,12 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
             widget.myExperiences!,
             widget.myEducation!,
             widget.competenciesNames,
+            widget.languagesNames,
+            widget.aboutMe,
+            widget.myDataOfInterest,
+            widget.myCustomEmail,
+            widget.myCustomPhone,
+            widget.myPhoto,
         ),
         actions: actions,
         canDebug: false,

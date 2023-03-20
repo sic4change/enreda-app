@@ -208,8 +208,9 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
   return pw.PageTheme(
     pageFormat: format,
     theme: pw.ThemeData.withFont(
-      base: await PdfGoogleFonts.openSansRegular(),
-      bold: await PdfGoogleFonts.openSansBold(),
+      base: await PdfGoogleFonts.latoRegular(),
+      bold: await PdfGoogleFonts.iBMPlexMonoBold(),
+      italic: await PdfGoogleFonts.deliusSwashCapsRegular(),
       icons: await PdfGoogleFonts.materialIcons(),
     ),
     buildBackground: (pw.Context context) {

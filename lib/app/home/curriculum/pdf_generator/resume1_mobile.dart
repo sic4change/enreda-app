@@ -17,6 +17,7 @@ import '../../models/experience.dart';
 
 const PdfColor lilac = PdfColor.fromInt(0xFF6768AB);
 const PdfColor lightLilac = PdfColor.fromInt(0xFFF4F5FB);
+const PdfColor altLilac = PdfColor.fromInt(0xF798AB7);
 const PdfColor blue = PdfColor.fromInt(0xFF002185);
 const PdfColor grey = PdfColor.fromInt(0xFF535A5F);
 const leftWidth = 200.0;
@@ -77,7 +78,7 @@ Future<Uint8List> generateResume1(
                             textScaleFactor: 3,
                             style: pw.Theme.of(context)
                                 .defaultTextStyle
-                                .copyWith(fontWeight: pw.FontWeight.bold, color: blue)),
+                                .copyWith(fontWeight: pw.FontWeight.bold, color: altLilac, lineSpacing: 0)),
                         pw.Padding(padding: const pw.EdgeInsets.only(top: 10)),
                         pw.Text(user?.education!.toUpperCase() ?? '',
                             textScaleFactor: 1,
@@ -130,16 +131,11 @@ Future<Uint8List> generateResume1(
                                   //     'wholeprices.ca', 'https://wholeprices.ca'),
                                 ]
                             ) : pw.Container(),
-                            pw.SizedBox(height: 20),
-                            aboutMe != null && aboutMe != "" ?
-                            _BlockSimple(
-                              title: StringConst.ABOUT_ME,
-                              description: aboutMe,) : pw.Container(),
                             pw.SizedBox(height: 15),
-                            myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST) : pw.Container(),
-                            for (var data in dataOfInterest!)
+                            competenciesNames != null && competenciesNames.isNotEmpty ? _Category(title: StringConst.COMPETENCIES) : pw.Container(),
+                            for (var data in competenciesNames!)
                               _BlockSimpleList(
-                                title: data,
+                                title: data.toUpperCase(),
                               ),
                             pw.SizedBox(height: 15),
                             languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES) : pw.Container(),
@@ -148,20 +144,25 @@ Future<Uint8List> generateResume1(
                                 title: data,
                               ),
                             pw.SizedBox(height: 15),
-                            competenciesNames != null && competenciesNames.isNotEmpty ? _Category(title: StringConst.COMPETENCIES) : pw.Container(),
-                            for (var data in competenciesNames!)
+                            myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST) : pw.Container(),
+                            for (var data in dataOfInterest!)
                               _BlockSimpleList(
-                                title: data.toUpperCase(),
+                                title: data,
                               ),
                             pw.SizedBox(height: 15),
-                            pw.BarcodeWidget(
-                              data: 'mailto:<${user?.email}>?subject=&body=',
-                              width: 60,
-                              height: 60,
-                              barcode: pw.Barcode.qrCode(),
-                              drawText: false,
-                            ),
+                            aboutMe != null && aboutMe != "" ?
+                            _BlockSimple(
+                              title: StringConst.ABOUT_ME,
+                              description: aboutMe,) : pw.Container(),
+                            pw.SizedBox(height: 15),
                           ],
+                        ),
+                        pw.BarcodeWidget(
+                          data: 'mailto:<${user?.email}>?subject=&body=',
+                          width: 60,
+                          height: 60,
+                          barcode: pw.Barcode.qrCode(),
+                          drawText: false,
                         ),
                       ],
                     ),
@@ -195,7 +196,7 @@ Future<Uint8List> generateResume1(
                                 ]
                             )
                         ),
-                        pw.SizedBox(height: 55),
+                        pw.SizedBox(height: 40),
                         myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_EXPERIENCES) : pw.Container(),
                         for (var experience in myExperiences!)
                           _Block(
@@ -246,8 +247,8 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
   return pw.PageTheme(
     pageFormat: format,
     theme: pw.ThemeData.withFont(
-      base: await PdfGoogleFonts.openSansRegular(),
-      bold: await PdfGoogleFonts.openSansBold(),
+      base: await PdfGoogleFonts.latoRegular(),
+      bold: await PdfGoogleFonts.alataRegular(),
       icons: await PdfGoogleFonts.materialIcons(),
     ),
     buildBackground: (pw.Context context) {
@@ -347,6 +348,7 @@ class _Category extends pw.StatelessWidget {
 
   final String title;
 
+
   @override
   pw.Widget build(pw.Context context) {
     return pw.Container(
@@ -359,7 +361,7 @@ class _Category extends pw.StatelessWidget {
               .defaultTextStyle
               .copyWith(
               fontWeight: pw.FontWeight.bold,
-              color: lilac)),
+              color: altLilac)),
     );
   }
 }
@@ -465,7 +467,7 @@ class _BlockSimple extends pw.StatelessWidget {
                           .defaultTextStyle
                           .copyWith(
                           fontWeight: pw.FontWeight.bold,
-                          color: lilac)),
+                          color: altLilac)),
                 ) : pw.Container()
               ]),
           pw.Container(

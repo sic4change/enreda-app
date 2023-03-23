@@ -70,6 +70,29 @@ class CustomText extends StatelessWidget {
   }
 }
 
+class CustomTextBold extends StatelessWidget {
+
+  CustomTextBold({ required this.title });
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    double fontSize = responsiveSize(context, 14, 15, md: 14);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Text(
+      title,
+      style: textTheme.bodyText1?.copyWith(
+        color: AppColors.greyAlt,
+        height: 1.5,
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold
+      ),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
+
 class CustomTextSmall extends StatelessWidget {
 
   CustomTextSmall({ required this.text });
@@ -84,6 +107,26 @@ class CustomTextSmall extends StatelessWidget {
       style: textTheme.bodyText1?.copyWith(
         color: AppColors.greyAlt,
         height: 1.5,
+        fontSize: fontSize,
+      ),
+    );
+  }
+}
+
+class CustomTextChip extends StatelessWidget {
+  CustomTextChip({ required this.text, required this.color});
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    double fontSize = responsiveSize(context, 14, 18, md: 15);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Text(text,
+      style: textTheme.bodyText1?.copyWith(
+        color: color,
+        height: 1.5,
+        fontWeight: FontWeight.w800,
         fontSize: fontSize,
       ),
     );

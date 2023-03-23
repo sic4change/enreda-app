@@ -1,4 +1,5 @@
 import 'package:enreda_app/app/home/curriculum/pdf_generator/pdf_preview.dart';
+import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/values.dart';
@@ -38,6 +39,10 @@ class MyCvModelsPage extends StatefulWidget {
     required this.myCustomCity,
     required this.myCustomProvince,
     required this.myCustomCountry,
+    required this.myReferences,
+    required this.myCustomReferences,
+    required this.mySelectedReferences,
+
   }) : super(key: key);
 
   final UserEnreda? user;
@@ -63,6 +68,9 @@ class MyCvModelsPage extends StatefulWidget {
   List<int> mySelectedDataOfInterest;
   List<String> myCustomLanguages;
   List<int> mySelectedLanguages;
+  final List<CertificationRequest>? myReferences;
+  List<CertificationRequest> myCustomReferences;
+  List<int> mySelectedReferences;
 
   @override
   _MyCvModelsPageState createState() => _MyCvModelsPageState();
@@ -71,6 +79,7 @@ class MyCvModelsPage extends StatefulWidget {
 class _MyCvModelsPageState extends State<MyCvModelsPage> {
   int? _selectedEducationIndex;
   int? _selectedExperienceIndex;
+  int? _selectedReferenceIndex;
   int? _selectedCompetenciesIndex;
   int? _selectedLanguagesIndex;
   int? _selectedDataOfInterestIndex;
@@ -228,6 +237,9 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                       _buildMyDataOfInterest(context),
                       SpaceH20(),
                       _buildMyLanguages(context),
+                      SpaceH20(),
+                      _buildMyReferences(context),
+                      SpaceH20(),
                     ],
                   ),
                 ),
@@ -304,6 +316,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                     myDataOfInterest: widget.myCustomDataOfInterest,
                                     myCustomEmail: widget.myCustomEmail,
                                     myCustomPhone: widget.myCustomPhone,
+                                    myCustomReferences: widget.myCustomReferences,
                                   )),
                         );
                       },
@@ -394,6 +407,8 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               SpaceH24(),
               _buildMyLanguages(context),
               SpaceH24(),
+              _buildMyReferences(context),
+              SpaceH24(),
             ],
           ),
         ),
@@ -432,6 +447,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             myDataOfInterest: widget.myCustomDataOfInterest,
                             myCustomEmail: widget.myCustomEmail,
                             myCustomPhone: widget.myCustomPhone,
+                            myCustomReferences: widget.myCustomReferences,
                           )),
                 );
               },
@@ -1155,6 +1171,90 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           ),
         ),
 
+      ],
+    );
+  }
+
+  Widget _buildMyReferences(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomTextTitle(title: StringConst.REFERENCES.toUpperCase()),
+        SpaceH4(),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Constants.white,
+          ),
+          child: widget.myReferences!.isNotEmpty ?
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: widget.myReferences!.length,
+            itemBuilder: (context, index) {
+              return Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.symmetric(vertical: 0),
+                child: ListTile(
+                  selected: index == _selectedReferenceIndex,
+                  onTap: (){
+                    bool exists = widget.myCustomReferences.any((element) => element.certificationRequestId == widget.myReferences![index].certificationRequestId);
+                    setState(() {
+                      _selectedReferenceIndex = index;
+                      if (exists == true){
+                        widget.myCustomReferences.remove(widget.myReferences![index]);
+                        widget.mySelectedReferences.remove(_selectedReferenceIndex);
+                      } else {
+                        widget.myCustomReferences.add(widget.myReferences![index]);
+                        widget.mySelectedReferences.add(_selectedReferenceIndex!);
+                      }
+                    });
+                  },
+                  title: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            CustomTextBold(title: '${widget.myReferences![index].certifierName}'),
+                            SpaceH4(),
+                              RichText(
+                                text: TextSpan(
+                                    text: '${widget.myReferences![index].certifierPosition.toUpperCase()} -',
+                                    style: textTheme.bodyText1?.copyWith(
+                                      fontSize: 14.0,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: ' ${widget.myReferences![index].certifierCompany.toUpperCase()}',
+                                        style: textTheme.bodyText1?.copyWith(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    ]),
+                              ),
+                            CustomTextSmall(text: '${widget.myReferences![index].email}'),
+                            widget.myReferences![index].phone != "" ? CustomTextSmall(text: '${widget.myReferences![index].phone}') : Container(),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        widget.mySelectedReferences.contains(index) ? Icons.check_box : Icons.crop_square,
+                        color: Constants.darkGray,
+                        size: 20.0,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          )
+              : CustomTextBody(text: StringConst.NO_REFERENCES),
+        ),
       ],
     );
   }

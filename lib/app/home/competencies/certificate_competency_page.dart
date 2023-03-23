@@ -41,6 +41,9 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
   String? _certifierPosition;
   String? _phone;
   String phoneCode = '+34';
+  bool isLoading = false;
+  String? codeDialog;
+  String? valueText;
 
   @override
   void initState() {
@@ -51,10 +54,6 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
     _certifierPosition= "";
     _phone = "";
   }
-
-
-  String? codeDialog;
-  String? valueText;
 
   @override
   Widget build(BuildContext context) {
@@ -258,7 +257,10 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                   ),
                 ),
               ),
-              CustomButton(
+              isLoading ? Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Center(child: CircularProgressIndicator()),
+              ) : CustomButton(
                 text: 'Enviar solicitud',
                 color: AppColors.primaryColor,
                 onPressed: _submit,
@@ -310,12 +312,15 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
         unemployedRequesterId: widget.user.userId!,
         unemployedRequesterName: '${widget.user.firstName!} ${widget.user.lastName!}',
         certified: false,
+        referenced: false,
       );
       try {
         final database = Provider.of<Database>(context, listen: false);
+        setState(() => isLoading = true);
         await database.addCertificationRequest(certificateCompetency);
         widget.user.competencies[widget.competency.id!] = StringConst.BADGE_PROCESSING;
         database.setUserEnreda(widget.user);
+        setState(() => isLoading = false);
         showAlertDialog(
           context,
           title: 'Solicitud de certificación de competencia: ${widget.competency.name}',

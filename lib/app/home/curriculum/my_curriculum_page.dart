@@ -3,7 +3,8 @@ import 'package:enreda_app/app/home/competencies/competency_tile.dart';
 import 'package:enreda_app/app/home/curriculum/experience_form.dart';
 import 'package:enreda_app/app/home/curriculum/experience_tile.dart';
 import 'package:enreda_app/app/home/curriculum/my-custom_cv.dart';
-import 'package:enreda_app/app/home/curriculum/pdf_generator/pdf_preview.dart';
+import 'package:enreda_app/app/home/curriculum/reference_tile.dart';
+import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/country.dart';
@@ -51,6 +52,9 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   List<Experience>? myEducation = [];
   List<Experience> myCustomEducation = [];
   List<int> mySelectedEducation = [];
+  List<CertificationRequest>? myReferences = [];
+  List<CertificationRequest> myCustomReferences = [];
+  List<int> mySelectedReferences = [];
   List<String> competenciesNames = [];
   List<String> myCustomCompetencies = [];
   List<int> mySelectedCompetencies = [];
@@ -84,39 +88,39 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                       if (!snapshot.hasData) return Container();
                       if (snapshot.hasError)
                         return Center(child: Text('Ocurrió un error'));
-                      List<Competency> competencies = snapshot.data!;
-                      final competenciesIds = user!.competencies.keys.toList();
-                      competencies = competencies
-                          .where((competency) => competenciesIds.any((id) => competency.id == id))
-                          .toList();
-                      competencies.forEach((competency) {
-                        final status =
-                            user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
-                        if (competency.name !="" && status != StringConst.BADGE_EMPTY && status != StringConst.BADGE_IDENTIFIED ) {
-                          final index1 = competenciesNames.indexWhere((element) => element == competency.name);
-                          if (index1 == -1) competenciesNames.add(competency.name);
-                        }
-                      });
+                        List<Competency> competencies = snapshot.data!;
+                        final competenciesIds = user!.competencies.keys.toList();
+                        competencies = competencies
+                            .where((competency) => competenciesIds.any((id) => competency.id == id))
+                            .toList();
+                        competencies.forEach((competency) {
+                          final status =
+                              user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
+                          if (competency.name !="" && status != StringConst.BADGE_EMPTY && status != StringConst.BADGE_IDENTIFIED ) {
+                            final index1 = competenciesNames.indexWhere((element) => element == competency.name);
+                            if (index1 == -1) competenciesNames.add(competency.name);
+                          }
+                        });
 
-                      final myAboutMe = user?.aboutMe ?? "";
-                      myCustomAboutMe = myAboutMe;
+                        final myAboutMe = user?.aboutMe ?? "";
+                        myCustomAboutMe = myAboutMe;
 
-                      final myEmail = user?.email ?? "";
-                      myCustomEmail = myEmail;
+                        final myEmail = user?.email ?? "";
+                        myCustomEmail = myEmail;
 
-                      final myPhone = user?.phone ?? "";
-                      myCustomPhone = myPhone;
+                        final myPhone = user?.phone ?? "";
+                        myCustomPhone = myPhone;
 
-                      myCustomCompetencies = competenciesNames.map((element) => element).toList();
-                      mySelectedCompetencies = List.generate(myCustomCompetencies.length, (i) => i);
+                        myCustomCompetencies = competenciesNames.map((element) => element).toList();
+                        mySelectedCompetencies = List.generate(myCustomCompetencies.length, (i) => i);
 
-                      final myDataOfInterest = user?.dataOfInterest ?? [];
-                      myCustomDataOfInterest = myDataOfInterest.map((element) => element).toList();
-                      mySelectedDataOfInterest = List.generate(myCustomDataOfInterest.length, (i) => i);
+                        final myDataOfInterest = user?.dataOfInterest ?? [];
+                        myCustomDataOfInterest = myDataOfInterest.map((element) => element).toList();
+                        mySelectedDataOfInterest = List.generate(myCustomDataOfInterest.length, (i) => i);
 
-                      final myLanguages = user?.languages ?? [];
-                      myCustomLanguages = myLanguages.map((element) => element).toList();
-                      mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
+                        final myLanguages = user?.languages ?? [];
+                        myCustomLanguages = myLanguages.map((element) => element).toList();
+                        mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
 
                       return Responsive.isDesktop(context)
                           ? _myCurriculumWeb(context, user, profilePic, competenciesNames )
@@ -223,6 +227,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                       _buildMyDataOfInterest(context),
                       SpaceH20(),
                       _buildMyLanguages(context),
+                      SpaceH20(),
+                      _buildMyReferences(context, user),
                     ],
                   ),
                 ),
@@ -307,6 +313,10 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                       myCustomCity: myCustomCity,
                                       myCustomProvince: myCustomProvince,
                                       myCustomCountry: myCustomCountry,
+                                      myReferences: myReferences!,
+                                      myCustomReferences: myCustomReferences,
+                                      mySelectedReferences: mySelectedReferences,
+
                                     )),
                           );
                       },
@@ -432,6 +442,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               SpaceH24(),
               _buildMyLanguages(context),
               SpaceH24(),
+              _buildMyReferences(context, user),
+              SpaceH24(),
             ],
           ),
         ),
@@ -480,6 +492,9 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                               myCustomCity: myCustomCity,
                               myCustomProvince: myCustomProvince,
                               myCustomCountry: myCustomCountry,
+                              myReferences: myReferences!,
+                              myCustomReferences: myCustomReferences,
+                              mySelectedReferences: mySelectedReferences,
                             )),
                   );
               },
@@ -1103,9 +1118,65 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 )
               : Padding(
                   padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: Center(child: Text(StringConst.NO_LANGUAGES)),
+                  child: Center(child: CustomTextSmall(text: StringConst.NO_LANGUAGES)),
                 ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildMyReferences(BuildContext context, UserEnreda? user) {
+    final database = Provider.of<Database>(context, listen: false);
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            CustomTextTitle(title: StringConst.REFERENCES.toUpperCase()),
+            SpaceW12(),
+          ],
+        ),
+        SpaceH4(),
+        StreamBuilder<List<CertificationRequest>>(
+            stream: database.myCertificationRequestStream(user?.userId ?? ''),
+            builder: (context, snapshot) {
+              if (snapshot.hasData &&
+                  snapshot.connectionState == ConnectionState.active) {
+                myReferences = snapshot.data!
+                    .where((certificationRequest) => certificationRequest.referenced == true)
+                    .toList();
+                myCustomReferences = myReferences!.map((element) => element).toList();
+                mySelectedReferences = List.generate(myCustomReferences.length, (i) => i);
+                return Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  child: myReferences!.isNotEmpty
+                      ? Wrap(
+                    children: myReferences!
+                        .map((e) => Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        SpaceH12(),
+                        Container(
+                          width: double.infinity,
+                          child: ReferenceTile(certificationRequest: e),
+                        ),
+                        Divider(),
+                      ],
+                    )).toList(),
+                  )
+                      : Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20.0),
+                          child: Center(child: CustomTextSmall(text: StringConst.NO_REFERENCES)),
+                  ),
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }),
       ],
     );
   }

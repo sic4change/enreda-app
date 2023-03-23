@@ -1,8 +1,6 @@
 import 'package:enreda_app/app/home/models/addressUser.dart';
-import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/interestsUserEnreda.dart';
 import 'package:enreda_app/app/home/models/profilepic.dart';
-import 'package:flutter/material.dart';
 
 class UserEnreda {
   UserEnreda({
@@ -20,16 +18,17 @@ class UserEnreda {
     this.city,
     this.postalCode,
     this.address,
-    this.specificInterests: const [],
-    this.interests: const [],
+    this.specificInterests = const [],
+    this.interests = const [],
     this.abilities,
+    this.certifications,
     this.unemployedType,
     this.role,
     this.showChatWelcome,
-    this.competencies: const {},
+    this.competencies = const {},
     this.education,
-    this.dataOfInterest: const [],
-    this.languages: const [],
+    this.dataOfInterest = const [],
+    this.languages = const [],
     this.aboutMe,
   });
 
@@ -79,6 +78,13 @@ class UserEnreda {
       });
     } catch (e) {
       print('user not specific intersts');
+    }
+
+    List<String> certifications = [];
+    try {
+      data['certifications'].forEach((certification) {certifications.add(certification.toString());});
+    } catch (e) {
+      print('user does not have certifications');
     }
 
     final ProfilePic profilePic =
@@ -145,6 +151,7 @@ class UserEnreda {
       unemployedType: unemployedType,
       role: role,
       abilities: abilities,
+      certifications: certifications,
       showChatWelcome: showChatWelcome,
       competencies: competencies,
       education: education,
@@ -172,6 +179,7 @@ class UserEnreda {
   final List<String> specificInterests;
   final String? unemployedType;
   final List<String>? abilities;
+  final List<String>? certifications;
   final String? role;
   bool? showChatWelcome;
   final Map<String, String> competencies;
@@ -196,6 +204,7 @@ class UserEnreda {
       'interests': interestUserEnreda.toMap(),
       'unemployedType': unemployedType,
       'abilities': abilities,
+      'certifications': certifications,
       'role': role,
       'unemployedType': unemployedType,
       'showChatWelcome': showChatWelcome,

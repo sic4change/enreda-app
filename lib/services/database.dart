@@ -84,6 +84,8 @@ abstract class Database {
   Stream<Activity> activtyStream(String id);
   Stream<List<ChatQuestion>> chatQuestionsStream(String userId);
   Stream<CertificationRequest> certificationRequestStream(String certificationRequestId);
+  Stream<List<CertificationRequest>> myCertificationRequestStream(String userId);
+  Stream<List<ResourceCategory>> getCategoriesResources();
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> addUserEnreda(UserEnreda userEnreda);
@@ -103,8 +105,7 @@ abstract class Database {
   Future<void> updateExperience(Experience experience);
   Future<void> deleteExperience(Experience experience);
   Future<void> addCertificationRequest(CertificationRequest certificationRequest);
-  Future<void> updateCertificationRequest(CertificationRequest certificationRequest, bool selected);
-  Stream<List<ResourceCategory>> getCategoriesResources();
+  Future<void> updateCertificationRequest(CertificationRequest certificationRequest, bool certified, bool referenced );
 }
 
 class FirestoreDatabase implements Database {
@@ -407,6 +408,15 @@ class FirestoreDatabase implements Database {
       );
 
   @override
+  Stream<List<CertificationRequest>> myCertificationRequestStream(String userId) =>
+      _service.collectionStream(
+        path: APIPath.certificationsRequests(),
+        queryBuilder: (query) => query.where('unemployedRequesterId', isEqualTo: userId),
+        builder: (data, documentId) => CertificationRequest.fromMap(data, documentId),
+        sort: (lhs, rhs) => lhs.certifierName.compareTo(rhs.certifierName),
+      );
+
+  @override
   Future<void> addUserEnreda(UserEnreda userEnreda) =>
       _service.addData(path: APIPath.tests(), data: userEnreda.toMap());
 
@@ -422,10 +432,10 @@ class FirestoreDatabase implements Database {
   }
 
   @override
-  Future<void> updateCertificationRequest(CertificationRequest certificationRequest, bool selected) {
+  Future<void> updateCertificationRequest(CertificationRequest certificationRequest, bool certified, bool referenced) {
     return _service.updateData(
         path: APIPath.certificationRequest(certificationRequest.certificationRequestId!), data: {
-      "certified": selected});
+      "certified": certified, 'referenced': referenced});
   }
 
   @override

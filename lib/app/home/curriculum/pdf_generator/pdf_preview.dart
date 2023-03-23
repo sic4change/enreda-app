@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:enreda_app/app/home/curriculum/pdf_generator/cv_page.dart';
+import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ class MyCv extends StatefulWidget {
     required this.myCustomEmail,
     required this.myCustomPhone,
     required this.myPhoto,
+    required this.myCustomReferences,
   }) : super(key: key);
 
   final UserEnreda? user;
@@ -46,6 +48,7 @@ class MyCv extends StatefulWidget {
   final String myCustomEmail;
   final String myCustomPhone;
   final bool myPhoto;
+  final List<CertificationRequest>? myCustomReferences;
 
   @override
   MyAppState createState() {
@@ -176,6 +179,7 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
             widget.myCustomEmail,
             widget.myCustomPhone,
             widget.myPhoto,
+            widget.myCustomReferences,
         ),
         actions: actions,
         canDebug: false,

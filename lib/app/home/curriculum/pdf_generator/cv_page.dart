@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pdf/pdf.dart';
@@ -39,6 +40,7 @@ typedef LayoutCallbackWithData = Future<Uint8List> Function(
     String myCustomEmail,
     String myCustomPhone,
     bool myPhoto,
+    List<CertificationRequest>? myCustomReferences,
     );
 
 class Example {

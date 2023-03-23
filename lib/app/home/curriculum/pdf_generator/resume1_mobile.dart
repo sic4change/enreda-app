@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:enreda_app/app/home/curriculum/pdf_generator/data.dart';
+import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show NetworkAssetBundle, rootBundle;
@@ -40,6 +41,7 @@ Future<Uint8List> generateResume1(
     String myCustomEmail,
     String myCustomPhone,
     bool myPhoto,
+    List<CertificationRequest>? myReferences,
     ) async {
   final doc = pw.Document(title: 'Mi Currículum');
 
@@ -131,39 +133,47 @@ Future<Uint8List> generateResume1(
                                   //     'wholeprices.ca', 'https://wholeprices.ca'),
                                 ]
                             ) : pw.Container(),
-                            pw.SizedBox(height: 15),
+                            pw.SizedBox(height: 10),
                             competenciesNames != null && competenciesNames.isNotEmpty ? _Category(title: StringConst.COMPETENCIES) : pw.Container(),
                             for (var data in competenciesNames!)
                               _BlockSimpleList(
                                 title: data.toUpperCase(),
                               ),
-                            pw.SizedBox(height: 15),
+                            pw.SizedBox(height: 5),
                             languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES) : pw.Container(),
                             for (var data in languages!)
                               _BlockSimpleList(
                                 title: data,
                               ),
-                            pw.SizedBox(height: 15),
+                            pw.SizedBox(height: 5),
                             myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST) : pw.Container(),
                             for (var data in dataOfInterest!)
                               _BlockSimpleList(
                                 title: data,
                               ),
-                            pw.SizedBox(height: 15),
+                            pw.SizedBox(height: 5),
                             aboutMe != null && aboutMe != "" ?
                             _BlockSimple(
                               title: StringConst.ABOUT_ME,
                               description: aboutMe,) : pw.Container(),
-                            pw.SizedBox(height: 15),
+                            pw.SizedBox(height: 5),
                           ],
                         ),
-                        pw.BarcodeWidget(
-                          data: 'mailto:<${user?.email}>?subject=&body=',
-                          width: 60,
-                          height: 60,
-                          barcode: pw.Barcode.qrCode(),
-                          drawText: false,
-                        ),
+                        myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.REFERENCES) : pw.Container(),
+                        for (var reference in myReferences!)
+                          _BlockIcon(
+                            title: '${reference.certifierName}',
+                            description1: '${reference.certifierPosition} - ${reference.certifierCompany}',
+                            description2: '${reference.email}',
+                            description3: '${reference.phone}',
+                          ),
+                        // pw.BarcodeWidget(
+                        //   data: 'mailto:<${user?.email}>?subject=&body=',
+                        //   width: 60,
+                        //   height: 60,
+                        //   barcode: pw.Barcode.qrCode(),
+                        //   drawText: false,
+                        // ),
                       ],
                     ),
                   ),
@@ -203,10 +213,10 @@ Future<Uint8List> generateResume1(
                             title: experience.activityRole == null
                                 ? experience.activity
                                 : '${experience.activityRole} - ${experience.activity}',
-                            descriptionDate:'${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null
+                            description1:'${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null
                                 ? formatter.format(experience.endDate!.toDate())
                                 : 'Actualmente'}',
-                            descriptionPlace: '${experience.location}',
+                            description2: '${experience.location}',
                           ),
                         pw.SizedBox(height: 5),
                         myEducation!.isNotEmpty ? _Category(title: StringConst.EDUCATION) : pw.Container(),
@@ -215,10 +225,10 @@ Future<Uint8List> generateResume1(
                             title: education.activityRole == null
                                 ? education.activity
                                 : '${education.activityRole} - ${education.activity}',
-                            descriptionDate:'${formatter.format(education.startDate.toDate())} / ${education.endDate != null
+                            description1:'${formatter.format(education.startDate.toDate())} / ${education.endDate != null
                                 ? formatter.format(education.endDate!.toDate())
                                 : 'Actualmente'}',
-                            descriptionPlace: '${education.location}',
+                            description2: '${education.location}',
                           ),
                       ],
                     ),
@@ -285,13 +295,13 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
 class _Block extends pw.StatelessWidget {
   _Block({
     this.title,
-    this.descriptionDate,
-    this.descriptionPlace,
+    this.description1,
+    this.description2,
   });
 
   final String? title;
-  final String? descriptionDate;
-  final String? descriptionPlace;
+  final String? description1;
+  final String? description2;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -312,11 +322,11 @@ class _Block extends pw.StatelessWidget {
                           color: grey)),
                 ) : pw.Container()
               ]),
-          pw.Container(
+          description1 != null ? pw.Container(
             child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: <pw.Widget>[
-                  pw.Text(descriptionDate!,
+                  pw.Text(description1!,
                       textScaleFactor: 0.8,
                       style: pw.Theme.of(context)
                           .defaultTextStyle
@@ -324,12 +334,12 @@ class _Block extends pw.StatelessWidget {
                           fontWeight: pw.FontWeight.normal,
                           color: grey)),
                 ]),
-          ),
-          pw.Container(
+          ) : pw.Container(),
+          description2 != null ? pw.Container(
             child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: <pw.Widget>[
-                  pw.Text(descriptionPlace!,
+                  pw.Text(description2!,
                       textScaleFactor: 0.8,
                       style: pw.Theme.of(context)
                           .defaultTextStyle
@@ -337,7 +347,7 @@ class _Block extends pw.StatelessWidget {
                           fontWeight: pw.FontWeight.normal,
                           color: grey)),
                 ]),
-          ),
+          ) : pw.Container(),
           pw.SizedBox(height: 8),
         ]);
   }
@@ -522,8 +532,82 @@ class _BlockSimpleList extends pw.StatelessWidget {
                           .copyWith(fontWeight: pw.FontWeight.normal)),
                 ) : pw.Container()
               ]),
-          pw.SizedBox(height: 5),
+          pw.SizedBox(height: 8),
         ]);
+  }
+}
+
+class _BlockIcon extends pw.StatelessWidget {
+  _BlockIcon({
+    this.title,
+    this.description1,
+    this.description2,
+    this.description3,
+  });
+
+  final String? title;
+  final String? description1;
+  final String? description2;
+  final String? description3;
+
+  @override
+  pw.Widget build(pw.Context context) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: <pw.Widget>[
+        pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: <pw.Widget>[
+              title != null ? pw.Expanded(
+                child: pw.Text(
+                    title!,
+                    textScaleFactor: 0.9,
+                    style: pw.Theme.of(context)
+                        .defaultTextStyle
+                        .copyWith(
+                        fontWeight: pw.FontWeight.bold,
+                        color: grey)),
+              ) : pw.Container()
+            ]),
+        pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: <pw.Widget>[
+              description1 != null ? pw.Expanded(
+                child: pw.Text(
+                    description1!.toUpperCase(),
+                    textScaleFactor: 0.8,
+                    style: pw.Theme.of(context)
+                        .defaultTextStyle
+                        .copyWith(
+                        fontWeight: pw.FontWeight.bold,
+                        color: grey)),
+              ) : pw.Container()
+            ]),
+        description2 != "" ?
+        pw.Row(
+          children: [
+            pw.Icon(pw.IconData(0xe0be), size: 10.0, color:grey),
+            pw.SizedBox(width: 4),
+            _UrlText(description2!, 'mailto: $description1')
+          ],
+        ) : pw.Container(),
+        description3 != "" ?
+        pw.Row(
+            children: [
+              pw.Icon(pw.IconData(0xe0b0), size: 10.0, color:grey),
+              pw.SizedBox(width: 4),
+              pw.Text(description3!,
+                  textScaleFactor: 0.8,
+                  style: pw.Theme.of(context)
+                      .defaultTextStyle
+                      .copyWith(
+                      fontWeight: pw.FontWeight.normal,
+                      color: grey)) ,
+            ]
+        ) : pw.Container(),
+        pw.SizedBox(height: 5),
+      ],
+    );
   }
 }
 

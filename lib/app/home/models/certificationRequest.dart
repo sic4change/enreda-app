@@ -10,6 +10,7 @@ class CertificationRequest {
     required this.unemployedRequesterId,
     required this.unemployedRequesterName,
     required this.certified,
+    required this.referenced,
     this.phone,
   });
 
@@ -25,6 +26,7 @@ class CertificationRequest {
     final String unemployedRequesterId = data['unemployedRequesterId'];
     final String unemployedRequesterName = data['unemployedRequesterName'];
     final bool certified = data['certified'];
+    final bool referenced = data['referenced'];
 
     return CertificationRequest(
       certificationRequestId: certificationRequestId,
@@ -38,6 +40,7 @@ class CertificationRequest {
       unemployedRequesterId: unemployedRequesterId,
       unemployedRequesterName: unemployedRequesterName,
       certified: certified,
+      referenced: referenced,
     );
   }
 
@@ -52,6 +55,7 @@ class CertificationRequest {
   final String unemployedRequesterId;
   final String unemployedRequesterName;
   final bool certified;
+  final bool referenced;
 
   Map<String, dynamic> toMap() {
     return {
@@ -65,6 +69,7 @@ class CertificationRequest {
       'unemployedRequesterId' : unemployedRequesterId,
       'unemployedRequesterName' : unemployedRequesterName,
       'certified' : certified,
+      'referenced' : referenced,
     };
   }
 }

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:enreda_app/app/home/curriculum/pdf_generator/data.dart';
+import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show NetworkAssetBundle, rootBundle;
@@ -38,6 +39,7 @@ Future<Uint8List> generateResume(
     String myCustomEmail,
     String myCustomPhone,
     bool myPhoto,
+    List<CertificationRequest>? myReferences,
     ) async {
   final doc = pw.Document(title: 'Mi Currículum');
 

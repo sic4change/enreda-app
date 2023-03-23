@@ -28,6 +28,7 @@ class StringConst {
   static const String EDUCATION = "Formación";
   static const String EXPERIENCES = "Experiencia de trabajo";
   static const String COMPETENCIES = "Competencias";
+  static const String REFERENCES = "Referencias personales";
   static const String DATA_OF_INTEREST = "Datos de interés";
   static const String LANGUAGES = "Idiomas";
   static const String EVALUATE_COMPETENCY = "Evaluar: ";
@@ -430,6 +431,7 @@ class StringConst {
   static const String COMPETENCIES_LEVEL_INFO = 'Cada competencia se visualiza a través de un código de color, aquí te mostramos sus diferentes niveles hasta llegar a certificar tus competencias:';
   static const String NO_EDUCATION = 'Todavía no has añadido ninguna formación. ¡Chatea con nuestro asistente para añadir una!';
   static const String NO_EXPERIENCE = 'Todavía no has añadido ninguna experiencia. ¡Chatea con nuestro asistente para añadir una!';
+  static const String NO_REFERENCES = 'Todavía no cuentas con ninguna referencia personal. ¡Certifica tus competencias!';
 
   // Profile
   static const String MY_PROFILE = 'Mi perfil';

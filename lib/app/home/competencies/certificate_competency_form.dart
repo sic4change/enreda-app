@@ -16,6 +16,8 @@ import '../../../utils/responsive.dart';
 import '../../../values/values.dart';
 import '../models/certificationRequest.dart';
 
+enum Option { option1, option2 }
+
 class CertificateCompetencyForm extends StatefulWidget {
   const CertificateCompetencyForm({Key? key,
     required this.certificationRequestId,
@@ -29,31 +31,38 @@ class CertificateCompetencyForm extends StatefulWidget {
 
 class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
   late CertificationRequest certificationRequest;
-  bool? certification;
-  bool? _isSelectedTrue;
-  bool? _isSelectedFalse;
-  bool? _isSelected;
-  bool? _buttonDisabled;
-  Color? _selectedColor;
-  Color? _textColorSelectedTrue;
-  Color? _textColorSelectedFalse;
-
+  bool? certification = false;
+  bool? _isSelected = false;
+  bool? _isSelectedData = false;
+  bool? _buttonDisabled = false;
+  Color _selectedColor = AppColors.greyViolet;
+  Color _textColorOpc1 = AppColors.greyDark;
+  Color _textColorOpc2 = AppColors.greyDark;
+  Color _textColorOne = AppColors.greyDark;
+  Color _textColorTwo = AppColors.greyDark;
+  bool isLoading = false;
+  String? codeDialog;
+  String? valueText;
+  int? _selectedCertify;
+  int? _selectedApprove;
+  Color _buttonColor = AppColors.primaryColor;
 
   @override
   void initState() {
     super.initState();
-    certification = false;
-    _isSelectedTrue = false;
-    _isSelectedFalse = false;
-    _textColorSelectedTrue = AppColors.greyDark;
-    _textColorSelectedFalse = AppColors.greyDark;
-    _selectedColor = AppColors.greyViolet;
-    _isSelected = false;
-    _buttonDisabled = false;
   }
 
-  String? codeDialog;
-  String? valueText;
+  void _selectApproval(int choice) {
+    setState(() {
+      _selectedApprove = choice;
+    });
+  }
+
+  void _selectCertification(int choice) {
+    setState(() {
+      _selectedCertify = choice;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,12 +194,12 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                     ),
                   ),
                   SpaceW12(),
-                  CustomTextTitle(title: certificationRequest.competencyName),
+                  CustomTextTitle(title: certificationRequest.competencyName.toUpperCase()),
                 ],
               ),
-              SpaceH20(),
+              SizedBox(height: Constants.mainPadding),
               Text(
-                'Seleccione una opción:',
+                'Selecciona una opción:',
                 style: textTheme.bodyText1?.copyWith(
                   color: AppColors.greyDark,
                   height: 1.5,
@@ -198,10 +207,9 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                   fontSize: fontSize,
                 ),
               ),
-              _buildForm(context),
+              _buildFormCertify(context),
               SpaceH12(),
               Divider(),
-
             ],
           ),
         )
@@ -209,35 +217,34 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
     );
   }
 
-  Widget _buildForm(BuildContext context) {
+  Widget _buildFormCertify(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 14, 18, md: 15);
     return Column(
         children: [
-          SizedBox(height: Constants.mainPadding),
+          SizedBox(height: Constants.mainPadding / 2),
           Container(
-            width: Responsive.isMobile(context) ? 300 : 600,
+            width: Responsive.isMobile(context) ? 300 : 500,
             child: CustomFlexRowColumn(
               childLeft: Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: ChoiceChip(
                   label: Text('APTO',
                     style: textTheme.bodyText1?.copyWith(
-                      color: _textColorSelectedTrue,
+                      color: _textColorOpc1,
                       height: 1.5,
                       fontWeight: FontWeight.w800,
                       fontSize: fontSize,
                     ),),
                   labelPadding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
                   elevation: 1.0,
-                  selected: _isSelectedTrue!,
+                  selected: _selectedCertify == 0,
                   selectedColor: _selectedColor,
                   onSelected: (value) {
                     setState(() {
-                      _isSelectedTrue = value;
-                      _isSelectedFalse = false;
-                      _textColorSelectedTrue = AppColors.white;
-                      _textColorSelectedFalse = AppColors.greyDark;
+                      _selectCertification(0);
+                      _textColorOpc1 = AppColors.white;
+                      _textColorOpc2 = AppColors.greyDark;
                       _isSelected = true;
                     });
                   },
@@ -248,20 +255,19 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                 child: ChoiceChip(
                   label: Text('NO APTO',
                     style: textTheme.bodyText1?.copyWith(
-                      color: _textColorSelectedFalse,
+                      color: _textColorOpc2,
                       height: 1.5,
                       fontWeight: FontWeight.w800,
                       fontSize: fontSize,
                     ),),
                   labelPadding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
-                  selected: _isSelectedFalse!,
+                  selected: _selectedCertify == 1,
                   selectedColor: _selectedColor,
                   onSelected: (value) {
                     setState(() {
-                      _isSelectedFalse = value;
-                      _isSelectedTrue = false;
-                      _textColorSelectedFalse = AppColors.white;
-                      _textColorSelectedTrue = AppColors.greyDark;
+                      _selectCertification(1);
+                      _textColorOpc2 = AppColors.white;
+                      _textColorOpc1 = AppColors.greyDark;
                       _isSelected = true;
                     });
                   },
@@ -269,17 +275,65 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
               ),
             ),
           ),
+          SizedBox(height: Constants.mainPadding),
+          Text(
+            '¿Puedo incluir tus datos de contacto en mi CV?',
+            style: textTheme.bodyText1?.copyWith(
+              color: AppColors.greyDark,
+              height: 1.5,
+              fontWeight: FontWeight.w800,
+              fontSize: fontSize,
+            ),
+          ),
           SizedBox(height: Constants.mainPadding / 2),
+          Container(
+            width: 400,
+            child: CustomFlexRowColumn(
+              childLeft: ChoiceChip(
+                label: CustomTextChip(text: 'SI', color: _textColorOne),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                selected: _selectedApprove == 0,
+                selectedColor: AppColors.greyViolet,
+                onSelected: (bool selected) {
+                  _selectApproval(0);
+                  _textColorOne = AppColors.white;
+                  _textColorTwo = AppColors.greyDark;
+                  _isSelectedData = true;
+                },
+              ),
+              childRight: ChoiceChip(
+                label: CustomTextChip(text: 'NO', color: _textColorTwo),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                selected: _selectedApprove == 1,
+                selectedColor: AppColors.greyViolet,
+                onSelected: (bool selected) {
+                  _selectApproval(1);
+                  _textColorOne = AppColors.greyDark;
+                  _textColorTwo = AppColors.white;
+                  _isSelectedData = true;
+                },
+              ),
+            ),
+          ),
+          SizedBox(height: Constants.mainPadding / 2),
+          isLoading ? Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Center(child: CircularProgressIndicator()),
+          ) :
           CustomButton(
               text: 'Certificar competencia',
-              color: AppColors.primaryColor,
+              color: _buttonColor,
               onPressed: _buttonDisabled == false ? () async {
-                if (_isSelected == true) {
+                if (_isSelected == true && _isSelectedData == true) {
                   try {
                     final database = Provider.of<Database>(context, listen: false);
-                    bool selected = _isSelectedTrue == true ? true : false;
-                    await database.updateCertificationRequest(certificationRequest, selected);
+                    bool certified = _selectedCertify == 0 ? true : false;
+                    bool referenced = _selectedApprove == 0 ? true : false;
+                    setState(() => isLoading = true);
+                    await database.updateCertificationRequest(certificationRequest, certified, referenced);
                     setState(() {
+                      isLoading = false;
+                      _buttonColor = AppColors.grey350;
                       _buttonDisabled = true;
                     });
                     showAlertDialog(
@@ -295,7 +349,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                 } else {
                   showAlertDialog(context,
                       title: 'Debe seleccionar al menos una opción:',
-                      content: 'Apto o No Apto',
+                      content: _isSelected == true ? '¿Apruebas compartir sus datos de contacto?' : 'Apto o No Apto.',
                       defaultActionText: 'ACEPTAR');
                 }
               } : null

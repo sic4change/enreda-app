@@ -85,7 +85,7 @@ Future<Uint8List> generateResume1(
                                 .defaultTextStyle
                                 .copyWith(fontWeight: pw.FontWeight.bold, color: altLilac, lineSpacing: 0)),
                         pw.Padding(padding: const pw.EdgeInsets.only(top: 10)),
-                        pw.Text(user?.education!.toUpperCase() ?? '',
+                        pw.Text(user?.education?.label.toUpperCase() ?? '',
                             textScaleFactor: 1,
                             style: pw.Theme.of(context)
                                 .defaultTextStyle
@@ -162,7 +162,7 @@ Future<Uint8List> generateResume1(
                             pw.SizedBox(height: 5),
                           ],
                         ),
-                        myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.REFERENCES) : pw.Container(),
+                        myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.PERSONAL_REFERENCES) : pw.Container(),
                         for (var reference in myReferences!)
                           _BlockIcon(
                             title: '${reference.certifierName}',
@@ -259,6 +259,7 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
       bottom: 2.0 * PdfPageFormat.cm);
   return pw.PageTheme(
     pageFormat: format,
+    margin: pw.EdgeInsets.only(top: 70, left: 70, right: 50, bottom: 10),
     theme: pw.ThemeData.withFont(
       base: await PdfGoogleFonts.latoRegular(),
       bold: await PdfGoogleFonts.alataRegular(),

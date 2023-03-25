@@ -28,7 +28,8 @@ class StringConst {
   static const String EDUCATION = "Formación";
   static const String EXPERIENCES = "Experiencia de trabajo";
   static const String COMPETENCIES = "Competencias";
-  static const String REFERENCES = "Referencias personales";
+  static const String PERSONAL_REFERENCES = "Referencias personales";
+  static const String REFERENCES = "Referencias";
   static const String DATA_OF_INTEREST = "Datos de interés";
   static const String LANGUAGES = "Idiomas";
   static const String EVALUATE_COMPETENCY = "Evaluar: ";
@@ -438,6 +439,7 @@ class StringConst {
   static const String MY_CV = "Mi Currículum";
   static const String PERSONAL_DATA = 'Datos personales';
   static const String ABOUT_ME = "Un poco más sobre mí...";
+  static const String PROFILE = "Carrera";
 
   static const String LOREM_IMPSUM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque, tortor amet, adipiscing felis nullam. Aliquet commodo est pretium vitae hendrerit fames vitae. Orci, feugiat consectetur aliquet sodales mus sodales a urna.\n\n'
       'Rhoncus id volutpat, diam adipiscing risus, enim cursus ac. Amet nunc nec eu diam. Tincidunt at vulputate arcu dis justo. Ut egestas ac rhoncus, sapien.';

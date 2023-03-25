@@ -79,7 +79,7 @@ Future<Uint8List> generateResume(
                                 .defaultTextStyle
                                 .copyWith(fontWeight: pw.FontWeight.bold, color: blue)),
                         pw.Padding(padding: const pw.EdgeInsets.only(top: 10)),
-                        pw.Text(user?.education!.toUpperCase() ?? '',
+                        pw.Text(user?.education?.label.toUpperCase() ?? '',
                             textScaleFactor: 1.2,
                             style: pw.Theme.of(context)
                                 .defaultTextStyle

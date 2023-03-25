@@ -1,4 +1,5 @@
 import 'package:enreda_app/app/home/models/addressUser.dart';
+import 'package:enreda_app/app/home/models/education.dart';
 import 'package:enreda_app/app/home/models/interestsUserEnreda.dart';
 import 'package:enreda_app/app/home/models/profilepic.dart';
 
@@ -53,6 +54,7 @@ class UserEnreda {
     final String? province = data['address']['province'];
     final String? city = data['address']['city'];
     final String? postalCode = data['address']['postalCode'];
+
     List<String> abilities = [];
     try {
       data['motivation']['abilities'].forEach((ability) {
@@ -87,13 +89,18 @@ class UserEnreda {
       print('user does not have certifications');
     }
 
-    final ProfilePic profilePic =
-        new ProfilePic(src: photo, title: 'photo.jpg');
+    final ProfilePic profilePic = new ProfilePic(src: photo, title: 'photo.jpg');
     final Address address = new Address(
         country: country,
         province: province,
         city: city,
         postalCode: postalCode);
+
+    final Education education = new Education(
+      label: data['education']['label'],
+      value: data['education']['value'],
+      order: data['education']['order'],
+    );
 
     final bool? showChatWelcome = data['showChatWelcome'];
 
@@ -102,13 +109,6 @@ class UserEnreda {
       (data['competencies'] as Map<String, dynamic>).forEach((key, value) {
         competencies[key] = value;
       });
-    }
-
-    String? education;
-    try {
-      education = data['education']['value'];
-    } catch (e) {
-      print('user does not have education data');
     }
 
     List<String> dataOfInterest = [];
@@ -168,6 +168,7 @@ class UserEnreda {
   final String? userId;
   String? photo;
   final ProfilePic? profilePic;
+  final Education? education;
   final String? phone;
   final DateTime? birthday;
   final String? country;
@@ -183,7 +184,6 @@ class UserEnreda {
   final String? role;
   bool? showChatWelcome;
   final Map<String, String> competencies;
-  final String? education;
   final List<String> dataOfInterest;
   final List<String> languages;
   final String? aboutMe;
@@ -212,8 +212,7 @@ class UserEnreda {
       'dataOfInterest': dataOfInterest,
       'languages': languages,
       'aboutMe': aboutMe,
-      /*'education.label': education,
-      'education.value': education,*/
+      'education': education?.toMap(),
     };
   }
 
@@ -243,7 +242,7 @@ class UserEnreda {
     String? role,
     bool? showChatWelcome,
     Map<String, String>? competencies,
-    String? education,
+    Education? education,
     List<String>? dataOfInterest,
     List<String>? languages,
     String? aboutMe,

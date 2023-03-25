@@ -83,7 +83,7 @@ Future<Uint8List> generateResume2(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: <pw.Widget>[
                   pw.Container(
-                    height: pageTheme.pageFormat.availableHeight,
+                    //height: pageTheme.pageFormat.availableHeight,
                     child: pw.Padding(
                       padding: const pw.EdgeInsets.symmetric(horizontal: 30.0),
                       child: pw.Column(
@@ -96,7 +96,6 @@ Future<Uint8List> generateResume2(
                               pw.SizedBox(height: 180),
                               myCustomEmail != "" ?
                               _Category(title: StringConst.PERSONAL_DATA, color: white) : pw.Container(),
-                              pw.SizedBox(height: 5),
                               myCustomEmail != "" ?
                               pw.Row(
                                 children: [
@@ -105,7 +104,7 @@ Future<Uint8List> generateResume2(
                                   _UrlText(myCustomEmail, 'mailto: $myCustomEmail')
                                 ],
                               ) : pw.Container(),
-                              myCustomPhone != "" ? pw.Divider(color: white) : pw.Container(),
+                              pw.SizedBox(height: 2),
                               myCustomPhone != "" ?
                               pw.Row(
                                   children: [
@@ -120,7 +119,7 @@ Future<Uint8List> generateResume2(
                                             color: white)) ,
                                   ]
                               ) : pw.Container(),
-                              city != "" || province != "" || country != "" ? pw.Divider(color: white) : pw.Container(),
+                              pw.SizedBox(height: 2),
                               city != "" || province != "" || country != "" ?
                               pw.Row(
                                   children: [
@@ -161,35 +160,44 @@ Future<Uint8List> generateResume2(
                                     //     'wholeprices.ca', 'https://wholeprices.ca'),
                                   ]
                               ) : pw.Container(),
-                              pw.SizedBox(height: 15),
+                              pw.Divider(color: white),
+                              pw.SizedBox(height: 4),
                               competenciesNames != null && competenciesNames.isNotEmpty ? _Category(title: StringConst.COMPETENCIES, color: white) : pw.Container(),
                               for (var data in competenciesNames!)
                                 _BlockSimpleList(
                                   title: data.toUpperCase(),
                                 ),
-                              pw.SizedBox(height: 15),
+                              pw.SizedBox(height: 5),
                               myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST, color: white) : pw.Container(),
                               for (var data in dataOfInterest!)
                                 _BlockSimpleList(
                                   title: data,
                                 ),
-                              pw.SizedBox(height: 15),
+                              pw.SizedBox(height: 5),
                               languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES, color: white) : pw.Container(),
                               for (var data in languages!)
                                 _BlockSimpleList(
                                   title: data,
                                 ),
-                              pw.SizedBox(height: 15),
-                              pw.Center(
-                                child: pw.BarcodeWidget(
-                                    data: 'mailto:<${user?.email}>?subject=&body=',
-                                    width: 60,
-                                    height: 60,
-                                    barcode: pw.Barcode.qrCode(),
-                                    drawText: false,
-                                    color: white
+                              pw.SizedBox(height: 5),
+                              myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.REFERENCES, color: white) : pw.Container(),
+                              for (var reference in myReferences!)
+                                _BlockIcon(
+                                  title: '${reference.certifierName}',
+                                  description1: '${reference.certifierPosition} - ${reference.certifierCompany}',
+                                  description2: '${reference.email}',
+                                  description3: '${reference.phone}',
                                 ),
-                              ),
+                              // pw.Center(
+                              //   child: pw.BarcodeWidget(
+                              //       data: 'mailto:<${user?.email}>?subject=&body=',
+                              //       width: 60,
+                              //       height: 60,
+                              //       barcode: pw.Barcode.qrCode(),
+                              //       drawText: false,
+                              //       color: white
+                              //   ),
+                              // ),
                             ],
                           ),
                         ],
@@ -217,7 +225,7 @@ Future<Uint8List> generateResume2(
                                 .defaultTextStyle
                                 .copyWith(fontWeight: pw.FontWeight.bold, color: black)),
                         pw.Padding(padding: const pw.EdgeInsets.only(top: 5)),
-                        pw.Text(user?.education!.toUpperCase() ?? '',
+                        pw.Text(user?.education?.label.toUpperCase() ?? '',
                             textScaleFactor: 1,
                             style: pw.Theme.of(context)
                                 .defaultTextStyle
@@ -274,7 +282,7 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format, bool myPhoto, profileIma
       bottom: 2.0 * PdfPageFormat.cm);
   return pw.PageTheme(
     pageFormat: format,
-    margin: pw.EdgeInsets.only(top: 70, left: 0.0, right: 20),
+    margin: pw.EdgeInsets.only(top: 70, left: 0.0, right: 20, bottom: 10),
     theme: pw.ThemeData.withFont(
       base: await PdfGoogleFonts.latoRegular(),
       bold: await PdfGoogleFonts.aliceRegular(),
@@ -560,5 +568,82 @@ class _BlockSimpleList extends pw.StatelessWidget {
               ]),
           pw.SizedBox(height: 5),
         ]);
+  }
+}
+
+class _BlockIcon extends pw.StatelessWidget {
+  _BlockIcon({
+    this.title,
+    this.description1,
+    this.description2,
+    this.description3,
+  });
+
+  final String? title;
+  final String? description1;
+  final String? description2;
+  final String? description3;
+
+  @override
+  pw.Widget build(pw.Context context) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: <pw.Widget>[
+        pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: <pw.Widget>[
+              title != null ? pw.Expanded(
+                child: pw.Text(
+                    title!,
+                    textScaleFactor: 0.9,
+                    style: pw.Theme.of(context)
+                        .defaultTextStyle
+                        .copyWith(
+                        fontWeight: pw.FontWeight.bold,
+                        color: white)),
+              ) : pw.Container()
+            ]),
+        pw.SizedBox(height: 4),
+        pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: <pw.Widget>[
+              description1 != null ? pw.Expanded(
+                child: pw.Text(
+                    description1!.toUpperCase(),
+                    textScaleFactor: 0.8,
+                    style: pw.Theme.of(context)
+                        .defaultTextStyle
+                        .copyWith(
+                        fontWeight: pw.FontWeight.bold,
+                        color: white)),
+              ) : pw.Container()
+            ]),
+        pw.SizedBox(height: 4),
+        description2 != "" ?
+        pw.Row(
+          children: [
+            pw.Icon(pw.IconData(0xe0be), size: 10.0, color:white),
+            pw.SizedBox(width: 4),
+            _UrlText(description2!, 'mailto: $description1')
+          ],
+        ) : pw.Container(),
+        pw.SizedBox(height: 4),
+        description3 != "" ?
+        pw.Row(
+            children: [
+              pw.Icon(pw.IconData(0xe0b0), size: 10.0, color:white),
+              pw.SizedBox(width: 4),
+              pw.Text(description3!,
+                  textScaleFactor: 0.8,
+                  style: pw.Theme.of(context)
+                      .defaultTextStyle
+                      .copyWith(
+                      fontWeight: pw.FontWeight.normal,
+                      color: white)) ,
+            ]
+        ) : pw.Container(),
+        pw.SizedBox(height: 8),
+      ],
+    );
   }
 }

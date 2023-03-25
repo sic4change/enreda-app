@@ -47,7 +47,7 @@ class AppTheme {
     onBackground: AppColors.primaryColor,
     error: _lightFillColor,
     onError: _lightFillColor,
-    onPrimary: _lightFillColor,
+    onPrimary: Color(0xFF241E30),
     onSecondary: Color(0xFF322942),
     onSurface: Color(0xFF241E30),
     brightness: Brightness.light,

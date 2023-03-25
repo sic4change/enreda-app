@@ -60,11 +60,12 @@ class UnemployedRegistering extends StatefulWidget {
 }
 
 class _UnemployedRegisteringState extends State<UnemployedRegistering> {
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   final _formKeyMotivations = GlobalKey<FormState>();
   final _formKeyInterests = GlobalKey<FormState>();
   final _checkFieldKey = GlobalKey<FormState>();
+  bool isLoading = false;
+
   String? _email;
   String? _firstName;
   String? _lastName;
@@ -232,7 +233,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
 
       final education = Education(
           label: educationName,
-          value: educationValue,
+          value: educationValue!,
           order: 0
       );
 
@@ -274,7 +275,9 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
       );
       try {
         final database = Provider.of<Database>(context, listen: false);
+        setState(() => isLoading = true);
         await database.addUnemployedUser(unemployedUser);
+        setState(() => isLoading = false);
         showAlertDialog(
           context,
           title: StringConst.FORM_SUCCESS,
@@ -754,7 +757,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   void _buildEducationStreamBuilder_setState(Education? education) {
     setState(() {
       this.selectedEducation = education;
-      educationName = education != null ? education.label : "";
+      educationName = (education != null ? education.label : "");
     });
     educationValue = education?.value;
   }
@@ -1010,6 +1013,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                                         onPressed: onStepCancel,
                                       ),
                                     SizedBox(width: Borders.kDefaultPaddingDouble),
+                                    isLoading ? Center(child: CircularProgressIndicator(color: AppColors.primary300,)) :
                                     EnredaButton(
                                       buttonTitle: isLastStep ? StringConst.FORM_CONFIRM : StringConst.FORM_NEXT,
                                       width: contactBtnWidth,

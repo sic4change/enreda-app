@@ -1,8 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/curriculum/pdf_generator/pdf_preview.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
+import 'package:enreda_app/common_widgets/precached_avatar.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/values.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../common_widgets/custom_text.dart';
@@ -139,6 +142,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
   }
 
   Widget _myCurriculumWeb(BuildContext context){
+    var profilePic = widget.user?.profilePic?.src ?? "";
     return Container(
       margin: EdgeInsets.all(20.0),
       height: MediaQuery.of(context).size.height * 0.90,
@@ -193,27 +197,41 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
+                                  !kIsWeb ?
                                   ClipRRect(
                                     borderRadius: BorderRadius.all(Radius.circular(60)),
                                     child:
                                     Center(
                                       child:
-                                      widget.user?.profilePic?.src == "" ?
+                                      profilePic == "" ?
                                       Container(
                                         color:  Colors.transparent,
                                         height: 120,
                                         width: 120,
                                         child: Image.asset(ImagePath.USER_DEFAULT),
-                                      ) :
-                                      Image.network(
-                                          widget.user?.profilePic?.src ?? ImagePath.USER_DEFAULT,
+                                      ):
+                                      CachedNetworkImage(
                                           width: 120,
                                           height: 120,
                                           fit: BoxFit.cover,
                                           alignment: Alignment.center,
-                                          ),
+                                          imageUrl: profilePic),
                                     ),
-                                  )
+                                  ):
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.all(Radius.circular(60)),
+                                    child:
+                                    widget.user?.profilePic?.src == "" ?
+                                    Container(
+                                      color:  Colors.transparent,
+                                      height: 120,
+                                      width: 120,
+                                      child: Image.asset(ImagePath.USER_DEFAULT),
+                                    ):
+                                    PrecacheAvatarCard(
+                                      imageUrl: profilePic,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -269,6 +287,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
 
   Widget _myCurriculumMobile(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    var profilePic = widget.user?.profilePic?.src ?? "";
     return SingleChildScrollView(
       child: Container(
         width: MediaQuery.of(context).size.width * 0.95,
@@ -341,23 +360,39 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          !kIsWeb ?
                           ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(60)),
                             child:
                             Center(
-                              child: widget.user?.profilePic?.src == "" ?
+                              child:
+                              profilePic == "" ?
                               Container(
                                 color:  Colors.transparent,
                                 height: 120,
                                 width: 120,
                                 child: Image.asset(ImagePath.USER_DEFAULT),
                               ):
-                              Image.network(
-                                widget.user?.profilePic?.src ?? ImagePath.USER_DEFAULT,
-                                width: 120,
-                                height: 120,
-                                fit: BoxFit.cover,
-                              ),
+                              CachedNetworkImage(
+                                  width: 120,
+                                  height: 120,
+                                  fit: BoxFit.cover,
+                                  alignment: Alignment.center,
+                                  imageUrl: profilePic),
+                            ),
+                          ):
+                          ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(60)),
+                            child:
+                            widget.user?.profilePic?.src == "" ?
+                            Container(
+                              color:  Colors.transparent,
+                              height: 120,
+                              width: 120,
+                              child: Image.asset(ImagePath.USER_DEFAULT),
+                            ):
+                            PrecacheAvatarCard(
+                              imageUrl: profilePic,
                             ),
                           ),
                         ],
@@ -391,7 +426,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 ],
               ),
               SpaceH24(),
-              Center(child: CustomText(title: widget.user?.education!.toUpperCase() ?? '')),
+              Center(child: CustomText(title: widget.user?.education?.label.toUpperCase() ?? '')),
               SpaceH24(),
               _buildPersonalData(context),
               SpaceH24(),
@@ -465,7 +500,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
         ),
         SpaceH20(),
         Text(
-          widget.user?.education?.toUpperCase() ?? '',
+          widget.user?.education?.label.toUpperCase() ?? '',
           style: textTheme.bodyLarge?.copyWith(
               fontSize: Responsive.isDesktop(context) ? 16 : 12.0,
               color: Constants.darkGray),
@@ -1181,7 +1216,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomTextTitle(title: StringConst.REFERENCES.toUpperCase()),
+        CustomTextTitle(title: StringConst.PERSONAL_REFERENCES.toUpperCase()),
         SpaceH4(),
         Container(
           width: double.infinity,

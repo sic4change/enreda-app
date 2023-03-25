@@ -1,9 +1,9 @@
 class Education {
-  Education({this.educationId, required this.label, this.value, required this.order });
+  Education({this.educationId, required this.label, required this.value, required this.order });
 
   final String? educationId;
   final String label;
-  final String? value;
+  final String value;
   final int order;
 
   factory Education.fromMap(Map<String, dynamic> data, String documentId) {

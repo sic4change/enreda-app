@@ -70,7 +70,6 @@ Future<Uint8List> generateResume3(
   List<String>? dataOfInterest = myDataOfInterest;
   List<String>? languages = languagesNames;
 
-
   doc.addPage(
     pw.MultiPage(
       pageTheme: pageTheme,
@@ -91,11 +90,10 @@ Future<Uint8List> generateResume3(
                         child: pw.Column(
                           crossAxisAlignment: pw.CrossAxisAlignment.center,
                           children: <pw.Widget>[
-                            pw.Padding(padding: const pw.EdgeInsets.only(top: 20)),
+                            pw.Padding(padding: const pw.EdgeInsets.only(top: 10)),
                             pw.Column(
                               crossAxisAlignment: pw.CrossAxisAlignment.center,
                               children: <pw.Widget>[
-                                pw.SizedBox(height: 10),
                                 myPhoto == true ? pw.ClipOval(
                                   child: pw.Container(
                                     width: 120,
@@ -110,8 +108,8 @@ Future<Uint8List> generateResume3(
                                     style: pw.Theme.of(context)
                                         .defaultTextStyle
                                         .copyWith(fontWeight: pw.FontWeight.bold, color: white)),
-                                pw.SizedBox(height: 15),
-                                pw.Text(user?.education!.toUpperCase() ?? '',
+                                pw.SizedBox(height: 5),
+                                pw.Text(user?.education?.label.toUpperCase() ?? '',
                                     textScaleFactor: 1,
                                     textAlign: pw.TextAlign.center,
                                     style: pw.Theme.of(context)
@@ -119,7 +117,7 @@ Future<Uint8List> generateResume3(
                                         .copyWith(
                                         fontWeight: pw.FontWeight.normal,
                                         color: white)),
-                                pw.SizedBox(height: 15),
+                                pw.SizedBox(height: 5),
                                 myCustomEmail != "" ?
                                 pw.Row(
                                   mainAxisAlignment: pw.MainAxisAlignment.center,
@@ -188,24 +186,32 @@ Future<Uint8List> generateResume3(
                                       //     'wholeprices.ca', 'https://wholeprices.ca'),
                                     ]
                                 ) : pw.Container(),
-                                pw.SizedBox(height: 15),
+                                pw.SizedBox(height: 5),
                                 competenciesNames != null && competenciesNames.isNotEmpty ? _CategoryLabel(title: StringConst.COMPETENCIES, color: green) : pw.Container(),
                                 for (var data in competenciesNames!)
                                   _BlockSimpleListLabel(
                                     title: data.toUpperCase(),
                                     color: white
                                   ),
-                                pw.SizedBox(height: 20),
-                                pw.Center(
-                                  child: pw.BarcodeWidget(
-                                      data: 'mailto:<${user?.email}>?subject=&body=',
-                                      width: 60,
-                                      height: 60,
-                                      barcode: pw.Barcode.qrCode(),
-                                      drawText: false,
-                                      color: white
+                                pw.SizedBox(height: 5),
+                                myReferences != null && myReferences.isNotEmpty ? _CategoryLabel(title: StringConst.REFERENCES, color: green) : pw.Container(),
+                                for (var reference in myReferences!)
+                                  _BlockIcon(
+                                    title: '${reference.certifierName}',
+                                    description1: '${reference.certifierPosition} - ${reference.certifierCompany}',
+                                    description2: '${reference.email}',
+                                    description3: '${reference.phone}',
                                   ),
-                                ),
+                                // pw.Center(
+                                //   child: pw.BarcodeWidget(
+                                //       data: 'mailto:<${user?.email}>?subject=&body=',
+                                //       width: 60,
+                                //       height: 60,
+                                //       barcode: pw.Barcode.qrCode(),
+                                //       drawText: false,
+                                //       color: white
+                                //   ),
+                                // ),
                               ],
                             ),
                           ],
@@ -310,7 +316,7 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format, bool myPhoto, profileIma
       bottom: 2.0 * PdfPageFormat.cm);
   return pw.PageTheme(
     pageFormat: format,
-    margin: pw.EdgeInsets.only(top: 70, left: 0.0, right: 20),
+    margin: pw.EdgeInsets.only(top: 70, left: 0.0, right: 20, bottom: 10),
     theme: pw.ThemeData.withFont(
       base: await PdfGoogleFonts.latoRegular(),
       bold: await PdfGoogleFonts.alataRegular(),
@@ -648,6 +654,83 @@ class _CategoryLabel extends pw.StatelessWidget {
               .defaultTextStyle
               .copyWith(fontWeight: pw.FontWeight.normal, color: color)
       ),
+    );
+  }
+}
+
+class _BlockIcon extends pw.StatelessWidget {
+  _BlockIcon({
+    this.title,
+    this.description1,
+    this.description2,
+    this.description3,
+  });
+
+  final String? title;
+  final String? description1;
+  final String? description2;
+  final String? description3;
+
+  @override
+  pw.Widget build(pw.Context context) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: <pw.Widget>[
+        pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: <pw.Widget>[
+              title != null ? pw.Expanded(
+                child: pw.Text(
+                    title!,
+                    textScaleFactor: 0.9,
+                    style: pw.Theme.of(context)
+                        .defaultTextStyle
+                        .copyWith(
+                        fontWeight: pw.FontWeight.bold,
+                        color: white)),
+              ) : pw.Container()
+            ]),
+        pw.SizedBox(height: 2),
+        pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: <pw.Widget>[
+              description1 != null ? pw.Expanded(
+                child: pw.Text(
+                    description1!.toUpperCase(),
+                    textScaleFactor: 0.8,
+                    style: pw.Theme.of(context)
+                        .defaultTextStyle
+                        .copyWith(
+                        fontWeight: pw.FontWeight.bold,
+                        color: white)),
+              ) : pw.Container()
+            ]),
+        pw.SizedBox(height: 2),
+        description2 != "" ?
+        pw.Row(
+          children: [
+            pw.Icon(pw.IconData(0xe0be), size: 10.0, color:white),
+            pw.SizedBox(width: 4),
+            _UrlText(description2!, 'mailto: $description1')
+          ],
+        ) : pw.Container(),
+        pw.SizedBox(height: 4),
+        description3 != "" ?
+        pw.Row(
+            children: [
+              pw.Icon(pw.IconData(0xe0b0), size: 10.0, color:white),
+              pw.SizedBox(width: 4),
+              pw.Text(description3!,
+                  textScaleFactor: 0.8,
+                  style: pw.Theme.of(context)
+                      .defaultTextStyle
+                      .copyWith(
+                      fontWeight: pw.FontWeight.normal,
+                      color: white)) ,
+            ]
+        ) : pw.Container(),
+        pw.SizedBox(height: 7),
+      ],
     );
   }
 }

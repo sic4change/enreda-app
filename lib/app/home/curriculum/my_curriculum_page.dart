@@ -27,6 +27,7 @@ import '../../../common_widgets/custom_text.dart';
 import '../../../common_widgets/precached_avatar.dart';
 import '../../../utils/my_scroll_behaviour.dart';
 import '../../../values/values.dart';
+import '../models/education.dart';
 
 class MyCurriculumPage extends StatefulWidget {
   @override
@@ -242,6 +243,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildCVHeader(context, user, profilePic, competenciesNames),
+                    _buildMyCareer(context),
                     SpaceH40(),
                     _buildMyEducation(context, user),
                     SpaceH40(),
@@ -396,7 +398,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 ],
               ),
               SpaceH24(),
-              CustomText(title: user?.education!.toUpperCase() ?? ''),
+              _buildMyCareer(context),
               SpaceH24(),
               CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase()),
               Row(
@@ -453,7 +455,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
 
   Widget _buildCVHeader(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames) {
     final textTheme = Theme.of(context).textTheme;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -518,14 +519,70 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               color: Constants.penBlue),
         ),
         SpaceH20(),
-        Text(
-          user?.education?.toUpperCase() ?? '',
-          style: textTheme.bodyLarge?.copyWith(
-              fontSize: Responsive.isDesktop(context) ? 16 : 12.0,
-              color: Constants.darkGray),
-        ),
       ],
     );
+  }
+
+  Widget _buildMyCareer(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+    final textTheme = Theme.of(context).textTheme;
+    var isEditable = false;
+    final textController = TextEditingController();
+    final focusNode = FocusNode();
+    textController.text = user?.education?.label ?? "";
+
+    return StatefulBuilder(builder: (context, setState) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child:
+                CustomTextTitle(title: StringConst.PROFILE.toUpperCase()),
+              ),
+              InkWell(
+                onTap: () {
+                  Education education = Education(
+                      label: textController.text,
+                      value: textController.text,
+                      order: 0
+                  );
+                  if (isEditable)
+                    database.setUserEnreda(
+                        user!.copyWith(education: education));
+                  setState(() {
+                    isEditable = !isEditable;
+                    if (isEditable) focusNode.requestFocus();
+                  });
+                },
+                child: Icon(
+                  isEditable ? Icons.save : Icons.edit_outlined,
+                  size: Responsive.isDesktop(context) ? 18 : 15.0,
+                  color: Constants.darkGray,
+                ),
+              ),
+              SizedBox(width: 30,)
+            ],
+          ),
+          if (!isEditable)
+            CustomTextBody(
+                text: user?.education?.label != null
+                    ? user?.education?.label ?? ''
+                    : 'Aún no has añadido información de tu carrera'),
+          if (isEditable)
+            TextField(
+              controller: textController,
+              focusNode: focusNode,
+              minLines: 1,
+              maxLines: null,
+              style: textTheme.bodyLarge?.copyWith(
+                  fontSize: Responsive.isDesktop(context) ? 15 : 14,
+                  color: Constants.darkGray),
+            )
+        ],
+      );
+    });
   }
 
   Widget _buildAboutMe(BuildContext context) {
@@ -1132,7 +1189,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
       children: [
         Row(
           children: [
-            CustomTextTitle(title: StringConst.REFERENCES.toUpperCase()),
+            CustomTextTitle(title: StringConst.PERSONAL_REFERENCES.toUpperCase()),
             SpaceW12(),
           ],
         ),

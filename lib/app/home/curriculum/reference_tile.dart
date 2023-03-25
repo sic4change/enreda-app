@@ -8,6 +8,7 @@ import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -49,9 +50,30 @@ class ReferenceTile extends StatelessWidget {
                     )
                   ]),
             ),
-            CustomTextSmall(text: '${certificationRequest.email}'),
-            certificationRequest.phone != "" ? CustomTextSmall(text: '${certificationRequest.phone}') : Container(),
-          ],
+
+            Row(
+              children: [
+                Icon(
+                  Icons.mail,
+                  color: AppColors.greyDark,
+                  size: 12.0,
+                ),
+                SpaceW4(),
+                CustomTextSmall(text: '${certificationRequest.email}'),
+              ],
+            ),
+            certificationRequest.phone != "" ? Row(
+              children: [
+                Icon(
+                  Icons.phone,
+                  color: AppColors.greyDark,
+                  size: 12.0,
+                ),
+                SpaceW4(),
+                CustomTextSmall(text: '${certificationRequest.phone}')
+              ],
+            ) : Container(),
+          ]
         ),
         SpaceH8(),
       ],

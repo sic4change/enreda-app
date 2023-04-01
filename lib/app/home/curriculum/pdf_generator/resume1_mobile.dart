@@ -210,11 +210,14 @@ Future<Uint8List> generateResume1(
                         myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_EXPERIENCES) : pw.Container(),
                         for (var experience in myExperiences!)
                           _Block(
-                            title: experience.activityRole == null && experience.position == null || experience.position == "" ? experience.activity :
-                            experience.activityRole != null ? '${experience.activityRole} - ${experience.activity}' :  experience.position,
-                            description1:'${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null
-                                ? formatter.format(experience.endDate!.toDate())
-                                : 'Actualmente'}',
+                            title: experience.activityRole != null &&
+                                    experience.activity != null
+                                ? '${experience.activityRole} - ${experience.activity}'
+                                : experience.position == ""
+                                    ? experience.activity
+                                    : experience.position,
+                            description1:
+                                '${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
                             description2: '${experience.location}',
                           ),
                         pw.SizedBox(height: 5),

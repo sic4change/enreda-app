@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
+import 'package:enreda_app/app/home/curriculum/stream_builder_professionsActivities.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
@@ -8,12 +9,15 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/api_path.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common_widgets/flex_row_column.dart';
+import '../models/activity.dart';
 
 class ExperienceForm extends StatefulWidget {
   const ExperienceForm({Key? key, this.experience, required this.isEducation})
@@ -35,12 +39,19 @@ class _ExperienceFormState extends State<ExperienceForm> {
       _experienceRoles = [],
       _experienceLevels = [];
   final _organizationController = TextEditingController();
+  final _positionController = TextEditingController();
   final _locationController = TextEditingController();
   Timestamp? _startDate, _endDate;
   String? _workType, _context, _contextPlace;
   final _formKey = GlobalKey<FormState>();
   bool _experienceIsLoaded = false;
   Map<String, int> userCompetencies = {};
+
+  TextEditingController _textEditingControllerProfessionsActivities = TextEditingController();
+  Set<Activity> selectedProfessionActivities = {};
+  List<String> professionActivities = [];
+  String? _professionActivityId;
+  List<String>? activitiesIds = [];
 
   @override
   void initState() {
@@ -50,7 +61,9 @@ class _ExperienceFormState extends State<ExperienceForm> {
       _startDate = _experience.startDate;
       _endDate = _experience.endDate;
       _organizationController.text = _experience.organization ?? '';
+      _positionController.text = _experience.position ?? '';
       _locationController.text = _experience.location;
+      _textEditingControllerProfessionsActivities.text = _experience.professionActivitiesText ?? '';
       _workType = _experience.workType;
       _context = _experience.context;
       _contextPlace = _experience.contextPlace;
@@ -98,7 +111,6 @@ class _ExperienceFormState extends State<ExperienceForm> {
                         } else {
                           _experienceActivities = [];
                         }
-
                         return StreamBuilder<List<Choice>>(
                             stream: database.choicesStream(
                                 APIPath.activityRoleChoices(),
@@ -164,7 +176,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
   Form _buildForm(BuildContext context, StateSetter setState) {
     final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
-
+    double fontSize = responsiveSize(context, 15, 16, md: 15);
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
@@ -176,12 +188,55 @@ class _ExperienceFormState extends State<ExperienceForm> {
               childRight: _buildSubtypeDropdown(database, setState),
             ),
             CustomFlexRowColumn(
-              childLeft: _buildActivityDropdown(setState),
+              childLeft: _buildActivityDropdown(database, setState),
               childRight: _buildRoleDropdown(setState),
             ),
             CustomFlexRowColumn(
-              childLeft: _buildLevelDropdown(setState),
-              childRight: TextFormField(
+              childLeft: _type?.name == 'Profesional' ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _textEditingControllerProfessionsActivities,
+                      decoration: InputDecoration(
+                        hintText: 'Indica las tareas que realizaste *',
+                        hintMaxLines: 2,
+                        labelStyle: textTheme.bodyText1?.copyWith(
+                          color: AppColors.greyDark,
+                          height: 1.5,
+                          fontWeight: FontWeight.w400,
+                          fontSize: fontSize,
+                        ),
+                      ),
+                      onTap: () => _showMultiSelectProfessionActivities(context),
+                      validator: (value) {
+                        if (value == null || value == "") return 'Selecciona un valor';
+                        return null;
+                      },
+                      onSaved: (value) => value = _professionActivityId,
+                      maxLines: 2,
+                      readOnly: true,
+                      style: textTheme.button?.copyWith(
+                        height: 1.5,
+                        color: AppColors.greyDark,
+                        fontWeight: FontWeight.w400,
+                        fontSize: fontSize,
+                      ),
+                    ),
+                  ]) : Container(),
+              childRight: _type?.name == 'Profesional' ? TextFormField(
+                controller: _positionController,
+                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                  label: Text(
+                    'Indica tu cargo...',
+                    style: textTheme.bodyText1,
+                  ),
+                ),
+              ) : Container(),
+            ),
+            CustomFlexRowColumn(
+              childRight: _buildLevelDropdown(setState),
+              childLeft: TextFormField(
                 controller: _organizationController,
                 style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
@@ -395,6 +450,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
     if (_type?.name == 'Profesional') {
       _experienceActivitiesStream =
           database.choicesStream(APIPath.professions(), null, null);
+
     } else {
       _experienceActivitiesStream = database.choicesStream(
           APIPath.activityChoices(), _type?.id, _subtype?.id);
@@ -494,7 +550,8 @@ class _ExperienceFormState extends State<ExperienceForm> {
         });
   }
 
-  Widget _buildActivityDropdown(void Function(void Function()) setState) {
+  Widget _buildActivityDropdown(
+      Database database, void Function(void Function()) setState) {
     final textTheme = Theme.of(context).textTheme;
 
     return DropdownButtonFormField<Choice>(
@@ -509,8 +566,46 @@ class _ExperienceFormState extends State<ExperienceForm> {
         onChanged: (newActivity) {
           setState(() {
             _activity = newActivity;
+            activitiesIds =_activity?.activities;
           });
         });
+  }
+
+  void _showMultiSelectProfessionActivities(BuildContext context) async {
+    final textTheme = Theme.of(context).textTheme;
+    var selectedValues = await showDialog<Set<Activity>>(
+      context: context,
+      builder: (BuildContext context) {
+        if(_activity == null)
+          return AlertDialog(
+            content: Text(StringConst.FORM_ACTIVITIES_EMPTY,  style: textTheme.bodyText1,),
+            actions: <Widget>[
+              ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(StringConst.FORM_ACCEPT, style: TextStyle(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.bold))
+              ),
+            ],
+          );
+        return streamBuilderDropdownProfessionActivities(context, _activity!, activitiesIds!, selectedProfessionActivities);
+      },
+    );
+    getValuesFromKeyProfessionActivities(selectedValues);
+  }
+
+  void getValuesFromKeyProfessionActivities (selectedValues) {
+    var concatenate = StringBuffer();
+    List<String> activitiesIds = [];
+    selectedValues.forEach((item){
+      concatenate.write(item.name +' / ');
+      activitiesIds.add(item.id);
+    });
+    setState(() {
+      this._textEditingControllerProfessionsActivities.text = concatenate.toString();
+      this.professionActivities = activitiesIds;
+      this.selectedProfessionActivities = selectedValues;
+    });
   }
 
   Widget _buildRoleDropdown(void Function(void Function()) setState) {
@@ -565,7 +660,11 @@ class _ExperienceFormState extends State<ExperienceForm> {
           location: _locationController.text,
           workType: _workType!,
           context: _context!,
-          contextPlace: _contextPlace!);
+          contextPlace: _contextPlace!,
+          professionActivities: activitiesIds!,
+          position: _positionController.text,
+          professionActivitiesText: _textEditingControllerProfessionsActivities.text,
+      );
 
       await database.addExperience(experience);
       _updateCompetenciesPoints(_type);
@@ -573,6 +672,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
       _updateCompetenciesPoints(_activity);
       _updateCompetenciesPoints(_role);
       _updateCompetenciesPoints(_level);
+      _updateListCompetenciesPoints(selectedProfessionActivities);
       // TODO: Update competencies of other fields (in assistant_page too)
       await showCompetencies(context, userCompetencies: userCompetencies,
           onDismiss: (dialogContext) async {
@@ -598,7 +698,10 @@ class _ExperienceFormState extends State<ExperienceForm> {
           location: _locationController.text,
           workType: _workType!,
           context: _context!,
-          contextPlace: _contextPlace!);
+          contextPlace: _contextPlace!,
+          position: _positionController.text,
+          professionActivitiesText: _textEditingControllerProfessionsActivities.text,
+      );
 
       await database.updateExperience(experience);
       Navigator.of(context).pop();
@@ -618,4 +721,23 @@ class _ExperienceFormState extends State<ExperienceForm> {
       });
     }
   }
+
+  void _updateListCompetenciesPointsActivity(Activity? activity) {
+    if (activity != null && activity.competencies.isNotEmpty) {
+      activity.competencies.keys.forEach((competencyId) {
+        userCompetencies.update(
+            competencyId, (value) => value + activity.competencies[competencyId]!,
+            ifAbsent: () => activity.competencies[competencyId]!);
+      });
+    }
+  }
+
+  void _updateListCompetenciesPoints(Set<Activity>? choices) {
+    if (choices != null && choices.isNotEmpty)
+      for (var itemChoice in choices) {
+        _updateListCompetenciesPointsActivity(itemChoice);
+      }
+  }
+
+
 }

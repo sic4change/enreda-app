@@ -12,6 +12,8 @@ class Experience {
     this.professionActivities: const [],
     this.peopleAffected,
     this.organization,
+    this.position,
+    this.professionActivitiesText,
     required this.startDate,
     this.endDate,
     required this.location,
@@ -30,6 +32,8 @@ class Experience {
   final List<String> professionActivities;
   final String? peopleAffected;
   final String? organization;
+  final String? position;
+  final String? professionActivitiesText;
   final Timestamp startDate;
   final Timestamp? endDate;
   final String location;
@@ -49,6 +53,8 @@ class Experience {
       'professionActivities': professionActivities,
       'peopleAffected': peopleAffected,
       'organization': organization,
+      'position': position,
+      'professionActivitiesText': professionActivitiesText,
       'startDate': startDate,
       'endDate': endDate,
       'location': location,
@@ -68,6 +74,8 @@ class Experience {
     final String? activityLevel = data['activityLevel'];
     final String? peopleAffected = data['peopleAffected'];
     final String? organization = data['organization'];
+    final String? position = data['position'];
+    final String? professionActivitiesText = data['professionActivitiesText'];
     final Timestamp startDate = data['startDate'];
     final Timestamp? endDate = data['endDate'];
     final String location = data['location'];
@@ -94,6 +102,8 @@ class Experience {
       professionActivities: professionActivities,
       peopleAffected: peopleAffected,
       organization: organization,
+      position: position,
+      professionActivitiesText: professionActivitiesText,
       startDate: startDate,
       endDate: endDate,
       location: location,

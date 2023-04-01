@@ -51,10 +51,10 @@ class ExperienceTile extends StatelessWidget {
                     ]),
               ),
             if (experience.activity != null && experience.activityRole == null)
-              Text('${experience.activity!}',
+              Text( experience.position == null || experience.position == "" ? '${experience.activity}' : '${experience.position}',
                   style: textTheme.bodyText1
                       ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
-            if (experience.activity != null) SpaceH8(),
+            if (experience.position != null || experience.activity != null) SpaceH8(),
             Text(
               '${formatter.format(experience.startDate.toDate())} / $endDate',
               style: textTheme.bodyText1?.copyWith(

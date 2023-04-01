@@ -37,6 +37,7 @@ import '../app/home/models/certificationRequest.dart';
 import '../app/home/models/resourcePicture.dart';
 import '../app/home/models/activity.dart';
 import '../app/home/models/question.dart';
+import 'package:async/async.dart' show StreamGroup;
 
 abstract class Database {
   Stream<Resource> resourceStream(String resourceId);
@@ -73,6 +74,10 @@ abstract class Database {
   Stream<List<Education>> educationStream();
   Stream<List<Gender>> genderStream();
   Stream<List<Interest>> interestStream();
+  Stream<List<Activity>> professionsActivitiesStream();
+  //Stream<Set<Activity>> activitiesStreamProfessionId(List<String> activitiesIds);
+  //Stream<List<Activity>> activityStreamProfessionId(String? activityId);
+  Stream<Activity> activityStreamProfessionId(String? activityId);
   Stream<List<SpecificInterest>> specificInterestStream(String? interestId);
   Stream<List<UserEnreda>> checkIfUserEmailRegistered(String email);
   Stream<List<Question>> questionsStream();
@@ -81,7 +86,7 @@ abstract class Database {
   Stream<List<Experience>> myExperiencesStream(String userId);
   Stream<List<Competency>> competenciesStream();
   Stream<Competency> competencyStream(String id);
-  Stream<Activity> activtyStream(String id);
+  Stream<Activity> activityStream(String id);
   Stream<List<ChatQuestion>> chatQuestionsStream(String userId);
   Stream<CertificationRequest> certificationRequestStream(String certificationRequestId);
   Stream<List<CertificationRequest>> myCertificationRequestStream(String userId);
@@ -729,9 +734,29 @@ class FirestoreDatabase implements Database {
       );
 
   @override
-  Stream<Activity> activtyStream(String id) =>
+  Stream<Activity> activityStream(String id) =>
       _service.documentStream<Activity>(
         path: APIPath.activity(id),
         builder: (data, documentId) => Activity.fromMap(data, documentId),
       );
+
+  @override
+  Stream<List<Activity>> professionsActivitiesStream() => _service.collectionStream(
+    path: APIPath.activities(),
+    queryBuilder: (query) => query.where('name', isNotEqualTo: null),
+    builder: (data, documentId) => Activity.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
+  );
+
+  @override
+  Stream<Activity> activityStreamProfessionId(String? activityId) {
+    return _service.documentStreamByField(
+      path: APIPath.activities(),
+      builder: (data, documentId) => Activity.fromMap(data, documentId),
+      queryBuilder: (query) => query.where('id', isEqualTo: activityId),
+    );
+  }
+
 }
+
+

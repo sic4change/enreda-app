@@ -44,6 +44,7 @@ class APIPath {
   static String activities() => 'activities';
   static String experienceTypes() => 'experienceTypes';
   static String experienceSubtypes() => 'experienceSubtypes';
+  static String profession(String id) => 'professions/$id';
   static String professions() => 'professions';
   static String activityChoices() => 'activityChoices';
   static String activityRoleChoices() => 'activityRoleChoices';

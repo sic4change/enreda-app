@@ -233,9 +233,8 @@ Future<Uint8List> generateResume2(
                         myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_EXPERIENCES, color: lilac) : pw.Container(),
                         for (var experience in myExperiences!)
                           _Block(
-                            title: experience.activityRole == null
-                                ? experience.activity
-                                : '${experience.activityRole} - ${experience.activity}',
+                            title: experience.activityRole == null && experience.position == null || experience.position == "" ? experience.activity :
+                            experience.activityRole != null ? '${experience.activityRole} - ${experience.activity}' :  experience.position,
                             descriptionDate:'${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null
                                 ? formatter.format(experience.endDate!.toDate())
                                 : 'Actualmente'}',

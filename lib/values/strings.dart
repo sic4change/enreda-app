@@ -317,6 +317,7 @@ class StringConst {
   static const String FORM_INTERESTS_QUESTION = "¿Cuáles son tus intereses?";
   static const String FORM_SPECIFIC_INTERESTS = "Intereses específicos";
   static const String FORM_INTEREST_EMPTY = "Selecciona primero tus intereses";
+  static const String FORM_ACTIVITIES_EMPTY = "Selecciona primero la actividad";
   static const String FORM_ABILITIES_REV = "Aspectos a reforzar";
   static const String FORM_MOTIVATION_ERROR = "Este campo no puede estar vacío";
   static const String FORM_DEDICATION = "¿Tienes claro a lo que te gustaría dedicarte?";

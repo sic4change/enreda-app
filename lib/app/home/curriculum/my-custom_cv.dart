@@ -1016,10 +1016,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                         ]),
                                   ),
                                 if (widget.myExperiences![index].activity != null && widget.myExperiences![index].activityRole == null)
-                                  Text('${widget.myExperiences![index].activity!}',
+                                  Text( widget.myExperiences![index].position == null || widget.myExperiences![index].position == "" ? '${widget.myExperiences![index].activity!}' : '${widget.myExperiences![index].position}',
                                       style: textTheme.bodyText1
                                           ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
-                                if (widget.myExperiences![index].activity != null) SpaceH8(),
+                                if (widget.myExperiences![index].position != null || widget.myExperiences![index].activity != null) SpaceH8(),
                                 Text(
                                   '${formatter.format(widget.myExperiences![index].startDate.toDate())} / ${widget.myExperiences![index].endDate != null
                                       ? formatter.format(widget.myExperiences![index].endDate!.toDate())

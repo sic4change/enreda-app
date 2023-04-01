@@ -107,7 +107,7 @@ class _MessageTileState extends State<MessageTile> {
                                   MessageTile.recommendedActivities.clear();
                                   choice.activities.forEach((activityId) {
                                     database
-                                        .activtyStream(activityId)
+                                        .activityStream(activityId)
                                         .first
                                         .then((activity) => MessageTile
                                             .recommendedActivities

@@ -29,45 +29,62 @@ import '../../../utils/my_scroll_behaviour.dart';
 import '../../../values/values.dart';
 import '../models/education.dart';
 
-class MyCurriculumPage extends StatefulWidget {
-  @override
-  State<MyCurriculumPage> createState() => _MyCurriculumPageState();
-}
-
-class _MyCurriculumPageState extends State<MyCurriculumPage> {
+class MyCurriculumPage extends StatelessWidget {
   UserEnreda? user;
-  String? myLocation;
-  String? city;
-  String? province;
-  String? country;
-  String myCustomCity = "";
-  String myCustomProvince = "";
-  String myCustomCountry = "";
-  String myCustomAboutMe = "";
-  String myCustomEmail = "";
-  String myCustomPhone = "";
-  List<Competency>? myCompetencies = [];
-  List<Experience>? myExperiences = [];
-  List<Experience> myCustomExperiences = [];
-  List<int> mySelectedExperiences = [];
-  List<Experience>? myEducation = [];
-  List<Experience> myCustomEducation = [];
-  List<int> mySelectedEducation = [];
-  List<CertificationRequest>? myReferences = [];
-  List<CertificationRequest> myCustomReferences = [];
-  List<int> mySelectedReferences = [];
-  List<String> competenciesNames = [];
-  List<String> myCustomCompetencies = [];
-  List<int> mySelectedCompetencies = [];
-  List<String> myCustomDataOfInterest = [];
-  List<int> mySelectedDataOfInterest = [];
-  List<String> myCustomLanguages = [];
-  List<int> mySelectedLanguages = [];
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  String? myLocation;
+
+  String? city;
+
+  String? province;
+
+  String? country;
+
+  String myCustomCity = "";
+
+  String myCustomProvince = "";
+
+  String myCustomCountry = "";
+
+  String myCustomAboutMe = "";
+
+  String myCustomEmail = "";
+
+  String myCustomPhone = "";
+
+  List<Competency>? myCompetencies = [];
+
+  List<Experience>? myExperiences = [];
+
+  List<Experience> myCustomExperiences = [];
+
+  List<int> mySelectedExperiences = [];
+
+  List<Experience>? myEducation = [];
+
+  List<Experience> myCustomEducation = [];
+
+  List<int> mySelectedEducation = [];
+
+  List<CertificationRequest>? myReferences = [];
+
+  List<CertificationRequest> myCustomReferences = [];
+
+  List<int> mySelectedReferences = [];
+
+  List<String> competenciesNames = [];
+
+  List<String> myCustomCompetencies = [];
+
+  List<int> mySelectedCompetencies = [];
+
+  List<String> myCustomDataOfInterest = [];
+
+  List<int> mySelectedDataOfInterest = [];
+
+  List<String> myCustomLanguages = [];
+
+  List<int> mySelectedLanguages = [];
 
   @override
   Widget build(BuildContext context) {
@@ -891,7 +908,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
 
   Widget _buildMyEducation(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
-
+    bool dismissible = true;
     return Column(
       children: [
         Row(
@@ -904,11 +921,14 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 shape: CircleBorder(),
               ),
               onPressed: () {
-                showCustomDialog(
-                  context,
-                  content: ExperienceForm(
-                    isEducation: true,
-                  ),
+                showDialog(
+                    barrierDismissible: dismissible,
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      content: ExperienceForm(
+                        isEducation: true,
+                      ),
+                    )
                 );
               },
               child: Icon(
@@ -965,7 +985,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
 
   Widget _buildMyExperiences(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
-
+    bool dismissible = true;
     return Column(
       children: [
         Row(
@@ -978,11 +998,14 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 shape: CircleBorder(),
               ),
               onPressed: () {
-                showCustomDialog(
-                  context,
-                  content: ExperienceForm(
-                    isEducation: false,
-                  ),
+                showDialog(
+                    barrierDismissible: dismissible,
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      content: ExperienceForm(
+                        isEducation: false,
+                      ),
+                    )
                 );
               },
               child: Icon(
@@ -1219,7 +1242,17 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                         SpaceH12(),
                         Container(
                           width: double.infinity,
-                          child: ReferenceTile(certificationRequest: e),
+                          child: Row(
+                            children: [
+                              ReferenceTile(certificationRequest: e),
+                              Spacer(),
+                              EditButton(
+                                onTap: () =>
+                                    _showReferencesDialog(context, e),
+                              ),
+                              SpaceW12(),
+                            ],
+                          ),
                         ),
                         Divider(),
                       ],
@@ -1241,21 +1274,37 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   void _showDataOfInterestDialog(BuildContext context, String currentText) {
     final database = Provider.of<Database>(context, listen: false);
     final controller = TextEditingController();
+    final textTheme = Theme.of(context).textTheme;
     if (currentText.isNotEmpty) {
       controller.text = currentText;
     }
     showCustomDialog(context,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              StringConst.NEW_DATA_OF_INTEREST,
+        content: Card(
+          elevation: 0,
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  StringConst.NEW_DATA_OF_INTEREST,
+                  style: textTheme.bodyText1?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.0,
+                  ),
+                ),
+                SpaceH12(),
+                TextField(
+                  controller: controller,
+                  style: textTheme.bodyText1?.copyWith(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 14.0,
+                  ),
+                )
+              ],
             ),
-            SpaceH12(),
-            TextField(
-              controller: controller,
-            )
-          ],
+          ),
         ),
         defaultActionText: StringConst.FORM_ACCEPT,
         onDefaultActionPressed: (context) {
@@ -1268,24 +1317,136 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     });
   }
 
+  void _showReferencesDialog(BuildContext context, CertificationRequest certificationRequest) {
+    final database = Provider.of<Database>(context, listen: false);
+    final controllerName = TextEditingController();
+    final controllerPosition = TextEditingController();
+    final controllerCompany = TextEditingController();
+    final textTheme = Theme.of(context).textTheme;
+    if (certificationRequest.certifierName.isNotEmpty) {
+      controllerName.text = certificationRequest.certifierName;
+    }
+    if (certificationRequest.certifierPosition.isNotEmpty) {
+      controllerPosition.text = certificationRequest.certifierPosition;
+    }
+    if (certificationRequest.certifierCompany.isNotEmpty) {
+      controllerCompany.text = certificationRequest.certifierCompany;
+    }
+    showCustomDialog(context,
+        content: Card(
+          elevation: 0,
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Text(
+                  StringConst.NEW_REFERENCE,
+                  style: textTheme.bodyText1?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.0,
+                  ),
+                ),
+                SpaceH16(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: controllerName,
+                        style: textTheme.bodyText1?.copyWith(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: controllerPosition,
+                        style: textTheme.bodyText1?.copyWith(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: controllerCompany,
+                        style: textTheme.bodyText1?.copyWith(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+        defaultActionText: StringConst.FORM_ACCEPT,
+        onDefaultActionPressed: (context) {
+          if (certificationRequest.certifierName.isNotEmpty) {
+            final index = myReferences?.indexWhere((element) => element.certifierName == certificationRequest.certifierName);
+            if (index! >= 0) myReferences?[index].certifierName = (controllerName.text);
+            database.setCertificationRequest(myReferences![index]);
+          }
+          if (certificationRequest.certifierPosition.isNotEmpty) {
+            final index = myReferences?.indexWhere((element) => element.certifierPosition == certificationRequest.certifierPosition);
+            if (index! >= 0) myReferences?[index].certifierPosition = (controllerPosition.text);
+            database.setCertificationRequest(myReferences![index]);
+          }
+          if (certificationRequest.certifierCompany.isNotEmpty) {
+            final index = myReferences?.indexWhere((element) => element.certifierCompany == certificationRequest.certifierCompany);
+            if (index! >= 0) myReferences?[index].certifierCompany = (controllerCompany.text);
+            database.setCertificationRequest(myReferences![index]);
+          }
+          Navigator.of(context).pop();
+        });
+  }
+
   void _showLanguagesDialog(BuildContext context, String currentText) {
     final database = Provider.of<Database>(context, listen: false);
     final controller = TextEditingController();
+    final textTheme = Theme.of(context).textTheme;
     if (currentText.isNotEmpty) {
       controller.text = currentText;
     }
     showCustomDialog(context,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              StringConst.NEW_LANGUAGE,
+        content: Card(
+          elevation: 0,
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  StringConst.NEW_LANGUAGE,
+                  style: textTheme.bodyText1?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.0,
+                  ),
+                ),
+                SpaceH12(),
+                TextField(
+                  controller: controller,
+                  textAlign: TextAlign.center,
+                  style: textTheme.bodyText1?.copyWith(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 14.0,
+                  ),
+                )
+              ],
             ),
-            SpaceH12(),
-            TextField(
-              controller: controller,
-            )
-          ],
+          ),
         ),
         defaultActionText: StringConst.FORM_ACCEPT,
         onDefaultActionPressed: (context) {

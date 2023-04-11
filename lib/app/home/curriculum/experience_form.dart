@@ -75,101 +75,105 @@ class _ExperienceFormState extends State<ExperienceForm> {
     final database = Provider.of<Database>(context, listen: false);
 
     return StatefulBuilder(builder: (context, setState) {
-      return StreamBuilder<List<Choice>>(
-          stream: database.choicesStream(APIPath.experienceTypes(), null, null),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              _experienceTypes = widget.isEducation
-                  ? snapshot.data!
-                      .where((choice) => choice.name == 'Formativa')
-                      .toList()
-                  : snapshot.data!
-                      .where((choice) => choice.name != 'Formativa')
-                      .toList();
-            } else {
-              _experienceTypes = [];
-            }
-            //_experienceTypes = snapshot.hasData ? snapshot.data! : [];
+      return Card(
+        elevation: 0,
+        color: Colors.white,
+        child: StreamBuilder<List<Choice>>(
+            stream: database.choicesStream(APIPath.experienceTypes(), null, null),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                _experienceTypes = widget.isEducation
+                    ? snapshot.data!
+                        .where((choice) => choice.name == 'Formativa')
+                        .toList()
+                    : snapshot.data!
+                        .where((choice) => choice.name != 'Formativa')
+                        .toList();
+              } else {
+                _experienceTypes = [];
+              }
+              //_experienceTypes = snapshot.hasData ? snapshot.data! : [];
 
-            return StreamBuilder<List<Choice>>(
-                stream: database.choicesStream(
-                    APIPath.experienceSubtypes(), null, null),
-                builder: (context, snapshot) {
-                  _experienceSubtypes =
-                      snapshot.hasData && _type?.name == 'Personal'
-                          ? snapshot.data!
-                          : [];
+              return StreamBuilder<List<Choice>>(
+                  stream: database.choicesStream(
+                      APIPath.experienceSubtypes(), null, null),
+                  builder: (context, snapshot) {
+                    _experienceSubtypes =
+                        snapshot.hasData && _type?.name == 'Personal'
+                            ? snapshot.data!
+                            : [];
 
-                  return StreamBuilder<List<Choice>>(
-                      stream: _experienceActivitiesStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData &&
-                            _type != null &&
-                            ((_type?.name == 'Personal' && _subtype != null) ||
-                                _type?.name != 'Personal')) {
-                          _experienceActivities = snapshot.data!;
-                        } else {
-                          _experienceActivities = [];
-                        }
-                        return StreamBuilder<List<Choice>>(
-                            stream: database.choicesStream(
-                                APIPath.activityRoleChoices(),
-                                _type?.id,
-                                _subtype?.id),
-                            builder: (context, snapshot) {
-                              _experienceRoles = snapshot.hasData &&
-                                      _type != null &&
-                                      _subtype != null
-                                  ? snapshot.data!
-                                  : [];
+                    return StreamBuilder<List<Choice>>(
+                        stream: _experienceActivitiesStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData &&
+                              _type != null &&
+                              ((_type?.name == 'Personal' && _subtype != null) ||
+                                  _type?.name != 'Personal')) {
+                            _experienceActivities = snapshot.data!;
+                          } else {
+                            _experienceActivities = [];
+                          }
+                          return StreamBuilder<List<Choice>>(
+                              stream: database.choicesStream(
+                                  APIPath.activityRoleChoices(),
+                                  _type?.id,
+                                  _subtype?.id),
+                              builder: (context, snapshot) {
+                                _experienceRoles = snapshot.hasData &&
+                                        _type != null &&
+                                        _subtype != null
+                                    ? snapshot.data!
+                                    : [];
 
-                              return StreamBuilder<List<Choice>>(
-                                  stream: database.choicesStream(
-                                      APIPath.activityLevelChoices(),
-                                      null,
-                                      null),
-                                  builder: (context, snapshot) {
-                                    _experienceLevels = snapshot.hasData &&
-                                            _type != null &&
-                                            _subtype != null &&
-                                            _subtype!.name == 'Deporte'
-                                        ? snapshot.data!
-                                        : [];
+                                return StreamBuilder<List<Choice>>(
+                                    stream: database.choicesStream(
+                                        APIPath.activityLevelChoices(),
+                                        null,
+                                        null),
+                                    builder: (context, snapshot) {
+                                      _experienceLevels = snapshot.hasData &&
+                                              _type != null &&
+                                              _subtype != null &&
+                                              _subtype!.name == 'Deporte'
+                                          ? snapshot.data!
+                                          : [];
 
-                                    if ((widget.experience?.activityLevel !=
-                                                null &&
-                                            _level != null) ||
-                                        (widget.experience?.activityRole !=
-                                                null &&
-                                            _role != null) ||
-                                        (widget.experience?.activity != null &&
-                                            _activity != null)) {
-                                      _experienceIsLoaded = true;
-                                    }
+                                      if ((widget.experience?.activityLevel !=
+                                                  null &&
+                                              _level != null) ||
+                                          (widget.experience?.activityRole !=
+                                                  null &&
+                                              _role != null) ||
+                                          (widget.experience?.activity != null &&
+                                              _activity != null)) {
+                                        _experienceIsLoaded = true;
+                                      }
 
-                                    if (widget.experience != null &&
-                                        !_experienceIsLoaded)
-                                      _loadDropdowns(database);
+                                      if (widget.experience != null &&
+                                          !_experienceIsLoaded)
+                                        _loadDropdowns(database);
 
-                                    if (widget.isEducation &&
-                                        _type == null &&
-                                        _experienceTypes.isNotEmpty) {
-                                      _type = _experienceTypes.firstWhere(
-                                          (element) =>
-                                              element.name == 'Formativa');
-                                      _experienceActivitiesStream =
-                                          database.choicesStream(
-                                              APIPath.activityChoices(),
-                                              _type?.id,
-                                              _subtype?.id);
-                                    }
+                                      if (widget.isEducation &&
+                                          _type == null &&
+                                          _experienceTypes.isNotEmpty) {
+                                        _type = _experienceTypes.firstWhere(
+                                            (element) =>
+                                                element.name == 'Formativa');
+                                        _experienceActivitiesStream =
+                                            database.choicesStream(
+                                                APIPath.activityChoices(),
+                                                _type?.id,
+                                                _subtype?.id);
+                                      }
 
-                                    return _buildForm(context, setState);
-                                  });
-                            });
-                      });
-                });
-          });
+                                      return _buildForm(context, setState);
+                                    });
+                              });
+                        });
+                  });
+            }),
+      );
     });
   }
 
@@ -181,16 +185,16 @@ class _ExperienceFormState extends State<ExperienceForm> {
       key: _formKey,
       child: SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
             CustomFlexRowColumn(
               childLeft: _buildTypeDropdown(database, setState),
-              childRight: _buildSubtypeDropdown(database, setState),
+              childRight: _buildActivityDropdown(database, setState),
             ),
+            _type?.name == 'Personal' ?
             CustomFlexRowColumn(
-              childLeft: _buildActivityDropdown(database, setState),
+              childLeft:  _buildSubtypeDropdown(database, setState),
               childRight: _buildRoleDropdown(setState),
-            ),
+            ) : Container(),
             CustomFlexRowColumn(
               childLeft: _type?.name == 'Profesional' ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,6 +204,10 @@ class _ExperienceFormState extends State<ExperienceForm> {
                       decoration: InputDecoration(
                         hintText: 'Indica las tareas que realizaste *',
                         hintMaxLines: 2,
+                        label: Text(
+                          'Tareas que realizaste',
+                          style: textTheme.bodyText2,
+                        ),
                         labelStyle: textTheme.bodyText1?.copyWith(
                           color: AppColors.greyDark,
                           height: 1.5,
@@ -229,20 +237,20 @@ class _ExperienceFormState extends State<ExperienceForm> {
                 decoration: InputDecoration(
                   label: Text(
                     'Indica tu cargo...',
-                    style: textTheme.bodyText1,
+                    style: textTheme.bodyText2,
                   ),
                 ),
               ) : Container(),
             ),
             CustomFlexRowColumn(
-              childRight: _buildLevelDropdown(setState),
+              childRight: _type?.name == 'Personal' ? _buildLevelDropdown(setState) : Container(),
               childLeft: TextFormField(
                 controller: _organizationController,
                 style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                   label: Text(
-                    'Nombre de la empresa, organización...',
-                    style: textTheme.bodyText1,
+                    'Empresa, organización...',
+                    style: textTheme.bodyText2,
                   ),
                 ),
               ),
@@ -269,7 +277,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                 },
                 decoration: InputDecoration(
                   labelText: 'Fecha inicio *',
-                  labelStyle: textTheme.bodyText1,
+                  labelStyle: textTheme.bodyText2,
                   suffixIcon: Icon(
                     Icons.event,
                   ),
@@ -291,7 +299,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                 },
                 decoration: InputDecoration(
                   labelText: 'Fecha fin',
-                  labelStyle: textTheme.bodyText1,
+                  labelStyle: textTheme.bodyText2,
                   suffixIcon: Icon(
                     Icons.event,
                   ),
@@ -305,7 +313,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                   decoration: InputDecoration(
                       label: Text(
                         'Municipio, ciudad, región o país *',
-                        style: textTheme.bodyText1,
+                        style: textTheme.bodyText2,
                       )),
                   validator: (value) {
                     if (value == null || value.isEmpty)
@@ -315,7 +323,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                 ),
               childRight: DropdownButtonFormField<String>(
                 hint: Text('La mayor parte del tiempo estabas... *',
-                    style: textTheme.bodyText1,
+                    style: textTheme.bodyText2,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis),
                 style:
@@ -341,7 +349,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                 childLeft: DropdownButtonFormField<String>(
                   hint: Text(
                     'Sensación del ambiente de la experiencia *',
-                    style: textTheme.bodyText1,
+                    style: textTheme.bodyText2,
                     maxLines: 2, overflow: TextOverflow.ellipsis
                   ),
                   style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
@@ -366,7 +374,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                 ),
                 childRight: DropdownButtonFormField<String>(
                   hint: Text(
-                      'Lugar *', style: textTheme.bodyText1
+                      'Lugar *', style: textTheme.bodyText2
                   ),
                   style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                   value: _contextPlace,

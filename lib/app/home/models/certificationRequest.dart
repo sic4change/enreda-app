@@ -47,9 +47,9 @@ class CertificationRequest {
   final String? certificationRequestId;
   final String email;
   final String? phone;
-  final String certifierName;
-  final String certifierCompany;
-  final String certifierPosition;
+  late String certifierName;
+  late String certifierCompany;
+  late String certifierPosition;
   final String competencyId;
   final String competencyName;
   final String unemployedRequesterId;

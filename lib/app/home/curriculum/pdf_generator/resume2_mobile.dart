@@ -238,7 +238,9 @@ Future<Uint8List> generateResume2(
                                 ? '${experience.activityRole} - ${experience.activity}'
                                 : experience.position == ""
                                 ? experience.activity
-                                : experience.position,
+                                : experience.organization == ""
+                                ? experience.position
+                                : '${experience.position} - ${experience.organization}',
                             descriptionDate:'${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null
                                 ? formatter.format(experience.endDate!.toDate())
                                 : 'Actualmente'}',

@@ -911,6 +911,18 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                         style: textTheme.bodyText1
                                             ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
                                   if (widget.myEducation![index].activity != null) SpaceH8(),
+                                  if (widget.myEducation![index].organization != null && widget.myEducation![index].organization != "") Column(
+                                    children: [
+                                      Text(
+                                        widget.myEducation![index].organization!,
+                                        style: textTheme.bodyText1?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14.0,
+                                        ),
+                                      ),
+                                      SpaceH8()
+                                    ],
+                                  ),
                                   Text(
                                     '${formatter.format(widget.myEducation![index].startDate.toDate())} / ${widget.myEducation![index].endDate != null
                                         ? formatter.format(widget.myEducation![index].endDate!.toDate())
@@ -1020,6 +1032,18 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                       style: textTheme.bodyText1
                                           ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
                                 if (widget.myExperiences![index].position != null || widget.myExperiences![index].activity != null) SpaceH8(),
+                                if (widget.myExperiences![index].organization != null && widget.myExperiences![index].organization != "") Column(
+                                  children: [
+                                    Text(
+                                      widget.myExperiences![index].organization!,
+                                      style: textTheme.bodyText1?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                    SpaceH8()
+                                  ],
+                                ),
                                 Text(
                                   '${formatter.format(widget.myExperiences![index].startDate.toDate())} / ${widget.myExperiences![index].endDate != null
                                       ? formatter.format(widget.myExperiences![index].endDate!.toDate())

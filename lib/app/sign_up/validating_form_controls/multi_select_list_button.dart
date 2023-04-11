@@ -58,7 +58,11 @@ class _MultiSelectListDialogState<V> extends State<MultiSelectListDialog<V>> {
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 14, 18, md: 15);
     return AlertDialog(
-      title: Text(StringConst.FORM_SELECT),
+      title: Text(StringConst.FORM_SELECT, style: textTheme.bodyText2?.copyWith(
+        height: 1.5,
+        fontWeight: FontWeight.w700,
+        fontSize: fontSize,
+      ),),
       contentPadding: EdgeInsets.only(top: 12.0),
       content: SingleChildScrollView(
         child: ListTileTheme(
@@ -68,12 +72,15 @@ class _MultiSelectListDialogState<V> extends State<MultiSelectListDialog<V>> {
                 for (List<MultiSelectDialogItem<V>> items in widget.itemsSet!)
                   Column(
                     children: [
-                      Text(items[0].title, style: textTheme.button?.copyWith(
-                        height: 1.5,
-                        color: AppColors.primaryColor,
-                        fontWeight: FontWeight.w700,
-                        fontSize: fontSize,
-                      ),),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                        child: Text(items[0].title, style: textTheme.bodyText1?.copyWith(
+                          height: 1.5,
+                          color: AppColors.primaryColor,
+                          fontWeight: FontWeight.w700,
+                          fontSize: fontSize,
+                        ),),
+                      ),
                       ListBody(
                         children: items.map(_buildItem).toList(),
                       ),

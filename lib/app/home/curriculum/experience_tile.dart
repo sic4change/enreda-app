@@ -19,7 +19,7 @@ class ExperienceTile extends StatelessWidget {
     final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
-
+    bool dismissible = true;
     String endDate = experience.endDate != null
         ? formatter.format(experience.endDate!.toDate())
         : 'Actualmente';
@@ -55,6 +55,18 @@ class ExperienceTile extends StatelessWidget {
                   style: textTheme.bodyText1
                       ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
             if (experience.position != null || experience.activity != null) SpaceH8(),
+            if (experience.organization != null && experience.organization != "") Column(
+              children: [
+                Text(
+                  experience.organization!,
+                  style: textTheme.bodyText1?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.0,
+                  ),
+                ),
+                SpaceH8()
+              ],
+            ),
             Text(
               '${formatter.format(experience.startDate.toDate())} / $endDate',
               style: textTheme.bodyText1?.copyWith(
@@ -95,12 +107,15 @@ class ExperienceTile extends StatelessWidget {
 
           EditButton(
             onTap: () {
-              showCustomDialog(
-                context,
-                content: ExperienceForm(
-                  experience: experience,
-                  isEducation: experience.type == 'Formativa',
-                ),
+              showDialog(
+                  barrierDismissible: dismissible,
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: ExperienceForm(
+                      experience: experience,
+                      isEducation: experience.type == 'Formativa',
+                    ),
+                  )
               );
             },
           ),

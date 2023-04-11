@@ -109,6 +109,7 @@ abstract class Database {
   Future<void> addExperience(Experience experience);
   Future<void> updateExperience(Experience experience);
   Future<void> deleteExperience(Experience experience);
+  Future<void> setCertificationRequest(CertificationRequest certificationRequest);
   Future<void> addCertificationRequest(CertificationRequest certificationRequest);
   Future<void> updateCertificationRequest(CertificationRequest certificationRequest, bool certified, bool referenced );
 }
@@ -434,6 +435,12 @@ class FirestoreDatabase implements Database {
   @override
   Future<void> deleteUser(UserEnreda userEnreda) {
     return _service.deleteData(path: APIPath.user(userEnreda.userId!));
+  }
+
+  @override
+  Future<void> setCertificationRequest(CertificationRequest certificationRequest) {
+    return _service.updateData(
+        path: APIPath.certificationRequest(certificationRequest.certificationRequestId!), data: certificationRequest.toMap());
   }
 
   @override

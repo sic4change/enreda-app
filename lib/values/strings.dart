@@ -214,6 +214,7 @@ class StringConst {
   static const String ADMIN_WEB_URL = 'https://enreda-d3b41.firebaseapp.com/#/login';
   static const String WEB_APP_URL = 'https://enredawebapp.web.app/';
   static const String NEW_WEB_APP_URL = 'https://www.enredas.org/';
+  static const String WEB_COMPANIES_URL_ACCESS = 'https://enreda-empresas.web.app/';
 
   //Contact form
   static const String CONFIRM = "Confirmado";
@@ -253,9 +254,11 @@ class StringConst {
   static const String RESOURCE_TYPE = 'Tipo de recurso';
   static const String CONTRACT_TYPE = 'Tipo de contrato';
   static const String SALARY = 'Salario';
+  static const String SCHEDULE = 'Horario';
   static const String DATE = 'Fecha';
   static const String ALWAYS_AVAILABLE = 'Siempre disponible';
   static const String LOCATION = 'Localización';
+  static const String MODALITY = 'Modalidad';
   static String SHARE_TEXT(String title, String resourceId) => 'El recurso "$title" podría interesarte.\n\nhttps://enredawebapp.web.app/resources/$resourceId';
   static const String JOIN_RESOURCE = 'ME INTERESA PARTICIPAR';
   static const String QUIT_RESOURCE = 'NO ME INTERESA PARTICIPAR';

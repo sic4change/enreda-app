@@ -40,6 +40,7 @@ class Resource {
     this.resourcePictureId,
     this.resourcePhoto,
     this.searchText,
+    required this.createdate,
   });
 
   factory Resource.fromMap(Map<String, dynamic> data, String documentId) {
@@ -88,13 +89,14 @@ class Resource {
     final String? contactPhone = data['contactPhone'];
     final String? resourcePhoto = data['resourcePhoto'];
     final String? searchText = data['searchText'];
+    final DateTime createdate = data['createdate'].toDate();
 
     return Resource(
       resourceId: documentId,
       title: title,
       description: description,
       organizer: organizer,
-        organizerType : organizerType,
+      organizerType : organizerType,
       organizerName: organizerName,
       organizerImage: organizerImage,
       promotor: promotor,
@@ -129,6 +131,7 @@ class Resource {
       resourcePictureId: resourcePictureId,
       resourcePhoto: resourcePhoto,
       searchText: searchText,
+      createdate: createdate,
     );
   }
 
@@ -171,6 +174,7 @@ class Resource {
   String? resourcePictureId;
   String? resourcePhoto;
   final String? searchText;
+  final DateTime createdate;
 
   Map<String, dynamic> toMap() {
     return {
@@ -211,6 +215,7 @@ class Resource {
       'resourcePictureId': resourcePictureId,
       'resourcePhoto': resourcePhoto,
       'searchText': searchText,
+      'createdate': createdate,
     };
   }
 

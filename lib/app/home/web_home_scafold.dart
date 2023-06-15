@@ -2,6 +2,7 @@ import 'package:enreda_app/app/home/account/account_page.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/home_page.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
+import 'package:enreda_app/app/sign_in/sign_out_admin.dart';
 import 'package:enreda_app/common_widgets/background_web.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -66,6 +67,10 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                 if (snapshot.hasData) {
                   _userEnreda = snapshot.data!;
                   _userName = '${_userEnreda.firstName} ${_userEnreda.lastName}';
+                  if (_userEnreda.role == 'Organización') {
+                    adminSignOut(context);
+                    return Container();
+                  }
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,

@@ -10,6 +10,7 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/build_share_button.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/common_widgets/background_web.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
@@ -161,31 +162,26 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                                                             null &&
                                                         resource.organizerName !=
                                                             null
-                                                    ? Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Expanded(
-                                                                child:
-                                                                    Container(),
-                                                              ),
-                                                              _buildMenuButton(context, resource),
-                                                            ],
-                                                          ),
-                                                          SpaceH44(),
-                                                          _buildHeader(),
-                                                          SpaceH30(),
-                                                          Divider(),
-                                                          SpaceH30(),
-                                                          Flexible(
-                                                              child:
-                                                                  _buildBody()),
-                                                          SpaceH30(),
-                                                          _buildActionButtons(),
-                                                        ],
-                                                      )
+                                                    ? SingleChildScrollView(
+                                                      child: Column(mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Expanded(child: Container(),),
+                                                                _buildMenuButton(context, resource),
+                                                              ],
+                                                            ),
+                                                            SpaceH30(),
+                                                            _buildHeader(),
+                                                            SpaceH20(),
+                                                            Divider(),
+                                                            SpaceH20(),
+                                                            Flexible(child: _buildBody()),
+                                                            SpaceH20(),
+                                                            _buildActionButtons(),
+                                                          ],
+                                                        ),
+                                                    )
                                                     : Center(
                                                         child:
                                                             CircularProgressIndicator()),
@@ -236,30 +232,31 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
 
   Widget _buildHeader() {
     TextTheme textTheme = Theme.of(context).textTheme;
-
     return Column(
       children: [
         Text(
           resource.title,
           textAlign: TextAlign.left,
           maxLines: 2,
-          style: textTheme.bodyText1?.copyWith(
+          style: textTheme.bodyLarge?.copyWith(
             letterSpacing: 1.2,
-            fontSize: 32,
             color: Constants.darkGray,
+            fontWeight: FontWeight.w800
           ),
         ),
-        SpaceH24(),
+        SpaceH12(),
         Text(
           resource.promotor != null
+              ? resource.promotor != ""
               ? resource.promotor!
-              : resource.organizerName ?? '',
+              : resource.organizerName!
+              : resource.organizerName!,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+          style: textTheme.bodyMedium?.copyWith(
+            letterSpacing: 1.2,
             color: Constants.penBlue,
+            fontWeight: FontWeight.w800
           ),
         ),
       ],
@@ -268,16 +265,14 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
 
   Widget _buildBody() {
     TextTheme textTheme = Theme.of(context).textTheme;
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: SingleChildScrollView(
-            controller: ScrollController(),
-            child: Text(
-              resource.description,
-              style: textTheme.bodyText1,
+          child: Text(
+            resource.description,
+            style: textTheme.bodyMedium?.copyWith(
+              color: Constants.darkGray,
             ),
           ),
           flex: 6,
@@ -291,87 +286,143 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                 color: Constants.lightGray,
               ),
             ),
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 14.0),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SpaceH30(),
-                  Text(
-                    StringConst.RESOURCE_TYPE.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
-                        color: Constants.penBlue, fontWeight: FontWeight.bold),
+                  CustomTextTitle(title: StringConst.RESOURCE_TYPE.toUpperCase()),
+                  CustomTextBody(text: '${resource.resourceTypeName}'),
+                  SpaceH8(),
+                  CustomTextTitle(title: StringConst.LOCATION.toUpperCase()),
+                  Row(
+                    children: [
+                      CustomTextBody(text: '${resource.cityName}'),
+                      CustomTextBody(text: ', '),
+                      CustomTextBody(text: '${resource.provinceName}'),
+                      CustomTextBody(text: ', '),
+                      CustomTextBody(text: '${resource.countryName}'),
+                    ],
                   ),
                   SpaceH8(),
-                  Text('${resource.resourceTypeName}', style: textTheme.bodyText1,),
-                  SpaceH30(),
-                  Text(
-                    StringConst.LOCATION.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
-                        color: Constants.penBlue, fontWeight: FontWeight.bold),
+                  CustomTextTitle(title: StringConst.MODALITY.toUpperCase()),
+                  CustomTextBody(text: resource.modality),
+                  SpaceH8(),
+                  CustomTextTitle(title: StringConst.CAPACITY.toUpperCase()),
+                  CustomTextBody(text: '${resource.capacity}'),
+                  SpaceH8(),
+                  CustomTextTitle(title: StringConst.DATE.toUpperCase()),
+                  DateFormat('dd/MM/yyyy').format(resource.start) == '31/12/2050'
+                      ? CustomTextBody(
+                    text: StringConst.ALWAYS_AVAILABLE,
+                  )
+                      : Row(
+                    children: [
+                      CustomTextBody(
+                          text: DateFormat('dd/MM/yyyy').format(resource.start)),
+                      SpaceW4(),
+                      CustomTextBody(text: '-'),
+                      SpaceW4(),
+                      CustomTextBody(
+                          text: DateFormat('dd/MM/yyyy').format(resource.end))
+                    ],
                   ),
                   SpaceH8(),
-                  Text(_getLocationText(resource), style: textTheme.bodyText1,),
-                  SpaceH30(),
-                  Text(
-                    StringConst.CAPACITY.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
-                        color: Constants.penBlue, fontWeight: FontWeight.bold),
-                  ),
+                  CustomTextTitle(title: StringConst.CONTRACT_TYPE.toUpperCase()),
+                  CustomTextBody(text: resource.contractType != null && resource.contractType != ''  ? '${resource.contractType}' : 'Sin especificar' ),
                   SpaceH8(),
-                  Text('${resource.capacity}', style: textTheme.bodyText1,),
-                  SpaceH30(),
-                  Text(
-                    StringConst.DATE.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
-                        color: Constants.penBlue, fontWeight: FontWeight.bold),
-                  ),
+                  CustomTextTitle(title: StringConst.DURATION.toUpperCase()),
+                  CustomTextBody(text: resource.duration),
                   SpaceH8(),
-                  DateFormat('dd/MM/yyyy').format(resource.start) ==
-                          '31/12/2050'
-                      ? Text(
-                          StringConst.ALWAYS_AVAILABLE,
-                          textAlign: TextAlign.center,
-                    style: textTheme.bodyText1,
-                        )
-                      : Text(
-                          '${DateFormat('dd/MM/yyyy').format(resource.start)} - ${DateFormat('dd/MM/yyyy').format(resource.end)}',
-                          textAlign: TextAlign.center,
-                    style: textTheme.bodyText1,
-                        ),
-                  SpaceH30(),
-                  Text(
-                    StringConst.CONTRACT_TYPE.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
-                        color: Constants.penBlue, fontWeight: FontWeight.bold),
-                  ),
+                  CustomTextTitle(title: StringConst.SALARY.toUpperCase()),
+                  CustomTextBody(text: resource.salary != null && resource.salary != ''  ? '${resource.salary}' :  'Sin especificar'),
                   SpaceH8(),
-                  Text(
-                    resource.contractType == null ||
-                            resource.contractType!.isEmpty
-                        ? 'Sin especificar'
-                        : resource.contractType!,
-                    textAlign: TextAlign.center,
-                    style: textTheme.bodyText1,
-                  ),
-                  SpaceH30(),
-                  Text(
-                    StringConst.SALARY.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
-                        color: Constants.penBlue, fontWeight: FontWeight.bold),
-                  ),
+                  CustomTextTitle(title: StringConst.SCHEDULE.toUpperCase()),
+                  CustomTextBody(text: resource.temporality != null && resource.temporality != ''  ? '${resource.temporality}' :  'Sin especificar'),
                   SpaceH8(),
-                  Text(
-                    resource.salary == null || resource.salary!.isEmpty
-                        ? 'Sin especificar'
-                        : resource.salary!,
-                    textAlign: TextAlign.center,
-                    style: textTheme.bodyText1,
-                  ),
-                  SpaceH30(),
                 ],
               ),
             ),
+
+            // Column(
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children: [
+            //     SpaceH30(),
+            //     Text(
+            //       StringConst.RESOURCE_TYPE.toUpperCase(),
+            //       style: textTheme.bodyText1?.copyWith(
+            //           color: Constants.penBlue, fontWeight: FontWeight.bold),
+            //     ),
+            //     SpaceH8(),
+            //     Text('${resource.resourceTypeName}', style: textTheme.bodyText1,),
+            //     SpaceH30(),
+            //     Text(
+            //       StringConst.LOCATION.toUpperCase(),
+            //       style: textTheme.bodyText1?.copyWith(
+            //           color: Constants.penBlue, fontWeight: FontWeight.bold),
+            //     ),
+            //     SpaceH8(),
+            //     Text(_getLocationText(resource), style: textTheme.bodyText1,),
+            //     SpaceH30(),
+            //     Text(
+            //       StringConst.CAPACITY.toUpperCase(),
+            //       style: textTheme.bodyText1?.copyWith(
+            //           color: Constants.penBlue, fontWeight: FontWeight.bold),
+            //     ),
+            //     SpaceH8(),
+            //     Text('${resource.capacity}', style: textTheme.bodyText1,),
+            //     SpaceH30(),
+            //     Text(
+            //       StringConst.DATE.toUpperCase(),
+            //       style: textTheme.bodyText1?.copyWith(
+            //           color: Constants.penBlue, fontWeight: FontWeight.bold),
+            //     ),
+            //     SpaceH8(),
+            //     DateFormat('dd/MM/yyyy').format(resource.start) ==
+            //             '31/12/2050'
+            //         ? Text(
+            //             StringConst.ALWAYS_AVAILABLE,
+            //             textAlign: TextAlign.center,
+            //       style: textTheme.bodyText1,
+            //           )
+            //         : Text(
+            //             '${DateFormat('dd/MM/yyyy').format(resource.start)} - ${DateFormat('dd/MM/yyyy').format(resource.end)}',
+            //             textAlign: TextAlign.center,
+            //       style: textTheme.bodyText1,
+            //           ),
+            //     SpaceH30(),
+            //     Text(
+            //       StringConst.CONTRACT_TYPE.toUpperCase(),
+            //       style: textTheme.bodyText1?.copyWith(
+            //           color: Constants.penBlue, fontWeight: FontWeight.bold),
+            //     ),
+            //     SpaceH8(),
+            //     Text(
+            //       resource.contractType == null ||
+            //               resource.contractType!.isEmpty
+            //           ? 'Sin especificar'
+            //           : resource.contractType!,
+            //       textAlign: TextAlign.center,
+            //       style: textTheme.bodyText1,
+            //     ),
+            //     SpaceH30(),
+            //     Text(
+            //       StringConst.SALARY.toUpperCase(),
+            //       style: textTheme.bodyText1?.copyWith(
+            //           color: Constants.penBlue, fontWeight: FontWeight.bold),
+            //     ),
+            //     SpaceH8(),
+            //     Text(
+            //       resource.salary == null || resource.salary!.isEmpty
+            //           ? 'Sin especificar'
+            //           : resource.salary!,
+            //       textAlign: TextAlign.center,
+            //       style: textTheme.bodyText1,
+            //     ),
+            //     SpaceH30(),
+            //   ],
+            // ),
           ),
           flex: 4,
         ),
@@ -409,9 +460,9 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                               context: context,
                               userId: userId,
                               resource: resource)
-                          : resource.link == null &&
-                                  resource.contactEmail == null &&
-                                  resource.contactPhone == null
+                          : resource.link == null || resource.link == "" &&
+                                  resource.contactEmail == null || resource.contactEmail == "" &&
+                                  resource.contactPhone == null || resource.contactPhone == ""
                               ? addUserToResource(
                                   context: context,
                                   userId: userId,

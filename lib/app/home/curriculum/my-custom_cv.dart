@@ -1147,7 +1147,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             padding: const EdgeInsets.all(10.0),
             child: Center(
                 child: Text(
-                  'Aquí aparecerán las competencias evaluadas a través de los microtests',
+                  'Aquí aparecerá la información de interés',
                   style: textTheme.bodyText1,
                 )),
           ),
@@ -1224,7 +1224,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             padding: const EdgeInsets.all(10.0),
             child: Center(
                 child: Text(
-                  'Aquí aparecerán las competencias evaluadas a través de los microtests',
+                  'Aquí aparecerán mis idiomas',
                   style: textTheme.bodyText1,
                 )),
           ),

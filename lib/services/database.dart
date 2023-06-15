@@ -243,21 +243,22 @@ class FirestoreDatabase implements Database {
         
         return resourceSelected ? Resource.fromMap(data, documentId) : null;
       },
-      sort: (lhs, rhs) {
-        int cmp = 0;
-        if ((rhs.modality == StringConst.FACE_TO_FACE ||
-            rhs.modality == StringConst.BLENDED) &&
-            (lhs.modality != StringConst.FACE_TO_FACE &&
-                lhs.modality != StringConst.BLENDED)) cmp = 1;
-        if ((lhs.modality == StringConst.FACE_TO_FACE ||
-            lhs.modality == StringConst.BLENDED) &&
-            (rhs.modality != StringConst.FACE_TO_FACE &&
-                rhs.modality != StringConst.BLENDED)) cmp = -1;
-
-        if (cmp != 0) return cmp;
-
-        return lhs.maximumDate.compareTo(rhs.maximumDate);
-      },
+      sort: (rhs, lhs) => lhs.createdate.compareTo(rhs.createdate),
+      // sort: (lhs, rhs) {
+      //   int cmp = 0;
+      //   if ((rhs.modality == StringConst.FACE_TO_FACE ||
+      //       rhs.modality == StringConst.BLENDED) &&
+      //       (lhs.modality != StringConst.FACE_TO_FACE &&
+      //           lhs.modality != StringConst.BLENDED)) cmp = 1;
+      //   if ((lhs.modality == StringConst.FACE_TO_FACE ||
+      //       lhs.modality == StringConst.BLENDED) &&
+      //       (rhs.modality != StringConst.FACE_TO_FACE &&
+      //           rhs.modality != StringConst.BLENDED)) cmp = -1;
+      //
+      //   if (cmp != 0) return cmp;
+      //
+      //   return lhs.createdate.compareTo(rhs.createdate);
+      // },
     );
   }
 
@@ -268,7 +269,7 @@ class FirestoreDatabase implements Database {
         queryBuilder: (query) =>
             query.where('participants', arrayContains: userId),
         builder: (data, documentId) => Resource.fromMap(data, documentId),
-        sort: (lhs, rhs) => lhs.maximumDate.compareTo(rhs.maximumDate),
+        sort: (lhs, rhs) => lhs.createdate.compareTo(rhs.createdate),
       );
 
   @override
@@ -277,7 +278,7 @@ class FirestoreDatabase implements Database {
         path: APIPath.resources(),
         queryBuilder: (query) => query.where('likes', arrayContains: userId),
         builder: (data, documentId) => Resource.fromMap(data, documentId),
-        sort: (lhs, rhs) => lhs.maximumDate.compareTo(rhs.maximumDate),
+        sort: (lhs, rhs) => lhs.createdate.compareTo(rhs.createdate),
       );
 
   @override
@@ -302,7 +303,7 @@ class FirestoreDatabase implements Database {
 
         return null;
       },
-      sort: (lhs, rhs) => lhs.maximumDate.compareTo(rhs.maximumDate),
+      sort: (lhs, rhs) => lhs.createdate.compareTo(rhs.createdate),
     );
   }
 

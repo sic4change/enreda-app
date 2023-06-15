@@ -52,7 +52,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
     final auth = Provider.of<AuthBase>(context, listen: false);
 
     TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 15, 15, md: 13);
+    double fontSize = responsiveSize(context, 12, 13, md: 12);
     double sidePadding = responsiveSize(context, 15, 20, md: 17);
 
     return Scaffold(
@@ -125,11 +125,10 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                                 '',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: textTheme.bodyText1?.copyWith(
+                                        style: textTheme.bodySmall?.copyWith(
                                           color: Constants.grey,
                                           height: 1.5,
                                           fontWeight: FontWeight.w400,
-                                          fontSize: fontSize,
                                         ),
                                       ),
                                       Row(
@@ -148,11 +147,10 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style:
-                                                    textTheme.bodyText1?.copyWith(
+                                                    textTheme.bodySmall?.copyWith(
                                                   color: Constants.grey,
                                                   height: 1.5,
                                                   fontWeight: FontWeight.w400,
-                                                  fontSize: fontSize,
                                                 ),
                                               ),
                                             ),
@@ -218,7 +216,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                   textAlign: TextAlign.left,
                                   maxLines: 1,
                                   style: TextStyle(
-                                      letterSpacing: 1.1,
+                                      letterSpacing: 1,
                                       fontSize: fontSize,
                                       fontWeight: FontWeight.bold,
                                       color: Constants.lilac),
@@ -233,7 +231,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                   textAlign: TextAlign.left,
                                   maxLines: 2,
                                   style: TextStyle(
-                                    letterSpacing: 1.1,
+                                    letterSpacing: 1,
                                     fontSize: fontSize,
                                     fontWeight: FontWeight.bold,
                                     color: Constants.penBlue,

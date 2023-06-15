@@ -10,6 +10,7 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/build_share_button.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/common_widgets/background_mobile.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
@@ -239,10 +240,10 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
           resource.title,
           textAlign: TextAlign.center,
           maxLines: 2,
-          style: textTheme.bodyText1?.copyWith(
-            letterSpacing: 1.2,
-            fontSize: 16,
-            color: Constants.darkGray,
+          style: textTheme.bodyLarge?.copyWith(
+              letterSpacing: 1.2,
+              color: Constants.darkGray,
+              fontWeight: FontWeight.w800
           ),
         ),
         SpaceH12(),
@@ -252,10 +253,10 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
               : resource.organizerName ?? '',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: Constants.penBlue,
+          style: textTheme.bodyMedium?.copyWith(
+              letterSpacing: 1.2,
+              color: Constants.penBlue,
+              fontWeight: FontWeight.w800
           ),
         ),
       ],
@@ -271,7 +272,9 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
         children: [
           Text(
             resource.description,
-            style: textTheme.bodyText1,
+            style: textTheme.bodyMedium?.copyWith(
+              color: Constants.darkGray,
+            ),
           ),
           SpaceH40(),
           Container(
@@ -284,78 +287,58 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SpaceH30(),
-                  Text(
-                    StringConst.RESOURCE_TYPE.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
-                        color: Constants.penBlue, fontWeight: FontWeight.bold),
+                  CustomTextTitle(title: StringConst.RESOURCE_TYPE.toUpperCase()),
+                  CustomTextBody(text: '${resource.resourceTypeName}'),
+                  SpaceH16(),
+                  CustomTextTitle(title: StringConst.LOCATION.toUpperCase()),
+                  Row(
+                    children: [
+                      CustomTextBody(text: '${resource.cityName}'),
+                      CustomTextBody(text: ', '),
+                      CustomTextBody(text: '${resource.provinceName}'),
+                      CustomTextBody(text: ', '),
+                      CustomTextBody(text: '${resource.countryName}'),
+                    ],
                   ),
-                  SpaceH8(),
-                  Text('${resource.resourceTypeName}', style: textTheme.bodyText1,),
-                  SpaceH30(),
-                  Text(
-                    StringConst.LOCATION.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
-                        color: Constants.penBlue, fontWeight: FontWeight.bold),
-                  ),
-                  SpaceH8(),
-                  Text(_getLocationText(resource), style: textTheme.bodyText1,),
-                  SpaceH30(),
-                  Text(
-                    StringConst.CAPACITY.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
-                        color: Constants.penBlue, fontWeight: FontWeight.bold),
-                  ),
-                  SpaceH8(),
-                  Text('${resource.capacity}', style: textTheme.bodyText1,),
-                  SpaceH30(),
-                  Text(
-                    StringConst.DATE.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
-                        color: Constants.penBlue, fontWeight: FontWeight.bold),
-                  ),
-                  SpaceH8(),
+                  SpaceH16(),
+                  CustomTextTitle(title: StringConst.MODALITY.toUpperCase()),
+                  CustomTextBody(text: resource.modality),
+                  SpaceH16(),
+                  CustomTextTitle(title: StringConst.CAPACITY.toUpperCase()),
+                  CustomTextBody(text: '${resource.capacity}'),
+                  SpaceH16(),
+                  CustomTextTitle(title: StringConst.DATE.toUpperCase()),
                   DateFormat('dd/MM/yyyy').format(resource.start) == '31/12/2050'
-                      ? Text(
-                          StringConst.ALWAYS_AVAILABLE,
-                          textAlign: TextAlign.center,
-                          style: textTheme.bodyText1,
-                        )
-                      : Text(
-                          '${DateFormat('dd/MM/yyyy').format(resource.start)} - ${DateFormat('dd/MM/yyyy').format(resource.end)}',
-                          textAlign: TextAlign.center,
-                          style: textTheme.bodyText1,
-                        ),
-                  SpaceH30(),
-                  Text(
-                    StringConst.CONTRACT_TYPE.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
-                        color: Constants.penBlue, fontWeight: FontWeight.bold),
+                      ? CustomTextBody(
+                    text: StringConst.ALWAYS_AVAILABLE,
+                  )
+                      : Row(
+                    children: [
+                      CustomTextBody(
+                          text: DateFormat('dd/MM/yyyy').format(resource.start)),
+                      SpaceW4(),
+                      CustomTextBody(text: '-'),
+                      SpaceW4(),
+                      CustomTextBody(
+                          text: DateFormat('dd/MM/yyyy').format(resource.end))
+                    ],
                   ),
-                  SpaceH8(),
-                  Text(
-                    resource.contractType == null ||
-                            resource.contractType!.isEmpty
-                        ? 'Sin especificar'
-                        : resource.contractType!,
-                    textAlign: TextAlign.center, style: textTheme.bodyText1,
-                  ),
-                  SpaceH30(),
-                  Text(
-                    StringConst.SALARY.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
-                        color: Constants.penBlue, fontWeight: FontWeight.bold),
-                  ),
-                  SpaceH8(),
-                  Text(
-                    resource.salary == null || resource.salary!.isEmpty
-                        ? 'Sin especificar'
-                        : resource.salary!,
-                    textAlign: TextAlign.center, style: textTheme.bodyText1,
-                  ),
-                  SpaceH30(),
+                  SpaceH16(),
+                  CustomTextTitle(title: StringConst.CONTRACT_TYPE.toUpperCase()),
+                  CustomTextBody(text: resource.contractType != null && resource.contractType != ''  ? '${resource.contractType}' : 'Sin especificar' ),
+                  SpaceH16(),
+                  CustomTextTitle(title: StringConst.DURATION.toUpperCase()),
+                  CustomTextBody(text: resource.duration),
+                  SpaceH16(),
+                  CustomTextTitle(title: StringConst.SALARY.toUpperCase()),
+                  CustomTextBody(text: resource.salary != null && resource.salary != ''  ? '${resource.salary}' :  'Sin especificar'),
+                  SpaceH16(),
+                  CustomTextTitle(title: StringConst.SCHEDULE.toUpperCase()),
+                  CustomTextBody(text: resource.temporality != null && resource.temporality != ''  ? '${resource.temporality}' :  'Sin especificar'),
+                  SpaceH16(),
                 ],
               ),
             ),

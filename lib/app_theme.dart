@@ -67,37 +67,37 @@ class AppTheme {
       fontWeight: _bold,
       fontStyle: FontStyle.normal,
     ),
-    displayMedium: GoogleFonts.ibmPlexMono(
+    displayMedium: GoogleFonts.inter(
       fontSize: Sizes.TEXT_SIZE_60,
       color: AppColors.black,
       fontWeight: _bold,
       fontStyle: FontStyle.normal,
     ),
-    displaySmall: GoogleFonts.ibmPlexMono(
+    displaySmall: GoogleFonts.inter(
       fontSize: Sizes.TEXT_SIZE_48,
       color: AppColors.black,
       fontWeight: _bold,
       fontStyle: FontStyle.normal,
     ),
-    headlineMedium: GoogleFonts.ibmPlexMono(
+    headlineMedium: GoogleFonts.inter(
       fontSize: Sizes.TEXT_SIZE_34,
       color: AppColors.black,
       fontWeight: _bold,
       fontStyle: FontStyle.normal,
     ),
-    headlineSmall: GoogleFonts.ibmPlexMono(
+    headlineSmall: GoogleFonts.inter(
       fontSize: Sizes.TEXT_SIZE_24,
       color: AppColors.black,
       fontWeight: _bold,
       fontStyle: FontStyle.normal,
     ),
-    titleLarge: GoogleFonts.ibmPlexMono(
+    titleLarge: GoogleFonts.inter(
       fontSize: Sizes.TEXT_SIZE_20,
       color: AppColors.black,
       fontWeight: _bold,
       fontStyle: FontStyle.normal,
     ),
-    titleMedium: GoogleFonts.ibmPlexMono(
+    titleMedium: GoogleFonts.inter(
       fontSize: Sizes.TEXT_SIZE_18,
       color: AppColors.black,
       fontWeight: _bold,
@@ -115,7 +115,7 @@ class AppTheme {
       fontWeight: _regular,
       fontStyle: FontStyle.normal,
     ),
-    bodyMedium: GoogleFonts.ibmPlexMono(
+    bodyMedium: GoogleFonts.inter(
       fontSize: Sizes.TEXT_SIZE_14,
       color: AppColors.black,
       fontWeight: _light,
@@ -127,7 +127,7 @@ class AppTheme {
       fontStyle: FontStyle.normal,
       fontWeight: _regular,
     ),
-    bodySmall: GoogleFonts.ibmPlexMono(
+    bodySmall: GoogleFonts.inter(
       fontSize: Sizes.TEXT_SIZE_12,
       color: AppColors.primaryText1,
       fontWeight: _regular,

@@ -9,17 +9,15 @@ class CustomTextTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = responsiveSize(context, 14, 18, md: 16);
     TextTheme textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 4.0),
       child: Text(
         title,
-        style: textTheme.bodyText1?.copyWith(
+        style: textTheme.bodySmall?.copyWith(
           color: AppColors.greyViolet,
           height: 1.5,
           fontWeight: FontWeight.w600,
-          fontSize: fontSize,
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -35,14 +33,12 @@ class CustomTextBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = responsiveSize(context, 14, 15, md: 14);
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(
       text,
-      style: textTheme.bodyText1?.copyWith(
+      style: textTheme.bodySmall?.copyWith(
         color: AppColors.greyAlt,
         height: 1.5,
-        fontSize: fontSize,
       ),
     );
   }

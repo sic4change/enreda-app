@@ -454,17 +454,10 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                               final city = snapshot.data;
                                               resource.cityName =
                                                   city == null ? '' : city.name;
-                                              return StreamBuilder<
-                                                      ResourcePicture>(
-                                                  stream: database
-                                                      .resourcePictureStream(
-                                                          resource
-                                                              .resourcePictureId),
+                                              return StreamBuilder<ResourcePicture>(
+                                                  stream: database.resourcePictureStream(resource.resourcePictureId),
                                                   builder: (context, snapshot) {
-                                                    if (snapshot.hasData)
-                                                      resource.resourcePhoto =
-                                                          snapshot.data!
-                                                              .resourcePhoto;
+                                                    if (snapshot.hasData) resource.resourcePhoto = snapshot.data!.resourcePhoto;
                                                     return Container(
                                                       key: Key(
                                                           'resource-${resource.resourceId}'),

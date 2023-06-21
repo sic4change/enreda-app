@@ -129,7 +129,7 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                                     resource.cityName =
                                         city == null ? '' : city.name;
                                     return Padding(
-                                      padding: const EdgeInsets.only(top: 40.0),
+                                      padding: const EdgeInsets.only(top: 70.0),
                                       child: Dialog(
                                         alignment: Alignment.topCenter,
                                         clipBehavior: Clip.hardEdge,
@@ -140,15 +140,11 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                                             Center(
                                               child: Container(
                                                 width:  Responsive.isDesktopS(context) ? MediaQuery.of(context).size.width * 0.8 : MediaQuery.of(context).size.width * 0.6,
-                                                margin: EdgeInsets.only(
-                                                    top: 50,
-                                                    bottom: 20),
+                                                margin: EdgeInsets.only(top: 0, bottom: 20),
                                                 decoration: BoxDecoration(
                                                     color: Colors.white,
                                                     shape: BoxShape.rectangle,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
+                                                    borderRadius: BorderRadius.circular(20.0),
                                                     boxShadow: <BoxShadow>[
                                                       BoxShadow(
                                                         color: Colors.black26,
@@ -158,10 +154,7 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                                                     ]),
                                                 padding: EdgeInsets.all(
                                                     Constants.mainPadding),
-                                                child: resource.organizerImage !=
-                                                            null &&
-                                                        resource.organizerName !=
-                                                            null
+                                                child: resource.organizerImage != null && resource.organizerName != null
                                                     ? SingleChildScrollView(
                                                       child: Column(mainAxisSize: MainAxisSize.min,
                                                           children: [
@@ -187,33 +180,19 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                                                             CircularProgressIndicator()),
                                               ),
                                             ),
-                                            resource.organizerImage == null ||
-                                                    resource
-                                                        .organizerImage!.isEmpty
+                                            resource.organizerImage == null || resource.organizerImage!.isEmpty
                                                 ? Container()
                                                 : Align(
-                                                    alignment:
-                                                        Alignment.topCenter,
+                                                    alignment: Alignment.topCenter,
                                                     child: Container(
                                                       decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              width: 1.0,
-                                                              color: Constants
-                                                                  .lightGray),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                            100,
-                                                          ),
-                                                          color: Constants
-                                                              .lightGray),
+                                                          border: Border.all(width: 1.0, color: Constants.lightGray),
+                                                          borderRadius: BorderRadius.circular(60,),
+                                                          color: Constants.lightGray),
                                                       child: CircleAvatar(
-                                                        radius: 50,
-                                                        backgroundColor:
-                                                            Constants.white,
-                                                        backgroundImage:
-                                                            NetworkImage(resource
-                                                                .organizerImage!),
+                                                        radius: 30,
+                                                        backgroundColor: Constants.white,
+                                                        backgroundImage: NetworkImage(resource.organizerImage!),
                                                       ),
                                                     ),
                                                   ),

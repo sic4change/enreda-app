@@ -3,6 +3,7 @@ import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/organization.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
+import 'package:enreda_app/app/home/models/resourcePicture.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/list_item_builder_grid.dart';
 import 'package:enreda_app/app/home/resources/pages/no_resources_ilustration.dart';
@@ -16,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../utils/const.dart';
 
 class MyResourcesPage extends StatelessWidget {
   @override
@@ -67,15 +67,20 @@ class MyResourcesPage extends StatelessWidget {
                                           final city = snapshot.data;
                                           resource.cityName =
                                               city == null ? '' : city.name;
-                                          return Container(
-                                            //margin: EdgeInsets.all(Constants.mainPadding - 10),
-                                            key: Key(
-                                                'resource-${resource.resourceId}'),
-                                            child: ResourceListTile(
-                                              resource: resource,
-                                              onTap: () => context.go(
-                                                  '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                            ),
+                                          return StreamBuilder<ResourcePicture>(
+                                            stream: database.resourcePictureStream(resource.resourcePictureId),
+                                            builder: (context, snapshot){
+                                              if (snapshot.hasData)
+                                                resource.resourcePhoto = snapshot.data!.resourcePhoto;
+                                                return Container(
+                                                  key: Key('resource-${resource.resourceId}'),
+                                                  child: ResourceListTile(
+                                                    resource: resource,
+                                                    onTap: () => context.go(
+                                                        '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                                  ),
+                                                );
+                                            },
                                           );
                                         });
                                   },
@@ -115,14 +120,20 @@ class MyResourcesPage extends StatelessWidget {
                                           final city = snapshot.data;
                                           resource.cityName =
                                               city == null ? '' : city.name;
-                                          return Container(
-                                            key: Key(
-                                                'resource-${resource.resourceId}'),
-                                            child: ResourceListTile(
-                                              resource: resource,
-                                              onTap: () => context.go(
-                                                  '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                            ),
+                                          return StreamBuilder<ResourcePicture>(
+                                            stream: database.resourcePictureStream(resource.resourcePictureId),
+                                            builder: (context, snapshot){
+                                              if (snapshot.hasData)
+                                                resource.resourcePhoto = snapshot.data!.resourcePhoto;
+                                              return Container(
+                                                key: Key('resource-${resource.resourceId}'),
+                                                child: ResourceListTile(
+                                                  resource: resource,
+                                                  onTap: () => context.go(
+                                                      '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                                ),
+                                              );
+                                            },
                                           );
                                         });
                                   },

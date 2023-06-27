@@ -67,10 +67,6 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                 if (snapshot.hasData) {
                   _userEnreda = snapshot.data!;
                   _userName = '${_userEnreda.firstName} ${_userEnreda.lastName}';
-                  if (_userEnreda.role == 'Organización') {
-                    adminSignOut(context);
-                    return Container();
-                  }
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -197,14 +193,14 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                     });
                   },
                 ),
-                InkWell(
-                    onTap: () {
-                      setState(() {
-                        WebHomeScaffold.selectedIndex.value = 2;
-                      });
-                    },
-                    child: _buildMyUserName(context)
-                ),
+                // InkWell(
+                //     onTap: () {
+                //       setState(() {
+                //         WebHomeScaffold.selectedIndex.value = 2;
+                //       });
+                //     },
+                //     child: _buildMyUserName(context)
+                // ),
                 if (!auth.isNullUser)
                 VerticalDivider(
                   color: AppColors.grey100,

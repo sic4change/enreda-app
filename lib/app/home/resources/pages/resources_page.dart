@@ -480,7 +480,18 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       emptyMessage: 'Aún no tenemos recursos que mostrarte',
                     );
                   });
-            } else {
+            }
+            else {
+              if (!snapshot.hasData && snapshot.connectionState == ConnectionState.active)
+                if (!widget._errorNotValidUser) {
+                widget._errorNotValidUser = true;
+                Future.delayed(Duration.zero, () {
+                  _signOut(context);
+                  if (!isAlertboxOpened) {
+                    _showDialogNotValidUser(context);
+                  }
+                });
+              }
               return Container(
                 width: 0.0,
                 height: 0.0,
@@ -499,7 +510,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
         cancelActionText: 'Ok',
         defaultActionText: 'Ir a la Web');
     if (didRequestNotValidUser == true) {
-      launchURL('https://enreda-d3b41.web.app');
+      launchURL(StringConst.WEB_COMPANIES_URL_ACCESS);
     }
   }
 

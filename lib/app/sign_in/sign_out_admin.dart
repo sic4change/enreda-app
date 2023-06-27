@@ -62,7 +62,8 @@ Future<void> adminSignOut(BuildContext context) async {
     ).then((exit) {
       if (exit == null) {
         auth.signOut();
-        launchURL(StringConst.WEB_COMPANIES_URL_ACCESS);
+        //launchURL(StringConst.WEB_COMPANIES_URL_ACCESS);
+        launchURL(StringConst.WEB_ADMIN_ACCESS);
       }
     });
   });

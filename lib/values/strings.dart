@@ -215,6 +215,7 @@ class StringConst {
   static const String WEB_APP_URL = 'https://enredawebapp.web.app/';
   static const String NEW_WEB_APP_URL = 'https://www.enredas.org/';
   static const String WEB_COMPANIES_URL_ACCESS = 'https://enreda-empresas.web.app/';
+  static const String WEB_ADMIN_ACCESS = 'https://enreda-d3b41.web.app/';
 
   //Contact form
   static const String CONFIRM = "Confirmado";

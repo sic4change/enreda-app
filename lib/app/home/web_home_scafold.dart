@@ -193,14 +193,14 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                     });
                   },
                 ),
-                // InkWell(
-                //     onTap: () {
-                //       setState(() {
-                //         WebHomeScaffold.selectedIndex.value = 2;
-                //       });
-                //     },
-                //     child: _buildMyUserName(context)
-                // ),
+                InkWell(
+                    onTap: () {
+                      setState(() {
+                        WebHomeScaffold.selectedIndex.value = 2;
+                      });
+                    },
+                    child: _buildMyUserName(context)
+                ),
                 if (!auth.isNullUser)
                 VerticalDivider(
                   color: AppColors.grey100,

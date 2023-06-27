@@ -510,7 +510,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
         cancelActionText: 'Ok',
         defaultActionText: 'Ir a la Web');
     if (didRequestNotValidUser == true) {
-      launchURL(StringConst.WEB_COMPANIES_URL_ACCESS);
+      //launchURL(StringConst.WEB_COMPANIES_URL_ACCESS);
+      launchURL(StringConst.WEB_ADMIN_ACCESS);
     }
   }
 

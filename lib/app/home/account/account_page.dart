@@ -7,6 +7,7 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/pages/favorite_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
 import 'package:enreda_app/app/sign_in/access/access_page.dart';
+import 'package:enreda_app/app/sign_in/sign_out_admin.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -24,10 +25,11 @@ import 'package:provider/provider.dart';
 import '../../../utils/functions.dart';
 
 class AccountPage extends StatefulWidget {
-  const AccountPage({Key? key}) : super(key: key);
+  AccountPage({Key? key}) : super(key: key);
 
   @override
   _AccountPageState createState() => _AccountPageState();
+  bool _errorNotValidUser = false;
 }
 
 class _AccountPageState extends State<AccountPage> {
@@ -43,8 +45,9 @@ class _AccountPageState extends State<AccountPage> {
   String _currentPageTitle = StringConst.MY_CV.toUpperCase();
   String _selectedPageName = StringConst.MY_CV;
 
-  late UserEnreda _userEnreda;
   late TextTheme textTheme;
+  bool isAlertboxOpened = false;
+
 
   @override
   void initState() {
@@ -60,11 +63,18 @@ class _AccountPageState extends State<AccountPage> {
     return StreamBuilder<User?>(
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (!snapshot.hasData) return AccessPage();
+          if (snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.active) {
             return StreamBuilder<UserEnreda>(
               stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
               builder: (context, snapshot) {
+                if (!snapshot.hasData && snapshot.connectionState == ConnectionState.active) {
+                  adminSignOut(context);
+                  return Container();
+                }
                 if (snapshot.hasData) {
+                  UserEnreda _userEnreda;
                   _userEnreda = snapshot.data!;
                   _photo = (_userEnreda.profilePic?.src == null || _userEnreda.profilePic?.src == ""
                       ? "" : _userEnreda.profilePic?.src)!;
@@ -72,16 +82,12 @@ class _AccountPageState extends State<AccountPage> {
                   return Responsive.isDesktop(context) || Responsive.isDesktopS(context)
                       ? _buildDesktopLayout(_userEnreda)
                       : _buildMobileLayout(_userEnreda, context);
-                } else {
-                  return Center(child: CircularProgressIndicator());
                 }
+                return CircularProgressIndicator();
               },
             );
-          } else if (!snapshot.hasData) {
-            return AccessPage();
-          } else {
-            return Center(child: CircularProgressIndicator());
           }
+          return CircularProgressIndicator();
         });
   }
 
@@ -104,7 +110,7 @@ class _AccountPageState extends State<AccountPage> {
                 children: [
                   _buildMyProfile(userEnreda),
                   SpaceH20(),
-                  _buildMyParameters()
+                  _buildMyParameters(userEnreda)
                 ],
               ),
             ),
@@ -202,7 +208,7 @@ class _AccountPageState extends State<AccountPage> {
               child: _currentPage,
             ),
             SpaceH20(),
-            _buildMyParameters(),
+            _buildMyParameters(userEnreda),
           ],
         ),
       ),
@@ -367,7 +373,7 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  Widget _buildMyParameters() {
+  Widget _buildMyParameters(UserEnreda userEnreda) {
     return Container(
         padding: EdgeInsets.symmetric(vertical: Constants.mainPadding),
         decoration: BoxDecoration(
@@ -408,7 +414,7 @@ class _AccountPageState extends State<AccountPage> {
                   fontWeight: FontWeight.bold,
                   color: Constants.deleteRed,
                   fontSize: 16.0),
-              onTap: () => _confirmDeleteAccount(context),
+              onTap: () => _confirmDeleteAccount(context, userEnreda),
             ),
           ],
         ));
@@ -634,11 +640,11 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
-  Future<void> _deleteAccount(BuildContext context) async {
+  Future<void> _deleteAccount(BuildContext context, UserEnreda userEnreda) async {
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
       final database = Provider.of<Database>(context, listen: false);
-      await database.deleteUser(_userEnreda);
+      await database.deleteUser(userEnreda);
       await auth.signOut();
     } catch (e) {
       print(e.toString());
@@ -657,7 +663,7 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
-  Future<void> _confirmDeleteAccount(BuildContext context) async {
+  Future<void> _confirmDeleteAccount(BuildContext context, UserEnreda userEnreda) async {
     final didRequestSignOut = await showAlertDialog(context,
         title: 'Eliminar cuenta',
         content: 'Si pulsa en Aceptar se procederá a la eliminación completa '
@@ -666,7 +672,29 @@ class _AccountPageState extends State<AccountPage> {
         cancelActionText: 'Cancelar',
         defaultActionText: 'Aceptar');
     if (didRequestSignOut == true) {
-      _deleteAccount(context);
+      _deleteAccount(context, userEnreda);
+    }
+  }
+
+  Future<void> _showDialogNotValidUser(BuildContext context) async {
+    isAlertboxOpened = true;
+    final didRequestNotValidUser = await showAlertDialog(context,
+        title: 'Notificación al usuario',
+        content:
+        'Hemos detectado que esta cuenta pertenece a una Organización, Mentor o SuperAdmin. Por favor autenticarse en la Web de Administración.',
+        cancelActionText: 'Ok',
+        defaultActionText: 'Ir a la Web');
+    if (didRequestNotValidUser == true) {
+      launchURL('https://enreda-empresas.web.app/');
+    }
+  }
+
+  Future<void> _signOut(BuildContext context) async {
+    try {
+      final auth = Provider.of<AuthBase>(context, listen: false);
+      await auth.signOut();
+    } catch (e) {
+      print(e.toString());
     }
   }
 

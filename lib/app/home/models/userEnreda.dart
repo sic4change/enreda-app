@@ -61,7 +61,7 @@ class UserEnreda {
         abilities.add(ability.toString());
       });
     } catch (e) {
-      print('user not abilities');
+      //print('user not abilities');
     }
 
     List<String> interests = [];
@@ -70,7 +70,7 @@ class UserEnreda {
         interests.add(interest.toString());
       });
     } catch (e) {
-      print('user not intersts');
+      //print('user not intersts');
     }
 
     List<String> specificInterests = [];
@@ -79,14 +79,14 @@ class UserEnreda {
         specificInterests.add(specificInterest.toString());
       });
     } catch (e) {
-      print('user not specific intersts');
+      //print('user not specific intersts');
     }
 
     List<String> certifications = [];
     try {
       data['certifications'].forEach((certification) {certifications.add(certification.toString());});
     } catch (e) {
-      print('user does not have certifications');
+      //print('user does not have certifications');
     }
 
     final ProfilePic profilePic = new ProfilePic(src: photo, title: 'photo.jpg');
@@ -117,7 +117,7 @@ class UserEnreda {
         dataOfInterest.add(interest.toString());
       });
     } catch (e) {
-      print('user does not have data of interest');
+      //print('user does not have data of interest');
     }
 
     List<String> languages = [];
@@ -126,7 +126,7 @@ class UserEnreda {
         languages.add(language.toString());
       });
     } catch (e) {
-      print('user does not have languages');
+      //print('user does not have languages');
     }
 
     final String? aboutMe = data['aboutMe'];

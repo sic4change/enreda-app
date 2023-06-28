@@ -213,7 +213,7 @@ class StringConst {
   static const String USE_CONDITIONS_URL = "https://firebasestorage.googleapis.com/v0/b/enreda-d3b41.appspot.com/o/condiciones.html?alt=media&token=95f2b0f5-cd12-4a43-80a6-0cb32788f380";
   static const String ADMIN_WEB_URL = 'https://enreda-d3b41.firebaseapp.com/#/login';
   static const String WEB_APP_URL = 'https://enredawebapp.web.app/';
-  static const String NEW_WEB_APP_URL = 'https://www.enredas.org/';
+  static const String NEW_WEB_ENREDA_URL = 'https://www.enredas.org/';
   static const String WEB_COMPANIES_URL_ACCESS = 'https://enreda-empresas.web.app/';
   static const String WEB_ADMIN_ACCESS = 'https://enreda-d3b41.web.app/';
 

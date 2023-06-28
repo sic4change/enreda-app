@@ -8,6 +8,7 @@ import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -117,9 +118,12 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(
-                      ImagePath.LOGO,
-                      height: 20,
+                    child: InkWell(
+                      onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
+                      child: Image.asset(
+                        ImagePath.LOGO,
+                        height: 20,
+                      ),
                     ),
                   ),
                   SpaceW24(),

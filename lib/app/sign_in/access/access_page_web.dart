@@ -1,6 +1,7 @@
 import 'package:enreda_app/app/sign_in/email_sign_in_form_change_notifier.dart';
 import 'package:enreda_app/app/sign_in/access/sections/background_web.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/foundation.dart';
@@ -56,9 +57,12 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                               padding: const EdgeInsets.all(10.0),
                               child: Row(
                                 children: [
-                                  Image.asset(
-                                    ImagePath.LOGO,
-                                    height: Sizes.HEIGHT_32,
+                                  InkWell(
+                                    onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
+                                    child: Image.asset(
+                                      ImagePath.LOGO,
+                                      height: Sizes.HEIGHT_32,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -145,7 +149,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                               child: Row(
                                 children: [
                                   InkWell(
-                                    onTap: () => GoRouter.of(context).go(StringConst.PATH_HOME),
+                                    onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
                                     child: Image.asset(
                                       ImagePath.LOGO,
                                       height: Sizes.HEIGHT_32,

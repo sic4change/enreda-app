@@ -69,10 +69,6 @@ class _AccountPageState extends State<AccountPage> {
             return StreamBuilder<UserEnreda>(
               stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
               builder: (context, snapshot) {
-                if (!snapshot.hasData && snapshot.connectionState == ConnectionState.active) {
-                  adminSignOut(context);
-                  return Container();
-                }
                 if (snapshot.hasData) {
                   UserEnreda _userEnreda;
                   _userEnreda = snapshot.data!;
@@ -83,7 +79,22 @@ class _AccountPageState extends State<AccountPage> {
                       ? _buildDesktopLayout(_userEnreda)
                       : _buildMobileLayout(_userEnreda, context);
                 }
-                return CircularProgressIndicator();
+                else {
+                  if (!snapshot.hasData && snapshot.connectionState == ConnectionState.active)
+                    if (!widget._errorNotValidUser) {
+                      widget._errorNotValidUser = true;
+                      Future.delayed(Duration.zero, () {
+                        _signOut(context);
+                        if (!isAlertboxOpened) {
+                          _showDialogNotValidUser(context);
+                        }
+                      });
+                    }
+                  return Container(
+                    width: 0.0,
+                    height: 0.0,
+                  );
+                }
               },
             );
           }
@@ -685,7 +696,8 @@ class _AccountPageState extends State<AccountPage> {
         cancelActionText: 'Ok',
         defaultActionText: 'Ir a la Web');
     if (didRequestNotValidUser == true) {
-      launchURL('https://enreda-empresas.web.app/');
+      //launchURL(StringConst.WEB_COMPANIES_URL_ACCESS);
+      launchURL(StringConst.WEB_ADMIN_ACCESS);
     }
   }
 

@@ -19,7 +19,7 @@ class OnboardingCarrusel extends StatefulWidget {
 
 class _OnboardingCarruselState extends State<OnboardingCarrusel> {
   final int pageLength = Data.mainPageData.length;
-  double currentPageIndex = 0;
+  int currentPageIndex = 0;
   CarouselController _carouselController = CarouselController();
 
   @override
@@ -69,7 +69,7 @@ class _OnboardingCarruselState extends State<OnboardingCarrusel> {
                   viewportFraction: 1,
                   onPageChanged: (index, reason) {
                     setState(() {
-                      currentPageIndex = index.toDouble();
+                      currentPageIndex = index;
                     });
                   }
               ),
@@ -159,14 +159,14 @@ class _OnboardingCarruselState extends State<OnboardingCarrusel> {
         scrollPhysics: scrollPhysics,
         onPageChanged: (int index, CarouselPageChangedReason reason) {
           setState(() {
-            currentPageIndex = index.toDouble();
+            currentPageIndex = index;
           });
         });
   }
 
   Widget _buildDotsIndicator({
     required int pageLength,
-    required double currentIndex,
+    required int currentIndex,
   }) {
     return DotsIndicator(
       dotsCount: pageLength,
@@ -196,7 +196,7 @@ class _OnboardingCarruselState extends State<OnboardingCarrusel> {
 
   _moveToNextCarousel(int index) {
     setState(() {
-      currentPageIndex = index.toDouble();
+      currentPageIndex = index;
       _carouselController.animateToPage(index);
     });
   }

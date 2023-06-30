@@ -1,5 +1,5 @@
 import 'package:chips_choice/chips_choice.dart';
-import 'package:date_time_picker/date_time_picker.dart';
+import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:enreda_app/app/home/models/chatQuestion.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/question.dart';
@@ -11,6 +11,7 @@ import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -259,28 +260,33 @@ class _MessageTileState extends State<MessageTile> {
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(50)),
       ),
-      child: DateTimePicker(
-        style: Theme.of(context).textTheme.bodyText1,
-        initialDatePickerMode: DatePickerMode.year,
-        locale: Locale('es', 'ES'),
-        dateMask: 'MM/yyyy',
-        initialValue: dateResponse.toString(),
-        firstDate: new DateTime(DateTime.now().year - 100, DateTime.now().month,
-            DateTime.now().day),
-        lastDate: DateTime.now(),
-        onChanged: (dateTime) {
-          setState(() {
-            dateResponse = DateTime.parse(dateTime);
-            widget.currentChoicesNotifier.value = [
-              Choice(id: '', name: dateResponse.toString())
-            ];
-          });
-        },
+      child: DateTimeField(
+        initialValue: dateResponse,
+        format: DateFormat('MM/yyyy'),
         decoration: InputDecoration(
           suffixIcon: Icon(
             Icons.event,
           ),
         ),
+        style: Theme.of(context).textTheme.bodyLarge,
+        onShowPicker: (context, currentValue) {
+          return showDatePicker(
+            context: context,
+            locale: Locale('es', 'ES'),
+            firstDate: new DateTime(DateTime.now().year - 100,
+                DateTime.now().month, DateTime.now().day),
+            initialDate: currentValue ?? DateTime.now(),
+            lastDate: DateTime.now(),
+          );
+        },
+        onChanged: (dateTime) {
+          setState(() {
+            dateResponse = dateTime!;
+            widget.currentChoicesNotifier.value = [
+              Choice(id: '', name: dateResponse.toString())
+            ];
+          });
+        },
       ),
     );
   }

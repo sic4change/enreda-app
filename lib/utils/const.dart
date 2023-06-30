@@ -60,11 +60,14 @@ class Constants {
     return ThemeData(
       backgroundColor: lightBackground,
       primaryColor: lightPrimary,
-      accentColor: lightAccent,
+      colorScheme: Theme.of(context).colorScheme.copyWith(
+        secondary: lightAccent,
+      ),
       scaffoldBackgroundColor: lightBackground,
       textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),
       appBarTheme: AppBarTheme(
-        textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),
+        titleTextStyle: GoogleFonts.latoTextTheme(Theme.of(context).textTheme).titleMedium,
+        toolbarTextStyle: GoogleFonts.latoTextTheme(Theme.of(context).textTheme).bodyMedium,
         iconTheme: IconThemeData(
           color: lightAccent,
         ),

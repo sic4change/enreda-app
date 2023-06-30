@@ -1,6 +1,6 @@
 import 'package:chips_choice/chips_choice.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:date_time_picker/date_time_picker.dart';
+import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:enreda_app/app/home/models/addressUser.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/country.dart';
@@ -20,6 +20,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common_widgets/custom_raised_button.dart';
@@ -80,7 +81,7 @@ class _PersonalDataState extends State<PersonalData> {
                   if (snapshot.hasData) {
                     snapshot.data!.forEach((interest) {
                       if (!_interests.any((element) =>
-                      element.interestId == interest.interestId)) {
+                          element.interestId == interest.interestId)) {
                         _interests.add(interest);
                       }
                     });
@@ -99,20 +100,20 @@ class _PersonalDataState extends State<PersonalData> {
                         _abilities = userEnreda.abilities ?? [];
                         _unemployedType = userEnreda.unemployedType ?? '';
                         if (_phone.isEmpty) _phone = userEnreda.phone ?? '';
-                        _phoneCode = '${userEnreda.phone?[0]}${userEnreda.phone?[1]}${userEnreda.phone?[2]}';
+                        _phoneCode =
+                            '${userEnreda.phone?[0]}${userEnreda.phone?[1]}${userEnreda.phone?[2]}';
                         _gender = userEnreda.gender ?? '';
                         _birthday =
-                        _birthday == null ? userEnreda.birthday : _birthday;
+                            _birthday == null ? userEnreda.birthday : _birthday;
                         _postalCode = userEnreda.address?.postalCode ?? '';
                         _specificInterest = userEnreda.specificInterests;
                         if (_interestsSelected.isEmpty) {
                           _interestsSelected = userEnreda.interests;
                           List<String> interestSelectedName = [];
                           _interests
-                              .where((interest) =>
-                              _interestsSelected.any(
-                                      (interestId) =>
-                                  interestId == interest.interestId))
+                              .where((interest) => _interestsSelected.any(
+                                  (interestId) =>
+                                      interestId == interest.interestId))
                               .forEach((interest) {
                             interestSelectedName.add(interest.name);
                           });
@@ -123,7 +124,7 @@ class _PersonalDataState extends State<PersonalData> {
                             stream: database.countryFormatedStream(),
                             builder: (context, snapshot) {
                               _countries =
-                              snapshot.hasData ? snapshot.data! : [];
+                                  snapshot.hasData ? snapshot.data! : [];
                               if (_countrySelected == '') {
                                 _countrySelected =
                                     userEnreda.address?.country ?? '';
@@ -132,8 +133,8 @@ class _PersonalDataState extends State<PersonalData> {
                               _country = _countries
                                   .firstWhere(
                                       (country) =>
-                                  country.countryId == _countrySelected,
-                                  orElse: () => Country(name: ''))
+                                          country.countryId == _countrySelected,
+                                      orElse: () => Country(name: ''))
                                   .name;
                               return StreamBuilder<List<Province>>(
                                   stream: database
@@ -141,10 +142,10 @@ class _PersonalDataState extends State<PersonalData> {
                                   builder: (context, snapshot) {
                                     _provinces = snapshot.hasData
                                         ? snapshot.data!
-                                        .where((province) =>
-                                    province.countryId ==
-                                        _countrySelected)
-                                        .toList()
+                                            .where((province) =>
+                                                province.countryId ==
+                                                _countrySelected)
+                                            .toList()
                                         : [];
                                     if (_provinceSelected == '') {
                                       _provinceSelected =
@@ -153,10 +154,10 @@ class _PersonalDataState extends State<PersonalData> {
                                     try {
                                       _province = _provinces.isNotEmpty
                                           ? _provinces
-                                          .firstWhere((province) =>
-                                      province.provinceId ==
-                                          _provinceSelected)
-                                          .name
+                                              .firstWhere((province) =>
+                                                  province.provinceId ==
+                                                  _provinceSelected)
+                                              .name
                                           : '';
                                     } catch (e) {
                                       _province = _provinces[0].name;
@@ -169,67 +170,67 @@ class _PersonalDataState extends State<PersonalData> {
                                         builder: (context, snapshot) {
                                           _cities = snapshot.hasData
                                               ? snapshot.data!
-                                              .where((city) =>
-                                          city.provinceId ==
-                                              _provinceSelected)
-                                              .toList()
+                                                  .where((city) =>
+                                                      city.provinceId ==
+                                                      _provinceSelected)
+                                                  .toList()
                                               : [];
                                           try {
                                             _city = _cities.isNotEmpty
                                                 ? _cities
-                                                .firstWhere((city) =>
-                                            city.cityId ==
-                                                userEnreda.city)
-                                                .name
+                                                    .firstWhere((city) =>
+                                                        city.cityId ==
+                                                        userEnreda.city)
+                                                    .name
                                                 : '';
                                           } catch (e) {
                                             _city = _cities[0].name;
                                           }
                                           return Responsive.isDesktop(context)
                                               ? Column(
-                                            children: [
-                                              Expanded(
-                                                child:
-                                                SingleChildScrollView(
-                                                  padding:
-                                                  EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    children: [
-                                                      _buildMainDataContainer(
-                                                          context,
-                                                          userEnreda),
-                                                      SpaceH40(),
-                                                      _buildInterestsContainer(
-                                                          context),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              SpaceH36(),
-                                              _buildSaveDataButton(
-                                                  context, userEnreda),
-                                            ],
-                                          )
+                                                  children: [
+                                                    Expanded(
+                                                      child:
+                                                          SingleChildScrollView(
+                                                        padding:
+                                                            EdgeInsets.all(8.0),
+                                                        child: Column(
+                                                          children: [
+                                                            _buildMainDataContainer(
+                                                                context,
+                                                                userEnreda),
+                                                            SpaceH40(),
+                                                            _buildInterestsContainer(
+                                                                context),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SpaceH36(),
+                                                    _buildSaveDataButton(
+                                                        context, userEnreda),
+                                                  ],
+                                                )
                                               : SingleChildScrollView(
-                                            child: Container(
-                                              margin: EdgeInsets.all(
-                                                  Constants.mainPadding),
-                                              child: Column(
-                                                children: [
-                                                  _buildMainDataContainer(
-                                                      context,
-                                                      userEnreda),
-                                                  SpaceH40(),
-                                                  _buildInterestsContainer(
-                                                      context),
-                                                  SpaceH36(),
-                                                  _buildSaveDataButton(
-                                                      context,
-                                                      userEnreda),
-                                                ],
-                                              ),
-                                            ),
-                                          );
+                                                  child: Container(
+                                                    margin: EdgeInsets.all(
+                                                        Constants.mainPadding),
+                                                    child: Column(
+                                                      children: [
+                                                        _buildMainDataContainer(
+                                                            context,
+                                                            userEnreda),
+                                                        SpaceH40(),
+                                                        _buildInterestsContainer(
+                                                            context),
+                                                        SpaceH36(),
+                                                        _buildSaveDataButton(
+                                                            context,
+                                                            userEnreda),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
                                         });
                                   });
                             });
@@ -254,9 +255,7 @@ class _PersonalDataState extends State<PersonalData> {
   }
 
   Widget _buildMainDataContainer(BuildContext context, UserEnreda userEnreda) {
-    final textTheme = Theme
-        .of(context)
-        .textTheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       padding: EdgeInsets.all(Constants.mainPadding),
@@ -284,9 +283,7 @@ class _PersonalDataState extends State<PersonalData> {
   }
 
   Widget _buildInterestsContainer(BuildContext context) {
-    final textTheme = Theme
-        .of(context)
-        .textTheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       padding: EdgeInsets.all(Constants.mainPadding),
@@ -306,40 +303,40 @@ class _PersonalDataState extends State<PersonalData> {
                 fontSize: 16.0),
           ),
           SpaceH20(),
-          _interests.isNotEmpty ?
-          Container(
-            alignment: Alignment.centerLeft,
-            child: ChipsChoice<String>.multiple(
-              padding: EdgeInsets.all(0.0),
-              value: _interestsSelected,
-              onChanged: (val) {
-                if (val.isEmpty) {
-                  showAlertDialog(
-                    context,
-                    title: 'Intereses',
-                    content: 'Debes seleccionar al menos un interés',
-                    defaultActionText: 'Ok',
-                  );
-                } else {
-                  setState(() => _interestsSelected = val);
-                }
-              },
-              choiceItems: C2Choice.listFrom<String, String>(
-                source: _interests.map((e) => e.name).toList(),
-                value: (i, v) => v,
-                label: (i, v) => v,
-                tooltip: (i, v) => v,
-              ),
-              choiceBuilder: (item, i) =>
-                  CustomChip(
-                    label: item.label,
-                    selected: item.selected,
-                    onSelect: item.select!,
+          _interests.isNotEmpty
+              ? Container(
+                  alignment: Alignment.centerLeft,
+                  child: ChipsChoice<String>.multiple(
+                    padding: EdgeInsets.all(0.0),
+                    value: _interestsSelected,
+                    onChanged: (val) {
+                      if (val.isEmpty) {
+                        showAlertDialog(
+                          context,
+                          title: 'Intereses',
+                          content: 'Debes seleccionar al menos un interés',
+                          defaultActionText: 'Ok',
+                        );
+                      } else {
+                        setState(() => _interestsSelected = val);
+                      }
+                    },
+                    choiceItems: C2Choice.listFrom<String, String>(
+                      source: _interests.map((e) => e.name).toList(),
+                      value: (i, v) => v,
+                      label: (i, v) => v,
+                      tooltip: (i, v) => v,
+                    ),
+                    choiceBuilder: (item, i) => CustomChip(
+                      label: item.label,
+                      selected: item.selected,
+                      onSelect: item.select!,
+                    ),
+                    wrapped: true,
+                    runSpacing: 8,
                   ),
-              wrapped: true,
-              runSpacing: 8,
-            ),
-          ) : Container(),
+                )
+              : Container(),
         ],
       ),
     );
@@ -362,8 +359,7 @@ class _PersonalDataState extends State<PersonalData> {
               decoration: InputDecoration(border: OutlineInputBorder()),
               keyboardType: TextInputType.name,
               onSaved: (value) => _firstName = value ?? _firstName,
-              validator: (value) =>
-              value == null || value.isEmpty
+              validator: (value) => value == null || value.isEmpty
                   ? 'El nombre no puede estar vacío'
                   : null,
             ),
@@ -378,8 +374,7 @@ class _PersonalDataState extends State<PersonalData> {
               decoration: InputDecoration(border: OutlineInputBorder()),
               keyboardType: TextInputType.name,
               onSaved: (value) => _lastName = value ?? _lastName,
-              validator: (value) =>
-              value == null || value.isEmpty
+              validator: (value) => value == null || value.isEmpty
                   ? 'El apellido no puede estar vacío'
                   : null,
             ),
@@ -395,8 +390,8 @@ class _PersonalDataState extends State<PersonalData> {
               decoration: InputDecoration(border: OutlineInputBorder()),
               style: textTheme.bodyText1
                   ?.copyWith(fontSize: fontSize, color: Constants.chatDarkGray),
-              items:
-              ['Mujer', 'Hombre', 'Otro', 'Prefiero no decirlo'].map((value) {
+              items: ['Mujer', 'Hombre', 'Otro', 'Prefiero no decirlo']
+                  .map((value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
@@ -404,51 +399,50 @@ class _PersonalDataState extends State<PersonalData> {
               }).toList(),
               onChanged: (value) => _gender = value ?? _gender,
               onSaved: (value) => _gender = value ?? _gender,
-              validator: (value) =>
-              value == null || value.isEmpty
+              validator: (value) => value == null || value.isEmpty
                   ? 'El género no puede estar vacío'
                   : null,
             ),
           ),
           childRight: _countries.isNotEmpty
               ? _buildFormField(
-            context: context,
-            title: 'País',
-            child: DropdownButtonFormField<String>(
-              value: _country,
-              iconEnabledColor: Constants.turquoise,
-              decoration: InputDecoration(border: OutlineInputBorder()),
-              style: textTheme.bodyText1
-                  ?.copyWith(fontSize: fontSize, color: Constants.chatDarkGray),
-              items: _countries.map((value) {
-                return DropdownMenuItem<String>(
-                  value: value.name,
-                  child: Text(value.name),
-                );
-              }).toList(),
-              onChanged: (value) {
-                _country = value ?? _country;
-                setState(() {
-                  if (_countrySelected !=
-                      _countries
-                          .firstWhere((country) => country.name == _country)
-                          .countryId) {
-                    _countrySelected = _countries
-                        .firstWhere(
-                            (country) => country.name == _country)
-                        .countryId ??
-                        '--';
-                    _provinceSelected = 'empty';
-                  }
-                });
-              },
-              onSaved: (value) => _country = value ?? _country,
-              validator: (value) =>
-              value == null || value.isEmpty
-                  ? 'El país no puede estar vacío'
-                  : null,
-            ),
-          )
+                  context: context,
+                  title: 'País',
+                  child: DropdownButtonFormField<String>(
+                    value: _country,
+                    iconEnabledColor: Constants.turquoise,
+                    decoration: InputDecoration(border: OutlineInputBorder()),
+                    style: textTheme.bodyText1?.copyWith(
+                        fontSize: fontSize, color: Constants.chatDarkGray),
+                    items: _countries.map((value) {
+                      return DropdownMenuItem<String>(
+                        value: value.name,
+                        child: Text(value.name),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      _country = value ?? _country;
+                      setState(() {
+                        if (_countrySelected !=
+                            _countries
+                                .firstWhere(
+                                    (country) => country.name == _country)
+                                .countryId) {
+                          _countrySelected = _countries
+                                  .firstWhere(
+                                      (country) => country.name == _country)
+                                  .countryId ??
+                              '--';
+                          _provinceSelected = 'empty';
+                        }
+                      });
+                    },
+                    onSaved: (value) => _country = value ?? _country,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'El país no puede estar vacío'
+                        : null,
+                  ),
+                )
               : Container(),
         ),
         CustomFlexRowColumn(
@@ -475,15 +469,15 @@ class _PersonalDataState extends State<PersonalData> {
                           .firstWhere((province) => province.name == _province)
                           .provinceId) {
                     _provinceSelected = _provinces
-                        .firstWhere((province) => province.name == _province)
-                        .provinceId ??
+                            .firstWhere(
+                                (province) => province.name == _province)
+                            .provinceId ??
                         '--';
                   }
                 });
               },
               onSaved: (value) => _province = value ?? _province,
-              validator: (value) =>
-              value == null || value.isEmpty
+              validator: (value) => value == null || value.isEmpty
                   ? 'La provincia no puede estar vacía'
                   : null,
             ),
@@ -505,8 +499,7 @@ class _PersonalDataState extends State<PersonalData> {
               }).toList(),
               onChanged: (value) => _city = value ?? _city,
               onSaved: (value) => _city = value ?? _city,
-              validator: (value) =>
-              value == null || value.isEmpty
+              validator: (value) => value == null || value.isEmpty
                   ? 'El municipio no puede estar vacío'
                   : null,
             ),
@@ -538,34 +531,28 @@ class _PersonalDataState extends State<PersonalData> {
               ],
             ),
             title: 'Fecha de nacimiento',
-            child: DateTimePicker(
+            child: DateTimeField(
+              initialValue: _birthday,
+              format: DateFormat('dd/MM/yyyy'),
               decoration: InputDecoration(border: OutlineInputBorder()),
-              style: textTheme.bodyText1
+              style: textTheme.bodyLarge
                   ?.copyWith(fontSize: fontSize, color: Constants.chatDarkGray),
-              locale: Locale('es', 'ES'),
-              dateMask: 'dd/MM/yyyy',
-              initialValue: _birthday.toString(),
-              firstDate: new DateTime(DateTime
-                  .now()
-                  .year - 100,
-                  DateTime
-                      .now()
-                      .month, DateTime
-                      .now()
-                      .day),
-              lastDate: new DateTime(DateTime
-                  .now()
-                  .year - 16,
-                  DateTime
-                      .now()
-                      .month, DateTime
-                      .now()
-                      .day),
+              onShowPicker: (context, currentValue) {
+                return showDatePicker(
+                  context: context,
+                  locale: Locale('es', 'ES'),
+                  firstDate: new DateTime(DateTime.now().year - 100,
+                      DateTime.now().month, DateTime.now().day),
+                  initialDate: currentValue ?? DateTime.now(),
+                  lastDate: new DateTime(DateTime.now().year - 16,
+                      DateTime.now().month, DateTime.now().day),
+                );
+              },
               onChanged: (dateTime) {
-                setState(() => _birthday = DateTime.parse(dateTime));
+                setState(() => _birthday = dateTime);
               },
               validator: (value) {
-                if (value == null || value.isEmpty)
+                if (value == null || value.toString().isEmpty)
                   return 'La fecha de nacimiento no puede estar vacía';
                 return null;
               },
@@ -578,7 +565,11 @@ class _PersonalDataState extends State<PersonalData> {
               labelText: StringConst.FORM_PHONE,
               prefixIcon: CountryCodePicker(
                 onChanged: _onCountryChange,
-                initialSelection: _phoneCode == '+34' ? 'ES' : _phoneCode == '+51' ? 'PE' : 'GT',
+                initialSelection: _phoneCode == '+34'
+                    ? 'ES'
+                    : _phoneCode == '+51'
+                        ? 'PE'
+                        : 'GT',
                 countryFilter: ['ES', 'PE', 'GT'],
                 showFlagDialog: true,
               ),
@@ -603,10 +594,12 @@ class _PersonalDataState extends State<PersonalData> {
                 ),
               ),
             ),
-            initialValue: _phone.indexOf(' ') < 0 ? _phone.substring(3) : _phone.substring(_phone.indexOf(' ') + 1),
+            initialValue: _phone.indexOf(' ') < 0
+                ? _phone.substring(3)
+                : _phone.substring(_phone.indexOf(' ') + 1),
             validator: (value) =>
-            value!.isNotEmpty ? null : StringConst.PHONE_ERROR,
-            onSaved: (value) => this._phone = _phoneCode +' '+ value!,
+                value!.isNotEmpty ? null : StringConst.PHONE_ERROR,
+            onSaved: (value) => this._phone = _phoneCode + ' ' + value!,
             textCapitalization: TextCapitalization.sentences,
             keyboardType: TextInputType.phone,
             style: textTheme.button?.copyWith(
@@ -626,13 +619,14 @@ class _PersonalDataState extends State<PersonalData> {
   }
 
   void _onCountryChange(CountryCode countryCode) {
-    this._phoneCode =  countryCode.toString();
+    this._phoneCode = countryCode.toString();
   }
 
-  Widget _buildFormField({required BuildContext context,
-    required String title,
-    required Widget child,
-    Widget? prefix}) {
+  Widget _buildFormField(
+      {required BuildContext context,
+      required String title,
+      required Widget child,
+      Widget? prefix}) {
     final textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 14, 16, md: 15);
     return Column(
@@ -662,8 +656,7 @@ class _PersonalDataState extends State<PersonalData> {
     if (_validateAndSaveForm()) {
       List<String> interestsSelectedId = [];
       _interests
-          .where((interest) =>
-          _interestsSelected
+          .where((interest) => _interestsSelected
               .any((interestName) => interest.name == interestName))
           .forEach((interest) {
         interestsSelectedId.add(interest.interestId!);
@@ -685,9 +678,7 @@ class _PersonalDataState extends State<PersonalData> {
               province: _provinces
                   .firstWhere((province) => province.name == _province)
                   .provinceId,
-              city: _cities
-                  .firstWhere((city) => city.name == _city)
-                  .cityId,
+              city: _cities.firstWhere((city) => city.name == _city).cityId,
               postalCode: _postalCode),
           birthday: _birthday,
           role: _role,

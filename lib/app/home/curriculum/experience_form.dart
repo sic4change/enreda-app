@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_time_picker/date_time_picker.dart';
+import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:enreda_app/app/home/curriculum/stream_builder_professionsActivities.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
@@ -14,6 +14,7 @@ import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common_widgets/flex_row_column.dart';
@@ -256,54 +257,63 @@ class _ExperienceFormState extends State<ExperienceForm> {
               ),
             ),
             CustomFlexRowColumn(
-              childLeft: DateTimePicker(
-                locale: Locale('es', 'ES'),
-                dateMask: 'dd/MM/yyyy',
-                initialDate: _endDate?.toDate() ?? DateTime.now(),
-                initialValue: _startDate?.toString(),
-                firstDate: new DateTime(
-                  DateTime.now().year - 100,
+              childLeft: DateTimeField(
+                initialValue: _startDate?.toDate(),
+                format: DateFormat('dd/MM/yyyy'),
+                decoration: InputDecoration(
+                  labelText: 'Fecha inicio *',
+                  labelStyle: textTheme.bodyMedium,
+                  suffixIcon: Icon(
+                    Icons.event,
+                  ),
                 ),
-                lastDate: _endDate?.toDate() ?? DateTime.now(),
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                onShowPicker: (context, currentValue) {
+                  return showDatePicker(
+                    context: context,
+                    locale: Locale('es', 'ES'),
+                    firstDate: new DateTime(DateTime.now().year - 100,),
+                    initialDate: currentValue ?? _endDate?.toDate() ?? DateTime.now(),
+                    lastDate: _endDate?.toDate() ?? DateTime.now(),
+                  );
+                },
                 onChanged: (dateTime) {
-                  setState(() =>
-                  _startDate = Timestamp.fromDate(DateTime.parse(dateTime)));
+                  setState(() => _startDate = Timestamp.fromDate(dateTime!));
                 },
                 validator: (value) {
-                  if (value == null || value.isEmpty)
+                  if (value == null || value.toString().isEmpty)
                     return 'La fecha de inicio es un campo obligatorio';
                   return null;
                 },
-                decoration: InputDecoration(
-                  labelText: 'Fecha inicio *',
-                  labelStyle: textTheme.bodyText2,
-                  suffixIcon: Icon(
-                    Icons.event,
-                  ),
-                ),
               ),
-              childRight: DateTimePicker(
-                locale: Locale('es', 'ES'),
-                dateMask: 'dd/MM/yyyy',
-                initialValue: _endDate?.toString(),
-                firstDate: _startDate?.toDate() ??
-                    new DateTime(
-                      DateTime.now().year - 100,
-                    ),
-                lastDate: DateTime.now(),
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                onChanged: (dateTime) {
-                  setState(() =>
-                  _endDate = Timestamp.fromDate(DateTime.parse(dateTime)));
-                },
+              childRight: DateTimeField(
+                initialValue: _endDate?.toDate(),
+                format: DateFormat('dd/MM/yyyy'),
                 decoration: InputDecoration(
                   labelText: 'Fecha fin',
-                  labelStyle: textTheme.bodyText2,
+                  labelStyle: textTheme.bodyMedium,
                   suffixIcon: Icon(
                     Icons.event,
                   ),
                 ),
+                style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                onShowPicker: (context, currentValue) {
+                  return showDatePicker(
+                    context: context,
+                    locale: Locale('es', 'ES'),
+                    firstDate: _startDate?.toDate() ?? new DateTime(DateTime.now().year - 100,),
+                    initialDate: currentValue ?? DateTime.now(),
+                    lastDate: DateTime.now(),
+                  );
+                },
+                onChanged: (dateTime) {
+                  setState(() => _endDate = Timestamp.fromDate(dateTime!));
+                },
+                validator: (value) {
+                  if (value == null || value.toString().isEmpty)
+                    return 'La fecha de nacimiento no puede estar vacía';
+                  return null;
+                },
               ),
             ),
             CustomFlexRowColumn(

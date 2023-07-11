@@ -250,7 +250,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                 style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                   label: Text(
-                    'Empresa, organización...',
+                    widget.isEducation? 'Empresa, organización, instituto, universidad...':'Empresa, organización...' ,
                     style: textTheme.bodyText2,
                   ),
                 ),

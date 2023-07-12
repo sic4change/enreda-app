@@ -3,6 +3,7 @@ import 'package:enreda_app/app/home/competencies/my_competencies_page.dart';
 import 'package:enreda_app/app/home/curriculum/my_curriculum_page.dart';
 import 'package:enreda_app/app/home/account/personal_data_page.dart';
 import 'package:enreda_app/app/home/models/contact.dart';
+import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/pages/favorite_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
@@ -119,7 +120,7 @@ class _AccountPageState extends State<AccountPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildMyProfile(userEnreda),
+                  _buildMyProfile(userEnreda, context),
                   SpaceH20(),
                   _buildMyParameters(userEnreda)
                 ],
@@ -195,7 +196,7 @@ class _AccountPageState extends State<AccountPage> {
         ),
         child: ListView(
           children: <Widget>[
-            _buildMyProfile(userEnreda),
+            _buildMyProfile(userEnreda, context),
             SpaceH20(),
             _currentPageTitle == StringConst.PERSONAL_DATA.toUpperCase() ||
                     _currentPageTitle == StringConst.MY_CV.toUpperCase()
@@ -226,7 +227,9 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  Widget _buildMyProfile(UserEnreda? userEnreda) {
+  Widget _buildMyProfile(UserEnreda? userEnreda, BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+
     final competenciesIdentified = userEnreda!.competencies.length;
     final competenciesValidated = userEnreda.competencies.values.where((element) => element == 'validated' || element == 'certified').length;
     final competenciesCertified = userEnreda.competencies.values.where((element) => element == 'certified').length;
@@ -331,39 +334,78 @@ class _AccountPageState extends State<AccountPage> {
                   fontWeight: FontWeight.bold, color: Constants.chatDarkGray),
             ),
           SpaceH16(),
-          RichText(
-            text: TextSpan(
-              text: '$competenciesIdentified ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              children: <TextSpan>[
-                TextSpan(text: 'competencias identificadas', style: DefaultTextStyle.of(context).style),
-              ],
-            ),
+          StreamBuilder<List<Experience>>(
+              stream: database.myExperiencesStream(userEnreda.userId ?? ''),
+              builder: (context, snapshot) {
+                if (snapshot.hasData &&
+                snapshot.connectionState == ConnectionState.active &&
+                snapshot.data!.length != 0) {
+                  return Column(
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: <TextSpan>[
+                            TextSpan(text: '${snapshot.data!.length} ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: 'experiencias añadidas', style: DefaultTextStyle.of(context).style),
+                          ],
+                        ),
+                      ),
+                      SpaceH8(),
+                    ],
+                  );
+                } else {
+                  return Container();
+                }
+            }
           ),
-          //Text('$competenciesIdentified competencias identificadas'),
-          SpaceH8(),
-          RichText(
-            text: TextSpan(
-              text: '$competenciesValidated ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              children: <TextSpan>[
-                TextSpan(text: 'competencias evaluadas', style: DefaultTextStyle.of(context).style),
-              ],
-            ),
+
+          if (competenciesIdentified != 0)
+          Column(
+            children: [
+              RichText(
+                text: TextSpan(
+                  style: DefaultTextStyle.of(context).style,
+                  children: <TextSpan>[
+                    TextSpan(text: '$competenciesIdentified ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    TextSpan(text: 'competencias identificadas', style: DefaultTextStyle.of(context).style),
+                  ],
+                ),
+              ),
+              SpaceH8(),
+            ],
           ),
-          //Text('$competenciesValidated competencias evaluadas'),
-          SpaceH8(),
-          RichText(
-            text: TextSpan(
-              text: '$competenciesCertified ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              children: <TextSpan>[
-                TextSpan(text: 'competencias certificadas', style: DefaultTextStyle.of(context).style),
-              ],
-            ),
+          if (competenciesValidated != 0)
+          Column(
+            children: [
+              RichText(
+                text: TextSpan(
+                  style: DefaultTextStyle.of(context).style,
+                  children: <TextSpan>[
+                    TextSpan(text: '$competenciesValidated ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    TextSpan(text: 'competencias evaluadas', style: DefaultTextStyle.of(context).style),
+                  ],
+                ),
+              ),
+              SpaceH8(),
+            ],
           ),
-          //Text('$competenciesCertified competencias certificadas'),
-          SpaceH8(),
+          if (competenciesCertified != 0)
+          Column(
+            children: [
+              RichText(
+                text: TextSpan(
+                  style: DefaultTextStyle.of(context).style,
+                  children: <TextSpan>[
+                    TextSpan(text: '$competenciesCertified ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    TextSpan(text: 'competencias certificadas', style: DefaultTextStyle.of(context).style),
+                  ],
+                ),
+              ),
+              SpaceH8(),
+            ],
+          ),
+          if (resources != 0)
           RichText(
             text: TextSpan(
               text: 'Has participado en ',

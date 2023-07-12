@@ -31,6 +31,7 @@ class UserEnreda {
     this.dataOfInterest = const [],
     this.languages = const [],
     this.aboutMe,
+    this.resources = const [],
   });
 
   factory UserEnreda.fromMap(Map<String, dynamic> data, String documentId) {
@@ -131,6 +132,15 @@ class UserEnreda {
 
     final String? aboutMe = data['aboutMe'];
 
+    List<String> resources = [];
+    try {
+      data['resources'].forEach((resource) {
+        resources.add(resource.toString());
+      });
+    } catch (e) {
+      //print('user not resources');
+    }
+
     return UserEnreda(
       email: email,
       firstName: firstName,
@@ -158,6 +168,7 @@ class UserEnreda {
       dataOfInterest: dataOfInterest,
       languages: languages,
       aboutMe: aboutMe,
+      resources: resources,
     );
   }
 
@@ -187,6 +198,7 @@ class UserEnreda {
   final List<String> dataOfInterest;
   final List<String> languages;
   final String? aboutMe;
+  final List<String> resources;
 
   Map<String, dynamic> toMap() {
     InterestsUserEnreda interestUserEnreda = InterestsUserEnreda(
@@ -213,6 +225,7 @@ class UserEnreda {
       'languages': languages,
       'aboutMe': aboutMe,
       'education': education?.toMap(),
+      'resources': resources,
     };
   }
 

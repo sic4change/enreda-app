@@ -227,6 +227,11 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget _buildMyProfile(UserEnreda? userEnreda) {
+    final competenciesIdentified = userEnreda!.competencies.length;
+    final competenciesValidated = userEnreda.competencies.values.where((element) => element == 'validated' || element == 'certified').length;
+    final competenciesCertified = userEnreda.competencies.values.where((element) => element == 'certified').length;
+    final resources = userEnreda.resources.length;
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: Constants.mainPadding),
       decoration: BoxDecoration(
@@ -325,6 +330,51 @@ class _AccountPageState extends State<AccountPage> {
               style: textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.bold, color: Constants.chatDarkGray),
             ),
+          SpaceH16(),
+          RichText(
+            text: TextSpan(
+              text: '$competenciesIdentified ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              children: <TextSpan>[
+                TextSpan(text: 'competencias identificadas', style: DefaultTextStyle.of(context).style),
+              ],
+            ),
+          ),
+          //Text('$competenciesIdentified competencias identificadas'),
+          SpaceH8(),
+          RichText(
+            text: TextSpan(
+              text: '$competenciesValidated ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              children: <TextSpan>[
+                TextSpan(text: 'competencias evaluadas', style: DefaultTextStyle.of(context).style),
+              ],
+            ),
+          ),
+          //Text('$competenciesValidated competencias evaluadas'),
+          SpaceH8(),
+          RichText(
+            text: TextSpan(
+              text: '$competenciesCertified ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              children: <TextSpan>[
+                TextSpan(text: 'competencias certificadas', style: DefaultTextStyle.of(context).style),
+              ],
+            ),
+          ),
+          //Text('$competenciesCertified competencias certificadas'),
+          SpaceH8(),
+          RichText(
+            text: TextSpan(
+              text: 'Has participado en ',
+              style: DefaultTextStyle.of(context).style,
+              children: <TextSpan>[
+                TextSpan(text: '$resources ', style: TextStyle(fontWeight: FontWeight.bold),),
+                TextSpan(text: 'recursos', style: DefaultTextStyle.of(context).style),
+              ],
+            ),
+          ),
+          //Text('Has participado en $resources recursos'),
           SpaceH48(),
           Padding(
             padding: const EdgeInsets.all(8.0),

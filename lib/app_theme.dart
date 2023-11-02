@@ -85,8 +85,8 @@ class AppTheme {
       fontWeight: _bold,
       fontStyle: FontStyle.normal,
     ),
-    headlineSmall: GoogleFonts.inter(
-      fontSize: Sizes.TEXT_SIZE_24,
+    headlineSmall: GoogleFonts.sora(
+      fontSize: Sizes.TEXT_SIZE_34,
       color: AppColors.black,
       fontWeight: _bold,
       fontStyle: FontStyle.normal,

@@ -224,12 +224,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                   SizedBox(width: 50,)
               ],
             ),
-            body: Stack(
-              children: [
-                BackgroundWeb(),
-                bodyWidget[selectedIndex]
-              ],
-            ),
+            body: bodyWidget[selectedIndex],
           );
         });
   }

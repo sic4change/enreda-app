@@ -4,6 +4,7 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -93,19 +94,8 @@ Widget buildShareButton(BuildContext context, Resource resource, Color color) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          FontAwesomeIcons.share,
-          color: color,
-          size: widthOfScreen(context) >= 1024 ? 15.0 : 15.0,
-        ),
+        Image.asset(ImagePath.ICON_SHARE, height: 20),
         SizedBox(width: 10),
-        Text('Compartir',
-          style: textTheme.bodyText1?.copyWith(
-            color: Constants.grey,
-            height: 1.5,
-            fontWeight: FontWeight.w400,
-            fontSize: fontSize,
-          ),),
       ],
     ),
   );

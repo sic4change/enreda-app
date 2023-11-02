@@ -11,17 +11,13 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/filter_text_field_row.dart';
 import 'package:enreda_app/app/home/resources/list_item_builder_grid.dart';
 import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
-import 'package:enreda_app/common_widgets/background_mobile.dart';
-import 'package:enreda_app/common_widgets/background_web.dart';
-import 'package:enreda_app/common_widgets/custom_chip.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
-import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/my_scroll_behaviour.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -40,11 +36,12 @@ class ResourcesPage extends StatefulWidget {
 
 class _ResourcesPageState extends State<ResourcesPage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  FilterResource filterResource = FilterResource("", []);
-  bool isAlertboxOpened = false;
   final _searchTextController = TextEditingController();
+  FilterResource filterResource = FilterResource("", "");
+  bool isAlertBoxOpened = false;
   List<ResourceCategory> resourceCategoriesList = [];
-
+  bool _visible = true;
+  String _categoryName = '';
 
   void setStateIfMounted(f) {
     if (mounted) setState(f);
@@ -55,7 +52,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
       _firebaseMessaging.subscribeToTopic('weeknotification');
       _firebaseMessaging.unsubscribeFromTopic(user.userId!);
       _firebaseMessaging.subscribeToTopic(user.userId!);
-      _firebaseMessaging.getToken().then((token) => print('token: ${token}'));
+      _firebaseMessaging.getToken().then((token) => print('token: $token'));
     }
   }
 
@@ -121,85 +118,121 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Responsive.isDesktop(context)
-            ? BackgroundWeb()
-            : BackgroundMobileAccount(backgroundHeight: BackgroundHeight.Large),
-        Padding(
-          padding: Responsive.isDesktop(context)
-              ? EdgeInsets.only(top: 32.0)
-              : EdgeInsets.only(top: 16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              _buildFilterRow(),
-              SpaceH20(),
-              Expanded(
-                child: StreamBuilder<User?>(
-                    stream: Provider.of<AuthBase>(context).authStateChanges(),
-                    builder: (context, snapshot) {
-                      return _buildContents(context);
-                    }),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFilterRow() {
-    final double margin = Responsive.isDesktop(context) ? 48.0 : 12.0;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        FilterTextFieldRow(
-            searchTextController: _searchTextController,
-            onPressed: () => setState(() {
-                  filterResource.searchText = _searchTextController.text;
-                }),
-            onFieldSubmitted: (value) => setState(() {
-                  filterResource.searchText = _searchTextController.text;
-                }),
-            clearFilter: () => _clearFilter()),
-        SpaceH8(),
-        Container(
-          height: 50.0,
-          margin: EdgeInsets.symmetric(horizontal: margin),
-          child:
-          resourceCategoriesList.isEmpty ? Center(child: LinearProgressIndicator()) :
-          ScrollConfiguration(
-            behavior: MyCustomScrollBehavior(),
-            child: ChipsChoice<String>.multiple(
-              alignment: WrapAlignment.start,
-              padding: EdgeInsets.only(left: 0.0, right: 0.0),
-              value: filterResource.resourceCategories,
-              onChanged: (val) {
-                setState(() {
-                  filterResource.resourceCategories = val;
-                });
-              },
-              choiceItems: C2Choice.listFrom<String, ResourceCategory>(
-                source: resourceCategoriesList,
-                value: (i, v) => v.id,
-                label: (i, v) => v.name,
-              ),
-              choiceBuilder: (item, i) => Row(
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return _visible ? SingleChildScrollView(
+        child: Column(
+          children: [
+            SpaceH50(),
+            Text('Busca por area', style: textTheme.titleSmall?.copyWith(
+              color: AppColors.greyAlt,
+              height: 1.5,
+              letterSpacing: 0.5,
+              fontWeight: FontWeight.w700,
+              fontSize: 25,
+              //fontSize: fontSize,
+            ),),
+            SpaceH20(),
+            Text('EnREDa te conecta con recursos educativos, actividades, empresas y pleabilidad y construir tu camino vital. Porque las oportunidades no se compran, se crean.'),
+            _buildCategories(context, resourceCategoriesList),
+          ],
+        )) :
+        Stack(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 20.0),
+              child: Column(
                 children: [
-                  CustomChip(
-                    label: item.label,
-                    selected: item.selected,
-                    onSelect: item.select!,
+                  FilterTextFieldRow(
+                      searchTextController: _searchTextController,
+                      onPressed: () => setStateIfMounted(() {
+                        filterResource.searchText = _searchTextController.text;
+                      }),
+                      onFieldSubmitted: (value) => setStateIfMounted(() {
+                        filterResource.searchText = _searchTextController.text;
+                      }),
+                      clearFilter: () => _clearFilter()),
+                  SpaceH20(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                    child: InkWell(
+                      onTap: () {
+                        setStateIfMounted(() {
+                          _visible = !_visible;
+                          _clearFilter();
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.arrow_back, color: AppColors.primaryColor),
+                          SpaceW12(),
+                          Text(_categoryName, style: textTheme.titleSmall?.copyWith(
+                            color: AppColors.greyAlt,
+                            height: 1.5,
+                            letterSpacing: 0.5,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 25,
+                            //fontSize: fontSize,
+                          ),),
+                        ],
+                      ),
+                    ),
                   ),
-                  SpaceW8(),
                 ],
               ),
             ),
+            Container(
+              margin: const EdgeInsets.only(top: 150.0),
+              child: _buildContents(context),
+            ),
+          ],
+        );
+  }
+
+  Widget _buildCategories(BuildContext context, List<ResourceCategory> resourceCategories) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return GridView.builder(
+      padding: EdgeInsets.symmetric(horizontal: 100,  vertical: 30),
+      shrinkWrap: true,
+      itemCount: resourceCategories.length,
+      scrollDirection: Axis.vertical,
+      physics: NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 520,
+          mainAxisExtent: 450,
+          crossAxisSpacing: 30,
+          mainAxisSpacing: 30
+      ),
+      itemBuilder: (context, index) {
+        return InkWell(
+          onTap: () {
+            setStateIfMounted(() {
+              filterResource.resourceCategoryId = (resourceCategories[index].id);
+              _visible = !_visible;
+              _categoryName = resourceCategories[index].name;
+            });
+          },
+          child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(resourceCategories[index].backgroundUrl),
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 40.0),
+                child: Text(resourceCategories[index].name, style: textTheme.headlineSmall?.copyWith(
+                  color: Colors.white,
+                  height: 1.5,
+                  letterSpacing: 1,
+                  fontWeight: FontWeight.w900,
+                  //fontSize: fontSize,
+                ),),
+              ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -348,7 +381,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     widget._errorNotValidUser = true;
                     Future.delayed(Duration.zero, () {
                       _signOut(context);
-                      if (!isAlertboxOpened) {
+                      if (!isAlertBoxOpened) {
                         _showDialogNotValidUser(context);
                       }
                     });
@@ -487,7 +520,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 widget._errorNotValidUser = true;
                 Future.delayed(Duration.zero, () {
                   _signOut(context);
-                  if (!isAlertboxOpened) {
+                  if (!isAlertBoxOpened) {
                     _showDialogNotValidUser(context);
                   }
                 });
@@ -502,7 +535,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   }
 
   Future<void> _showDialogNotValidUser(BuildContext context) async {
-    isAlertboxOpened = true;
+    isAlertBoxOpened = true;
     final didRequestNotValidUser = await showAlertDialog(context,
         title: 'Notificación al usuario',
         content:
@@ -528,7 +561,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
     setState(() {
       _searchTextController.clear();
       filterResource.searchText = '';
-      filterResource.resourceCategories = [];
     });
   }
 }

@@ -8,12 +8,10 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/values.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../../../services/database.dart';
-import '../../../common_widgets/precached_avatar.dart';
 import '../../../common_widgets/show_alert_dialog.dart';
 import '../../../common_widgets/show_exception_alert_dialog.dart';
 import '../../../services/auth.dart';
@@ -64,29 +62,29 @@ class _ResourceListTileState extends State<ResourceListTile> {
             onTap: widget.onTap,
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Constants.penBlue, width: 1),
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+                border: Border.all(color: AppColors.greyBorder, width: 1),
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+                color: Constants.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.greyBorder,
+                    spreadRadius: 0.5,
+                    blurRadius: 2,
+                    offset: Offset(0, 0),
+                  )
+                ]
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(10),
-                          topLeft: Radius.circular(10)),
-                      color: Colors.white,
-                    ),
-                    height: 150,
+                    height: 168,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(10),
-                                topLeft: Radius.circular(10)),
-                          ),
                           height: 60,
                           child: Padding(
                             padding: EdgeInsets.only(
@@ -188,7 +186,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                           children: [
                                             Icon(
                                               Icons.more_vert,
-                                              color: Constants.grey,
+                                              color: AppColors.greyTxtAlt,
                                               size: 20,
                                             ),
                                           ],
@@ -202,7 +200,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                         ),
                         SpaceH4(),
                         Container(
-                          height: 80,
+                          height: 100,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
@@ -244,73 +242,63 @@ class _ResourceListTileState extends State<ResourceListTile> {
                       ],
                     ),
                   ),
-                  !kIsWeb ? Expanded(
-                    child: widget.resource.resourcePhoto == null ||
-                        widget.resource.resourcePhoto == ""
-                        ? Container()
-                        : CachedNetworkImage(
-                            width: 400,
-                            fit: BoxFit.cover,
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) => Container(
-                                  child: Image.asset(ImagePath.IMAGE_DEFAULT),
-                            ),
-                            alignment: Alignment.center,
-                            imageUrl: widget.resource.resourcePhoto!),
-                  ):
-                  Expanded(
-                    child: widget.resource.resourcePhoto == null ||
-                        widget.resource.resourcePhoto == ""
-                        ? Container()
-                        : PrecacheResourceCard(
-                            imageUrl: widget.resource.resourcePhoto!,
-                          )
-                  ),
                   Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(10),
-                          bottomLeft: Radius.circular(10)),
-                      color: AppColors.white,
-                    ),
-                    height: 50,
+                    height: 70,
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: sidePadding),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          auth.currentUser == null
-                              ? IconButton(
-                            icon: FaIcon(FontAwesomeIcons.heart),
-                            tooltip: 'Me gusta',
-                            color: Constants.darkGray,
-                            iconSize: 20,
-                            onPressed: () => showAlertNullUser(context),
-                          )
-                              : widget.resource.likes.contains(auth.currentUser!.uid)
-                              ? IconButton(
-                            icon: FaIcon(FontAwesomeIcons.solidHeart),
-                            tooltip: 'Me gusta',
-                            color: AppColors.red,
-                            iconSize: 20,
-                            onPressed: () {
-                              _removeUserToLike(
-                                  widget.resource, auth.currentUser!.uid);
-                            },
-                          )
-                              : IconButton(
-                            icon: FaIcon(FontAwesomeIcons.heart),
-                            tooltip: 'Me gusta',
-                            color: Constants.darkGray,
-                            onPressed: () {
-                              _addUserToLike(
-                                  widget.resource);
-                            },
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.greyTxtAlt, width: 1),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              color: Constants.white
+                            ),
+                            child: Text(
+                              'Ver más', style: TextStyle(
+                              letterSpacing: 1,
+                              fontSize: fontSize,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.greyTxtAlt,
+                            ),
+                            )
                           ),
                           Spacer(),
                           buildShareButton(
                               context, widget.resource, Constants.grey),
+                          SpaceW4(),
+                          auth.currentUser == null
+                            ? IconButton(
+                                icon: FaIcon(FontAwesomeIcons.heart),
+                                tooltip: 'Me gusta',
+                                color: Constants.darkGray,
+                                iconSize: 20,
+                                onPressed: () => showAlertNullUser(context),
+                              )
+                            : widget.resource.likes
+                                    .contains(auth.currentUser!.uid)
+                                ? IconButton(
+                                    icon: FaIcon(FontAwesomeIcons.solidHeart),
+                                    tooltip: 'Me gusta',
+                                    color: AppColors.red,
+                                    iconSize: 20,
+                                    onPressed: () {
+                                      _removeUserToLike(widget.resource,
+                                          auth.currentUser!.uid);
+                                    },
+                                  )
+                                : IconButton(
+                                    icon: FaIcon(FontAwesomeIcons.heart),
+                                    tooltip: 'Me gusta',
+                                    color: Constants.darkGray,
+                                    onPressed: () {
+                                      _addUserToLike(widget.resource);
+                                    },
+                                  ),
+
                         ],
                       ),
                     ),

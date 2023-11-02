@@ -64,54 +64,57 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
 
   @override
   Widget build(BuildContext context) {
-    final double margin = Responsive.isDesktop(context) ? 48.0 : 12.0;
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 15, 16, md: 15);
-    return Row(
-      children: [
-        Expanded(
-          child: RoundedContainer(
-            height: Responsive.isMobile(context) ? 40 : 45,
-            padding: const EdgeInsets.only(left: 8.0, top: 0.0, right: 8.0, bottom: 0.0),
-            margin: EdgeInsets.only(left: margin, right: margin),
-            child: Row(children: [
-              SpaceW16(),
-              Expanded(
-                child: TextFormField(
-                    onFieldSubmitted: widget.onFieldSubmitted,
-                    textInputAction: TextInputAction.done,
-                    textAlignVertical: TextAlignVertical.center,
-                    focusNode: _focusNode,
-                    decoration: InputDecoration(
-                      hintText: _hintText,
-                      border: InputBorder.none,
-                    ),
-                    controller: widget.searchTextController,
-                    keyboardType: TextInputType.text,
-                    style: textTheme.bodyText1?.copyWith(
-                      color: AppColors.greyAlt,
-                      height: 1.5,
-                      fontWeight: FontWeight.w500,
-                      fontSize: fontSize,
-                    ),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 50),
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        children: [
+          Expanded(
+            child: RoundedContainer(
+              height: Responsive.isMobile(context) ? 40 : 45,
+              padding: EdgeInsets.all(8),
+              margin: EdgeInsets.only(left: 5, right: 5),
+              child: Row(children: [
+                SpaceW16(),
+                Expanded(
+                  child: TextFormField(
+                      onFieldSubmitted: widget.onFieldSubmitted,
+                      textInputAction: TextInputAction.done,
+                      textAlignVertical: TextAlignVertical.center,
+                      focusNode: _focusNode,
+                      decoration: InputDecoration(
+                        hintText: _hintText,
+                        border: InputBorder.none,
+                      ),
+                      controller: widget.searchTextController,
+                      keyboardType: TextInputType.text,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: AppColors.greyAlt,
+                        height: 1.5,
+                        fontWeight: FontWeight.w500,
+                        fontSize: fontSize,
+                      ),
+                  ),
                 ),
-              ),
-              if (_isClearTextVisible)
+                if (_isClearTextVisible)
+                  IconButton(
+                    padding: EdgeInsets.only(bottom: 2),
+                    icon: Icon(Icons.clear, color: Constants.darkGray),
+                    onPressed: widget.clearFilter,
+                  ),
+                if (!_isClearTextVisible)
                 IconButton(
-                  padding: EdgeInsets.all(0),
-                  icon: Icon(Icons.clear, color: Constants.darkGray),
-                  onPressed: widget.clearFilter,
+                  padding: EdgeInsets.only(bottom: 2),
+                  icon: Icon(Icons.search, color: Constants.darkGray),
+                  onPressed: widget.onPressed,
                 ),
-              if (!_isClearTextVisible)
-              IconButton(
-                padding: EdgeInsets.all(0),
-                icon: Icon(Icons.search, color: Constants.darkGray),
-                onPressed: widget.onPressed,
-              ),
-            ]),
+              ]),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -89,4 +89,14 @@ class ImagePath {
   static const String ARROW_UP = '$imageDir/arrow_up.png';
   static const String DOWNLOAD = '$imageDir/icon-download.png';
   static const String LOGOUT = '$imageDir/icon-logout.png';
+  static const String ICON_SHARE = '$imageDir/icon-share.png';
+
+  //Resources Categories
+  static const String BACKGROUND_1 = '$imageDir/background-empleo.png';
+  static const String BACKGROUND_2 = '$imageDir/background-formacion.png';
+  static const String BACKGROUND_3 = '$imageDir/background-ocio.png';
+  static const String BACKGROUND_4 = '$imageDir/background-otros.png';
+  static const String BACKGROUND_5 = '$imageDir/background-practicas.png';
+  static const String BACKGROUND_6 = '$imageDir/background-voluntariado.png';
+
 }

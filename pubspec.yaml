@@ -138,7 +138,7 @@ flutter:
     - images/cv-dots-1.svg
     - images/cv-dots-2.svg
     - images/cv-dots-3.svg
-
+    - images/icon-share.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

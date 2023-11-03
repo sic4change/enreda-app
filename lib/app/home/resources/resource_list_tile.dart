@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
@@ -68,8 +67,8 @@ class _ResourceListTileState extends State<ResourceListTile> {
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.greyBorder,
-                    spreadRadius: 0.5,
-                    blurRadius: 2,
+                    spreadRadius: 0.2,
+                    blurRadius: 1,
                     offset: Offset(0, 0),
                   )
                 ]

@@ -116,14 +116,12 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
               backgroundColor: Constants.white,
               title: Row(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
-                      child: Image.asset(
-                        ImagePath.LOGO,
-                        height: 20,
-                      ),
+                  SizedBox(width: 100,),
+                  InkWell(
+                    onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
+                    child: Image.asset(
+                      ImagePath.LOGO,
+                      height: 20,
                     ),
                   ),
                   SpaceW24(),
@@ -221,7 +219,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                         height: Sizes.ICON_SIZE_30,
                       ),),
                   ),
-                  SizedBox(width: 50,)
+                  SizedBox(width: 100,)
               ],
             ),
             body: bodyWidget[selectedIndex],

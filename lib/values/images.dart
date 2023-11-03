@@ -92,11 +92,22 @@ class ImagePath {
   static const String ICON_SHARE = '$imageDir/icon-share.png';
 
   //Resources Categories
-  static const String BACKGROUND_1 = '$imageDir/background-empleo.png';
-  static const String BACKGROUND_2 = '$imageDir/background-formacion.png';
-  static const String BACKGROUND_3 = '$imageDir/background-ocio.png';
-  static const String BACKGROUND_4 = '$imageDir/background-otros.png';
-  static const String BACKGROUND_5 = '$imageDir/background-practicas.png';
-  static const String BACKGROUND_6 = '$imageDir/background-voluntariado.png';
+  static const String BACKGROUND_1 = '$imageDir/background-empleo-2X.png';
+  static const String PERSON_1 = '$imageDir/person-empleo.png';
+  static const String BACKGROUND_2 = '$imageDir/background-formacion-2X.png';
+  static const String PERSON_2 = '$imageDir/person-formacion.png';
+  static const String BACKGROUND_3 = '$imageDir/background-ocio-2X.png';
+  static const String PERSON_3 = '$imageDir/person-ocio.png';
+  static const String BACKGROUND_4 = '$imageDir/background-otros-2X.png';
+  static const String PERSON_4 = '$imageDir/person-otros.png';
+  static const String BACKGROUND_5 = '$imageDir/background-practicas-2X.png';
+  static const String PERSON_5 = '$imageDir/person-practicas.png';
+  static const String BACKGROUND_6 = '$imageDir/background-voluntariado-2X.png';
+  static const String PERSON_6 = '$imageDir/person-voluntariado.png';
+  static const String FUNDAULA = '$imageDir/icon-click-fundaula.png';
+  static const String BACKGROUND_PILLS = '$imageDir/background-pildoras.png';
+  static const String PERSON_PILL1 = '$imageDir/person-pildora1.png';
+  static const String PERSON_PILL2 = '$imageDir/person-pildora2.png';
+  static const String PERSON_PILL3 = '$imageDir/person-pildora3.png';
 
 }

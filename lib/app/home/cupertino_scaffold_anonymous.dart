@@ -1,17 +1,11 @@
 import 'package:enreda_app/app/home/account/account_page.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
-import 'package:enreda_app/app/home/home_page.dart';
 import 'package:enreda_app/app/home/tab_item.dart';
 import 'package:enreda_app/common_widgets/background_mobile.dart';
-import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
-import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/values.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'resources/pages/resources_page.dart';
 
 class CupertinoScaffoldAnonymous extends StatelessWidget {
@@ -32,7 +26,7 @@ class CupertinoScaffoldAnonymous extends StatelessWidget {
       TabItem.resources: (_) => ResourcesPage(),
       TabItem.competencies: (_) => Stack(
             children: [
-              BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
+              //BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
               CompetenciesPage(
                 showChatNotifier: showChatNotifier,
               ),
@@ -40,7 +34,7 @@ class CupertinoScaffoldAnonymous extends StatelessWidget {
           ),
       TabItem.account: (_) => Stack(
             children: [
-              BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
+              //BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
               AccountPage(),
             ],
           )

@@ -1,4 +1,3 @@
-import 'package:chips_choice/chips_choice.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/filterResource.dart';
@@ -18,7 +17,6 @@ import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +40,28 @@ class _ResourcesPageState extends State<ResourcesPage> {
   List<ResourceCategory> resourceCategoriesList = [];
   bool _visible = true;
   String _categoryName = '';
+  String _backgroundImageUrl(String categoryId) {
+    Map<String, String> backgroundImages = {
+      "6ag9Px7zkFpHgRe17PQk": ImagePath.BACKGROUND_2,
+      "FNAcayruXghBMjj3RD9h": ImagePath.BACKGROUND_6,
+      "LNj2FMTEBsNtBYCRo0MQ": ImagePath.BACKGROUND_4,
+      "POUBGFk5gU6c5X1DKo1b": ImagePath.BACKGROUND_1,
+      "PlaaW4L4Z36Wu1V6HuBa": ImagePath.BACKGROUND_3,
+      "zVusrwQkVoAca9R6iuQo": ImagePath.BACKGROUND_5,
+    };
+    return backgroundImages[categoryId] ?? "";
+  }
+  String _personImageUrl(String categoryId) {
+    Map<String, String> personImages = {
+      "6ag9Px7zkFpHgRe17PQk": ImagePath.PERSON_2,
+      "FNAcayruXghBMjj3RD9h": ImagePath.PERSON_6,
+      "LNj2FMTEBsNtBYCRo0MQ": ImagePath.PERSON_4,
+      "POUBGFk5gU6c5X1DKo1b": ImagePath.PERSON_1,
+      "PlaaW4L4Z36Wu1V6HuBa": ImagePath.PERSON_3,
+      "zVusrwQkVoAca9R6iuQo": ImagePath.PERSON_5,
+    };
+    return personImages[categoryId] ?? "";
+  }
 
   void setStateIfMounted(f) {
     if (mounted) setState(f);
@@ -118,89 +138,182 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   @override
   Widget build(BuildContext context) {
+    return _visible ? _buildResourcesPage(context) :
+    _buildFilteredResourcesPage(context);
+  }
+
+  Widget _buildResourcesPage(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    return _visible ? SingleChildScrollView(
+    return SingleChildScrollView(
         child: Column(
           children: [
-            SpaceH50(),
-            Text('Busca por area', style: textTheme.titleSmall?.copyWith(
-              color: AppColors.greyAlt,
-              height: 1.5,
-              letterSpacing: 0.5,
-              fontWeight: FontWeight.w700,
-              fontSize: 25,
-              //fontSize: fontSize,
-            ),),
-            SpaceH20(),
-            Text('EnREDa te conecta con recursos educativos, actividades, empresas y pleabilidad y construir tu camino vital. Porque las oportunidades no se compran, se crean.'),
-            _buildCategories(context, resourceCategoriesList),
-          ],
-        )) :
-        Stack(
-          children: [
             Container(
-              margin: const EdgeInsets.only(top: 20.0),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.1, 0.5, 0.9,],
+                  colors: [
+                    AppColors.white.withOpacity(0.1),
+                    AppColors.greyViolet.withOpacity(0.1),
+                    AppColors.turquoise_alt,
+                  ],
+                ),
+              ),
               child: Column(
                 children: [
-                  FilterTextFieldRow(
-                      searchTextController: _searchTextController,
-                      onPressed: () => setStateIfMounted(() {
-                        filterResource.searchText = _searchTextController.text;
-                      }),
-                      onFieldSubmitted: (value) => setStateIfMounted(() {
-                        filterResource.searchText = _searchTextController.text;
-                      }),
-                      clearFilter: () => _clearFilter()),
+                  SpaceH50(),
+                  Text( StringConst.SEARCH, style: textTheme.titleSmall?.copyWith(
+                    color: AppColors.greyAlt,
+                    height: 1.5,
+                    letterSpacing: 0.5,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 25,
+                    //fontSize: fontSize,
+                  ),),
                   SpaceH20(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                    child: InkWell(
-                      onTap: () {
-                        setStateIfMounted(() {
-                          _visible = !_visible;
-                          _clearFilter();
-                        });
-                      },
-                      child: Row(
-                        children: [
-                          Icon(Icons.arrow_back, color: AppColors.primaryColor),
-                          SpaceW12(),
-                          Text(_categoryName, style: textTheme.titleSmall?.copyWith(
-                            color: AppColors.greyAlt,
-                            height: 1.5,
-                            letterSpacing: 0.5,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 25,
-                            //fontSize: fontSize,
-                          ),),
-                        ],
-                      ),
-                    ),
-                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 10) : EdgeInsets.symmetric(horizontal: 100.0),
+                    child: Text(
+                      Responsive.isMobile(context) ? StringConst.PILLS_SUBTITLE : StringConst.SEARCH_SUBTITLE,
+                      textAlign: TextAlign.center, style: TextStyle(fontSize: 15,),)),
+                  SpaceH20(),
+                  _buildCategories(context, resourceCategoriesList),
+                  SpaceH30(),
                 ],
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 150.0),
-              child: _buildContents(context),
-            ),
+              color: AppColors.grey_alt,
+              height: 500,
+              child: Column(
+                children: [
+                  SpaceH50(),
+                  Text( StringConst.PILLS_TITLE, style: textTheme.titleSmall?.copyWith(
+                    color: AppColors.greyAlt,
+                    height: 1.5,
+                    letterSpacing: 0.5,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 25,
+                    //fontSize: fontSize,
+                  ),),
+                  SpaceH20(),
+                  Container(
+                      alignment: Alignment.center,
+                      padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 10) : EdgeInsets.symmetric(horizontal: 100.0),
+                      child: Text(StringConst.PILLS_SUBTITLE, textAlign: TextAlign.center, style: TextStyle(fontSize: 15,),)),
+                  SpaceH50(),
+                  Container(
+                      width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.7,
+                      height: Responsive.isMobile(context) ? 200 : 280,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage(ImagePath.BACKGROUND_PILLS),
+                        )
+                      ),
+                      child: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          Positioned(
+                            bottom: 0,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Container(
+                                    alignment: Alignment.bottomCenter,
+                                    height: Responsive.isMobile(context) ? 150 : 300,
+                                    child: Image.asset(ImagePath.PERSON_PILL1)),
+                                Container(
+                                    alignment: Alignment.bottomCenter,
+                                    height: Responsive.isMobile(context) ? 200 : 350,
+                                    child: Image.asset(ImagePath.PERSON_PILL2)),
+                                Container(
+                                    alignment: Alignment.bottomCenter,
+                                    height: Responsive.isMobile(context) ? 150 : 300,
+                                    child: Image.asset(ImagePath.PERSON_PILL3)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),),
+                ],
+              ),
+            )
           ],
-        );
+        ));
+  }
+
+  Widget _buildFilteredResourcesPage(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Stack(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 20.0),
+          child: Column(
+            children: [
+              FilterTextFieldRow(
+                  searchTextController: _searchTextController,
+                  onPressed: () => setStateIfMounted(() {
+                    filterResource.searchText = _searchTextController.text;
+                  }),
+                  onFieldSubmitted: (value) => setStateIfMounted(() {
+                    filterResource.searchText = _searchTextController.text;
+                  }),
+                  clearFilter: () => _clearFilter()),
+              SpaceH20(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                child: InkWell(
+                  onTap: () {
+                    setStateIfMounted(() {
+                      _visible = !_visible;
+                      _clearFilter();
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.arrow_back, color: AppColors.primaryColor),
+                      SpaceW12(),
+                      Text(_categoryName, style: textTheme.titleSmall?.copyWith(
+                        color: AppColors.greyAlt,
+                        height: 1.5,
+                        letterSpacing: 0.5,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 25,
+                        //fontSize: fontSize,
+                      ),),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 150.0),
+          child: _buildContents(context),
+        ),
+      ],
+    );
   }
 
   Widget _buildCategories(BuildContext context, List<ResourceCategory> resourceCategories) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return GridView.builder(
-      padding: EdgeInsets.symmetric(horizontal: 100,  vertical: 30),
+      padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 10): EdgeInsets.symmetric(horizontal: 100,  vertical: 30),
       shrinkWrap: true,
       itemCount: resourceCategories.length,
       scrollDirection: Axis.vertical,
       physics: NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 520,
-          mainAxisExtent: 450,
-          crossAxisSpacing: 30,
-          mainAxisSpacing: 30
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: Responsive.isMobile(context) ? 280 : 520,
+          mainAxisExtent: Responsive.isMobile(context) ? 120 : 450,
+          crossAxisSpacing: Responsive.isMobile(context) ? 10 : 30,
+          mainAxisSpacing: Responsive.isMobile(context) ? 10 : 30
       ),
       itemBuilder: (context, index) {
         return InkWell(
@@ -214,21 +327,36 @@ class _ResourcesPageState extends State<ResourcesPage> {
           child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(resourceCategories[index].backgroundUrl),
+                  image: AssetImage(_backgroundImageUrl(resourceCategories[index].id)),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 40.0),
-                child: Text(resourceCategories[index].name, style: textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
-                  height: 1.5,
-                  letterSpacing: 1,
-                  fontWeight: FontWeight.w900,
-                  //fontSize: fontSize,
-                ),),
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  Positioned(
+                    top: 0,
+                    child: Padding(
+                      padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 10.0) : EdgeInsets.only(top: 30.0),
+                      child: Text(resourceCategories[index].name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: textTheme.headlineSmall?.copyWith(
+                        color: Colors.white,
+                        height: 1.5,
+                        letterSpacing: 1,
+                        fontSize: Responsive.isMobile(context) ? 20 : 34,
+                        fontWeight: FontWeight.w900,
+                        //fontSize: fontSize,
+                      ),),
+                    ),
+                  ),
+                  Padding(
+                    padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 35.0) : EdgeInsets.all(0),
+                    child: Image.asset(_personImageUrl(resourceCategories[index].id)),
+                  ),
+                ],
               ),
           ),
         );

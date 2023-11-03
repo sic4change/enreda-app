@@ -75,7 +75,7 @@ class CupertinoScaffold extends StatelessWidget {
               ),
             ],
           ),
-          backgroundColor: Constants.turquoise,
+          backgroundColor: Colors.red,
           elevation: 0.0,
           actions: <Widget>[
             Row(

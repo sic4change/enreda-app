@@ -34,6 +34,12 @@ class StringConst {
   static const String LANGUAGES = "Idiomas";
   static const String EVALUATE_COMPETENCY = "Evaluar: ";
 
+  //Search Section
+  static const String SEARCH = "Busca por área";
+  static const String SEARCH_SUBTITLE = "EnREDa te conecta con recursos educativos, actividades, empresas y pleabilidad y construir tu camino vital. Porque las oportunidades no se compran, se crean.";
+  static const String PILLS_TITLE = "Píldoras formativas";
+  static const String PILLS_SUBTITLE = "¡Hemos recopilado todo este contenido para ti!";
+
   //Header Section
   static const String FIRST_NAME = "";
   static const String INTRO = "Te ayudamos a ";

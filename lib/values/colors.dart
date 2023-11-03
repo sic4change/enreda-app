@@ -62,4 +62,10 @@ class AppColors {
 
   //Red
   static const Color red = Color(0xFFF1291A);
+  static const Color white_alt = Color(0xFFA0A5D200);
+  static const Color lilac_alt = Color(0xFFCDCFE999);
+  static const Color turquoise_alt = Color(0xFFCCFAF0);
+  static const Color grey_alt = Color(0xFFF5F6F7);
+
+
 }

@@ -17,7 +17,7 @@ class BackgroundMobile extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
-            color: Constants.turquoise,
+            color: Constants.white,
             height: height,
           ),
         Expanded(

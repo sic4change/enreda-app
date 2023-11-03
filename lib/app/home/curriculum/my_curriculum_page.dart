@@ -546,63 +546,36 @@ class MyCurriculumPage extends StatelessWidget {
   Widget _buildMyCareer(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
-    var isEditable = false;
     final textController = TextEditingController();
-    final focusNode = FocusNode();
     textController.text = user?.education?.label ?? "";
 
-    return StatefulBuilder(builder: (context, setState) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              /*Expanded(
-                child:
-                CustomTextTitle(title: StringConst.PROFILE.toUpperCase()),
-              ),*/
-              InkWell(
-                onTap: () {
-                  Education education = Education(
-                      label: textController.text,
-                      value: textController.text,
-                      order: 0
-                  );
-                  if (isEditable)
-                    database.setUserEnreda(
-                        user!.copyWith(education: education));
-                  setState(() {
-                    isEditable = !isEditable;
-                    if (isEditable) focusNode.requestFocus();
-                  });
-                },
-                child: Icon(
-                  isEditable ? Icons.save : Icons.edit_outlined,
-                  size: Responsive.isDesktop(context) ? 18 : 15.0,
-                  color: Constants.darkGray,
-                ),
-              ),
-              SizedBox(width: 30,)
-            ],
-          ),
-          if (!isEditable)
-            CustomTextBody(
-                text: user?.education?.label != null
-                    ? user?.education?.label ?? ''
-                    : 'Aún no has añadido información de tu carrera'),
-          if (isEditable)
-            TextField(
-              controller: textController,
-              focusNode: focusNode,
-              minLines: 1,
-              maxLines: null,
-              style: textTheme.bodyLarge?.copyWith(
-                  fontSize: Responsive.isDesktop(context) ? 15 : 14,
-                  color: Constants.darkGray),
-            )
-        ],
-      );
-    });
+    return StreamBuilder(
+      stream: database.myExperiencesStream(user?.userId ?? ''),
+      builder: (context, snapshotExperiences) {
+        return StreamBuilder(
+          stream: database.educationStream(),
+          builder: (context, snapshotEducations) {
+            if (snapshotEducations.hasData && snapshotExperiences.hasData) {
+              final myEducationalExperiencies = snapshotExperiences.data!
+                  .where((experience) => experience.type == 'Formativa')
+                  .toList();
+              if (myEducationalExperiencies.isNotEmpty) {
+                final educations = snapshotEducations.data!;
+                final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
+                myEducations.sort((a, b) => a.order.compareTo(b.order));
+                final maxEducation = myEducations.first;
+
+                return CustomTextBody(text: maxEducation.label);
+              } else {
+                return Container();
+              }
+            } else {
+              return Container();
+            }
+          }
+        );
+      }
+    );
   }
 
   Widget _buildAboutMe(BuildContext context) {

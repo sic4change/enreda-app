@@ -86,7 +86,7 @@ class _FormationFormState extends State<FormationForm> {
               ))
                   .toList();
 
-            if(widget.experience != null && widget.experience!.education != ''){
+            if(widget.experience != null && widget.experience!.education != '' && _selectedEducation == null){
               _selectedEducation = educationItems.firstWhere((element) => element.value!.label == widget.experience!.education).value;
             }
             }
@@ -132,13 +132,15 @@ class _FormationFormState extends State<FormationForm> {
         !widget.isMainEducation ? Container() :
         formFieldCustom(
           DropdownButtonFormField<Education>(
-            hint: Text(StringConst.FORM_EDUCATION, maxLines: 2, overflow: TextOverflow.ellipsis),
+            hint: Text(StringConst.EDUCATIONAL_LEVEL, maxLines: 2, overflow: TextOverflow.ellipsis),
             isExpanded: true,
             isDense: false,
             value: _selectedEducation,
             items: educationItems,
             validator: (value) => _selectedEducation != null ? null : StringConst.FORM_MOTIVATION_ERROR,
-            onChanged: (value) => _buildEducationStreamBuilder_setState(value),
+            onChanged: (value) => setState(() {
+              _selectedEducation = value;
+            }),
             style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
@@ -311,14 +313,6 @@ class _FormationFormState extends State<FormationForm> {
           ),
     );
   }
-
-  void _buildEducationStreamBuilder_setState(Education? education) {
-    setState(() {
-      _selectedEducation = education;
-    });
-
-  }
-
 
   Future<void> saveExperience() async {
     final database = Provider.of<Database>(context, listen: false);

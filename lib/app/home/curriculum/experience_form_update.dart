@@ -262,19 +262,22 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
 
             //FOR CITY
 
-            !_general ? TextFormField(
-              controller: _locationController,
-              style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-              decoration: InputDecoration(
-                  label: Text(
-                    'Municipio, ciudad, región o país *',
-                    style: textTheme.bodyText2,
-                  )),
-              validator: (value) {
-                if (value == null || value.isEmpty)
-                  return 'El Municipio, ciudad, región o país es un campo obligatorio';
-                return null;
-              },
+            !_general ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble/2),
+              child: TextFormField(
+                controller: _locationController,
+                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                    label: Text(
+                      'Municipio, ciudad, región o país *',
+                      style: textTheme.bodyText2,
+                    )),
+                validator: (value) {
+                  if (value == null || value.isEmpty)
+                    return 'El Municipio, ciudad, región o país es un campo obligatorio';
+                  return null;
+                },
+              ),
             ) : Container(),
 
             //FOR DATE
@@ -396,73 +399,82 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
 
             SpaceW12(),
 
-            !_general ? DropdownButtonFormField<String>(
-              hint: Text('¿Cómo desarrollaste tu actividad?',
+            !_general ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble/2),
+              child: DropdownButtonFormField<String>(
+                hint: Text('¿Cómo desarrollaste tu actividad?',
+                    style: textTheme.bodyText2,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis),
+                style:
+                    textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                isExpanded: true,
+                isDense: false,
+                value: _workType,
+                items: StringConst.EXPERIENCE_WORK_TYPES
+                    .map((e) =>
+                        DropdownMenuItem<String>(value: e, child: Text(e)))
+                    .toList(),
+                onChanged: (value) {
+                  _workType = value ?? _workType;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty)
+                    return 'Selecciona un valor';
+                  return null;
+                },
+              ),
+            ) : Container(),
+
+            !_general ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble/2),
+              child: DropdownButtonFormField<String>(
+                hint: Text(
+                    '¿Esta experiencia te supuso un cambio de domicilio?', style: textTheme.bodyText2
+                ),
+                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                value: _contextPlace,
+                items: StringConst.EXPERIENCE_CONTEXT_PLACES
+                    .map((e) => DropdownMenuItem<String>(value: e, child: Text(e, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+                    .toList(),
+                onChanged: (value) {
+                  _contextPlace = value ?? _contextPlace;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Selecciona un valor';
+                  return null;
+                },
+              ),
+            ) : Container(),
+
+            !_general ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble/2),
+              child: DropdownButtonFormField<String>(
+                hint: Text(
+                  '¿Esta experiencia te supuso hacer cosas que no solías hacer antes?',
                   style: textTheme.bodyText2,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis),
-              style:
-                  textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-              isExpanded: true,
-              isDense: false,
-              value: _workType,
-              items: StringConst.EXPERIENCE_WORK_TYPES
-                  .map((e) =>
-                      DropdownMenuItem<String>(value: e, child: Text(e)))
-                  .toList(),
-              onChanged: (value) {
-                _workType = value ?? _workType;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty)
-                  return 'Selecciona un valor';
-                return null;
-              },
-            ) : Container(),
-
-            !_general ? DropdownButtonFormField<String>(
-              hint: Text(
-                  '¿Esta experiencia te supuso un cambio de domicilio?', style: textTheme.bodyText2
+                  maxLines: 2, overflow: TextOverflow.ellipsis
+                ),
+                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                isExpanded: true,
+                isDense: false,
+                value: _context,
+                items: StringConst.EXPERIENCE_CONTEXT
+                    .map((e) => DropdownMenuItem<String>(
+                    value: e,
+                    child: Text(
+                      e,
+                      style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                    )))
+                    .toList(),
+                onChanged: (value) {
+                  _context = value ?? _context;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Selecciona un valor';
+                  return null;
+                },
               ),
-              style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-              value: _contextPlace,
-              items: StringConst.EXPERIENCE_CONTEXT_PLACES
-                  .map((e) => DropdownMenuItem<String>(value: e, child: Text(e, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
-                  .toList(),
-              onChanged: (value) {
-                _contextPlace = value ?? _contextPlace;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) return 'Selecciona un valor';
-                return null;
-              },
-            ) : Container(),
-
-            !_general ? DropdownButtonFormField<String>(
-              hint: Text(
-                '¿Esta experiencia te supuso hacer cosas que no solías hacer antes?',
-                style: textTheme.bodyText2,
-                maxLines: 2, overflow: TextOverflow.ellipsis
-              ),
-              style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-              isExpanded: true,
-              isDense: false,
-              value: _context,
-              items: StringConst.EXPERIENCE_CONTEXT
-                  .map((e) => DropdownMenuItem<String>(
-                  value: e,
-                  child: Text(
-                    e,
-                    style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                  )))
-                  .toList(),
-              onChanged: (value) {
-                _context = value ?? _context;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) return 'Selecciona un valor';
-                return null;
-              },
             ) : Container(),
 
             SpaceH24(),
@@ -586,26 +598,26 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
           .toList(),
       value: _type,
-      onChanged: (newType) {
-              setState(() {
-                _type = newType;
-                _subtype = null;
-                _activity = null;
-                _role = null;
-                _level = null;
-                _general = false;
+      onChanged: (_type != null && _type!.name.isNotEmpty)? null :  (newType) {
+        setState(() {
+            _type = newType;
+            _subtype = null;
+            _activity = null;
+            _role = null;
+            _level = null;
+            _general = false;
 
-                if (_type?.name == 'Profesional') {
-                  _experienceActivitiesStream =
-                      database.choicesStream(APIPath.professions(), null, null);
-                  _isProfesional = true;
-                } else {
-                  _experienceActivitiesStream = database.choicesStream(
-                      APIPath.activityChoices(), _type?.id, _subtype?.id);
-                  _isProfesional = false;
-                }
-              });
-            },
+            if (_type?.name == 'Profesional') {
+              _experienceActivitiesStream =
+                  database.choicesStream(APIPath.professions(), null, null);
+              _isProfesional = true;
+            } else {
+              _experienceActivitiesStream = database.choicesStream(
+                  APIPath.activityChoices(), _type?.id, _subtype?.id);
+              _isProfesional = false;
+            }
+          });
+      },
       validator: (value) {
         if (value == null || value.name.isEmpty) return 'Selecciona un valor';
         return null;

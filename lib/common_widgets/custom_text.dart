@@ -26,6 +26,30 @@ class CustomTextTitle extends StatelessWidget {
   }
 }
 
+class CustomTextSubTitle extends StatelessWidget {
+
+  CustomTextSubTitle({ required this.title });
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4.0),
+      child: Text(
+        title,
+        style: textTheme.bodySmall?.copyWith(
+          color: AppColors.greyViolet,
+          height: 1.5,
+          fontWeight: FontWeight.w400,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+}
+
 class CustomTextBody extends StatelessWidget {
 
   CustomTextBody({ required this.text });

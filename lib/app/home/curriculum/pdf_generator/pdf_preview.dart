@@ -138,11 +138,11 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
     }
 
     final actions = <PdfPreviewAction>[
-      if (!kIsWeb)
+      /*if (!kIsWeb)
         PdfPreviewAction(
           icon: const Icon(Icons.save),
           onPressed: _saveAsFile,
-        )
+        )*/
     ];
 
     return Scaffold(

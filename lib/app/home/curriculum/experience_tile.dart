@@ -1,4 +1,6 @@
 import 'package:enreda_app/app/home/curriculum/experience_form.dart';
+import 'package:enreda_app/app/home/curriculum/experience_form_update.dart';
+import 'package:enreda_app/app/home/curriculum/formation_form.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/common_widgets/delete_button.dart';
 import 'package:enreda_app/common_widgets/edit_button.dart';
@@ -10,15 +12,16 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ExperienceTile extends StatelessWidget {
-  const ExperienceTile({Key? key, required this.experience, this.onTap})
+  const ExperienceTile({Key? key, required this.experience, this.onTap, required this.type})
       : super(key: key);
   final Experience experience;
   final VoidCallback? onTap;
+  final String type;
 
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final DateFormat formatter = DateFormat('yyyy');
     bool dismissible = true;
     String endDate = experience.endDate != null
         ? formatter.format(experience.endDate!.toDate())
@@ -33,7 +36,7 @@ class ExperienceTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-            if (experience.activity != null && experience.activityRole != null)
+            if (experience.activity != null && experience.activityRole != null && experience.type != 'Formativa' && experience.type != 'Complementaria')
               RichText(
                 text: TextSpan(
                     text: '${experience.activityRole!.toUpperCase()} -',
@@ -43,6 +46,25 @@ class ExperienceTile extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: ' ${experience.activity!.toUpperCase()}',
+                        style: textTheme.bodyText1?.copyWith(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ]),
+              ),
+
+
+            if((experience.type == 'Formativa' || experience.type == 'Complementaria') && experience.institution != '' && experience.nameFormation != '')
+              RichText(
+                text: TextSpan(
+                    text: '${experience.institution!.toUpperCase()} -',
+                    style: textTheme.bodyText1?.copyWith(
+                      fontSize: 14.0,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: ' ${experience.nameFormation!.toUpperCase()}',
                         style: textTheme.bodyText1?.copyWith(
                           fontSize: 14.0,
                           fontWeight: FontWeight.bold,
@@ -74,6 +96,22 @@ class ExperienceTile extends StatelessWidget {
               ),
             ),
             SpaceH8(),
+
+            if((experience.type == 'Formativa' || experience.type == 'Complementaria') && experience.extraData != '')
+              Column(
+                children: [
+                  Text(
+                    experience.extraData!,
+                    style: textTheme.bodyText1?.copyWith(
+                      fontSize: 14.0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SpaceH8(),
+                ],
+              ),
+
             Text(
               experience.location,
               style: textTheme.bodyText1?.copyWith(
@@ -111,10 +149,12 @@ class ExperienceTile extends StatelessWidget {
                   barrierDismissible: dismissible,
                   context: context,
                   builder: (context) => AlertDialog(
-                    content: ExperienceForm(
+                    content: selectorEdit(type)
+                    /*type == 'Formativa'? FormationForm(isMainEducation: true, experience: experience,) :
+                    ExperienceForm(
                       experience: experience,
                       isEducation: experience.type == 'Formativa',
-                    ),
+                    ),*/
                   )
               );
             },
@@ -145,4 +185,20 @@ class ExperienceTile extends StatelessWidget {
       ),
     );
   }
+
+  Widget selectorEdit(String type){
+    switch(type){
+      case 'Formativa':
+        return FormationForm(isMainEducation: true, experience: experience);
+      case 'Complementaria':
+        return FormationForm(isMainEducation: false, experience: experience);
+      case 'Profesional':
+        return ExperienceFormUpdate(isProfesional: true, experience: experience);
+      case 'Personal' :
+        return ExperienceFormUpdate(isProfesional: false, experience: experience);
+      default:
+        return Container();
+    }
+  }
+
 }

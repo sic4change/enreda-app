@@ -20,6 +20,10 @@ class Experience {
     required this.workType,
     required this.context,
     required this.contextPlace,
+    this.nameFormation,
+    this.education,
+    this.institution,
+    this.extraData,
   });
 
   final String? id;
@@ -40,6 +44,10 @@ class Experience {
   final String workType;
   final String context;
   final String contextPlace;
+  final String? nameFormation;
+  final String? education;
+  final String? institution;
+  final String? extraData;
 
   Map<String, dynamic> toMap() {
     return {
@@ -61,6 +69,10 @@ class Experience {
       'workType': workType,
       'context': context,
       'contextPlace': contextPlace,
+      'nameFormation' : nameFormation,
+      'education' : education,
+      'institution' : institution,
+      'extraData' : extraData,
     };
   }
 
@@ -82,6 +94,10 @@ class Experience {
     final String workType = data['workType'];
     final String context = data['context'];
     final String contextPlace = data['contextPlace'];
+    final String nameFormation = data['nameFormation'] ?? '';
+    final String education = data['education'] ?? '';
+    final String institution = data['institution'] ?? '';
+    final String extraData = data['extraData'] ?? '';
 
     List<String> professionActivities = [];
     if (data['professionActivities'] != null) {
@@ -110,6 +126,10 @@ class Experience {
       workType: workType,
       context: context,
       contextPlace: contextPlace,
+      nameFormation: nameFormation,
+      education: education,
+      institution: institution,
+      extraData: extraData,
     );
   }
 }

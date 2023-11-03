@@ -1046,7 +1046,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
               Responsive.isTablet(context) || Responsive.isMobile(context) ? Container() :
               Positioned(
                 top: screenHeight * 0.51,
-                left: Responsive.isDesktopS(context) ? screenWidth * 0.06 : screenWidth * 0.09,
+                left: Responsive.isDesktopS(context) ? screenWidth * 0.06 : screenWidth * 0.075,
                 child: Container(
                   height: 300,
                   child: ClipRRect(

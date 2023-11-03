@@ -35,6 +35,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
   List<ChatQuestion> chatQuestions = [];
   ValueNotifier<List<Choice>> currentChoicesNotifier =
       ValueNotifier<List<Choice>>([]);
+  ValueNotifier<List<Choice>> sourceAutoCompleteNotifier =  ValueNotifier<List<Choice>>([]);
   List<List<Choice>> choicesLog = [];
   ValueNotifier<bool> isWritingNotifier = ValueNotifier<bool>(false);
   ValueNotifier<bool> isTextEnabledNotifier = ValueNotifier<bool>(false);
@@ -160,6 +161,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                             question: question,
                             chatQuestion: chatQuestion,
                             currentChoicesNotifier: currentChoicesNotifier,
+                            sourceAutoCompleteNotifier: sourceAutoCompleteNotifier,
                           );
                         } else {
                           return Container();

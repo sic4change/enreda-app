@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:enreda_app/app/home/assistant/simple_text_style.dart';
 import 'package:enreda_app/app/home/models/chatQuestion.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
@@ -39,6 +38,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
   List<List<Choice>> choicesLog = [];
   ValueNotifier<bool> isWritingNotifier = ValueNotifier<bool>(false);
   ValueNotifier<bool> isTextEnabledNotifier = ValueNotifier<bool>(false);
+  ValueNotifier<List<Choice>> sourceAutoCompleteNotifier =  ValueNotifier<List<Choice>>([]);
   late ChatQuestion _currentChatQuestion;
 
   Map<String, int> userCompetencies = {};
@@ -58,6 +58,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     currentChoicesNotifier.dispose();
     isWritingNotifier.dispose();
     isTextEnabledNotifier.dispose();
+    sourceAutoCompleteNotifier.dispose();
     messageEditingController.dispose();
     MessageTile.experienceTypeId = null;
     MessageTile.experienceSubtypeId = null;
@@ -176,6 +177,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                             question: question,
                             chatQuestion: chatQuestion,
                             currentChoicesNotifier: currentChoicesNotifier,
+                            sourceAutoCompleteNotifier: sourceAutoCompleteNotifier,
                           );
                         } else {
                           return Container();
@@ -241,10 +243,42 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
               valueListenable: isTextEnabledNotifier,
               builder: (context, isTextEnabled, child) {
                 return Expanded(
-                    child: TextField(
+                    child: !isTextEnabled ? _autocompleteTextField( (val) {
+                      setState(() {
+                        final choice = sourceAutoCompleteNotifier.value.firstWhere(
+                                (element) => element.name == val);
+                        currentChoicesNotifier.value = [
+                          Choice(
+                              id: choice.id,
+                              name: choice.name,
+                              competencies: choice.competencies),
+                        ];
+                        if (choice.activities.isNotEmpty) {
+                          MessageTile.recommendedActivities.clear();
+                          choice.activities.forEach((activityId) {
+                            database
+                                .activityStream(activityId)
+                                .first
+                                .then((activity) => MessageTile
+                                .recommendedActivities
+                                .add(activity.name));
+                          });
+                        }
+                        final question = questions.firstWhere((element) =>
+                        element.id == _currentChatQuestion.questionId);
+
+                     if (question.experienceField ==
+                            StringConst.EXPERIENCE_TYPE_FIELD)
+                         MessageTile.experienceTypeId = choice.id;
+                        if (question.experienceField ==
+                           StringConst.EXPERIENCE_SUBTYPE_FIELD)
+                          MessageTile.experienceSubtypeId = choice.id;
+                      });
+                    }, database, messageEditingController, isTextEnabled)
+                    : TextField(
                   enabled: isTextEnabled,
                   controller: messageEditingController,
-                  style: simpleTextStyle(),
+                  //style: simpleTextStyle(),
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(10.0, 1.0, 5.0, 10.0),
                       border: OutlineInputBorder(
@@ -254,7 +288,8 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                       hintStyle: TextStyle(
                         color: Colors.grey,
                       )),
-                ));
+                )
+                );
               }),
           ValueListenableBuilder<List<Choice>>(
               valueListenable: currentChoicesNotifier,
@@ -321,6 +356,66 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
               }),
         ],
       ),
+    );
+  }
+
+  Widget _autocompleteTextField(Function(String) onChanged, Database database, TextEditingController messageEditingController, bool isTextEnabled) {
+    return ValueListenableBuilder(
+      valueListenable: sourceAutoCompleteNotifier,
+      builder: (context, source, child) {
+        return Autocomplete<String>(optionsBuilder: (textEditingValue){
+          if(textEditingValue.text.isEmpty){
+            return List.empty();
+          }else{
+            return source.where((element) => element.name.toLowerCase().contains(textEditingValue.text.toLowerCase())).map((e) => e.name).toList();
+          }
+        },
+        onSelected: onChanged,
+        fieldViewBuilder: (context, messageEditingController, focusNode, onFieldSubmitted){
+          return TextField(
+            controller: messageEditingController,
+            focusNode: focusNode,
+            onEditingComplete: onFieldSubmitted,
+            decoration: const InputDecoration(hintText: 'Busca por nombre'),
+          );
+        },
+            optionsViewBuilder: (BuildContext context,
+            AutocompleteOnSelected<String> onSelected,
+            Iterable<String> options) {
+          return Align(
+            alignment: Alignment.topLeft,
+            child: Material(
+              elevation: 4.0,
+              child: SizedBox(
+                height: 50.0,
+                // set width based on you need
+                width: 300,
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(8.0),
+                  itemCount: options.where((element) => element.toLowerCase().contains(messageEditingController.text.toLowerCase())).length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final String option = options.elementAt(index);
+                    return GestureDetector(
+                      onTap: () {
+                        onSelected(option);
+                      },
+                      child: SizedBox(
+                        height: 40,
+                        child: ListTile(
+                          title:
+                            Text(option, style: Theme.of(context).textTheme.bodyMedium),
+                          visualDensity: VisualDensity(vertical: -2),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+        },
+        );
+      },
     );
   }
 
@@ -440,6 +535,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     }
 
     currentChoicesNotifier.value.clear();
+    messageEditingController.clear();
   }
 
   void _resetQuestions() async {
@@ -516,6 +612,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
 
     userCompetencies.removeWhere((key, value) => value == 0);
     choicesLog.removeLast();
+    messageEditingController.clear();
 
     if (_currentQuestion.type == StringConst.NONE_QUESTION) {
       _editLastResponse();

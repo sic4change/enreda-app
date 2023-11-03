@@ -586,26 +586,26 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
           .toList(),
       value: _type,
-      onChanged: (newType) {
-              setState(() {
-                _type = newType;
-                _subtype = null;
-                _activity = null;
-                _role = null;
-                _level = null;
-                _general = false;
+      onChanged: (_type != null && _type!.name.isNotEmpty)? null :  (newType) {
+        setState(() {
+            _type = newType;
+            _subtype = null;
+            _activity = null;
+            _role = null;
+            _level = null;
+            _general = false;
 
-                if (_type?.name == 'Profesional') {
-                  _experienceActivitiesStream =
-                      database.choicesStream(APIPath.professions(), null, null);
-                  _isProfesional = true;
-                } else {
-                  _experienceActivitiesStream = database.choicesStream(
-                      APIPath.activityChoices(), _type?.id, _subtype?.id);
-                  _isProfesional = false;
-                }
-              });
-            },
+            if (_type?.name == 'Profesional') {
+              _experienceActivitiesStream =
+                  database.choicesStream(APIPath.professions(), null, null);
+              _isProfesional = true;
+            } else {
+              _experienceActivitiesStream = database.choicesStream(
+                  APIPath.activityChoices(), _type?.id, _subtype?.id);
+              _isProfesional = false;
+            }
+          });
+      },
       validator: (value) {
         if (value == null || value.name.isEmpty) return 'Selecciona un valor';
         return null;

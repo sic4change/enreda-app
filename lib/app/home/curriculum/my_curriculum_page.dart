@@ -1,7 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/competencies/competency_tile.dart';
+import 'package:enreda_app/app/home/curriculum/add_educational_level.dart';
 import 'package:enreda_app/app/home/curriculum/experience_form.dart';
+import 'package:enreda_app/app/home/curriculum/experience_form_update.dart';
 import 'package:enreda_app/app/home/curriculum/experience_tile.dart';
+import 'package:enreda_app/app/home/curriculum/formation_form.dart';
 import 'package:enreda_app/app/home/curriculum/my-custom_cv.dart';
 import 'package:enreda_app/app/home/curriculum/reference_tile.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
@@ -260,12 +263,14 @@ class MyCurriculumPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildCVHeader(context, user, profilePic, competenciesNames),
-                    _buildMyCareer(context),
-                    SpaceH40(),
+                    //_buildMyCareer(context),
+                    SpaceH30(),
                     _buildMyEducation(context, user),
-                    SpaceH40(),
+                    SpaceH30(),
+                    _buildMySecondaryEducation(context, user),
+                    SpaceH30(),
                     _buildMyExperiences(context, user),
-                    SpaceH40(),
+                    SpaceH30(),
                     _buildMyCompetencies(context, user),
                   ],
                 ),
@@ -296,9 +301,6 @@ class MyCurriculumPage extends StatelessWidget {
                   Expanded(
                       flex: 1,
                       child: SizedBox(width: Responsive.isTablet(context) || Responsive.isMobile(context) ? 26: 50,)),
-                  Expanded(
-                      flex: 6,
-                      child: Center(child: CustomTextBody(text: StringConst.MY_CV.toUpperCase()))),
                   Expanded(
                     flex: 1,
                     child: InkWell(
@@ -414,8 +416,8 @@ class MyCurriculumPage extends StatelessWidget {
                   ),
                 ],
               ),
-              SpaceH24(),
-              _buildMyCareer(context),
+              //SpaceH24(),
+              //_buildMyCareer(context),
               SpaceH24(),
               CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase()),
               Row(
@@ -451,6 +453,8 @@ class MyCurriculumPage extends StatelessWidget {
               SpaceH24(),
               _buildMyEducation(context, user),
               SpaceH24(),
+              _buildMySecondaryEducation(context, user),
+              SpaceH24(),
               _buildMyExperiences(context, user),
               SpaceH24(),
               _buildMyCompetencies(context, user),
@@ -476,9 +480,8 @@ class MyCurriculumPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            CustomTextBody(text: StringConst.MY_CV.toUpperCase()),
-            Spacer(),
             InkWell(
               onTap: () async {
                 if (await _hasEnoughExperiences(context))
@@ -554,10 +557,10 @@ class MyCurriculumPage extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(
+              /*Expanded(
                 child:
                 CustomTextTitle(title: StringConst.PROFILE.toUpperCase()),
-              ),
+              ),*/
               InkWell(
                 onTap: () {
                   Education education = Education(
@@ -908,37 +911,47 @@ class MyCurriculumPage extends StatelessWidget {
 
   Widget _buildMyEducation(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
+    final textTheme = Theme.of(context).textTheme;
+
     bool dismissible = true;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
             CustomTextTitle(title: StringConst.EDUCATION.toUpperCase()),
-            SpaceW12(),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Constants.salmonMain,
-                shape: CircleBorder(),
-              ),
-              onPressed: () {
-                showDialog(
-                    barrierDismissible: dismissible,
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      content: ExperienceForm(
-                        isEducation: true,
-                      ),
-                    )
-                );
-              },
-              child: Icon(
-                Icons.add,
-                size: 15.0,
-                color: Colors.white,
-              ),
-            ),
+            SpaceW8(),
+            _addButton(() {
+              showDialog(
+                  barrierDismissible: dismissible,
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: FormationForm(
+                      isMainEducation: true,
+                    ),
+                  )
+              );
+            },)
           ],
         ),
+        SpaceH4(),
+        Row(
+          children: [
+            CustomTextSubTitle(title: StringConst.EDUCATIONAL_LEVEL.toUpperCase()),
+            SpaceW8(),
+            /*_addButton(() {
+              showDialog(
+                  barrierDismissible: dismissible,
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: AddEducationalLevel()
+                  )
+              );
+            },
+            ),*/
+          ],
+        ),
+        _buildMyCareer(context),
         SpaceH4(),
         StreamBuilder<List<Experience>>(
             stream: database.myExperiencesStream(user?.userId ?? ''),
@@ -966,7 +979,7 @@ class MyCurriculumPage extends StatelessWidget {
                                       SpaceH12(),
                                       Container(
                                         width: double.infinity,
-                                        child: ExperienceTile(experience: e),
+                                        child: ExperienceTile(experience: e, type: e.type),
                                       ),
                                       Divider(),
                                     ],
@@ -974,6 +987,208 @@ class MyCurriculumPage extends StatelessWidget {
                               .toList(),
                         )
                       : CustomTextBody(text: StringConst.NO_EDUCATION),
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }),
+      ],
+    );
+  }
+  Widget _buildMySecondaryEducation(BuildContext context, UserEnreda? user) {
+    final database = Provider.of<Database>(context, listen: false);
+    bool dismissible = true;
+    return Column(
+      children: [
+        Row(
+          children: [
+            CustomTextTitle(title: StringConst.SECONDARY_EDUCATION.toUpperCase()),
+            SpaceW8(),
+            _addButton(() {
+              showDialog(
+                  barrierDismissible: dismissible,
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: FormationForm(
+                      isMainEducation: false,
+                    ),
+                  )
+              );
+            },
+            ),
+          ],
+        ),
+        SpaceH4(),
+        StreamBuilder<List<Experience>>(
+            stream: database.myExperiencesStream(user?.userId ?? ''),
+            builder: (context, snapshot) {
+              if (snapshot.hasData &&
+                  snapshot.connectionState == ConnectionState.active) {
+                myEducation = snapshot.data!
+                    .where((experience) => experience.type == 'Complementaria')
+                    .toList();
+                myCustomEducation = myEducation!.map((element) => element).toList();
+                mySelectedEducation = List.generate(myCustomEducation.length, (i) => i);
+                return Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30.0),
+                    color: Constants.lightLilac,
+                  ),
+                  child: myEducation!.isNotEmpty
+                      ? Wrap(
+                    children: myEducation!
+                        .map((e) => Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        SpaceH12(),
+                        Container(
+                          width: double.infinity,
+                          child: ExperienceTile(experience: e, type: e.type),
+                        ),
+                        Divider(),
+                      ],
+                    ))
+                        .toList(),
+                  )
+                      : CustomTextBody(text: StringConst.NO_EDUCATION),
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }),
+      ],
+    );
+  }
+
+  Widget _buildProfesionalExperience(BuildContext context, UserEnreda? user) {
+    final database = Provider.of<Database>(context, listen: false);
+    bool dismissible = true;
+    return Column(
+      children: [
+        Row(
+          children: [
+            CustomTextSubTitle(title: 'Experiencia Profesional'.toUpperCase()),
+            SpaceW8(),
+
+            _addButton(() {
+              showDialog(
+                  barrierDismissible: dismissible,
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: ExperienceFormUpdate(
+                      isProfesional: true,
+                    ),
+                  )
+              );
+            },
+            ),
+          ],
+        ),
+        SpaceH4(),
+        StreamBuilder<List<Experience>>(
+            stream: database.myExperiencesStream(user?.userId ?? ''),
+            builder: (context, snapshot) {
+              if (snapshot.hasData &&
+                  snapshot.connectionState == ConnectionState.active) {
+                myExperiences = snapshot.data!
+                    .where((experience) => experience.type == 'Profesional')
+                    .toList();
+                myCustomExperiences = myExperiences!.map((element) => element).toList();
+                mySelectedExperiences = List.generate(myCustomExperiences.length, (i) => i);
+                return Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30.0),
+                    color: Constants.lightLilac,
+                  ),
+                  child: myExperiences!.isNotEmpty
+                      ? Wrap(
+                    children: myExperiences!
+                        .map((e) => Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        SpaceH12(),
+                        Container(
+                          width: double.infinity,
+                          child: ExperienceTile(experience: e, type: e.type),
+                        ),
+                        Divider(),
+                      ],
+                    ))
+                        .toList(),
+                  )
+                      : CustomTextBody(text: StringConst.NO_EXPERIENCE),
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }),
+      ],
+    );
+  }
+
+  Widget _buildPersonalExperience(BuildContext context, UserEnreda? user) {
+    final database = Provider.of<Database>(context, listen: false);
+    bool dismissible = true;
+    return Column(
+      children: [
+        Row(
+          children: [
+            CustomTextSubTitle(title: 'Experiencia Personal'.toUpperCase()),
+            SpaceW8(),
+
+            _addButton(() {
+              showDialog(
+                  barrierDismissible: dismissible,
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: ExperienceFormUpdate(
+                      isProfesional: false,
+                    ),
+                  )
+              );
+            },
+            ),
+          ],
+        ),
+        SpaceH4(),
+        StreamBuilder<List<Experience>>(
+            stream: database.myExperiencesStream(user?.userId ?? ''),
+            builder: (context, snapshot) {
+              if (snapshot.hasData &&
+                  snapshot.connectionState == ConnectionState.active) {
+                myExperiences = snapshot.data!
+                    .where((experience) => experience.type == 'Personal')
+                    .toList();
+                myCustomExperiences = myExperiences!.map((element) => element).toList();
+                mySelectedExperiences = List.generate(myCustomExperiences.length, (i) => i);
+                return Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30.0),
+                    color: Constants.lightLilac,
+                  ),
+                  child: myExperiences!.isNotEmpty
+                      ? Wrap(
+                    children: myExperiences!
+                        .map((e) => Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: [
+                        SpaceH12(),
+                        Container(
+                          width: double.infinity,
+                          child: ExperienceTile(experience: e, type: e.type,),
+                        ),
+                        Divider(),
+                      ],
+                    ))
+                        .toList(),
+                  )
+                      : CustomTextBody(text: StringConst.NO_EXPERIENCE),
                 );
               } else {
                 return Center(child: CircularProgressIndicator());
@@ -991,32 +1206,30 @@ class MyCurriculumPage extends StatelessWidget {
         Row(
           children: [
             CustomTextTitle(title: StringConst.MY_EXPERIENCES.toUpperCase()),
-            SpaceW12(),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Constants.salmonMain,
-                shape: CircleBorder(),
-              ),
-              onPressed: () {
-                showDialog(
-                    barrierDismissible: dismissible,
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      content: ExperienceForm(
-                        isEducation: false,
-                      ),
-                    )
-                );
-              },
-              child: Icon(
-                Icons.add,
-                size: 15.0,
-                color: Colors.white,
-              ),
+            SpaceW8(),
+
+            _addButton(() {
+              showDialog(
+                  barrierDismissible: dismissible,
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: ExperienceFormUpdate(
+                      isProfesional: false,
+                      general: true,
+                    ),
+                  )
+              );
+            },
             ),
+
           ],
         ),
+
         SpaceH4(),
+        _buildProfesionalExperience(context, user),
+        SpaceH4(),
+        _buildPersonalExperience(context, user),
+        /*
         StreamBuilder<List<Experience>>(
             stream: database.myExperiencesStream(user?.userId ?? ''),
             builder: (context, snapshot) {
@@ -1055,7 +1268,7 @@ class MyCurriculumPage extends StatelessWidget {
               } else {
                 return Center(child: CircularProgressIndicator());
               }
-            }),
+            }),*/
       ],
     );
   }
@@ -1069,19 +1282,10 @@ class MyCurriculumPage extends StatelessWidget {
         Row(
           children: [
             CustomTextTitle(title: StringConst.DATA_OF_INTEREST.toUpperCase()),
-            SpaceW12(),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Constants.salmonMain,
-                shape: CircleBorder(),
-              ),
-              child: Icon(
-                Icons.add,
-                size: 15.0,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                _showDataOfInterestDialog(context, '');
+            SpaceW8(),
+
+            _addButton(() {
+              _showDataOfInterestDialog(context, '');
               },
             ),
           ],
@@ -1140,19 +1344,10 @@ class MyCurriculumPage extends StatelessWidget {
         Row(
           children: [
             CustomTextTitle(title: StringConst.LANGUAGES.toUpperCase()),
-            SpaceW12(),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Constants.salmonMain,
-                shape: CircleBorder(),
-              ),
-              child: Icon(
-                Icons.add,
-                size: 15.0,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                _showLanguagesDialog(context, '');
+            SpaceW8(),
+
+            _addButton(() {
+              _showLanguagesDialog(context, '');
               },
             ),
           ],
@@ -1469,5 +1664,21 @@ class MyCurriculumPage extends StatelessWidget {
     } else {
       return true;
     }
+  }
+
+  Widget _addButton(Function() onPress){
+    return CircleAvatar(
+      radius: 8,
+      backgroundColor: Constants.blueAdd,
+      child: IconButton(
+        padding: EdgeInsets.zero,
+        onPressed: onPress,
+        icon: Icon(
+          Icons.add,
+        ),
+        iconSize: 8,
+        color: Colors.white,
+      ),
+    );
   }
 }

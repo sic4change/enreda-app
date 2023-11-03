@@ -22,11 +22,13 @@ class MessageTile extends StatefulWidget {
     required this.question,
     required this.chatQuestion,
     required this.currentChoicesNotifier,
+    required this.sourceAutoCompleteNotifier,
   });
 
   final Question question;
   final ChatQuestion chatQuestion;
   final ValueNotifier<List<Choice>> currentChoicesNotifier;
+  final ValueNotifier<List<Choice>> sourceAutoCompleteNotifier;
   static String? experienceTypeId, experienceSubtypeId;
   static List<String> recommendedActivities = [];
 
@@ -46,6 +48,7 @@ class _MessageTileState extends State<MessageTile> {
 
     if (widget.question.type == StringConst.MULTICHOICE_QUESTION &&
         _choices.isEmpty) {
+      widget.sourceAutoCompleteNotifier.value.clear();
       _loadResponseChoices();
     }
 
@@ -96,6 +99,7 @@ class _MessageTileState extends State<MessageTile> {
                             onChanged: (val) {
                               setState(() {
                                 _choicesSelected = [val];
+                                //_choices.forEach((element) {widget.sourceAutoCompleteNotifier.value.add(element.name);});
                                 final choice = _choices.firstWhere(
                                     (element) => element.name == val);
                                 widget.currentChoicesNotifier.value = [
@@ -162,7 +166,8 @@ class _MessageTileState extends State<MessageTile> {
 
   Widget _buildSingleChoiceResponse(
       {required List<String> source, required Function(String) onChanged}) {
-    return ChipsChoice<String>.single(
+    return source.length <= 6 ?
+    ChipsChoice<String>.single(
       choiceItems: C2Choice.listFrom<String, String>(
         source: source,
         value: (i, v) => v,
@@ -183,7 +188,7 @@ class _MessageTileState extends State<MessageTile> {
       value: widget.currentChoicesNotifier.value.isNotEmpty
           ? widget.currentChoicesNotifier.value[0].name
           : '',
-    );
+    ) : Container();
   }
 
   Widget _buildMultiChoiceResponse(BuildContext context) {
@@ -357,6 +362,9 @@ class _MessageTileState extends State<MessageTile> {
                       .any((element) => element.id == choice.id))
                     widget.currentChoicesNotifier.value.add(choice);
                 }
+                _choices.forEach((element) {
+                  widget.sourceAutoCompleteNotifier.value.add(element);
+                });
               });
             }))
         .whenComplete(() => _choices

@@ -25,6 +25,7 @@ class Constants {
   static Color blueMain = Color(0xFF579ACA);
   static Color blueDark = Color(0xFF4E92B1);
   static Color blueLight = Color(0xFF5AA6C8);
+  static Color blueAdd = Color(0xFFA0A5D2);
 
   // Pink
   static Color lightPink = Color(0xFFFAE4F4);

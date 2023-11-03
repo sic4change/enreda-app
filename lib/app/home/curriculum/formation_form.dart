@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:enreda_app/app/home/curriculum/stream_builder_professionsActivities.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
+import 'package:enreda_app/app/home/models/education.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_competencies.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -18,57 +20,49 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common_widgets/flex_row_column.dart';
+import '../../sign_up/validating_form_controls/stream_builder_education.dart';
 import '../models/activity.dart';
 
-class ExperienceForm extends StatefulWidget {
-  const ExperienceForm({Key? key, this.experience, required this.isEducation, this.isProfesional})
+class FormationForm extends StatefulWidget {
+  const FormationForm({Key? key, this.experience, required this.isMainEducation})
       : super(key: key);
 
   final Experience? experience;
-  final bool isEducation;
-  final bool? isProfesional;
+  final bool isMainEducation;
+
 
   @override
-  State<ExperienceForm> createState() => _ExperienceFormState();
+  State<FormationForm> createState() => _FormationFormState();
 }
 
-class _ExperienceFormState extends State<ExperienceForm> {
-  Stream<List<Choice>> _experienceActivitiesStream = Stream.empty();
-  Choice? _type, _subtype, _activity, _role, _level;
-  List<Choice> _experienceTypes = [],
-      _experienceSubtypes = [],
-      _experienceActivities = [],
-      _experienceRoles = [],
-      _experienceLevels = [];
-  final _organizationController = TextEditingController();
-  final _positionController = TextEditingController();
-  final _locationController = TextEditingController();
+class _FormationFormState extends State<FormationForm> {
+  late String _type;
+  final _nameFormationController = TextEditingController();
+  //EducationLevel
+  Education? _selectedEducation;
+  String? _institution;
   Timestamp? _startDate, _endDate;
-  String? _workType, _context, _contextPlace;
+  List<DropdownMenuItem<Education>> educationItems = [];
+  final _locationController = TextEditingController();
+  final  _extraDataController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool _experienceIsLoaded = false;
-  Map<String, int> userCompetencies = {};
-
-  TextEditingController _textEditingControllerProfessionsActivities = TextEditingController();
-  Set<Activity> selectedProfessionActivities = {};
-  List<String> professionActivities = [];
-  String? _professionActivityId;
-  List<String>? activitiesIds = [];
 
   @override
   void initState() {
     super.initState();
     final _experience = widget.experience;
+    if(widget.isMainEducation){
+      _type = 'Formativa';
+    }else{
+      _type = 'Complementaria';
+    }
     if (_experience != null) {
+      _nameFormationController.text = _experience.nameFormation ?? '';
+      _institution = _experience.institution ?? '';
       _startDate = _experience.startDate;
       _endDate = _experience.endDate;
-      _organizationController.text = _experience.organization ?? '';
-      _positionController.text = _experience.position ?? '';
       _locationController.text = _experience.location;
-      _textEditingControllerProfessionsActivities.text = _experience.professionActivitiesText ?? '';
-      _workType = _experience.workType;
-      _context = _experience.context;
-      _contextPlace = _experience.contextPlace;
+      _extraDataController.text = _experience.extraData ?? '';
     }
   }
 
@@ -80,101 +74,25 @@ class _ExperienceFormState extends State<ExperienceForm> {
       return Card(
         elevation: 0,
         color: Colors.white,
-        child: StreamBuilder<List<Choice>>(
-            stream: database.choicesStream(APIPath.experienceTypes(), null, null),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                _experienceTypes = widget.isEducation
-                    ? snapshot.data!
-                        .where((choice) => choice.name == 'Formativa')
-                        .toList()
-                    : snapshot.data!
-                        .where((choice) => choice.name != 'Formativa')
-                        .toList();
-              } else {
-                _experienceTypes = [];
-              }
-              //_experienceTypes = snapshot.hasData ? snapshot.data! : [];
+        child: StreamBuilder<List<Education>>(
+          stream: database.educationStream(),
+            builder: (context, snapshotEducation){
 
-              return StreamBuilder<List<Choice>>(
-                  stream: database.choicesStream(
-                      APIPath.experienceSubtypes(), null, null),
-                  builder: (context, snapshot) {
-                    _experienceSubtypes =
-                        snapshot.hasData && _type?.name == 'Personal'
-                            ? snapshot.data!
-                            : [];
+            if (snapshotEducation.hasData) {
+            educationItems = snapshotEducation.data!.map((Education education) =>
+              DropdownMenuItem<Education>(
+              value: education,
+              child: Text(education.label),
+              ))
+                  .toList();
 
-                    return StreamBuilder<List<Choice>>(
-                        stream: _experienceActivitiesStream,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData &&
-                              _type != null &&
-                              ((_type?.name == 'Personal' && _subtype != null) ||
-                                  _type?.name != 'Personal')) {
-                            _experienceActivities = snapshot.data!;
-                          } else {
-                            _experienceActivities = [];
-                          }
-                          return StreamBuilder<List<Choice>>(
-                              stream: database.choicesStream(
-                                  APIPath.activityRoleChoices(),
-                                  _type?.id,
-                                  _subtype?.id),
-                              builder: (context, snapshot) {
-                                _experienceRoles = snapshot.hasData &&
-                                        _type != null &&
-                                        _subtype != null
-                                    ? snapshot.data!
-                                    : [];
+            if(widget.experience != null && widget.experience!.education != ''){
+              _selectedEducation = educationItems.firstWhere((element) => element.value!.label == widget.experience!.education).value;
+            }
+            }
 
-                                return StreamBuilder<List<Choice>>(
-                                    stream: database.choicesStream(
-                                        APIPath.activityLevelChoices(),
-                                        null,
-                                        null),
-                                    builder: (context, snapshot) {
-                                      _experienceLevels = snapshot.hasData &&
-                                              _type != null &&
-                                              _subtype != null &&
-                                              _subtype!.name == 'Deporte'
-                                          ? snapshot.data!
-                                          : [];
-
-                                      if ((widget.experience?.activityLevel !=
-                                                  null &&
-                                              _level != null) ||
-                                          (widget.experience?.activityRole !=
-                                                  null &&
-                                              _role != null) ||
-                                          (widget.experience?.activity != null &&
-                                              _activity != null)) {
-                                        _experienceIsLoaded = true;
-                                      }
-
-                                      if (widget.experience != null &&
-                                          !_experienceIsLoaded)
-                                        _loadDropdowns(database);
-
-                                      if (widget.isEducation &&
-                                          _type == null &&
-                                          _experienceTypes.isNotEmpty) {
-                                        _type = _experienceTypes.firstWhere(
-                                            (element) =>
-                                                element.name == 'Formativa');
-                                        _experienceActivitiesStream =
-                                            database.choicesStream(
-                                                APIPath.activityChoices(),
-                                                _type?.id,
-                                                _subtype?.id);
-                                      }
-
-                                      return _buildForm(context, setState);
-                                    });
-                              });
-                        });
-                  });
-            }),
+            return _buildForm(context, setState);
+            })
       );
     });
   }
@@ -187,82 +105,76 @@ class _ExperienceFormState extends State<ExperienceForm> {
       key: _formKey,
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomFlexRowColumn(
-              childLeft: _buildTypeDropdown(database, setState),
-              childRight: _buildActivityDropdown(database, setState),
-            ),
-            _type?.name == 'Personal' ?
-            CustomFlexRowColumn(
-              childLeft:  _buildSubtypeDropdown(database, setState),
-              childRight: _buildRoleDropdown(setState),
-            ) : Container(),
-            CustomFlexRowColumn(
-              childLeft: _type?.name == 'Profesional' ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    TextFormField(
-                      controller: _textEditingControllerProfessionsActivities,
-                      decoration: InputDecoration(
-                        hintText: 'Indica las tareas que realizaste *',
-                        hintMaxLines: 2,
-                        label: Text(
-                          'Tareas que realizaste',
-                          style: textTheme.bodyText2,
-                        ),
-                        labelStyle: textTheme.bodyText1?.copyWith(
-                          color: AppColors.greyDark,
-                          height: 1.5,
-                          fontWeight: FontWeight.w400,
-                          fontSize: fontSize,
-                        ),
-                      ),
-                      onTap: () => _showMultiSelectProfessionActivities(context),
-                      validator: (value) {
-                        if (value == null || value == "") return 'Selecciona un valor';
-                        return null;
-                      },
-                      onSaved: (value) => value = _professionActivityId,
-                      maxLines: 2,
-                      readOnly: true,
-                      style: textTheme.button?.copyWith(
-                        height: 1.5,
-                        color: AppColors.greyDark,
-                        fontWeight: FontWeight.w400,
-                        fontSize: fontSize,
-                      ),
-                    ),
-                  ]) : Container(),
-              childRight: _type?.name == 'Profesional' ? TextFormField(
-                controller: _positionController,
+
+            formFieldCustom(CustomTextTitle(title: widget.isMainEducation ?
+            StringConst.EDUCATION.toUpperCase() :
+            StringConst.SECONDARY_EDUCATION.toUpperCase())),
+
+            formFieldCustom(
+              TextFormField(
+                controller: _nameFormationController,
                 style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
-                  label: Text(
-                    'Indica tu cargo...',
-                    style: textTheme.bodyText2,
-                  ),
-                ),
-              ) : Container(),
-            ),
-            CustomFlexRowColumn(
-              childRight: _type?.name == 'Personal' ? _buildLevelDropdown(setState) : Container(),
-              childLeft: TextFormField(
-                controller: _organizationController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                decoration: InputDecoration(
-                  label: Text(
-                    widget.isEducation? 'Empresa, organización, instituto, universidad...':'Empresa, organización...' ,
-                    style: textTheme.bodyText2,
-                  ),
-                ),
+                    label: Text(
+                      'Nombre de la formación',
+                      style: textTheme.bodyText2,
+                    )),
+                validator: (value) {
+                  if (value == null || value.isEmpty)
+                    return 'El nombre de la formación es un campo obligatorio';
+                  return null;
+                },
               ),
             ),
+
+        !widget.isMainEducation ? Container() :
+        formFieldCustom(
+          DropdownButtonFormField<Education>(
+            hint: Text(StringConst.FORM_EDUCATION, maxLines: 2, overflow: TextOverflow.ellipsis),
+            isExpanded: true,
+            isDense: false,
+            value: _selectedEducation,
+            items: educationItems,
+            validator: (value) => _selectedEducation != null ? null : StringConst.FORM_MOTIVATION_ERROR,
+            onChanged: (value) => _buildEducationStreamBuilder_setState(value),
+            style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ),
+
+            formFieldCustom(
+              DropdownButtonFormField<String>(
+                hint: Text('Institución educativa',
+                    style: textTheme.bodyText2,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis),
+                style:
+                textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                isExpanded: true,
+                isDense: false,
+                value: _institution == '' ? null : _institution,
+                items: StringConst.FORMATION_INSTITUTIONS
+                    .map((e) =>
+                    DropdownMenuItem<String>(value: e, child: Text(e)))
+                    .toList(),
+                onChanged: (value) {
+                  _institution = value ?? _institution;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty)
+                    return 'Selecciona un valor';
+                  return null;
+                },
+              ),
+            ),
+
             CustomFlexRowColumn(
               childLeft: DateTimeField(
                 initialValue: _startDate?.toDate(),
                 format: DateFormat('dd/MM/yyyy'),
                 decoration: InputDecoration(
-                  labelText: 'Fecha inicio *',
+                  labelText: 'Año de inicio',
                   labelStyle: textTheme.bodyMedium,
                   suffixIcon: Icon(
                     Icons.event,
@@ -291,7 +203,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                 initialValue: _endDate?.toDate(),
                 format: DateFormat('dd/MM/yyyy'),
                 decoration: InputDecoration(
-                  labelText: 'Fecha fin',
+                  labelText: 'Año de fin',
                   labelStyle: textTheme.bodyMedium,
                   suffixIcon: Icon(
                     Icons.event,
@@ -312,95 +224,42 @@ class _ExperienceFormState extends State<ExperienceForm> {
                 },
                 validator: (value) {
                   if (value == null || value.toString().isEmpty)
-                    return 'La fecha de nacimiento no puede estar vacía';
+                    return 'La fecha de inicio no puede estar vacía';
                   return null;
                 },
               ),
             ),
-            CustomFlexRowColumn(
-              childLeft: TextFormField(
-                  controller: _locationController,
-                  style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                  decoration: InputDecoration(
-                      label: Text(
-                        'Municipio, ciudad, región o país *',
-                        style: textTheme.bodyText2,
-                      )),
-                  validator: (value) {
-                    if (value == null || value.isEmpty)
-                      return 'El Municipio, ciudad, región o país es un campo obligatorio';
-                    return null;
-                  },
-                ),
-              childRight: DropdownButtonFormField<String>(
-                hint: Text('La mayor parte del tiempo estabas... *',
-                    style: textTheme.bodyText2,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis),
-                style:
-                    textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                isExpanded: true,
-                isDense: false,
-                value: _workType,
-                items: StringConst.EXPERIENCE_WORK_TYPES
-                    .map((e) =>
-                        DropdownMenuItem<String>(value: e, child: Text(e)))
-                    .toList(),
-                onChanged: (value) {
-                  _workType = value ?? _workType;
-                },
+
+            formFieldCustom(
+              TextFormField(
+                controller: _locationController,
+                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                    label: Text(
+                      'Municipio, ciudad, región o país',
+                      style: textTheme.bodyText2,
+                    )),
                 validator: (value) {
                   if (value == null || value.isEmpty)
-                    return 'Selecciona un valor';
+                    return 'El Municipio, ciudad, región o país es un campo obligatorio';
                   return null;
                 },
               ),
             ),
-            CustomFlexRowColumn(
-                childLeft: DropdownButtonFormField<String>(
-                  hint: Text(
-                    'Sensación del ambiente de la experiencia *',
-                    style: textTheme.bodyText2,
-                    maxLines: 2, overflow: TextOverflow.ellipsis
-                  ),
-                  style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                  isExpanded: true,
-                  isDense: false,
-                  value: _context,
-                  items: StringConst.EXPERIENCE_CONTEXT
-                      .map((e) => DropdownMenuItem<String>(
-                      value: e,
-                      child: Text(
-                        e,
-                        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                      )))
-                      .toList(),
-                  onChanged: (value) {
-                    _context = value ?? _context;
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return 'Selecciona un valor';
-                    return null;
-                  },
-                ),
-                childRight: DropdownButtonFormField<String>(
-                  hint: Text(
-                      'Lugar *', style: textTheme.bodyText2
-                  ),
-                  style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                  value: _contextPlace,
-                  items: StringConst.EXPERIENCE_CONTEXT_PLACES
-                      .map((e) => DropdownMenuItem<String>(value: e, child: Text(e, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
-                      .toList(),
-                  onChanged: (value) {
-                    _contextPlace = value ?? _contextPlace;
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return 'Selecciona un valor';
-                    return null;
-                  },
-                ),
+
+            formFieldCustom(
+              TextFormField(
+                controller: _extraDataController,
+                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                    label: Text(
+                      'Datos de interés sobre la formación',
+                      style: textTheme.bodyText2,
+                    )),
+              ),
             ),
+
+
             SpaceH24(),
             Row(
               children: [
@@ -443,223 +302,23 @@ class _ExperienceFormState extends State<ExperienceForm> {
     );
   }
 
-  void _loadDropdowns(Database database) {
-    if (_type == null &&
-        _experienceTypes.isNotEmpty &&
-        widget.experience != null) {
-      try {
-        _type = _experienceTypes
-            .firstWhere((element) => element.name == widget.experience!.type);
-      } catch (e) {
-        print(e);
-      }
-    }
-
-    if (_subtype == null &&
-        _experienceSubtypes.isNotEmpty &&
-        widget.experience != null) {
-      try {
-        _subtype = _experienceSubtypes.firstWhere(
-            (element) => element.name == widget.experience!.subtype);
-      } catch (e) {
-        print(e);
-      }
-    }
-
-    if (_type?.name == 'Profesional') {
-      _experienceActivitiesStream =
-          database.choicesStream(APIPath.professions(), null, null);
-
-    } else {
-      _experienceActivitiesStream = database.choicesStream(
-          APIPath.activityChoices(), _type?.id, _subtype?.id);
-    }
-
-    if (_activity == null &&
-        _experienceActivities.isNotEmpty &&
-        widget.experience != null) {
-      try {
-        _activity = _experienceActivities.firstWhere(
-            (element) => element.name == widget.experience!.activity);
-      } catch (e) {
-        print(e);
-      }
-    }
-
-    if (_role == null &&
-        _experienceRoles.isNotEmpty &&
-        widget.experience != null) {
-      try {
-        _role = _experienceRoles.firstWhere(
-            (element) => element.name == widget.experience!.activityRole);
-      } catch (e) {
-        print(e);
-      }
-    }
-
-    if (_level == null &&
-        _experienceLevels.isNotEmpty &&
-        widget.experience != null) {
-      try {
-        _level = _experienceLevels.firstWhere(
-            (element) => element.name == widget.experience!.activityLevel);
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  Widget _buildTypeDropdown(
-      Database database, void Function(void Function()) setState) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return DropdownButtonFormField<Choice>(
-      hint: Text('Tipo *', style: textTheme.bodyText1,),
-      style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-      items: _experienceTypes
-          .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
-          .toList(),
-      value: _type,
-      onChanged: widget.isEducation
-          ? null
-          : (newType) {
-              setState(() {
-                _type = newType;
-                _subtype = null;
-                _activity = null;
-                _role = null;
-                _level = null;
-
-                if (_type?.name == 'Profesional') {
-                  _experienceActivitiesStream =
-                      database.choicesStream(APIPath.professions(), null, null);
-                } else {
-                  _experienceActivitiesStream = database.choicesStream(
-                      APIPath.activityChoices(), _type?.id, _subtype?.id);
-                }
-              });
-            },
-      validator: (value) {
-        if (value == null || value.name.isEmpty) return 'Selecciona un valor';
-        return null;
-      },
+  Widget formFieldCustom(Widget child){
+    return Padding(
+        padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width/3,
+            child: child,
+          ),
     );
   }
 
-  Widget _buildSubtypeDropdown(
-      Database database, void Function(void Function()) setState) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return DropdownButtonFormField<Choice>(
-        hint: Text('Subtipo', style: textTheme.bodyText1,),
-        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-        items: _experienceSubtypes
-            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
-            .toList(),
-        value: _subtype,
-        onChanged: (newSubtype) {
-          setState(() {
-            _subtype = newSubtype;
-            _activity = null;
-            _role = null;
-            _level = null;
-            _experienceActivitiesStream = database.choicesStream(
-                APIPath.activityChoices(), _type?.id, _subtype?.id);
-          });
-        });
-  }
-
-  Widget _buildActivityDropdown(
-      Database database, void Function(void Function()) setState) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return DropdownButtonFormField<Choice>(
-        hint: Text('Actividad', style: textTheme.bodyText1, maxLines: 2, overflow: TextOverflow.ellipsis),
-        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-        isExpanded: true,
-        isDense: false,
-        items: _experienceActivities
-            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
-            .toList(),
-        value: _activity,
-        onChanged: (newActivity) {
-          setState(() {
-            _activity = newActivity;
-            activitiesIds =_activity?.activities;
-          });
-        });
-  }
-
-  void _showMultiSelectProfessionActivities(BuildContext context) async {
-    final textTheme = Theme.of(context).textTheme;
-    var selectedValues = await showDialog<Set<Activity>>(
-      context: context,
-      builder: (BuildContext context) {
-        if(_activity == null)
-          return AlertDialog(
-            content: Text(StringConst.FORM_ACTIVITIES_EMPTY,  style: textTheme.bodyText1,),
-            actions: <Widget>[
-              ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(StringConst.FORM_ACCEPT, style: TextStyle(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.bold))
-              ),
-            ],
-          );
-        return streamBuilderDropdownProfessionActivities(context, _activity!, activitiesIds!, selectedProfessionActivities);
-      },
-    );
-    getValuesFromKeyProfessionActivities(selectedValues);
-  }
-
-  void getValuesFromKeyProfessionActivities (selectedValues) {
-    var concatenate = StringBuffer();
-    List<String> activitiesIds = [];
-    selectedValues.forEach((item){
-      concatenate.write(item.name +' / ');
-      activitiesIds.add(item.id);
-    });
+  void _buildEducationStreamBuilder_setState(Education? education) {
     setState(() {
-      this._textEditingControllerProfessionsActivities.text = concatenate.toString();
-      this.professionActivities = activitiesIds;
-      this.selectedProfessionActivities = selectedValues;
+      _selectedEducation = education;
     });
+
   }
 
-  Widget _buildRoleDropdown(void Function(void Function()) setState) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return DropdownButtonFormField<Choice>(
-        hint: Text('Rol', style: textTheme.bodyText1,),
-        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-        items: _experienceRoles
-            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
-            .toList(),
-        value: _role,
-        onChanged: (newRole) {
-          setState(() {
-            _role = newRole;
-          });
-        });
-  }
-
-  Widget _buildLevelDropdown(void Function(void Function()) setState) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return DropdownButtonFormField<Choice>(
-        hint: Text('Nivel', style: textTheme.bodyText1,),
-        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-        items: _experienceLevels
-            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
-            .toList(),
-        value: _level,
-        onChanged: (newLevel) {
-          setState(() {
-            _level = newLevel;
-          });
-        });
-  }
 
   Future<void> saveExperience() async {
     final database = Provider.of<Database>(context, listen: false);
@@ -668,58 +327,67 @@ class _ExperienceFormState extends State<ExperienceForm> {
     if (widget.experience == null) {
       final experience = Experience(
           userId: auth.currentUser!.uid,
-          type: _type!.name,
-          subtype: _subtype?.name,
-          activity: _activity?.name,
-          activityRole: _role?.name,
-          activityLevel: _level?.name,
+          type: _type,
+          subtype: '',
+          activity: '',
+          activityRole: '',
+          activityLevel: '',
           startDate: _startDate!,
           endDate: _endDate,
-          organization: _organizationController.text,
+          organization: '',
           location: _locationController.text,
-          workType: _workType!,
-          context: _context!,
-          contextPlace: _contextPlace!,
-          professionActivities: activitiesIds!,
-          position: _positionController.text,
-          professionActivitiesText: _textEditingControllerProfessionsActivities.text,
+          workType: '',
+          context: '',
+          contextPlace: '',
+          professionActivities: [],
+          position: '',
+          professionActivitiesText: '',
+          nameFormation: _nameFormationController.text,
+          education: widget.isMainEducation ? _selectedEducation!.label : '',
+          institution: _institution,
+          extraData: _extraDataController.text,
+
       );
 
       await database.addExperience(experience);
-      _updateCompetenciesPoints(_type);
-      _updateCompetenciesPoints(_subtype);
-      _updateCompetenciesPoints(_activity);
-      _updateCompetenciesPoints(_role);
-      _updateCompetenciesPoints(_level);
-      _updateListCompetenciesPoints(selectedProfessionActivities);
+      //_updateCompetenciesPoints(_type);
+      //_updateCompetenciesPoints(_subtype);
+      //_updateCompetenciesPoints(_activity);
+      //_updateCompetenciesPoints(_role);
+      //_updateCompetenciesPoints(_level);
+      //_updateListCompetenciesPoints(selectedProfessionActivities);
       // TODO: Update competencies of other fields (in assistant_page too)
+      /*
       await showCompetencies(context, userCompetencies: userCompetencies,
           onDismiss: (dialogContext) async {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(); */
         Navigator.of(context).pop();
         await showAlertDialog(context,
             title: 'Información guardada',
             content: 'La información ha sido guardada en tu CV correctamente',
             defaultActionText: 'Ok');
-      });
     } else {
       final experience = Experience(
           id: widget.experience!.id,
           userId: auth.currentUser!.uid,
-          type: _type!.name,
-          subtype: _subtype?.name,
-          activity: _activity?.name,
-          activityRole: _role?.name,
-          activityLevel: _level?.name,
+          type: _type,
+          subtype: '',
+          activity: '',
+          activityRole: '',
+          activityLevel: '',
           startDate: _startDate!,
           endDate: _endDate,
-          organization: _organizationController.text,
+          organization: '',
           location: _locationController.text,
-          workType: _workType!,
-          context: _context!,
-          contextPlace: _contextPlace!,
-          position: _positionController.text,
-          professionActivitiesText: _textEditingControllerProfessionsActivities.text,
+          workType: '',
+          context: '',
+          contextPlace: '',
+          position: '',
+          professionActivitiesText: '',
+          nameFormation: _nameFormationController.text,
+          education: widget.isMainEducation ? _selectedEducation!.label : '',
+          institution: _institution,
+          extraData: _extraDataController.text,
       );
 
       await database.updateExperience(experience);
@@ -731,7 +399,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
     }
   }
 
-  void _updateCompetenciesPoints(Choice? choice) {
+  /*void _updateCompetenciesPoints(Choice? choice) {
     if (choice != null && choice.competencies.isNotEmpty) {
       choice.competencies.keys.forEach((competencyId) {
         userCompetencies.update(
@@ -739,9 +407,9 @@ class _ExperienceFormState extends State<ExperienceForm> {
             ifAbsent: () => choice.competencies[competencyId]!);
       });
     }
-  }
+  }*/
 
-  void _updateListCompetenciesPointsActivity(Activity? activity) {
+  /*void _updateListCompetenciesPointsActivity(Activity? activity) {
     if (activity != null && activity.competencies.isNotEmpty) {
       activity.competencies.keys.forEach((competencyId) {
         userCompetencies.update(
@@ -757,6 +425,6 @@ class _ExperienceFormState extends State<ExperienceForm> {
         _updateListCompetenciesPointsActivity(itemChoice);
       }
   }
-
+*/
 
 }

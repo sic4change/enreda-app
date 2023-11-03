@@ -26,6 +26,7 @@ class StringConst {
   static const String MY_EXPERIENCES = "Mis Experiencias";
   static const String ABILITIES = "Destrezas";
   static const String EDUCATION = "Formación";
+  static const String SECONDARY_EDUCATION = "Formación complementaria";
   static const String EXPERIENCES = "Experiencia de trabajo";
   static const String COMPETENCIES = "Competencias";
   static const String PERSONAL_REFERENCES = "Referencias personales";
@@ -417,20 +418,16 @@ class StringConst {
   static const String NEW_REFERENCE = 'Introduce nuevos datos:';
   static const String ADD_MORE_EXPERIENCES = 'Añade 2 experiencias y evalúa o certifica 3 competencias para descargar tu CV ';
   static const String EXPERIENCE_ADDED = '¡Hemos terminado! Esta experiencia ha sido añadida a tu perfil';
-  static const List<String> EXPERIENCE_WORK_TYPES = ['Individual', 'Equipo', 'Ambos'];
+  static const List<String> EXPERIENCE_WORK_TYPES = ['Solo/a', 'En equipo', 'Ambos'];
   static const List<String> EXPERIENCE_CONTEXT = [
-    'Muy cerca',
-    'Bastante cerca',
-    'Diferente',
-    'Muy diferente'
+    'Sí',
+    'No'
   ];
   static const List<String> EXPERIENCE_CONTEXT_PLACES = [
-    'En un ambiente habitual',
-    'Lejos de tu entorno habitual',
-    'En varios lugares diferentes',
-    'En el extranjero',
-    'Online'
+    'Sí',
+    'No'
   ];
+  static const List<String> FORMATION_INSTITUTIONS = ['Colegio', 'Instituto', 'Universidad'];
   static const String EDUCATION_ID = 'oohtyRAfa2eFMuumwBAD';
   static const String COMPETENCIES_INFO = 'Te ayudamos a identificar y a evaluar tus competencias a través de nuestro chat interno!\n\n'
       'Sólo necesitas 6 minutos para contarnos tus experiencias profesionales, personales o formativas y en base a ellas obtendrás las competencias correspondientes.\n\n'
@@ -447,6 +444,7 @@ class StringConst {
   static const String PERSONAL_DATA = 'Datos personales';
   static const String ABOUT_ME = "Un poco más sobre mí...";
   static const String PROFILE = "Carrera";
+  static const String EDUCATIONAL_LEVEL = "Nivel educativo";
 
   static const String LOREM_IMPSUM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque, tortor amet, adipiscing felis nullam. Aliquet commodo est pretium vitae hendrerit fames vitae. Orci, feugiat consectetur aliquet sodales mus sodales a urna.\n\n'
       'Rhoncus id volutpat, diam adipiscing risus, enim cursus ac. Amet nunc nec eu diam. Tincidunt at vulputate arcu dis justo. Ut egestas ac rhoncus, sapien.';

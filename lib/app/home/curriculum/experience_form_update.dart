@@ -3,6 +3,7 @@ import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:enreda_app/app/home/curriculum/stream_builder_professionsActivities.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_competencies.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -20,19 +21,21 @@ import 'package:provider/provider.dart';
 import '../../../common_widgets/flex_row_column.dart';
 import '../models/activity.dart';
 
-class ExperienceForm extends StatefulWidget {
-  const ExperienceForm({Key? key, this.experience, required this.isEducation, this.isProfesional})
+class ExperienceFormUpdate extends StatefulWidget {
+  const ExperienceFormUpdate({Key? key, this.experience, required this.isProfesional, this.general})
       : super(key: key);
 
   final Experience? experience;
-  final bool isEducation;
-  final bool? isProfesional;
+  final bool isProfesional; //if false -> personal exprience
+  final bool? general;
 
   @override
-  State<ExperienceForm> createState() => _ExperienceFormState();
+  State<ExperienceFormUpdate> createState() => _ExperienceFormUpdateState();
 }
 
-class _ExperienceFormState extends State<ExperienceForm> {
+class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
+  bool _isProfesional = true;
+  bool _general = false;
   Stream<List<Choice>> _experienceActivitiesStream = Stream.empty();
   Choice? _type, _subtype, _activity, _role, _level;
   List<Choice> _experienceTypes = [],
@@ -59,6 +62,10 @@ class _ExperienceFormState extends State<ExperienceForm> {
   void initState() {
     super.initState();
     final _experience = widget.experience;
+    _isProfesional = widget.isProfesional;
+    if(widget.general != null){
+      _general = widget.general!;
+    }
     if (_experience != null) {
       _startDate = _experience.startDate;
       _endDate = _experience.endDate;
@@ -66,9 +73,24 @@ class _ExperienceFormState extends State<ExperienceForm> {
       _positionController.text = _experience.position ?? '';
       _locationController.text = _experience.location;
       _textEditingControllerProfessionsActivities.text = _experience.professionActivitiesText ?? '';
-      _workType = _experience.workType;
-      _context = _experience.context;
-      _contextPlace = _experience.contextPlace;
+
+      if(StringConst.EXPERIENCE_WORK_TYPES.contains(_experience.workType)){
+        _workType = _experience.workType;
+      }else{
+        _workType = null;
+      }
+
+      if(StringConst.EXPERIENCE_CONTEXT.contains(_experience.context)){
+        _context = _experience.context;
+      }else{
+        _context = null;
+      }
+
+      if(StringConst.EXPERIENCE_CONTEXT_PLACES.contains(_experience.contextPlace)){
+        _contextPlace = _experience.contextPlace;
+      }else{
+        _contextPlace = null;
+      }
     }
   }
 
@@ -84,24 +106,25 @@ class _ExperienceFormState extends State<ExperienceForm> {
             stream: database.choicesStream(APIPath.experienceTypes(), null, null),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                _experienceTypes = widget.isEducation
+                _experienceTypes = snapshot.data!.where((choice) => choice.name == 'Profesional' || choice.name == 'Personal').toList();
+                /*
+                _experienceTypes = _isProfesional
                     ? snapshot.data!
-                        .where((choice) => choice.name == 'Formativa')
+                        .where((choice) => choice.name == 'Profesional')
                         .toList()
                     : snapshot.data!
-                        .where((choice) => choice.name != 'Formativa')
-                        .toList();
+                        .where((choice) => choice.name == 'Personal')
+                        .toList();*/
               } else {
                 _experienceTypes = [];
               }
-              //_experienceTypes = snapshot.hasData ? snapshot.data! : [];
 
               return StreamBuilder<List<Choice>>(
                   stream: database.choicesStream(
                       APIPath.experienceSubtypes(), null, null),
                   builder: (context, snapshot) {
                     _experienceSubtypes =
-                        snapshot.hasData && _type?.name == 'Personal'
+                        snapshot.hasData && !_isProfesional
                             ? snapshot.data!
                             : [];
 
@@ -156,18 +179,19 @@ class _ExperienceFormState extends State<ExperienceForm> {
                                           !_experienceIsLoaded)
                                         _loadDropdowns(database);
 
-                                      if (widget.isEducation &&
-                                          _type == null &&
-                                          _experienceTypes.isNotEmpty) {
+                                      if(_isProfesional && _type == null && !_general && _experienceTypes.isNotEmpty){
                                         _type = _experienceTypes.firstWhere(
-                                            (element) =>
-                                                element.name == 'Formativa');
+                                                (element) =>
+                                            element.name == 'Profesional');
                                         _experienceActivitiesStream =
-                                            database.choicesStream(
-                                                APIPath.activityChoices(),
-                                                _type?.id,
-                                                _subtype?.id);
+                                            database.choicesStream(APIPath.professions(), null, null);
                                       }
+                                      if(!_isProfesional && _type == null && !_general && _experienceTypes.isNotEmpty){
+                                        _type = _experienceTypes.firstWhere(
+                                                (element) =>
+                                            element.name == 'Personal');
+                                      }
+
 
                                       return _buildForm(context, setState);
                                     });
@@ -187,53 +211,44 @@ class _ExperienceFormState extends State<ExperienceForm> {
       key: _formKey,
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            CustomTextTitle(title: StringConst.MY_EXPERIENCES.toUpperCase()),
+            SpaceW12(),
             CustomFlexRowColumn(
               childLeft: _buildTypeDropdown(database, setState),
-              childRight: _buildActivityDropdown(database, setState),
+              childRight: Visibility(
+                child: _isProfesional ? _buildActivityDropdown(database, setState) : _buildSubtypeDropdown(database, setState),
+                visible: !_general,
+              ),
+
             ),
-            _type?.name == 'Personal' ?
+            !_isProfesional && !_general ?
             CustomFlexRowColumn(
-              childLeft:  _buildSubtypeDropdown(database, setState),
+              childLeft:  _buildActivityDropdown(database, setState),
               childRight: _buildRoleDropdown(setState),
             ) : Container(),
-            CustomFlexRowColumn(
-              childLeft: _type?.name == 'Profesional' ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    TextFormField(
-                      controller: _textEditingControllerProfessionsActivities,
-                      decoration: InputDecoration(
-                        hintText: 'Indica las tareas que realizaste *',
-                        hintMaxLines: 2,
-                        label: Text(
-                          'Tareas que realizaste',
-                          style: textTheme.bodyText2,
-                        ),
-                        labelStyle: textTheme.bodyText1?.copyWith(
-                          color: AppColors.greyDark,
-                          height: 1.5,
-                          fontWeight: FontWeight.w400,
-                          fontSize: fontSize,
-                        ),
-                      ),
-                      onTap: () => _showMultiSelectProfessionActivities(context),
-                      validator: (value) {
-                        if (value == null || value == "") return 'Selecciona un valor';
-                        return null;
-                      },
-                      onSaved: (value) => value = _professionActivityId,
-                      maxLines: 2,
-                      readOnly: true,
-                      style: textTheme.button?.copyWith(
-                        height: 1.5,
-                        color: AppColors.greyDark,
-                        fontWeight: FontWeight.w400,
-                        fontSize: fontSize,
-                      ),
-                    ),
-                  ]) : Container(),
-              childRight: _type?.name == 'Profesional' ? TextFormField(
+
+            //FOR COMPANY NAME
+
+            !_general ? CustomFlexRowColumn(
+              childRight: Container(),//_type?.name == 'Personal' ? _buildLevelDropdown(setState) : Container(),
+              childLeft: TextFormField(
+                controller: _organizationController,
+                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                  label: Text(
+                    'Empresa, organización...' ,
+                    style: textTheme.bodyText2,
+                  ),
+                ),
+              ),
+            ) : Container(),
+
+            //FOR POSITION
+            _type?.name == 'Profesional' && !_general ? Padding(
+              padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
+              child: TextFormField(
                 controller: _positionController,
                 style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
@@ -242,22 +257,29 @@ class _ExperienceFormState extends State<ExperienceForm> {
                     style: textTheme.bodyText2,
                   ),
                 ),
-              ) : Container(),
-            ),
-            CustomFlexRowColumn(
-              childRight: _type?.name == 'Personal' ? _buildLevelDropdown(setState) : Container(),
-              childLeft: TextFormField(
-                controller: _organizationController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                decoration: InputDecoration(
-                  label: Text(
-                    widget.isEducation? 'Empresa, organización, instituto, universidad...':'Empresa, organización...' ,
-                    style: textTheme.bodyText2,
-                  ),
-                ),
               ),
-            ),
-            CustomFlexRowColumn(
+            ) : Container(),
+
+            //FOR CITY
+
+            !_general ? TextFormField(
+              controller: _locationController,
+              style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+              decoration: InputDecoration(
+                  label: Text(
+                    'Municipio, ciudad, región o país *',
+                    style: textTheme.bodyText2,
+                  )),
+              validator: (value) {
+                if (value == null || value.isEmpty)
+                  return 'El Municipio, ciudad, región o país es un campo obligatorio';
+                return null;
+              },
+            ) : Container(),
+
+            //FOR DATE
+
+            !_general ? CustomFlexRowColumn(
               childLeft: DateTimeField(
                 initialValue: _startDate?.toDate(),
                 format: DateFormat('dd/MM/yyyy'),
@@ -316,93 +338,135 @@ class _ExperienceFormState extends State<ExperienceForm> {
                   return null;
                 },
               ),
-            ),
-            CustomFlexRowColumn(
-              childLeft: TextFormField(
-                  controller: _locationController,
-                  style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                  decoration: InputDecoration(
-                      label: Text(
-                        'Municipio, ciudad, región o país *',
-                        style: textTheme.bodyText2,
-                      )),
-                  validator: (value) {
-                    if (value == null || value.isEmpty)
-                      return 'El Municipio, ciudad, región o país es un campo obligatorio';
-                    return null;
-                  },
-                ),
-              childRight: DropdownButtonFormField<String>(
-                hint: Text('La mayor parte del tiempo estabas... *',
+            ) : Container(),
+
+            //FOR PROFESSIONS ACTIVITIES
+
+            !_general ? CustomFlexRowColumn(
+              childLeft: _type?.name == 'Profesional' ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _textEditingControllerProfessionsActivities,
+                      decoration: InputDecoration(
+                        hintText: 'Indica las tareas que realizaste *',
+                        hintMaxLines: 2,
+                        label: Text(
+                          'Tareas que realizaste',
+                          style: textTheme.bodyText2,
+                        ),
+                        labelStyle: textTheme.bodyText1?.copyWith(
+                          color: AppColors.greyDark,
+                          height: 1.5,
+                          fontWeight: FontWeight.w400,
+                          fontSize: fontSize,
+                        ),
+                      ),
+                      onTap: () => _showMultiSelectProfessionActivities(context),
+                      validator: (value) {
+                        if (value == null || value == "") return 'Selecciona un valor';
+                        return null;
+                      },
+                      onSaved: (value) => value = _professionActivityId,
+                      maxLines: 2,
+                      readOnly: true,
+                      style: textTheme.button?.copyWith(
+                        height: 1.5,
+                        color: AppColors.greyDark,
+                        fontWeight: FontWeight.w400,
+                        fontSize: fontSize,
+                      ),
+                    ),
+                  ]) : Container(),
+              childRight: Container(),/*_type?.name == 'Profesional' ? TextFormField(
+                controller: _positionController,
+                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                  label: Text(
+                    'Indica tu cargo...',
                     style: textTheme.bodyText2,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis),
-                style:
-                    textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                isExpanded: true,
-                isDense: false,
-                value: _workType,
-                items: StringConst.EXPERIENCE_WORK_TYPES
-                    .map((e) =>
-                        DropdownMenuItem<String>(value: e, child: Text(e)))
-                    .toList(),
-                onChanged: (value) {
-                  _workType = value ?? _workType;
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty)
-                    return 'Selecciona un valor';
-                  return null;
-                },
+                  ),
+                ),
+              ) : Container(),*/
+            ) : Container(),
+
+            SpaceW12(),
+
+            !_general ? CustomTextTitle(title: StringConst.MY_EXPERIENCES.toUpperCase()) : Container(),
+
+            SpaceW12(),
+
+            !_general ? DropdownButtonFormField<String>(
+              hint: Text('¿Cómo desarrollaste tu actividad?',
+                  style: textTheme.bodyText2,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis),
+              style:
+                  textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+              isExpanded: true,
+              isDense: false,
+              value: _workType,
+              items: StringConst.EXPERIENCE_WORK_TYPES
+                  .map((e) =>
+                      DropdownMenuItem<String>(value: e, child: Text(e)))
+                  .toList(),
+              onChanged: (value) {
+                _workType = value ?? _workType;
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty)
+                  return 'Selecciona un valor';
+                return null;
+              },
+            ) : Container(),
+
+            !_general ? DropdownButtonFormField<String>(
+              hint: Text(
+                  '¿Esta experiencia te supuso un cambio de domicilio?', style: textTheme.bodyText2
               ),
-            ),
-            CustomFlexRowColumn(
-                childLeft: DropdownButtonFormField<String>(
-                  hint: Text(
-                    'Sensación del ambiente de la experiencia *',
-                    style: textTheme.bodyText2,
-                    maxLines: 2, overflow: TextOverflow.ellipsis
-                  ),
-                  style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                  isExpanded: true,
-                  isDense: false,
-                  value: _context,
-                  items: StringConst.EXPERIENCE_CONTEXT
-                      .map((e) => DropdownMenuItem<String>(
-                      value: e,
-                      child: Text(
-                        e,
-                        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                      )))
-                      .toList(),
-                  onChanged: (value) {
-                    _context = value ?? _context;
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return 'Selecciona un valor';
-                    return null;
-                  },
-                ),
-                childRight: DropdownButtonFormField<String>(
-                  hint: Text(
-                      'Lugar *', style: textTheme.bodyText2
-                  ),
-                  style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                  value: _contextPlace,
-                  items: StringConst.EXPERIENCE_CONTEXT_PLACES
-                      .map((e) => DropdownMenuItem<String>(value: e, child: Text(e, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
-                      .toList(),
-                  onChanged: (value) {
-                    _contextPlace = value ?? _contextPlace;
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return 'Selecciona un valor';
-                    return null;
-                  },
-                ),
-            ),
+              style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+              value: _contextPlace,
+              items: StringConst.EXPERIENCE_CONTEXT_PLACES
+                  .map((e) => DropdownMenuItem<String>(value: e, child: Text(e, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+                  .toList(),
+              onChanged: (value) {
+                _contextPlace = value ?? _contextPlace;
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'Selecciona un valor';
+                return null;
+              },
+            ) : Container(),
+
+            !_general ? DropdownButtonFormField<String>(
+              hint: Text(
+                '¿Esta experiencia te supuso hacer cosas que no solías hacer antes?',
+                style: textTheme.bodyText2,
+                maxLines: 2, overflow: TextOverflow.ellipsis
+              ),
+              style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+              isExpanded: true,
+              isDense: false,
+              value: _context,
+              items: StringConst.EXPERIENCE_CONTEXT
+                  .map((e) => DropdownMenuItem<String>(
+                  value: e,
+                  child: Text(
+                    e,
+                    style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                  )))
+                  .toList(),
+              onChanged: (value) {
+                _context = value ?? _context;
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'Selecciona un valor';
+                return null;
+              },
+            ) : Container(),
+
             SpaceH24(),
-            Row(
+            !_general ? Row(
               children: [
                 Expanded(
                     child: TextButton(
@@ -436,7 +500,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                           }
                         })),
               ],
-            )
+            ) : Container(),
           ],
         ),
       ),
@@ -516,26 +580,29 @@ class _ExperienceFormState extends State<ExperienceForm> {
     return DropdownButtonFormField<Choice>(
       hint: Text('Tipo *', style: textTheme.bodyText1,),
       style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+      isExpanded: true,
+      isDense: false,
       items: _experienceTypes
           .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
           .toList(),
       value: _type,
-      onChanged: widget.isEducation
-          ? null
-          : (newType) {
+      onChanged: (newType) {
               setState(() {
                 _type = newType;
                 _subtype = null;
                 _activity = null;
                 _role = null;
                 _level = null;
+                _general = false;
 
                 if (_type?.name == 'Profesional') {
                   _experienceActivitiesStream =
                       database.choicesStream(APIPath.professions(), null, null);
+                  _isProfesional = true;
                 } else {
                   _experienceActivitiesStream = database.choicesStream(
                       APIPath.activityChoices(), _type?.id, _subtype?.id);
+                  _isProfesional = false;
                 }
               });
             },
@@ -553,6 +620,8 @@ class _ExperienceFormState extends State<ExperienceForm> {
     return DropdownButtonFormField<Choice>(
         hint: Text('Subtipo', style: textTheme.bodyText1,),
         style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+        isExpanded: true,
+        isDense: false,
         items: _experienceSubtypes
             .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
             .toList(),
@@ -633,6 +702,8 @@ class _ExperienceFormState extends State<ExperienceForm> {
     return DropdownButtonFormField<Choice>(
         hint: Text('Rol', style: textTheme.bodyText1,),
         style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+        isExpanded: true,
+        isDense: false,
         items: _experienceRoles
             .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
             .toList(),

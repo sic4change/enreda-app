@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
+import 'package:enreda_app/app/home/curriculum/experience_form_update.dart';
 import 'package:enreda_app/app/home/curriculum/stream_builder_professionsActivities.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
@@ -21,11 +22,12 @@ import '../../../common_widgets/flex_row_column.dart';
 import '../models/activity.dart';
 
 class ExperienceForm extends StatefulWidget {
-  const ExperienceForm({Key? key, this.experience, required this.isEducation})
+  const ExperienceForm({Key? key, this.experience, required this.isEducation, this.isProfesional})
       : super(key: key);
 
   final Experience? experience;
   final bool isEducation;
+  final bool? isProfesional;
 
   @override
   State<ExperienceForm> createState() => _ExperienceFormState();

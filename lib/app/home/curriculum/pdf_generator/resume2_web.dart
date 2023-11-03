@@ -83,7 +83,7 @@ Future<Uint8List> generateResume2(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: <pw.Widget>[
                   pw.Container(
-                    //height: pageTheme.pageFormat.availableHeight,
+                    height: pageTheme.pageFormat.availableHeight,
                     child: pw.Padding(
                       padding: const pw.EdgeInsets.symmetric(horizontal: 30.0),
                       child: pw.Column(

@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               clipBehavior: Clip.antiAlias,
               width: 400.0,
-              height: 600.0,
+              height: 500.0,
               child: showChat
                   ? AssistantPageWeb(
                       onClose: (showSuccessMessage) {
@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             right: Constants.mainPadding,
-            bottom: showChat ? Constants.mainPadding : -800,
+            bottom: showChat ? 50 : -800,
           );
         });
   }

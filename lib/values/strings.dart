@@ -35,6 +35,13 @@ class StringConst {
   static const String LANGUAGES = "Idiomas";
   static const String EVALUATE_COMPETENCY = "Evaluar: ";
 
+  //Search Section
+  static const String SEARCH = "Busca por área";
+  static const String SEARCH_SUBTITLE = "EnREDa te conecta con recursos educativos, actividades, empresas y pleabilidad y construir tu camino vital. Porque las oportunidades no se compran, se crean.";
+  static const String PILLS_TITLE = "Píldoras formativas";
+  static const String PILLS_SUBTITLE = "¡Hemos recopilado todo este contenido para ti!";
+  static const String FUNDAULA_BUTTON = "Accede a la formación online que te acerca al mundo digital y al empleo desde enREDa";
+
   //Header Section
   static const String FIRST_NAME = "";
   static const String INTRO = "Te ayudamos a ";
@@ -217,6 +224,7 @@ class StringConst {
   static const String NEW_WEB_ENREDA_URL = 'https://www.enredas.org/';
   static const String WEB_COMPANIES_URL_ACCESS = 'https://enreda-empresas.web.app/';
   static const String WEB_ADMIN_ACCESS = 'https://enreda-d3b41.web.app/';
+  static const String WEB_FUNDAULA_ACCESS = 'https://www.fundaula.es/';
 
   //Contact form
   static const String CONFIRM = "Confirmado";

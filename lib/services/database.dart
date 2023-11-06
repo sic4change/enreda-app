@@ -143,57 +143,6 @@ class FirestoreDatabase implements Database {
     );
   }
 
-  // @override
-  // Stream<List<Resource>> filteredResourcesStream(FilterResource filter) {
-  //   return _service.filteredCollectionStream(
-  //     path: APIPath.resources(),
-  //     queryBuilder: (query) {
-  //       query = query
-  //           .where('status', isEqualTo: 'Disponible')
-  //           .where('trust', isEqualTo: true);
-  //       return query;
-  //     },
-  //     builder: (data, documentId) {
-  //       final searchTextResource =
-  //           removeDiacritics((data['searchText'] ?? '').toLowerCase());
-  //       final searchListResource = searchTextResource.split(';');
-  //       final searchTextFilter =
-  //           removeDiacritics(filter.searchText.toLowerCase());
-  //       final searchListFilter = searchTextFilter.split(' ');
-  //       bool isValid = true;
-  //       if (filter.searchText != '') {
-  //         searchListFilter.forEach((filterElement) {
-  //           if (!searchListResource.any(
-  //               (resourceElement) => resourceElement.contains(filterElement))) {
-  //             isValid = false;
-  //           }
-  //         });
-  //       }
-  //       if (filter.resourceTypes.isNotEmpty &&
-  //           !filter.resourceTypes
-  //               .contains(getResourceTypeName(data['resourceType'])))
-  //         isValid = false;
-  //
-  //       return isValid ? Resource.fromMap(data, documentId) : null;
-  //     },
-  //     sort: (lhs, rhs) {
-  //       int cmp = 0;
-  //       if ((rhs.modality == StringConst.FACE_TO_FACE ||
-  //               rhs.modality == StringConst.BLENDED) &&
-  //           (lhs.modality != StringConst.FACE_TO_FACE &&
-  //               lhs.modality != StringConst.BLENDED)) cmp = 1;
-  //       if ((lhs.modality == StringConst.FACE_TO_FACE ||
-  //               lhs.modality == StringConst.BLENDED) &&
-  //           (rhs.modality != StringConst.FACE_TO_FACE &&
-  //               rhs.modality != StringConst.BLENDED)) cmp = -1;
-  //
-  //       if (cmp != 0) return cmp;
-  //
-  //       return lhs.maximumDate.compareTo(rhs.maximumDate);
-  //     },
-  //   );
-  // }
-
   @override
   Stream<List<ResourceCategory>> getCategoriesResources() {
     return _service.collectionStream(
@@ -204,26 +153,63 @@ class FirestoreDatabase implements Database {
     );
   }
 
+  // @override
+  // Stream<List<Resource>> filteredResourcesCategoryStream(FilterResource filter) {
+  //   return _service.filteredCollectionStream(
+  //     path: APIPath.resources(),
+  //     queryBuilder: (query) {
+  //       query = query
+  //           .where('status', isEqualTo: 'Disponible')
+  //           .where('trust', isEqualTo: true);
+  //       return query;
+  //     },
+  //     builder: (data, documentId) {
+  //       final searchTextResource = removeDiacritics((data['searchText'] ?? '').toLowerCase());
+  //       final searchListResource = searchTextResource.split(';');
+  //       final searchTextFilter = removeDiacritics(filter.searchText.toLowerCase());
+  //       final searchListFilter = searchTextFilter.split(' ');
+  //       // The following code checks if a resource is selected by applying filters
+  //       bool resourceSelected = true; // Initialize resourceSelected to true
+  //
+  //       // If search text exists in filter, filter through the search list
+  //       if (filter.searchText != '') {
+  //         searchListFilter.forEach((filterElement) {
+  //           // For each element in searchListFilter, check against each element in searchListResource
+  //           if (!searchListResource.any(
+  //                   (resourceElement) => resourceElement.contains(filterElement))) {
+  //             resourceSelected = false; // Set resourceSelected false if a match isn't found
+  //           }
+  //         });
+  //       }
+  //
+  //       // If resourceCategory filter (array of Categories Ids) exists and it doesn't contain the category Id of the 'resourceCategory' from data,
+  //       // set resourceSelected to false
+  //       if (
+  //           filter.resourceCategoryId != ((data['resourceCategory'])))
+  //         resourceSelected = false;
+  //
+  //       return resourceSelected ? Resource.fromMap(data, documentId) : null;
+  //     },
+  //     sort: (rhs, lhs) => lhs.createdate.compareTo(rhs.createdate),
+  //   );
+  // }
+
   @override
   Stream<List<Resource>> filteredResourcesCategoryStream(FilterResource filter) {
     return _service.filteredCollectionStream(
       path: APIPath.resources(),
       queryBuilder: (query) {
-        query = query
-            .where('status', isEqualTo: 'Disponible')
-            .where('trust', isEqualTo: true);
+        query = query.where('status', isEqualTo: 'Disponible').where('trust', isEqualTo: true);
         return query;
       },
       builder: (data, documentId) {
-        final searchTextResource =
-        removeDiacritics((data['searchText'] ?? '').toLowerCase());
+        final searchTextResource = removeDiacritics((data['searchText'] ?? '').toLowerCase());
         final searchListResource = searchTextResource.split(';');
-        final searchTextFilter =
-        removeDiacritics(filter.searchText.toLowerCase());
+        final searchTextFilter = removeDiacritics(filter.searchText.toLowerCase());
         final searchListFilter = searchTextFilter.split(' ');
         // The following code checks if a resource is selected by applying filters
         bool resourceSelected = true; // Initialize resourceSelected to true
-        
+
         // If search text exists in filter, filter through the search list
         if (filter.searchText != '') {
           searchListFilter.forEach((filterElement) {
@@ -234,31 +220,14 @@ class FirestoreDatabase implements Database {
             }
           });
         }
-        
-        // If resourceCategory filter (array of Categories Ids) exists and it doesn't contain the category Id of the 'resourceCategory' from data, 
-        // set resourceSelected to false
-        if (filter.resourceCategories.isNotEmpty &&
-            !filter.resourceCategories.contains((data['resourceCategory'])))
+
+        if (!filter.resourceCategoryId.contains(data['resourceCategory'])) {
           resourceSelected = false;
-        
+        }
+
         return resourceSelected ? Resource.fromMap(data, documentId) : null;
       },
       sort: (rhs, lhs) => lhs.createdate.compareTo(rhs.createdate),
-      // sort: (lhs, rhs) {
-      //   int cmp = 0;
-      //   if ((rhs.modality == StringConst.FACE_TO_FACE ||
-      //       rhs.modality == StringConst.BLENDED) &&
-      //       (lhs.modality != StringConst.FACE_TO_FACE &&
-      //           lhs.modality != StringConst.BLENDED)) cmp = 1;
-      //   if ((lhs.modality == StringConst.FACE_TO_FACE ||
-      //       lhs.modality == StringConst.BLENDED) &&
-      //       (rhs.modality != StringConst.FACE_TO_FACE &&
-      //           rhs.modality != StringConst.BLENDED)) cmp = -1;
-      //
-      //   if (cmp != 0) return cmp;
-      //
-      //   return lhs.createdate.compareTo(rhs.createdate);
-      // },
     );
   }
 

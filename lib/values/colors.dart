@@ -58,7 +58,17 @@ class AppColors {
   static const Color greyDark = Color(0xFF44494B);
   static const Color greyUltraLight = Color(0xFFD9D9D9);
   static const Color greyTxtAlt = Color(0xFF535A5F);
+  static const Color greyBorder = Color(0xFFCBCBCB);
 
-  //Red
+  //Alternative
   static const Color red = Color(0xFFF1291A);
+  static const Color whiteAlt = Color(0xFFA0A5D200);
+  static const Color lilacAlt = Color(0xFFCDCFE999);
+  static const Color turquoiseAlt = Color(0xFFCCFAF0);
+  static const Color greyLightAlt = Color(0xFFF5F6F7);
+  static const Color darkPurple = Color(0xFF460174);
+  static const Color lightPurple = Color(0xFFA100FE);
+  static const Color ultraLightPurple = Color(0xFFF5EDF9);
+
+
 }

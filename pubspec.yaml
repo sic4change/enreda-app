@@ -139,7 +139,25 @@ flutter:
     - images/cv-dots-1.svg
     - images/cv-dots-2.svg
     - images/cv-dots-3.svg
-
+    - images/icon-share.png
+    - images/background-otros-2X.png
+    - images/background-empleo-2X.png
+    - images/background-formacion-2X.png
+    - images/background-ocio-2X.png
+    - images/background-practicas-2X.png
+    - images/background-voluntariado-2X.png
+    - images/icon-click-fundaula.png
+    - images/person-empleo.png
+    - images/person-formacion.png
+    - images/person-ocio.png
+    - images/person-practicas.png
+    - images/person-voluntariado.png
+    - images/person-otros.png
+    - images/person-pildora1.png
+    - images/person-pildora2.png
+    - images/person-pildora3.png
+    - images/background-pildoras.png
+    - images/fundaula-logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

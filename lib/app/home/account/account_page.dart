@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/competencies/my_competencies_page.dart';
+import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/curriculum/my_curriculum_page.dart';
 import 'package:enreda_app/app/home/account/personal_data_page.dart';
 import 'package:enreda_app/app/home/models/contact.dart';
@@ -420,6 +421,13 @@ class _AccountPageState extends State<AccountPage> {
               onTap: () => _displayReportDialog(context),
             ),
             _buildMyProfileRow(
+              text: 'Cerrar sesión',
+              onTap: () {
+                _confirmSignOut(context);
+                CupertinoScaffoldAnonymous.controller.index = 2;
+              },
+            ),
+            _buildMyProfileRow(
               text: 'Eliminar cuenta',
               textStyle: textTheme.bodyText1?.copyWith(
                   fontWeight: FontWeight.bold,
@@ -707,6 +715,18 @@ class _AccountPageState extends State<AccountPage> {
       await auth.signOut();
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  Future<void> _confirmSignOut(BuildContext context) async {
+    final didRequestSignOut = await showAlertDialog(context,
+        title: 'Cerrar sesión',
+        content: '¿Estás seguro que quieres cerrar sesión?',
+        cancelActionText: 'Cancelar',
+        defaultActionText: 'Cerrar');
+    if (didRequestSignOut == true) {
+      final auth = Provider.of<AuthBase>(context, listen: false);
+      await auth.signOut();
     }
   }
 

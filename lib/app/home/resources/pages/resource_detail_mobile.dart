@@ -63,7 +63,7 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        leading: showBackIconButton(context, Colors.white),
+        leading: showBackIconButton(context, AppColors.primaryColor),
       ),
       body: Stack(
         children: <Widget>[
@@ -140,7 +140,7 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
                                             Container(
                                               margin: EdgeInsets.only(
                                                   left: 10,
-                                                  top: 30,
+                                                  top: 20,
                                                   right: 10,
                                                   bottom: 10),
                                               decoration: BoxDecoration(
@@ -294,12 +294,12 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
                   CustomTextBody(text: '${resource.resourceTypeName}'),
                   SpaceH16(),
                   CustomTextTitle(title: StringConst.LOCATION.toUpperCase()),
-                  Row(
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomTextBody(text: '${resource.cityName}'),
-                      CustomTextBody(text: ', '),
-                      CustomTextBody(text: '${resource.provinceName}'),
-                      CustomTextBody(text: ', '),
+                      CustomTextBody(text: '${resource.cityName},'),
+                      CustomTextBody(text: '${resource.provinceName},'),
                       CustomTextBody(text: '${resource.countryName}'),
                     ],
                   ),

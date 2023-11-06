@@ -1,17 +1,11 @@
 import 'package:enreda_app/app/home/account/account_page.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
-import 'package:enreda_app/app/home/home_page.dart';
 import 'package:enreda_app/app/home/tab_item.dart';
 import 'package:enreda_app/common_widgets/background_mobile.dart';
-import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
-import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/values.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'resources/pages/resources_page.dart';
 
 class CupertinoScaffoldAnonymous extends StatelessWidget {
@@ -29,7 +23,12 @@ class CupertinoScaffoldAnonymous extends StatelessWidget {
     final tabItems = [TabItem.resources, TabItem.competencies, TabItem.account];
 
     Map<TabItem, WidgetBuilder> widgetBuilders = {
-      TabItem.resources: (_) => ResourcesPage(),
+      TabItem.resources: (_) => Stack(
+        children: [
+          BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
+          ResourcesPage(),
+        ],
+      ),
       TabItem.competencies: (_) => Stack(
             children: [
               BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
@@ -47,22 +46,8 @@ class CupertinoScaffoldAnonymous extends StatelessWidget {
     };
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 60),
-        child: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Image.asset(
-              ImagePath.LOGO,
-              height: 25.0,
-              color: Colors.white,
-            ),
-          ),
-          backgroundColor: Constants.turquoise,
-          elevation: 0.0,
-        ),
-      ),
       body: CupertinoTabScaffold(
+        backgroundColor: Colors.transparent,
         controller: controller,
         tabBar: CupertinoTabBar(
             items: [

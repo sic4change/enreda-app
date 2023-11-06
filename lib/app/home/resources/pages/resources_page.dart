@@ -1,4 +1,3 @@
-import 'package:chips_choice/chips_choice.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/filterResource.dart';
@@ -11,18 +10,13 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/filter_text_field_row.dart';
 import 'package:enreda_app/app/home/resources/list_item_builder_grid.dart';
 import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
-import 'package:enreda_app/common_widgets/background_mobile.dart';
-import 'package:enreda_app/common_widgets/background_web.dart';
-import 'package:enreda_app/common_widgets/custom_chip.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
-import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/my_scroll_behaviour.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -40,11 +34,35 @@ class ResourcesPage extends StatefulWidget {
 
 class _ResourcesPageState extends State<ResourcesPage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  FilterResource filterResource = FilterResource("", []);
-  bool isAlertboxOpened = false;
   final _searchTextController = TextEditingController();
+  FilterResource filterResource = FilterResource("", "");
+  bool isAlertBoxOpened = false;
   List<ResourceCategory> resourceCategoriesList = [];
-
+  bool _visible = true;
+  String _categoryName = '';
+  String _categoryFormationId = '';
+  String _backgroundImageUrl(String categoryId) {
+    Map<String, String> backgroundImages = {
+      "6ag9Px7zkFpHgRe17PQk": ImagePath.BACKGROUND_2,
+      "FNAcayruXghBMjj3RD9h": ImagePath.BACKGROUND_6,
+      "LNj2FMTEBsNtBYCRo0MQ": ImagePath.BACKGROUND_4,
+      "POUBGFk5gU6c5X1DKo1b": ImagePath.BACKGROUND_1,
+      "PlaaW4L4Z36Wu1V6HuBa": ImagePath.BACKGROUND_3,
+      "zVusrwQkVoAca9R6iuQo": ImagePath.BACKGROUND_5,
+    };
+    return backgroundImages[categoryId] ?? "";
+  }
+  String _personImageUrl(String categoryId) {
+    Map<String, String> personImages = {
+      "6ag9Px7zkFpHgRe17PQk": ImagePath.PERSON_2,
+      "FNAcayruXghBMjj3RD9h": ImagePath.PERSON_6,
+      "LNj2FMTEBsNtBYCRo0MQ": ImagePath.PERSON_4,
+      "POUBGFk5gU6c5X1DKo1b": ImagePath.PERSON_1,
+      "PlaaW4L4Z36Wu1V6HuBa": ImagePath.PERSON_3,
+      "zVusrwQkVoAca9R6iuQo": ImagePath.PERSON_5,
+    };
+    return personImages[categoryId] ?? "";
+  }
 
   void setStateIfMounted(f) {
     if (mounted) setState(f);
@@ -55,7 +73,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
       _firebaseMessaging.subscribeToTopic('weeknotification');
       _firebaseMessaging.unsubscribeFromTopic(user.userId!);
       _firebaseMessaging.subscribeToTopic(user.userId!);
-      _firebaseMessaging.getToken().then((token) => print('token: ${token}'));
+      _firebaseMessaging.getToken().then((token) => print('token: $token'));
     }
   }
 
@@ -121,97 +139,346 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Responsive.isDesktop(context)
-            ? BackgroundWeb()
-            : BackgroundMobileAccount(backgroundHeight: BackgroundHeight.Large),
-        Padding(
-          padding: Responsive.isDesktop(context)
-              ? EdgeInsets.only(top: 32.0)
-              : EdgeInsets.only(top: 16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              _buildFilterRow(),
-              SpaceH20(),
-              Expanded(
-                child: StreamBuilder<User?>(
-                    stream: Provider.of<AuthBase>(context).authStateChanges(),
-                    builder: (context, snapshot) {
-                      return _buildContents(context);
-                    }),
+    return _visible ? _buildResourcesPage(context) :
+    _buildFilteredResourcesPage(context);
+  }
+
+  Widget _buildResourcesPage(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    final isDesktopScreen = MediaQuery.of(context).size.width >= 1350;
+    return SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.1, 0.5, 0.9,],
+                  colors: [
+                    AppColors.white.withOpacity(0.1),
+                    AppColors.greyViolet.withOpacity(0.1),
+                    AppColors.turquoiseAlt,
+                  ],
+                ),
               ),
+              child: Column(
+                children: [
+                  SpaceH50(),
+                  Text( StringConst.SEARCH, style: textTheme.titleSmall?.copyWith(
+                    color: AppColors.greyAlt,
+                    height: 1.5,
+                    letterSpacing: 0.5,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 25,
+                    //fontSize: fontSize,
+                  ),),
+                  SpaceH20(),
+                  Container(
+                    alignment: Alignment.center,
+                    padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 10) : EdgeInsets.symmetric(horizontal: 100.0),
+                    child: Text(
+                      Responsive.isMobile(context) ? StringConst.PILLS_SUBTITLE : StringConst.SEARCH_SUBTITLE,
+                      textAlign: TextAlign.center, style: TextStyle(fontSize: 15,),)),
+                  SpaceH20(),
+                  _buildCategories(context, resourceCategoriesList),
+                  SpaceH30(),
+                ],
+              ),
+            ),
+            Container(
+              color: AppColors.greyLightAlt,
+              height: Responsive.isMobile(context) ? 350 : Responsive.isDesktopS(context) ? 600 : 500,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Responsive.isMobile(context) ? SpaceH20(): SpaceH50(),
+                  Text( StringConst.PILLS_TITLE, style: textTheme.titleSmall?.copyWith(
+                    color: AppColors.greyAlt,
+                    height: 1.5,
+                    letterSpacing: 0.5,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 25,
+                    //fontSize: fontSize,
+                  ),),
+                  SpaceH20(),
+                  Container(
+                      alignment: Alignment.center,
+                      padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 10) : EdgeInsets.symmetric(horizontal: 100.0),
+                      child: Text(StringConst.PILLS_SUBTITLE, textAlign: TextAlign.center, style: TextStyle(fontSize: 15,),)),
+                  Responsive.isMobile(context) ? SpaceH12() : SpaceH50(),
+                  Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Container(
+                        width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.7,
+                        height: Responsive.isMobile(context) ? 140 : 280,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: AssetImage(ImagePath.BACKGROUND_PILLS),
+                            )
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/5 : 5,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                                alignment: Alignment.bottomCenter,
+                                height: Responsive.isMobile(context) ? 120 : 300,
+                                child: Image.asset(ImagePath.PERSON_PILL1)),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/5 : 5,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                                alignment: Alignment.bottomCenter,
+                                height: Responsive.isMobile(context) ? 120 : 300,
+                                child: Image.asset(ImagePath.PERSON_PILL3)),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                                alignment: Alignment.bottomCenter,
+                                height: Responsive.isMobile(context) ? 160 : 300,
+                                child: Image.asset(ImagePath.PERSON_PILL2)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        ));
+  }
+
+  Widget _buildFilteredResourcesPage(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    final isBigScreen = MediaQuery.of(context).size.width >= 900;
+    return Stack(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 20.0),
+          child: Column(
+            children: [
+              FilterTextFieldRow(
+                  searchTextController: _searchTextController,
+                  onPressed: () => setStateIfMounted(() {
+                    filterResource.searchText = _searchTextController.text;
+                  }),
+                  onFieldSubmitted: (value) => setStateIfMounted(() {
+                    filterResource.searchText = _searchTextController.text;
+                  }),
+                  clearFilter: () => _clearFilter()),
+              SpaceH20(),
+              Padding(
+                padding: isBigScreen ? EdgeInsets.symmetric(horizontal: 100.0) : EdgeInsets.symmetric(horizontal: 20.0),
+                child: InkWell(
+                  onTap: () {
+                    setStateIfMounted(() {
+                      _visible = !_visible;
+                      _clearFilter();
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.arrow_back, color: AppColors.primaryColor),
+                      SpaceW12(),
+                      Text(_categoryName, style: textTheme.titleSmall?.copyWith(
+                        color: AppColors.greyAlt,
+                        height: 1.5,
+                        letterSpacing: 0.2,
+                        fontWeight: FontWeight.w700,
+                        fontSize:  isBigScreen ? 25 : 20,
+                        //fontSize: fontSize,
+                      ),),
+                    ],
+                  ),
+                ),
+              ),
+              SpaceH20(),
+              _categoryFormationId == "6ag9Px7zkFpHgRe17PQk" ?
+              Padding(
+                padding: const EdgeInsets.only(bottom: 18.0),
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: isBigScreen ? EdgeInsets.symmetric(horizontal: 110.0) : EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Column(
+                        children: [
+                          InkWell(
+                            onTap: () => launchURL(StringConst.WEB_FUNDAULA_ACCESS),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  stops: [0.6, 1,],
+                                  colors: [
+                                    AppColors.lightPurple,
+                                    AppColors.ultraLightPurple,
+                                  ],
+                                ),
+                                color: AppColors.lightPurple,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.darkPurple,
+                                    offset: Offset(8.0, -8.0),
+                                    blurRadius: 0.0,
+                                  ),
+                                ],
+                              ),
+                              padding: Responsive.isMobile(context)
+                                  ? EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 8.0)
+                                      : EdgeInsets.symmetric(
+                                          horizontal: 30.0, vertical: 15.0),
+                              child: Row(
+                                children: [
+                                      Expanded(
+                                        child: Text(
+                                          StringConst.FUNDAULA_BUTTON,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 3,
+                                          style: textTheme.bodySmall?.copyWith(
+                                          color: Colors.white,
+                                          height: 1.5,
+                                          letterSpacing: 1,
+                                          fontSize: Responsive.isMobile(context) ? 10 : Responsive.isDesktopS(context) ? 14 : 16,
+                                          fontWeight: FontWeight.w600,
+                                        )),
+                                      ),
+                                      SpaceW8(),
+                                      Image.asset(ImagePath.LOGO_FUNDAULA, height: isBigScreen ? 30 : Responsive.isMobile(context) ? 20 : 25,),
+                                      isBigScreen ? SpaceW30() : SpaceW24(),
+                                  ],
+                                ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                        right: isBigScreen ? 120 : 25,
+                        bottom: 0,
+                        child: Image.asset(ImagePath.ICON_CLICK_FUNDAULA, height: isBigScreen ? 40 : 30,)),
+                  ],
+                ),
+              ) : Container(),
             ],
           ),
+        ),
+        Container(
+          margin: _categoryFormationId == "6ag9Px7zkFpHgRe17PQk"
+              ? EdgeInsets.only(top: 230.0)
+              : EdgeInsets.only(top: 150.0),
+          child: _buildContents(context),
         ),
       ],
     );
   }
 
-  Widget _buildFilterRow() {
-    final double margin = Responsive.isDesktop(context) ? 48.0 : 12.0;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        FilterTextFieldRow(
-            searchTextController: _searchTextController,
-            onPressed: () => setState(() {
-                  filterResource.searchText = _searchTextController.text;
-                }),
-            onFieldSubmitted: (value) => setState(() {
-                  filterResource.searchText = _searchTextController.text;
-                }),
-            clearFilter: () => _clearFilter()),
-        SpaceH8(),
-        Container(
-          height: 50.0,
-          margin: EdgeInsets.symmetric(horizontal: margin),
-          child:
-          resourceCategoriesList.isEmpty ? Center(child: LinearProgressIndicator()) :
-          ScrollConfiguration(
-            behavior: MyCustomScrollBehavior(),
-            child: ChipsChoice<String>.multiple(
-              alignment: WrapAlignment.start,
-              padding: EdgeInsets.only(left: 0.0, right: 0.0),
-              value: filterResource.resourceCategories,
-              onChanged: (val) {
-                setState(() {
-                  filterResource.resourceCategories = val;
-                });
-              },
-              choiceItems: C2Choice.listFrom<String, ResourceCategory>(
-                source: resourceCategoriesList,
-                value: (i, v) => v.id,
-                label: (i, v) => v.name,
+  Widget _buildCategories(BuildContext context, List<ResourceCategory> resourceCategories) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return GridView.builder(
+      padding: Responsive.isMobile(context)
+          ? EdgeInsets.symmetric(horizontal: 10)
+          : Responsive.isDesktopS(context)
+              ? EdgeInsets.symmetric(horizontal: 20, vertical: 30)
+              : EdgeInsets.symmetric(horizontal: 100, vertical: 30),
+      shrinkWrap: true,
+      itemCount: resourceCategories.length,
+      scrollDirection: Axis.vertical,
+      physics: NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: Responsive.isMobile(context) ? 280 : 520,
+          mainAxisExtent: Responsive.isMobile(context) ? 120 : 450,
+          crossAxisSpacing: Responsive.isMobile(context) ? 10 : 30,
+          mainAxisSpacing: Responsive.isMobile(context) ? 10 : 30
+      ),
+      itemBuilder: (context, index) {
+        return InkWell(
+          onTap: () {
+            setStateIfMounted(() {
+              filterResource.resourceCategoryId = (resourceCategories[index].id);
+              _visible = !_visible;
+              _categoryName = resourceCategories[index].name;
+              _categoryFormationId = resourceCategories[index].id;
+            });
+          },
+          child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(_backgroundImageUrl(resourceCategories[index].id)),
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
-              choiceBuilder: (item, i) => Row(
+              child: Stack(
+                alignment: Alignment.bottomCenter,
                 children: [
-                  CustomChip(
-                    label: item.label,
-                    selected: item.selected,
-                    onSelect: item.select!,
+                  Positioned(
+                    top: 0,
+                    child: Padding(
+                      padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 10.0) : EdgeInsets.only(top: 30.0),
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: Responsive.isMobile(context) ? 150 : 300,
+                        ),
+                        child: Text(resourceCategories[index].name,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          style: textTheme.headlineSmall?.copyWith(
+                          color: Colors.white,
+                          letterSpacing: 1,
+                          fontSize: Responsive.isMobile(context) ? 15 : 34,
+                          fontWeight: FontWeight.w900,
+                        ),),
+                      ),
+                    ),
                   ),
-                  SpaceW8(),
+                  Padding(
+                    padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 35.0) : EdgeInsets.all(0),
+                    child: Image.asset(_personImageUrl(resourceCategories[index].id)),
+                  ),
                 ],
               ),
-            ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 
   Widget _buildContents(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
-
     if (auth.currentUser == null) {
       return Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: Responsive.isDesktop(context) ? 48.0 : 8.0,
-        ),
+        padding: Responsive.isMobile(context)
+            ? EdgeInsets.symmetric(horizontal: 10)
+            : Responsive.isDesktopS(context)
+            ? EdgeInsets.symmetric(horizontal: 20, vertical: 30)
+            : EdgeInsets.symmetric(horizontal: 100, vertical: 30),
         child: StreamBuilder<List<Resource>>(
             stream: database.filteredResourcesCategoryStream(filterResource),
             builder: (context, snapshot) {
@@ -332,9 +599,11 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
     String email = auth.currentUser!.email ?? '';
     return Container(
-      padding: EdgeInsets.only(
-          left: Responsive.isMobile(context) ? 8 : 48,
-          right: Responsive.isMobile(context) ? 8 : 48),
+      padding: Responsive.isMobile(context)
+          ? EdgeInsets.symmetric(horizontal: 10)
+          : Responsive.isDesktopS(context)
+          ? EdgeInsets.symmetric(horizontal: 20, vertical: 30)
+          : EdgeInsets.symmetric(horizontal: 100, vertical: 30),
       child: StreamBuilder<List<UserEnreda>>(
           stream: database.userStream(email),
           builder: (context, snapshot) {
@@ -348,7 +617,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     widget._errorNotValidUser = true;
                     Future.delayed(Duration.zero, () {
                       _signOut(context);
-                      if (!isAlertboxOpened) {
+                      if (!isAlertBoxOpened) {
                         _showDialogNotValidUser(context);
                       }
                     });
@@ -487,7 +756,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 widget._errorNotValidUser = true;
                 Future.delayed(Duration.zero, () {
                   _signOut(context);
-                  if (!isAlertboxOpened) {
+                  if (!isAlertBoxOpened) {
                     _showDialogNotValidUser(context);
                   }
                 });
@@ -502,7 +771,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   }
 
   Future<void> _showDialogNotValidUser(BuildContext context) async {
-    isAlertboxOpened = true;
+    isAlertBoxOpened = true;
     final didRequestNotValidUser = await showAlertDialog(context,
         title: 'Notificación al usuario',
         content:
@@ -528,7 +797,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
     setState(() {
       _searchTextController.clear();
       filterResource.searchText = '';
-      filterResource.resourceCategories = [];
     });
   }
 }

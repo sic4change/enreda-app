@@ -8,6 +8,7 @@ import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -166,7 +167,7 @@ class _MessageTileState extends State<MessageTile> {
 
   Widget _buildSingleChoiceResponse(
       {required List<String> source, required Function(String) onChanged}) {
-    return source.length <= 6 ?
+    return source.length <= 9  || Responsive.isMobile(context) ?
     ChipsChoice<String>.single(
       choiceItems: C2Choice.listFrom<String, String>(
         source: source,

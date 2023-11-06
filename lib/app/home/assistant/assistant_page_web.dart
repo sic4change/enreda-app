@@ -37,9 +37,12 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
       ValueNotifier<List<Choice>>([]);
   List<List<Choice>> choicesLog = [];
   ValueNotifier<bool> isWritingNotifier = ValueNotifier<bool>(false);
-  ValueNotifier<bool> isTextEnabledNotifier = ValueNotifier<bool>(false);
+  ValueNotifier<String> isTextEnabledNotifier = ValueNotifier<String>('');
   ValueNotifier<List<Choice>> sourceAutoCompleteNotifier =  ValueNotifier<List<Choice>>([]);
   late ChatQuestion _currentChatQuestion;
+  late FocusNode _focusNode = FocusNode();
+
+
 
   Map<String, int> userCompetencies = {};
 
@@ -239,11 +242,11 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                       onPressed: () => isWriting ? {} : _editLastResponse(),
                     ));
               }),
-          ValueListenableBuilder<bool>(
+          ValueListenableBuilder<String>(
               valueListenable: isTextEnabledNotifier,
               builder: (context, isTextEnabled, child) {
                 return Expanded(
-                    child: !isTextEnabled ? _autocompleteTextField( (val) {
+                    child: isTextEnabled == 'multichoice' ? _autocompleteTextField( (val) {
                       setState(() {
                         final choice = sourceAutoCompleteNotifier.value.firstWhere(
                                 (element) => element.name == val);
@@ -274,9 +277,9 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                            StringConst.EXPERIENCE_SUBTYPE_FIELD)
                           MessageTile.experienceSubtypeId = choice.id;
                       });
-                    }, database, messageEditingController, isTextEnabled)
+                    }, database, messageEditingController)
                     : TextField(
-                  enabled: isTextEnabled,
+                  enabled: isTextEnabled == 'text',
                   controller: messageEditingController,
                   //style: simpleTextStyle(),
                   decoration: InputDecoration(
@@ -359,19 +362,22 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     );
   }
 
-  Widget _autocompleteTextField(Function(String) onChanged, Database database, TextEditingController messageEditingController, bool isTextEnabled) {
+  Widget _autocompleteTextField(Function(String) onChanged, Database database, TextEditingController messageEditingController) {
     return ValueListenableBuilder(
       valueListenable: sourceAutoCompleteNotifier,
       builder: (context, source, child) {
-        return Autocomplete<String>(optionsBuilder: (textEditingValue){
+        return RawAutocomplete<String>(optionsBuilder: (textEditingValue){
           if(textEditingValue.text.isEmpty){
             return List.empty();
           }else{
-            return source.where((element) => element.name.toLowerCase().contains(textEditingValue.text.toLowerCase())).map((e) => e.name).toList();
+            return source.where((element) => element.name.toLowerCase().contains(textEditingValue.text.toLowerCase())).map((e) => e.name).toSet().toList();
           }
         },
-        onSelected: onChanged,
-        fieldViewBuilder: (context, messageEditingController, focusNode, onFieldSubmitted){
+          textEditingController: messageEditingController,
+          focusNode: _focusNode,
+          onSelected: onChanged,
+          fieldViewBuilder: (context, messageEditingController, focusNode, onFieldSubmitted){
+          _focusNode = focusNode;
           return TextField(
             controller: messageEditingController,
             focusNode: focusNode,
@@ -387,8 +393,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
             child: Material(
               elevation: 4.0,
               child: SizedBox(
-                height: 50.0,
-                // set width based on you need
+                height: 60.0,
                 width: 300,
                 child: ListView.builder(
                   padding: const EdgeInsets.all(8.0),
@@ -403,8 +408,8 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                         height: 40,
                         child: ListTile(
                           title:
-                            Text(option, style: Theme.of(context).textTheme.bodyMedium),
-                          visualDensity: VisualDensity(vertical: -2),
+                            Text(option, style: Theme.of(context).textTheme.bodyLarge),
+                          //visualDensity: VisualDensity(vertical: -2),
                         ),
                       ),
                     );
@@ -529,13 +534,15 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     }
 
     if (nextQuestion.type == StringConst.TEXT_QUESTION) {
-      isTextEnabledNotifier.value = true;
+      isTextEnabledNotifier.value = 'text';
     } else {
-      isTextEnabledNotifier.value = false;
+      isTextEnabledNotifier.value = '';
+    }
+    if (nextQuestion.type == StringConst.MULTICHOICE_QUESTION) {
+      isTextEnabledNotifier.value = 'multichoice';
     }
 
     currentChoicesNotifier.value.clear();
-    messageEditingController.clear();
   }
 
   void _resetQuestions() async {
@@ -590,9 +597,12 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     _currentQuestion = questions.firstWhere(
         (question) => question.id == _currentChatQuestion.questionId);
     if (_currentQuestion.type == StringConst.TEXT_QUESTION) {
-      isTextEnabledNotifier.value = true;
+      isTextEnabledNotifier.value = 'text';
     } else {
-      isTextEnabledNotifier.value = false;
+      isTextEnabledNotifier.value = '';
+    }
+    if (_currentQuestion.type == StringConst.MULTICHOICE_QUESTION){
+      isTextEnabledNotifier.value = 'multichoice';
     }
 
     if (_currentQuestion.experienceField == StringConst.EXPERIENCE_TYPE_FIELD)
@@ -613,10 +623,15 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     userCompetencies.removeWhere((key, value) => value == 0);
     choicesLog.removeLast();
     messageEditingController.clear();
+    setState(() {
+      sourceAutoCompleteNotifier.notifyListeners();
+    });
 
     if (_currentQuestion.type == StringConst.NONE_QUESTION) {
       _editLastResponse();
     }
+    messageEditingController.clear();
+    messageEditingController.value = TextEditingValue.empty;
   }
 
   void _addExperience() async {

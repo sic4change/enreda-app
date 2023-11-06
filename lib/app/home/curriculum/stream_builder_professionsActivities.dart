@@ -1,13 +1,19 @@
+import 'package:enreda_app/app/home/curriculum/multi_select_activities_button.dart';
 import 'package:enreda_app/app/home/models/activity.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
-import 'package:enreda_app/app/sign_up/validating_form_controls/multi_select_list_button.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../services/database.dart';
 
-Widget streamBuilderDropdownProfessionActivities (BuildContext context, Choice? selectedProfession, List<String> activitiesIds,  Set<Activity> selectedActivities,) {
+Widget streamBuilderDropdownProfessionActivities (
+    BuildContext context,
+    Choice? selectedProfession,
+    List<String> activitiesIds,
+    Set<Activity> selectedActivities,
+    Function(String text) onTextChanged,
+    ) {
   final database = Provider.of<Database>(context, listen: false);
   Set<List<MultiSelectDialogItem<Activity>>> activitiesSet = {};
   List<MultiSelectDialogItem<Activity>> activitiesItems = [];
@@ -40,9 +46,10 @@ Widget streamBuilderDropdownProfessionActivities (BuildContext context, Choice? 
                     }
                     if (activitiesItems.length > 0) activitiesSet.add(activitiesItems);
                     if (activitiesSet.length == 1)
-                      return MultiSelectListDialog<Activity>(
+                      return MultiSelectActivitiesDialog<Activity>(
                         itemsSet: activitiesSet,
                         initialSelectedValuesSet: selectedActivities,
+                        onTextChanged: (text) => onTextChanged(text),
                       );
                     return Container();
                   })

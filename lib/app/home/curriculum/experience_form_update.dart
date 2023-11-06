@@ -57,6 +57,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
   List<String> professionActivities = [];
   String? _professionActivityId;
   List<String>? activitiesIds = [];
+  String _otherText = "";
 
   @override
   void initState() {
@@ -73,6 +74,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
       _positionController.text = _experience.position ?? '';
       _locationController.text = _experience.location;
       _textEditingControllerProfessionsActivities.text = _experience.professionActivitiesText ?? '';
+      _otherText = _experience.otherProfessionActivityString?? "";
 
       if(StringConst.EXPERIENCE_WORK_TYPES.contains(_experience.workType)){
         _workType = _experience.workType;
@@ -245,23 +247,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
               ),
             ) : Container(),
 
-            //FOR POSITION
-            _type?.name == 'Profesional' && !_general ? Padding(
-              padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
-              child: TextFormField(
-                controller: _positionController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                decoration: InputDecoration(
-                  label: Text(
-                    'Indica tu cargo...',
-                    style: textTheme.bodyText2,
-                  ),
-                ),
-              ),
-            ) : Container(),
-
             //FOR CITY
-
             !_general ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble/2),
               child: TextFormField(
@@ -281,7 +267,6 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
             ) : Container(),
 
             //FOR DATE
-
             !_general ? CustomFlexRowColumn(
               childLeft: DateTimeField(
                 initialValue: _startDate?.toDate(),
@@ -344,44 +329,44 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
             ) : Container(),
 
             //FOR PROFESSIONS ACTIVITIES
-
-            !_general ? CustomFlexRowColumn(
-              childLeft: _type?.name == 'Profesional' ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    TextFormField(
-                      controller: _textEditingControllerProfessionsActivities,
-                      decoration: InputDecoration(
-                        hintText: 'Indica las tareas que realizaste *',
-                        hintMaxLines: 2,
-                        label: Text(
-                          'Tareas que realizaste',
-                          style: textTheme.bodyText2,
+            (!_general && _type?.name == 'Profesional') ? Padding(
+              padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
+              child: TextFormField(
+                        controller: _textEditingControllerProfessionsActivities,
+                        decoration: InputDecoration(
+                          label: Text(
+                            'Tareas que realizaste *',
+                            style: textTheme.bodyText2,
+                          ),
+                          labelStyle: textTheme.bodyText1?.copyWith(
+                            color: AppColors.greyDark,
+                            height: 1.5,
+                            fontWeight: FontWeight.w400,
+                            fontSize: fontSize,
+                          ),
                         ),
-                        labelStyle: textTheme.bodyText1?.copyWith(
-                          color: AppColors.greyDark,
+                        onTap: () => _showMultiSelectProfessionActivities(context),
+                        validator: (value) {
+                          if (value == null || value == "") return 'Selecciona un valor';
+                          return null;
+                        },
+                        onSaved: (value) => value = _professionActivityId,
+                        //maxLines: 2,
+                        readOnly: true,
+                        style: textTheme.button?.copyWith(
                           height: 1.5,
+                          color: AppColors.greyDark,
                           fontWeight: FontWeight.w400,
                           fontSize: fontSize,
-                        ),
-                      ),
-                      onTap: () => _showMultiSelectProfessionActivities(context),
-                      validator: (value) {
-                        if (value == null || value == "") return 'Selecciona un valor';
-                        return null;
-                      },
-                      onSaved: (value) => value = _professionActivityId,
-                      maxLines: 2,
-                      readOnly: true,
-                      style: textTheme.button?.copyWith(
-                        height: 1.5,
-                        color: AppColors.greyDark,
-                        fontWeight: FontWeight.w400,
-                        fontSize: fontSize,
-                      ),
-                    ),
-                  ]) : Container(),
-              childRight: Container(),/*_type?.name == 'Profesional' ? TextFormField(
+                          overflow: TextOverflow.ellipsis
+                        )
+              ),
+            ) : Container(),
+
+            //FOR POSITION
+            _type?.name == 'Profesional' && !_general ? Padding(
+              padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
+              child: TextFormField(
                 controller: _positionController,
                 style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
@@ -390,14 +375,12 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                     style: textTheme.bodyText2,
                   ),
                 ),
-              ) : Container(),*/
+              ),
             ) : Container(),
 
-            SpaceW12(),
+            SpaceH36(),
 
             !_general ? CustomTextTitle(title: StringConst.MY_EXPERIENCES.toUpperCase()) : Container(),
-
-            SpaceW12(),
 
             !_general ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble/2),
@@ -688,7 +671,14 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
               ),
             ],
           );
-        return streamBuilderDropdownProfessionActivities(context, _activity!, activitiesIds!, selectedProfessionActivities);
+
+        return streamBuilderDropdownProfessionActivities(
+            context,
+            _activity!,
+            activitiesIds!,
+            selectedProfessionActivities,
+            (text) => _otherText = text,
+        );
       },
     );
     getValuesFromKeyProfessionActivities(selectedValues);
@@ -701,6 +691,9 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
       concatenate.write(item.name +' / ');
       activitiesIds.add(item.id);
     });
+    if (_otherText.isNotEmpty) {
+      concatenate.write('Otras: $_otherText / ');
+    }
     setState(() {
       this._textEditingControllerProfessionsActivities.text = concatenate.toString();
       this.professionActivities = activitiesIds;
@@ -766,6 +759,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           professionActivities: activitiesIds!,
           position: _positionController.text,
           professionActivitiesText: _textEditingControllerProfessionsActivities.text,
+          otherProfessionActivityString: _otherText,
       );
 
       await database.addExperience(experience);
@@ -803,6 +797,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           contextPlace: _contextPlace!,
           position: _positionController.text,
           professionActivitiesText: _textEditingControllerProfessionsActivities.text,
+          otherProfessionActivityString: _otherText,
       );
 
       await database.updateExperience(experience);

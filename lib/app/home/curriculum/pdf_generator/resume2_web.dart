@@ -41,6 +41,7 @@ Future<Uint8List> generateResume2(
     String myCustomPhone,
     bool myPhoto,
     List<CertificationRequest>? myReferences,
+    String myMaxEducation,
     ) async {
   final doc = pw.Document(title: 'Mi Currículum');
 
@@ -225,7 +226,7 @@ Future<Uint8List> generateResume2(
                                 .defaultTextStyle
                                 .copyWith(fontWeight: pw.FontWeight.bold, color: black)),
                         pw.Padding(padding: const pw.EdgeInsets.only(top: 5)),
-                        pw.Text(user?.education?.label.toUpperCase() ?? '',
+                        pw.Text(myMaxEducation ?? '',
                             textScaleFactor: 1,
                             style: pw.Theme.of(context)
                                 .defaultTextStyle

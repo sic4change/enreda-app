@@ -15,7 +15,6 @@ import '../../../../utils/const.dart';
 import '../../models/experience.dart';
 import 'data.dart';
 
-
 class MyCv extends StatefulWidget {
   const MyCv({
     Key? key,
@@ -33,6 +32,7 @@ class MyCv extends StatefulWidget {
     required this.myCustomPhone,
     required this.myPhoto,
     required this.myCustomReferences,
+    required this.myMaxEducation,
   }) : super(key: key);
 
   final UserEnreda? user;
@@ -47,6 +47,7 @@ class MyCv extends StatefulWidget {
   final List<String> myDataOfInterest;
   final String myCustomEmail;
   final String myCustomPhone;
+  final String myMaxEducation;
   final bool myPhoto;
   final List<CertificationRequest>? myCustomReferences;
 
@@ -180,6 +181,7 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
             widget.myCustomPhone,
             widget.myPhoto,
             widget.myCustomReferences,
+            widget.myMaxEducation,
         ),
         actions: actions,
         canDebug: false,

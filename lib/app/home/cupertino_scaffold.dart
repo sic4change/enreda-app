@@ -33,7 +33,12 @@ class CupertinoScaffold extends StatelessWidget {
     ];
 
     final Map<TabItem, WidgetBuilder> widgetBuilders = {
-      TabItem.resources: (_) => ResourcesPage(),
+      TabItem.resources: (_) => Stack(
+        children: [
+          BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
+          ResourcesPage(),
+        ],
+      ),
       TabItem.competencies: (_) => Stack(
             children: [
               BackgroundMobileAccount(backgroundHeight: BackgroundHeight.Small),
@@ -57,46 +62,6 @@ class CupertinoScaffold extends StatelessWidget {
     };
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 80),
-        child: AppBar(
-          title: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  Image.asset(
-                    ImagePath.LOGO_WHITE,
-                    height: 30.0,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          backgroundColor: Colors.red,
-          elevation: 0.0,
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                InkWell(
-                  onTap: () {
-                    _confirmSignOut(context);
-                    CupertinoScaffoldAnonymous.controller.index = 2;
-                  },
-                  child: Image.asset(
-                    ImagePath.LOGOUT,
-                    height: Sizes.ICON_SIZE_30,
-                  ),),
-                SizedBox(width: 20,)
-              ],
-            ),
-          ],
-        ),
-      ),
       body: CupertinoTabScaffold(
         controller: controller,
         tabBar: CupertinoTabBar(
@@ -131,17 +96,5 @@ class CupertinoScaffold extends StatelessWidget {
       ),
       label: itemData.title,
     );
-  }
-
-  Future<void> _confirmSignOut(BuildContext context) async {
-    final didRequestSignOut = await showAlertDialog(context,
-        title: 'Cerrar sesión',
-        content: '¿Estás seguro que quieres cerrar sesión?',
-        cancelActionText: 'Cancelar',
-        defaultActionText: 'Cerrar');
-    if (didRequestSignOut == true) {
-      final auth = Provider.of<AuthBase>(context, listen: false);
-      await auth.signOut();
-    }
   }
 }

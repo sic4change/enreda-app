@@ -40,6 +40,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   List<ResourceCategory> resourceCategoriesList = [];
   bool _visible = true;
   String _categoryName = '';
+  String _categoryFormationId = '';
   String _backgroundImageUrl(String categoryId) {
     Map<String, String> backgroundImages = {
       "6ag9Px7zkFpHgRe17PQk": ImagePath.BACKGROUND_2,
@@ -144,6 +145,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   Widget _buildResourcesPage(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
+    final isDesktopScreen = MediaQuery.of(context).size.width >= 1350;
     return SingleChildScrollView(
         child: Column(
           children: [
@@ -156,7 +158,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   colors: [
                     AppColors.white.withOpacity(0.1),
                     AppColors.greyViolet.withOpacity(0.1),
-                    AppColors.turquoise_alt,
+                    AppColors.turquoiseAlt,
                   ],
                 ),
               ),
@@ -185,11 +187,12 @@ class _ResourcesPageState extends State<ResourcesPage> {
               ),
             ),
             Container(
-              color: AppColors.grey_alt,
-              height: 500,
+              color: AppColors.greyLightAlt,
+              height: Responsive.isMobile(context) ? 350 : Responsive.isDesktopS(context) ? 600 : 500,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SpaceH50(),
+                  Responsive.isMobile(context) ? SpaceH20(): SpaceH50(),
                   Text( StringConst.PILLS_TITLE, style: textTheme.titleSmall?.copyWith(
                     color: AppColors.greyAlt,
                     height: 1.5,
@@ -203,43 +206,64 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       alignment: Alignment.center,
                       padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 10) : EdgeInsets.symmetric(horizontal: 100.0),
                       child: Text(StringConst.PILLS_SUBTITLE, textAlign: TextAlign.center, style: TextStyle(fontSize: 15,),)),
-                  SpaceH50(),
-                  Container(
-                      width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.7,
-                      height: Responsive.isMobile(context) ? 200 : 280,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage(ImagePath.BACKGROUND_PILLS),
-                        )
+                  Responsive.isMobile(context) ? SpaceH12() : SpaceH50(),
+                  Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Container(
+                        width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.7,
+                        height: Responsive.isMobile(context) ? 140 : 280,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: AssetImage(ImagePath.BACKGROUND_PILLS),
+                            )
+                        ),
                       ),
-                      child: Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          Positioned(
-                            bottom: 0,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Container(
-                                    alignment: Alignment.bottomCenter,
-                                    height: Responsive.isMobile(context) ? 150 : 300,
-                                    child: Image.asset(ImagePath.PERSON_PILL1)),
-                                Container(
-                                    alignment: Alignment.bottomCenter,
-                                    height: Responsive.isMobile(context) ? 200 : 350,
-                                    child: Image.asset(ImagePath.PERSON_PILL2)),
-                                Container(
-                                    alignment: Alignment.bottomCenter,
-                                    height: Responsive.isMobile(context) ? 150 : 300,
-                                    child: Image.asset(ImagePath.PERSON_PILL3)),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),),
+                      Positioned(
+                        bottom: 0,
+                        left: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/5 : 5,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                                alignment: Alignment.bottomCenter,
+                                height: Responsive.isMobile(context) ? 120 : 300,
+                                child: Image.asset(ImagePath.PERSON_PILL1)),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/5 : 5,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                                alignment: Alignment.bottomCenter,
+                                height: Responsive.isMobile(context) ? 120 : 300,
+                                child: Image.asset(ImagePath.PERSON_PILL3)),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                                alignment: Alignment.bottomCenter,
+                                height: Responsive.isMobile(context) ? 160 : 300,
+                                child: Image.asset(ImagePath.PERSON_PILL2)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             )
@@ -249,6 +273,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   Widget _buildFilteredResourcesPage(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
+    final isBigScreen = MediaQuery.of(context).size.width >= 900;
     return Stack(
       children: [
         Container(
@@ -266,7 +291,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   clearFilter: () => _clearFilter()),
               SpaceH20(),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                padding: isBigScreen ? EdgeInsets.symmetric(horizontal: 100.0) : EdgeInsets.symmetric(horizontal: 20.0),
                 child: InkWell(
                   onTap: () {
                     setStateIfMounted(() {
@@ -281,20 +306,91 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       Text(_categoryName, style: textTheme.titleSmall?.copyWith(
                         color: AppColors.greyAlt,
                         height: 1.5,
-                        letterSpacing: 0.5,
+                        letterSpacing: 0.2,
                         fontWeight: FontWeight.w700,
-                        fontSize: 25,
+                        fontSize:  isBigScreen ? 25 : 20,
                         //fontSize: fontSize,
                       ),),
                     ],
                   ),
                 ),
               ),
+              SpaceH20(),
+              _categoryFormationId == "6ag9Px7zkFpHgRe17PQk" ?
+              Padding(
+                padding: const EdgeInsets.only(bottom: 18.0),
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: isBigScreen ? EdgeInsets.symmetric(horizontal: 110.0) : EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Column(
+                        children: [
+                          InkWell(
+                            onTap: () => launchURL(StringConst.WEB_FUNDAULA_ACCESS),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  stops: [0.6, 1,],
+                                  colors: [
+                                    AppColors.lightPurple,
+                                    AppColors.ultraLightPurple,
+                                  ],
+                                ),
+                                color: AppColors.lightPurple,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.darkPurple,
+                                    offset: Offset(8.0, -8.0),
+                                    blurRadius: 0.0,
+                                  ),
+                                ],
+                              ),
+                              padding: Responsive.isMobile(context)
+                                  ? EdgeInsets.symmetric(
+                                      horizontal: 8.0, vertical: 8.0)
+                                      : EdgeInsets.symmetric(
+                                          horizontal: 30.0, vertical: 15.0),
+                              child: Row(
+                                children: [
+                                      Expanded(
+                                        child: Text(
+                                          StringConst.FUNDAULA_BUTTON,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 3,
+                                          style: textTheme.bodySmall?.copyWith(
+                                          color: Colors.white,
+                                          height: 1.5,
+                                          letterSpacing: 1,
+                                          fontSize: Responsive.isMobile(context) ? 10 : Responsive.isDesktopS(context) ? 14 : 16,
+                                          fontWeight: FontWeight.w600,
+                                        )),
+                                      ),
+                                      SpaceW8(),
+                                      Image.asset(ImagePath.LOGO_FUNDAULA, height: isBigScreen ? 30 : Responsive.isMobile(context) ? 20 : 25,),
+                                      isBigScreen ? SpaceW30() : SpaceW24(),
+                                  ],
+                                ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                        right: isBigScreen ? 120 : 25,
+                        bottom: 0,
+                        child: Image.asset(ImagePath.ICON_CLICK_FUNDAULA, height: isBigScreen ? 40 : 30,)),
+                  ],
+                ),
+              ) : Container(),
             ],
           ),
         ),
         Container(
-          margin: const EdgeInsets.only(top: 150.0),
+          margin: _categoryFormationId == "6ag9Px7zkFpHgRe17PQk"
+              ? EdgeInsets.only(top: 230.0)
+              : EdgeInsets.only(top: 150.0),
           child: _buildContents(context),
         ),
       ],
@@ -304,7 +400,11 @@ class _ResourcesPageState extends State<ResourcesPage> {
   Widget _buildCategories(BuildContext context, List<ResourceCategory> resourceCategories) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return GridView.builder(
-      padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 10): EdgeInsets.symmetric(horizontal: 100,  vertical: 30),
+      padding: Responsive.isMobile(context)
+          ? EdgeInsets.symmetric(horizontal: 10)
+          : Responsive.isDesktopS(context)
+              ? EdgeInsets.symmetric(horizontal: 20, vertical: 30)
+              : EdgeInsets.symmetric(horizontal: 100, vertical: 30),
       shrinkWrap: true,
       itemCount: resourceCategories.length,
       scrollDirection: Axis.vertical,
@@ -322,6 +422,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
               filterResource.resourceCategoryId = (resourceCategories[index].id);
               _visible = !_visible;
               _categoryName = resourceCategories[index].name;
+              _categoryFormationId = resourceCategories[index].id;
             });
           },
           child: Container(
@@ -339,17 +440,21 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     top: 0,
                     child: Padding(
                       padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 10.0) : EdgeInsets.only(top: 30.0),
-                      child: Text(resourceCategories[index].name,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        style: textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        height: 1.5,
-                        letterSpacing: 1,
-                        fontSize: Responsive.isMobile(context) ? 20 : 34,
-                        fontWeight: FontWeight.w900,
-                        //fontSize: fontSize,
-                      ),),
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: Responsive.isMobile(context) ? 150 : 300,
+                        ),
+                        child: Text(resourceCategories[index].name,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          style: textTheme.headlineSmall?.copyWith(
+                          color: Colors.white,
+                          letterSpacing: 1,
+                          fontSize: Responsive.isMobile(context) ? 15 : 34,
+                          fontWeight: FontWeight.w900,
+                        ),),
+                      ),
                     ),
                   ),
                   Padding(
@@ -367,12 +472,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
   Widget _buildContents(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
-
     if (auth.currentUser == null) {
       return Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: Responsive.isDesktop(context) ? 48.0 : 8.0,
-        ),
+        padding: Responsive.isMobile(context)
+            ? EdgeInsets.symmetric(horizontal: 10)
+            : Responsive.isDesktopS(context)
+            ? EdgeInsets.symmetric(horizontal: 20, vertical: 30)
+            : EdgeInsets.symmetric(horizontal: 100, vertical: 30),
         child: StreamBuilder<List<Resource>>(
             stream: database.filteredResourcesCategoryStream(filterResource),
             builder: (context, snapshot) {
@@ -493,9 +599,11 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
     String email = auth.currentUser!.email ?? '';
     return Container(
-      padding: EdgeInsets.only(
-          left: Responsive.isMobile(context) ? 8 : 48,
-          right: Responsive.isMobile(context) ? 8 : 48),
+      padding: Responsive.isMobile(context)
+          ? EdgeInsets.symmetric(horizontal: 10)
+          : Responsive.isDesktopS(context)
+          ? EdgeInsets.symmetric(horizontal: 20, vertical: 30)
+          : EdgeInsets.symmetric(horizontal: 100, vertical: 30),
       child: StreamBuilder<List<UserEnreda>>(
           stream: database.userStream(email),
           builder: (context, snapshot) {

@@ -275,12 +275,12 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                   CustomTextBody(text: '${resource.resourceTypeName}'),
                   SpaceH8(),
                   CustomTextTitle(title: StringConst.LOCATION.toUpperCase()),
-                  Row(
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomTextBody(text: '${resource.cityName}'),
-                      CustomTextBody(text: ', '),
-                      CustomTextBody(text: '${resource.provinceName}'),
-                      CustomTextBody(text: ', '),
+                      CustomTextBody(text: '${resource.cityName},'),
+                      CustomTextBody(text: '${resource.provinceName},'),
                       CustomTextBody(text: '${resource.countryName}'),
                     ],
                   ),

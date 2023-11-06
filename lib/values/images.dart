@@ -12,6 +12,7 @@ class ImagePath {
   static const String LOGO_WHITE = "$imageDir/logo-enreda-blanco.png";
   static const String LOGO_MDPI = "$imageDir/enreda-mdpi.png";
   static const String LOGO_IC = "$imageDir/ic_enreda.png";
+  static const String LOGO_FUNDAULA = '$imageDir/fundaula-logo.png';
 
   // Stores
   static const String APP_STORE_BUTTON = "$imageDir/app_store_900x503.png";
@@ -90,6 +91,7 @@ class ImagePath {
   static const String DOWNLOAD = '$imageDir/icon-download.png';
   static const String LOGOUT = '$imageDir/icon-logout.png';
   static const String ICON_SHARE = '$imageDir/icon-share.png';
+  static const String ICON_CLICK_FUNDAULA = '$imageDir/icon-click-fundaula.png';
 
   //Resources Categories
   static const String BACKGROUND_1 = '$imageDir/background-empleo-2X.png';

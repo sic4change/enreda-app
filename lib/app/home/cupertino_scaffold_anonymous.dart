@@ -23,10 +23,15 @@ class CupertinoScaffoldAnonymous extends StatelessWidget {
     final tabItems = [TabItem.resources, TabItem.competencies, TabItem.account];
 
     Map<TabItem, WidgetBuilder> widgetBuilders = {
-      TabItem.resources: (_) => ResourcesPage(),
+      TabItem.resources: (_) => Stack(
+        children: [
+          BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
+          ResourcesPage(),
+        ],
+      ),
       TabItem.competencies: (_) => Stack(
             children: [
-              //BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
+              BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
               CompetenciesPage(
                 showChatNotifier: showChatNotifier,
               ),
@@ -34,29 +39,15 @@ class CupertinoScaffoldAnonymous extends StatelessWidget {
           ),
       TabItem.account: (_) => Stack(
             children: [
-              //BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
+              BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
               AccountPage(),
             ],
           )
     };
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 60),
-        child: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Image.asset(
-              ImagePath.LOGO,
-              height: 25.0,
-              color: Colors.white,
-            ),
-          ),
-          backgroundColor: Constants.turquoise,
-          elevation: 0.0,
-        ),
-      ),
       body: CupertinoTabScaffold(
+        backgroundColor: Colors.transparent,
         controller: controller,
         tabBar: CupertinoTabBar(
             items: [

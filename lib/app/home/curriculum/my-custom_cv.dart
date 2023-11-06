@@ -45,7 +45,7 @@ class MyCvModelsPage extends StatefulWidget {
     required this.myReferences,
     required this.myCustomReferences,
     required this.mySelectedReferences,
-
+    required this.myMaxEducation,
   }) : super(key: key);
 
   final UserEnreda? user;
@@ -58,6 +58,7 @@ class MyCvModelsPage extends StatefulWidget {
   String myCustomAboutMe;
   String myCustomEmail;
   String myCustomPhone;
+  String myMaxEducation;
   final List<Experience>? myExperiences;
   List<Experience> myCustomExperiences;
   List<int> mySelectedExperiences;
@@ -93,10 +94,13 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
   bool _isSelectedMyProvince = true;
   bool _isSelectedMyCountry = true;
   bool _isSelectedPhoto = true;
+  bool _isSelectedMaxEducation = true;
+  String _myMaxEducation = '';
 
   @override
   void initState() {
     super.initState();
+    _myMaxEducation = widget.myMaxEducation;
   }
 
   @override
@@ -336,6 +340,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                     myCustomEmail: widget.myCustomEmail,
                                     myCustomPhone: widget.myCustomPhone,
                                     myCustomReferences: widget.myCustomReferences,
+                                    myMaxEducation: _myMaxEducation,
                                   )),
                         );
                       },
@@ -426,7 +431,29 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 ],
               ),
               SpaceH24(),
-              Center(child: CustomText(title: widget.user?.education?.label.toUpperCase() ?? '')),
+              InkWell(
+                onTap: (){
+                  setState(() {
+                    _isSelectedMaxEducation = !_isSelectedMaxEducation;
+                    if (_myMaxEducation == ""){
+                      _myMaxEducation = widget.myMaxEducation;
+                    } else {
+                      _myMaxEducation = "";
+                    }
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      CustomTextSmall(text: widget.myMaxEducation),
+                      SpaceW8(),
+                      Icon(
+                        _isSelectedMaxEducation ? Icons.check_box : Icons.crop_square,
+                        color: Constants.darkGray,
+                        size: 20.0,
+                      ),
+                    ],
+                  ),
+              ),
               SpaceH24(),
               _buildPersonalData(context),
               SpaceH24(),
@@ -483,6 +510,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             myCustomEmail: widget.myCustomEmail,
                             myCustomPhone: widget.myCustomPhone,
                             myCustomReferences: widget.myCustomReferences,
+                            myMaxEducation: _myMaxEducation,
                           )),
                 );
               },
@@ -499,11 +527,28 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               color: Constants.penBlue),
         ),
         SpaceH20(),
-        Text(
-          widget.user?.education?.label.toUpperCase() ?? '',
-          style: textTheme.bodyLarge?.copyWith(
-              fontSize: Responsive.isDesktop(context) ? 16 : 12.0,
-              color: Constants.darkGray),
+        InkWell(
+          onTap: (){
+            setState(() {
+              _isSelectedMaxEducation = !_isSelectedMaxEducation;
+              if (_myMaxEducation == ""){
+                _myMaxEducation = widget.myMaxEducation;
+              } else {
+                _myMaxEducation = "";
+              }
+            });
+          },
+          child: Row(
+            children: [
+              CustomTextSmall(text: widget.myMaxEducation),
+              SpaceW8(),
+              Icon(
+                _isSelectedMaxEducation ? Icons.check_box : Icons.crop_square,
+                color: Constants.darkGray,
+                size: 20.0,
+              ),
+            ],
+          ),
         ),
       ],
     );

@@ -55,6 +55,8 @@ class MyCurriculumPage extends StatelessWidget {
 
   String myCustomPhone = "";
 
+  String myMaxEducation = "";
+
   List<Competency>? myCompetencies = [];
 
   List<Experience>? myExperiences = [];
@@ -337,7 +339,7 @@ class MyCurriculumPage extends StatelessWidget {
                                       myReferences: myReferences!,
                                       myCustomReferences: myCustomReferences,
                                       mySelectedReferences: mySelectedReferences,
-
+                                      myMaxEducation: myMaxEducation,
                                     )),
                           );
                       },
@@ -516,6 +518,7 @@ class MyCurriculumPage extends StatelessWidget {
                               myReferences: myReferences!,
                               myCustomReferences: myCustomReferences,
                               mySelectedReferences: mySelectedReferences,
+                              myMaxEducation: myMaxEducation,
                             )),
                   );
               },
@@ -545,7 +548,6 @@ class MyCurriculumPage extends StatelessWidget {
 
   Widget _buildMyCareer(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-    final textTheme = Theme.of(context).textTheme;
     final textController = TextEditingController();
     textController.text = user?.education?.label ?? "";
 
@@ -563,9 +565,9 @@ class MyCurriculumPage extends StatelessWidget {
                 final educations = snapshotEducations.data!;
                 final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
                 myEducations.sort((a, b) => a.order.compareTo(b.order));
-                final maxEducation = myEducations.first;
+                myMaxEducation = myEducations.first.label;
 
-                return CustomTextBody(text: maxEducation.label);
+                return CustomTextBody(text: myMaxEducation);
               } else {
                 return Container();
               }

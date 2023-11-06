@@ -41,6 +41,7 @@ typedef LayoutCallbackWithData = Future<Uint8List> Function(
     String myCustomPhone,
     bool myPhoto,
     List<CertificationRequest>? myCustomReferences,
+    String myMaxEducation,
     );
 
 class Example {

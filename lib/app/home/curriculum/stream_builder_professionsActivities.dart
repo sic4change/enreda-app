@@ -13,6 +13,7 @@ Widget streamBuilderDropdownProfessionActivities (
     List<String> activitiesIds,
     Set<Activity> selectedActivities,
     Function(String text) onTextChanged,
+    String initialOtherText,
     ) {
   final database = Provider.of<Database>(context, listen: false);
   Set<List<MultiSelectDialogItem<Activity>>> activitiesSet = {};
@@ -50,6 +51,7 @@ Widget streamBuilderDropdownProfessionActivities (
                         itemsSet: activitiesSet,
                         initialSelectedValuesSet: selectedActivities,
                         onTextChanged: (text) => onTextChanged(text),
+                        initialOtherText: initialOtherText,
                       );
                     return Container();
                   })

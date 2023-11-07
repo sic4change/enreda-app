@@ -617,6 +617,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
             activitiesIds!,
             selectedProfessionActivities,
             (text) => _otherText = text,
+            _otherText
         );
       },
     );
@@ -690,7 +691,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
           workType: _workType!,
           context: _context!,
           contextPlace: _contextPlace!,
-          professionActivities: activitiesIds!,
+          professionActivities: selectedProfessionActivities.map((e) => e.id!).toList(),
           position: _positionController.text,
           professionActivitiesText: _textEditingControllerProfessionsActivities.text,
           otherProfessionActivityString: _otherText,
@@ -730,6 +731,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
           context: _context!,
           contextPlace: _contextPlace!,
           position: _positionController.text,
+          professionActivities: selectedProfessionActivities.map((e) => e.id!).toList(),
           professionActivitiesText: _textEditingControllerProfessionsActivities.text,
           otherProfessionActivityString: _otherText,
       );

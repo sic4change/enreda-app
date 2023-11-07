@@ -1,3 +1,4 @@
+import 'package:enreda_app/app/home/models/activity.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
@@ -18,11 +19,13 @@ class MultiSelectActivitiesDialog<V> extends StatefulWidget {
     this.itemsSet,
     this.initialSelectedValuesSet,
     required this.onTextChanged,
+    required this.initialOtherText,
   }) : super(key: key);
 
   final Set<List<MultiSelectDialogItem<V>>>? itemsSet;
   final Set<V>? initialSelectedValuesSet;
   final Function(String text) onTextChanged;
+  final String initialOtherText;
 
   @override
   State<StatefulWidget> createState() => _MultiSelectActivitiesDialogState<V>();
@@ -30,33 +33,21 @@ class MultiSelectActivitiesDialog<V> extends StatefulWidget {
 
 class _MultiSelectActivitiesDialogState<V> extends State<MultiSelectActivitiesDialog<V>> {
   final selectedValuesSet = Set<V>();
+  List<MultiSelectDialogItem<V>> sorteredItemsList = [];
 
-  late Widget? otherWidget;
-  bool isOtherChecked = false;
+  Widget otherWidget = Container();
   final _otherController = TextEditingController(text: "");
 
   void initState() {
     super.initState();
+    if (widget.initialOtherText.isNotEmpty) {
+      _otherController.text = widget.initialOtherText;
+    }
     if (widget.initialSelectedValuesSet != null) {
       for (var itemValue in widget.initialSelectedValuesSet!) {
         selectedValuesSet.add(itemValue);
       }
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 14, 18, md: 15);
-
-    otherWidget = Text("Otras",
-      style: textTheme.button?.copyWith(
-        height: 1.5,
-        color: AppColors.greyDark,
-        fontWeight: FontWeight.w400,
-        fontSize: fontSize,
-      ),);
   }
 
   void _onItemCheckedChange(V itemValue, bool checked) {
@@ -77,7 +68,9 @@ class _MultiSelectActivitiesDialogState<V> extends State<MultiSelectActivitiesDi
     setState(() {
       this.selectedValuesSet;
     });
-    print(this.selectedValuesSet);
+
+    sorteredItemsList = widget.itemsSet!.first;
+    sorteredItemsList.sort((a, b) => (a.value as Activity).id == "30twSwwnuVmpIp3MoE6e"? -1: 1);
   }
 
   @override
@@ -114,45 +107,6 @@ class _MultiSelectActivitiesDialogState<V> extends State<MultiSelectActivitiesDi
                       ),
                     ],
                   ),
-                Theme(
-                  data: ThemeData(),
-                  child: CheckboxListTile(
-                      activeColor: AppColors.primaryColor,
-                      value: isOtherChecked,
-                      title: otherWidget,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (checked) {
-                        setState(() {
-                          isOtherChecked = !isOtherChecked;
-                          if (isOtherChecked) {
-                            otherWidget = TextFormField(
-                              controller: _otherController,
-                              style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                              decoration: InputDecoration(
-                                hintText: "Escribe tu respuesta...",
-                                hintStyle: textTheme.caption,
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: AppColors.primaryColor),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: AppColors.primaryColor),
-                                ),
-                              ),
-                            );
-                          } else {
-                            otherWidget = Text("Otras",
-                              style: textTheme.button?.copyWith(
-                                height: 1.5,
-                                color: AppColors.greyDark,
-                                fontWeight: FontWeight.w400,
-                                fontSize: fontSize,
-                              ),);
-                            _otherController.text = "";
-                          }
-                        });
-                      }, //=> _onItemCheckedChange(item.value, checked!),
-                  ),
-                ),
               ]
           ),
         ),
@@ -172,20 +126,70 @@ class _MultiSelectActivitiesDialogState<V> extends State<MultiSelectActivitiesDi
   }
 
   Widget _buildItem(MultiSelectDialogItem<V> item) {
-    final bool checked = selectedValuesSet.where((e) => e  == item.value).length > 0;
+    Activity activity = item.value as Activity;
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 14, 16, md: 15);
-    return CheckboxListTile(
-      value: checked,
-      title: Text(item.label,
+    final bool checked = selectedValuesSet.where((e) => e  == item.value).length > 0;
+    if (activity.id == "30twSwwnuVmpIp3MoE6e") {
+      _refreshOtherWidget(checked);
+      return Theme(
+        data: ThemeData(),
+        child: CheckboxListTile(
+          activeColor: AppColors.primaryColor,
+          value: checked,
+          title: otherWidget,
+          controlAffinity: ListTileControlAffinity.leading,
+          onChanged: (checked) {
+            setState(() {
+              _onItemCheckedChange(item.value, checked!);
+              _refreshOtherWidget(checked);
+            });
+          }, //=> _onItemCheckedChange(item.value, checked!),
+        ),
+      );
+    } else {
+      return CheckboxListTile(
+        value: checked,
+        title: Text(item.label,
+          style: textTheme.button?.copyWith(
+            height: 1.5,
+            color: AppColors.greyDark,
+            fontWeight: FontWeight.w400,
+            fontSize: fontSize,
+          ), ),
+        controlAffinity: ListTileControlAffinity.leading,
+        onChanged: (checked) => _onItemCheckedChange(item.value, checked!),
+      );
+    }
+  }
+
+  void  _refreshOtherWidget(bool checked) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    double fontSize = responsiveSize(context, 14, 16, md: 15);
+    if (checked) {
+      otherWidget = TextFormField(
+        controller: _otherController,
+        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+        decoration: InputDecoration(
+          hintText: "Escribe tu respuesta...",
+          hintStyle: textTheme.caption,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: AppColors.primaryColor),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: AppColors.primaryColor),
+          ),
+        ),
+      );
+    } else {
+      otherWidget = Text("Otras",
         style: textTheme.button?.copyWith(
           height: 1.5,
           color: AppColors.greyDark,
           fontWeight: FontWeight.w400,
           fontSize: fontSize,
-        ), ),
-      controlAffinity: ListTileControlAffinity.leading,
-      onChanged: (checked) => _onItemCheckedChange(item.value, checked!),
-    );
+        ),);
+      _otherController.text = "";
+    }
   }
 }

@@ -56,8 +56,10 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
   Set<Activity> selectedProfessionActivities = {};
   List<String> professionActivities = [];
   String? _professionActivityId;
+
   List<String>? activitiesIds = [];
   String _otherText = "";
+  List<Activity> _allProffesionActivities = [];
 
   @override
   void initState() {
@@ -93,7 +95,14 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
       }else{
         _contextPlace = null;
       }
+
+      _loadProfessionActivities();
     }
+  }
+
+  Future<void> _loadProfessionActivities() async {
+    final database = Provider.of<Database>(context, listen: false);
+    _allProffesionActivities = await database.professionsActivitiesStream().first;
   }
 
   @override
@@ -540,6 +549,11 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
       try {
         _activity = _experienceActivities.firstWhere(
             (element) => element.name == widget.experience!.activity);
+        activitiesIds =_activity?.activities;
+        if (activitiesIds != null && activitiesIds!.isNotEmpty) {
+          activitiesIds!.add("30twSwwnuVmpIp3MoE6e");
+        }
+        selectedProfessionActivities.addAll(_allProffesionActivities.where((a) => widget.experience!.professionActivities.contains(a.id)));
       } catch (e) {
         print(e);
       }
@@ -648,8 +662,15 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
         value: _activity,
         onChanged: (newActivity) {
           setState(() {
+            if (_activity?.id != newActivity?.id) {
+              selectedProfessionActivities.clear();
+              _textEditingControllerProfessionsActivities.clear();
+            }
             _activity = newActivity;
             activitiesIds =_activity?.activities;
+            if (activitiesIds != null && activitiesIds!.isNotEmpty) {
+              activitiesIds!.add("30twSwwnuVmpIp3MoE6e");
+            }
           });
         });
   }
@@ -659,26 +680,31 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
     var selectedValues = await showDialog<Set<Activity>>(
       context: context,
       builder: (BuildContext context) {
-        if(_activity == null)
+        if(_activity == null) {
           return AlertDialog(
-            content: Text(StringConst.FORM_ACTIVITIES_EMPTY,  style: textTheme.bodyText1,),
+            content: Text(
+              StringConst.FORM_ACTIVITIES_EMPTY,
+              style: textTheme.bodyText1,
+            ),
             actions: <Widget>[
               ElevatedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text(StringConst.FORM_ACCEPT, style: TextStyle(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.bold))
-              ),
+                  child: Text(StringConst.FORM_ACCEPT,
+                      style: TextStyle(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.bold))),
             ],
           );
-
-        return streamBuilderDropdownProfessionActivities(
+        } else {
+          return streamBuilderDropdownProfessionActivities(
             context,
             _activity!,
             activitiesIds!,
-            selectedProfessionActivities,
+            selectedProfessionActivities, // TODO:
             (text) => _otherText = text,
-        );
+            _otherText
+          );
+        }
       },
     );
     getValuesFromKeyProfessionActivities(selectedValues);
@@ -691,9 +717,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
       concatenate.write(item.name +' / ');
       activitiesIds.add(item.id);
     });
-    if (_otherText.isNotEmpty) {
-      concatenate.write('Otras: $_otherText / ');
-    }
+
     setState(() {
       this._textEditingControllerProfessionsActivities.text = concatenate.toString();
       this.professionActivities = activitiesIds;
@@ -756,7 +780,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           workType: _workType!,
           context: _context!,
           contextPlace: _contextPlace!,
-          professionActivities: activitiesIds!,
+          professionActivities: selectedProfessionActivities.map((e) => e.id!).toList(),
           position: _positionController.text,
           professionActivitiesText: _textEditingControllerProfessionsActivities.text,
           otherProfessionActivityString: _otherText,
@@ -796,6 +820,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           context: _context!,
           contextPlace: _contextPlace!,
           position: _positionController.text,
+          professionActivities: selectedProfessionActivities.map((e) => e.id!).toList(),
           professionActivitiesText: _textEditingControllerProfessionsActivities.text,
           otherProfessionActivityString: _otherText,
       );

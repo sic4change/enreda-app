@@ -141,8 +141,8 @@ class MyCurriculumPage extends StatelessWidget {
                         myCustomDataOfInterest = myDataOfInterest.map((element) => element).toList();
                         mySelectedDataOfInterest = List.generate(myCustomDataOfInterest.length, (i) => i);
 
-                        final myLanguages = user?.languages ?? [];
-                        myCustomLanguages = myLanguages.map((element) => element).toList();
+                        final myLanguages = user?.languagesLevels ?? [];
+                        myCustomLanguages = myLanguages.map((element) => element.name).toList();
                         mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
 
                       return Responsive.isDesktop(context)
@@ -1310,9 +1310,10 @@ class MyCurriculumPage extends StatelessWidget {
     );
   }
 
+  // TODO: New languages with levels
   Widget _buildMyLanguages(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-    final myLanguages = user?.languages ?? [];
+    final myLanguages = user?.languagesLevels ?? [];
 
     return Column(
       children: [
@@ -1322,7 +1323,7 @@ class MyCurriculumPage extends StatelessWidget {
             SpaceW8(),
 
             _addButton(() {
-              _showLanguagesDialog(context, '');
+              //TODO:  _showLanguagesDialog(context, '');
               },
             ),
           ],
@@ -1345,16 +1346,16 @@ class MyCurriculumPage extends StatelessWidget {
                                 height: 40.0,
                                 child: Row(
                                   children: [
-                                    Expanded(child: CustomTextBody(text: d)),
+                                    Expanded(child: CustomTextBody(text: '${d.name} -- Expresión oral: ${d.speakingLevel} -- Expresión escrita: ${d.writingLevel}')),
                                     SpaceW12(),
                                     EditButton(
                                       onTap: () =>
-                                          _showLanguagesDialog(context, d),
+                                         true // TODO: _showLanguagesDialog(context, d.name),
                                     ),
                                     SpaceW12(),
                                     DeleteButton(
                                       onTap: () {
-                                        user!.languages.remove(d);
+                                        user!.languagesLevels.remove(d);
                                         database.setUserEnreda(user!);
                                       },
                                     ),
@@ -1582,7 +1583,8 @@ class MyCurriculumPage extends StatelessWidget {
         });
   }
 
-  void _showLanguagesDialog(BuildContext context, String currentText) {
+  // TODO:
+  /*void _showLanguagesDialog(BuildContext context, String currentText) {
     final database = Provider.of<Database>(context, listen: false);
     final controller = TextEditingController();
     final textTheme = Theme.of(context).textTheme;
@@ -1621,13 +1623,13 @@ class MyCurriculumPage extends StatelessWidget {
         defaultActionText: StringConst.FORM_ACCEPT,
         onDefaultActionPressed: (context) {
       if (currentText.isNotEmpty) {
-        user!.languages.remove(currentText);
+        user!.languagesLevels.remove(currentText);
       }
-      user!.languages.add(controller.text);
+      user!.languagesLevels.add(controller.text);
       database.setUserEnreda(user!);
       Navigator.of(context).pop();
     });
-  }
+  }*/
 
   Future<bool> _hasEnoughExperiences(BuildContext context) async {
     if (myCompetencies!.length < 3 || myExperiences!.length < 2) {

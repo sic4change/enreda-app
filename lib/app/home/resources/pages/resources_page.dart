@@ -30,6 +30,7 @@ class ResourcesPage extends StatefulWidget {
 
   String _message = '';
   bool _errorNotValidUser = false;
+  static ValueNotifier<int> selectedIndex = ValueNotifier(0);
 }
 
 class _ResourcesPageState extends State<ResourcesPage> {
@@ -38,7 +39,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
   FilterResource filterResource = FilterResource("", "");
   bool isAlertBoxOpened = false;
   List<ResourceCategory> resourceCategoriesList = [];
-  bool _visible = true;
   String _categoryName = '';
   String _categoryFormationId = '';
   String _backgroundImageUrl(String categoryId) {
@@ -63,6 +63,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
     };
     return personImages[categoryId] ?? "";
   }
+
+  var bodyWidget = [];
 
   void setStateIfMounted(f) {
     if (mounted) setState(f);
@@ -139,13 +141,25 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _visible ? _buildResourcesPage(context) :
-    _buildFilteredResourcesPage(context);
+    bodyWidget = [
+      _buildResourcesPage(context),
+      _buildFilteredResourcesPage(context),
+      _buildTrainingPills(context)
+    ];
+
+    return ValueListenableBuilder<int>(
+        valueListenable: ResourcesPage.selectedIndex,
+        builder: (context, selectedIndex, child) {
+          return Scaffold(
+            body: bodyWidget[selectedIndex],
+          );
+        });
   }
+
+
 
   Widget _buildResourcesPage(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    final isDesktopScreen = MediaQuery.of(context).size.width >= 1350;
     return SingleChildScrollView(
         child: Column(
           children: [
@@ -176,7 +190,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   SpaceH20(),
                   Container(
                     alignment: Alignment.center,
-                    padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 10) : EdgeInsets.symmetric(horizontal: 100.0),
+                    padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 30) : EdgeInsets.symmetric(horizontal: 100.0),
                     child: Text(
                       Responsive.isMobile(context) ? StringConst.PILLS_SUBTITLE : StringConst.SEARCH_SUBTITLE,
                       textAlign: TextAlign.center, style: TextStyle(fontSize: 15,),)),
@@ -186,89 +200,104 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 ],
               ),
             ),
-            Container(
-              color: AppColors.greyLightAlt,
-              height: Responsive.isMobile(context) ? 350 : Responsive.isDesktopS(context) ? 600 : 500,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Responsive.isMobile(context) ? SpaceH20(): SpaceH50(),
-                  Text( StringConst.PILLS_TITLE, style: textTheme.titleSmall?.copyWith(
-                    color: AppColors.greyAlt,
-                    height: 1.5,
-                    letterSpacing: 0.5,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 25,
-                    //fontSize: fontSize,
-                  ),),
-                  SpaceH20(),
-                  Container(
-                      alignment: Alignment.center,
-                      padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 10) : EdgeInsets.symmetric(horizontal: 100.0),
-                      child: Text(StringConst.PILLS_SUBTITLE, textAlign: TextAlign.center, style: TextStyle(fontSize: 15,),)),
-                  Responsive.isMobile(context) ? SpaceH12() : SpaceH50(),
-                  Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      Container(
-                        width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.7,
-                        height: Responsive.isMobile(context) ? 140 : 280,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage(ImagePath.BACKGROUND_PILLS),
-                            )
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        left: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/5 : 5,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                                alignment: Alignment.bottomCenter,
-                                height: Responsive.isMobile(context) ? 120 : 300,
-                                child: Image.asset(ImagePath.PERSON_PILL1)),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/5 : 5,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                                alignment: Alignment.bottomCenter,
-                                height: Responsive.isMobile(context) ? 120 : 300,
-                                child: Image.asset(ImagePath.PERSON_PILL3)),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                                alignment: Alignment.bottomCenter,
-                                height: Responsive.isMobile(context) ? 160 : 300,
-                                child: Image.asset(ImagePath.PERSON_PILL2)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            )
+            _buildTrainingPillsButton(context)
           ],
         ));
+  }
+
+  Widget _buildTrainingPillsButton(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    final isDesktopScreen = MediaQuery.of(context).size.width >= 1350;
+    return Container(
+      color: AppColors.greyLightAlt,
+      height: Responsive.isMobile(context) ? 400 : Responsive.isDesktopS(context) ? 600 : 500,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Responsive.isMobile(context) ? SpaceH20(): SpaceH50(),
+          Text( StringConst.PILLS_TITLE, style: textTheme.titleSmall?.copyWith(
+            color: AppColors.greyAlt,
+            height: 1.5,
+            letterSpacing: 0.5,
+            fontWeight: FontWeight.w700,
+            fontSize: 25,
+          ),),
+          SpaceH20(),
+          Container(
+              alignment: Alignment.center,
+              padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 30) : EdgeInsets.symmetric(horizontal: 100.0),
+              child: Text(StringConst.PILLS_SUBTITLE, textAlign: TextAlign.center, style: TextStyle(fontSize: 15,),)),
+          Responsive.isMobile(context) ? SpaceH12() : SpaceH50(),
+          InkWell(
+            onTap: () {
+              setStateIfMounted(() {
+                ResourcesPage.selectedIndex.value = 2;
+              });
+            },
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Padding(
+                  padding: Responsive.isMobile(context) ? EdgeInsets.only(right: 30, left: 30, top: 30) : EdgeInsets.all(0),
+                  child: Container(
+                    width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.7,
+                    height: Responsive.isMobile(context) ? 140 : 280,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage(ImagePath.BACKGROUND_PILLS),
+                        )
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/5 : 5,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                          alignment: Alignment.bottomCenter,
+                          height: Responsive.isMobile(context) ? 120 : 300,
+                          child: Image.asset(ImagePath.PERSON_PILL1)),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/5 : 15,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                          alignment: Alignment.bottomCenter,
+                          height: Responsive.isMobile(context) ? 120 : 300,
+                          child: Image.asset(ImagePath.PERSON_PILL3)),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                          alignment: Alignment.bottomCenter,
+                          height: Responsive.isMobile(context) ? 180 : 300,
+                          child: Image.asset(ImagePath.PERSON_PILL2)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildFilteredResourcesPage(BuildContext context) {
@@ -295,7 +324,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 child: InkWell(
                   onTap: () {
                     setStateIfMounted(() {
-                      _visible = !_visible;
+                      ResourcesPage.selectedIndex.value = 0;
                       _clearFilter();
                     });
                   },
@@ -397,13 +426,73 @@ class _ResourcesPageState extends State<ResourcesPage> {
     );
   }
 
+  Widget _buildTrainingPills(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    final isBigScreen = MediaQuery.of(context).size.width >= 900;
+    return Stack(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 20.0),
+          child: Column(
+            children: [
+              // FilterTextFieldRow(
+              //     searchTextController: _searchTextController,
+              //     onPressed: () => setStateIfMounted(() {
+              //       filterResource.searchText = _searchTextController.text;
+              //     }),
+              //     onFieldSubmitted: (value) => setStateIfMounted(() {
+              //       filterResource.searchText = _searchTextController.text;
+              //     }),
+              //     clearFilter: () => _clearFilter()),
+              // SpaceH20(),
+              Padding(
+                padding: isBigScreen ? EdgeInsets.symmetric(horizontal: 100.0) : EdgeInsets.symmetric(horizontal: 20.0),
+                child: InkWell(
+                  onTap: () {
+                    setStateIfMounted(() {
+                      ResourcesPage.selectedIndex.value = 0;
+                      _clearFilter();
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.arrow_back, color: AppColors.primaryColor),
+                      SpaceW12(),
+                      Text('Píldoras formativas', style: textTheme.titleSmall?.copyWith(
+                        color: AppColors.greyAlt,
+                        height: 1.5,
+                        letterSpacing: 0.2,
+                        fontWeight: FontWeight.w700,
+                        fontSize:  isBigScreen ? 25 : 20,
+                        //fontSize: fontSize,
+                      ),),
+                    ],
+                  ),
+                ),
+              ),
+              // SpaceH20(),
+              // Text('pills'),
+              SpaceH100(),
+              Center(
+                child: Text('Página en constucción...', style: textTheme.bodyMedium?.copyWith(
+                  color: AppColors.primaryColor,
+                  fontWeight: FontWeight.w600,
+                )),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildCategories(BuildContext context, List<ResourceCategory> resourceCategories) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return GridView.builder(
       padding: Responsive.isMobile(context)
-          ? EdgeInsets.symmetric(horizontal: 10)
+          ? EdgeInsets.symmetric(horizontal: 30)
           : Responsive.isDesktopS(context)
-              ? EdgeInsets.symmetric(horizontal: 20, vertical: 30)
+              ? EdgeInsets.symmetric(horizontal: 30, vertical: 30)
               : EdgeInsets.symmetric(horizontal: 100, vertical: 30),
       shrinkWrap: true,
       itemCount: resourceCategories.length,
@@ -412,15 +501,15 @@ class _ResourcesPageState extends State<ResourcesPage> {
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: Responsive.isMobile(context) ? 280 : 520,
           mainAxisExtent: Responsive.isMobile(context) ? 120 : 450,
-          crossAxisSpacing: Responsive.isMobile(context) ? 10 : 30,
-          mainAxisSpacing: Responsive.isMobile(context) ? 10 : 30
+          crossAxisSpacing: Responsive.isMobile(context) ? 15 : 30,
+          mainAxisSpacing: Responsive.isMobile(context) ? 15 : 30
       ),
       itemBuilder: (context, index) {
         return InkWell(
           onTap: () {
             setStateIfMounted(() {
               filterResource.resourceCategoryId = (resourceCategories[index].id);
-              _visible = !_visible;
+              ResourcesPage.selectedIndex.value = 1;
               _categoryName = resourceCategories[index].name;
               _categoryFormationId = resourceCategories[index].id;
             });
@@ -750,22 +839,24 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     );
                   });
             }
-            else {
-              if (!snapshot.hasData && snapshot.connectionState == ConnectionState.active)
-                if (!widget._errorNotValidUser) {
-                widget._errorNotValidUser = true;
-                Future.delayed(Duration.zero, () {
-                  _signOut(context);
-                  if (!isAlertBoxOpened) {
-                    _showDialogNotValidUser(context);
-                  }
-                });
-              }
-              return Container(
-                width: 0.0,
-                height: 0.0,
-              );
-            }
+            return Container();
+            // else {
+            //   //if (!snapshot.hasData && snapshot.connectionState == ConnectionState.active)
+            //   //if (!snapshot.hasData && snapshot.connectionState == ConnectionState.active)
+            //     if (!widget._errorNotValidUser) {
+            //     widget._errorNotValidUser = true;
+            //     Future.delayed(Duration.zero, () {
+            //       _signOut(context);
+            //       if (!isAlertBoxOpened) {
+            //         _showDialogNotValidUser(context);
+            //       }
+            //     });
+            //   }
+            //   return Container(
+            //     width: 0.0,
+            //     height: 0.0,
+            //   );
+            // }
           }),
     );
   }

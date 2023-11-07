@@ -112,7 +112,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
         builder: (context, selectedIndex, child) {
           return Scaffold(
             appBar: AppBar(
-              elevation: 0.0,
+              elevation: 1.0,
               backgroundColor: Constants.white,
               title: Row(
                 children: [

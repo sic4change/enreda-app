@@ -15,6 +15,7 @@ import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -229,24 +230,33 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
               childRight: _buildRoleDropdown(setState),
             ) : Container(),
 
-            //FOR COMPANY NAME
+            //FOR LEVEL
 
-            !_general ? CustomFlexRowColumn(
-              childRight: Container(),//_type?.name == 'Personal' ? _buildLevelDropdown(setState) : Container(),
-              childLeft: TextFormField(
-                controller: _organizationController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                decoration: InputDecoration(
-                  label: Text(
-                    'Empresa, organización...' ,
-                    style: textTheme.bodyText2,
-                  ),
-                ),
-              ),
+            !_general && _type?.name == 'Personal' ?
+            Padding(
+              padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
+                child: _buildLevelDropdown(setState),
             ) : Container(),
 
+            //FOR COMPANY NAME
+
+            !_general ? Padding(
+                padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
+                child: TextFormField(
+                  controller: _organizationController,
+                  style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                  decoration: InputDecoration(
+                    label: Text(
+                      'Empresa, organización...' ,
+                      style: textTheme.bodyText2,
+                    ),
+                  ),
+                ),
+            ) : Container(),
+            
+
             //FOR POSITION
-            _type?.name == 'Profesional' && !_general ? Padding(
+            (_type?.name == 'Profesional' || _type?.name == 'Personal') && !_general ? Padding(
               padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
               child: TextFormField(
                 controller: _positionController,
@@ -395,7 +405,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
 
             SpaceW12(),
 
-            !_general ? CustomTextTitle(title: StringConst.MY_EXPERIENCES.toUpperCase()) : Container(),
+            !_general ? CustomTextTitle(title: StringConst.ALL_COMPETENCIES.toUpperCase()) : Container(),
 
             SpaceW12(),
 

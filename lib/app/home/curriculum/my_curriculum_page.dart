@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:enreda_app/app/home/competencies/competency_tile.dart';
 import 'package:enreda_app/app/home/curriculum/add_educational_level.dart';
 import 'package:enreda_app/app/home/curriculum/experience_form.dart';
@@ -12,6 +13,7 @@ import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
+import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/delete_button.dart';
@@ -25,6 +27,7 @@ import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:provider/provider.dart';
 import '../../../common_widgets/custom_text.dart';
 import '../../../common_widgets/precached_avatar.dart';
@@ -90,6 +93,9 @@ class MyCurriculumPage extends StatelessWidget {
   List<String> myCustomLanguages = [];
 
   List<int> mySelectedLanguages = [];
+
+  double speakingLevel = 1.0;
+  double writingLevel = 1.0;
 
   @override
   Widget build(BuildContext context) {
@@ -886,7 +892,6 @@ class MyCurriculumPage extends StatelessWidget {
 
   Widget _buildMyEducation(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
-    final textTheme = Theme.of(context).textTheme;
 
     bool dismissible = true;
     return Column(
@@ -1310,9 +1315,9 @@ class MyCurriculumPage extends StatelessWidget {
     );
   }
 
-  // TODO: New languages with levels
   Widget _buildMyLanguages(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
+    final textTheme = Theme.of(context).textTheme;
     final myLanguages = user?.languagesLevels ?? [];
 
     return Column(
@@ -1321,10 +1326,7 @@ class MyCurriculumPage extends StatelessWidget {
           children: [
             CustomTextTitle(title: StringConst.LANGUAGES.toUpperCase()),
             SpaceW8(),
-
-            _addButton(() {
-              //TODO:  _showLanguagesDialog(context, '');
-              },
+            _addButton(() => _showLanguagesDialog(context, null),
             ),
           ],
         ),
@@ -1338,30 +1340,41 @@ class MyCurriculumPage extends StatelessWidget {
           child: myLanguages.isNotEmpty
               ? Wrap(
                   children: myLanguages
-                      .map((d) => Column(
+                      .map((l) => Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SpaceH12(),
-                              Container(
-                                height: 40.0,
-                                child: Row(
-                                  children: [
-                                    Expanded(child: CustomTextBody(text: '${d.name} -- Expresión oral: ${d.speakingLevel} -- Expresión escrita: ${d.writingLevel}')),
-                                    SpaceW12(),
-                                    EditButton(
-                                      onTap: () =>
-                                         true // TODO: _showLanguagesDialog(context, d.name),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      l.name,
+                                      style: textTheme.bodyText1?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14.0,
+                                      ),
                                     ),
-                                    SpaceW12(),
-                                    DeleteButton(
-                                      onTap: () {
-                                        user!.languagesLevels.remove(d);
-                                        database.setUserEnreda(user!);
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  EditButton(onTap: () => _showLanguagesDialog(context, l),),
+                                  SpaceW12(),
+                                  DeleteButton(
+                                    onTap: () {
+                                      user!.languagesLevels.remove(l);
+                                      database.setUserEnreda(user!);
+                                    },
+                                  ),
+                                ],
                               ),
+                              SpaceH12(),
+                              _buildSpeakingLevelRow(
+                                value: l.speakingLevel.toDouble(),
+                                textTheme: textTheme,
+                                onValueChanged: null,),
+                              SpaceH12(),
+                              _buildWritingLevelRow(
+                                value: l.writingLevel.toDouble(),
+                                textTheme: textTheme,
+                                onValueChanged: null,),
                               Divider(),
                             ],
                           ))
@@ -1583,53 +1596,167 @@ class MyCurriculumPage extends StatelessWidget {
         });
   }
 
-  // TODO:
-  /*void _showLanguagesDialog(BuildContext context, String currentText) {
+  void _showLanguagesDialog(BuildContext context, Language? language) {
     final database = Provider.of<Database>(context, listen: false);
     final controller = TextEditingController();
     final textTheme = Theme.of(context).textTheme;
-    if (currentText.isNotEmpty) {
-      controller.text = currentText;
+    final formKey = GlobalKey<FormState>();
+    if (language != null) {
+      controller.text = language.name;
+      speakingLevel = language.speakingLevel.toDouble();
+      writingLevel = language.writingLevel.toDouble();
     }
     showCustomDialog(context,
-        content: Card(
-          elevation: 0,
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  StringConst.NEW_LANGUAGE,
-                  style: textTheme.bodyText1?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14.0,
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return Form(
+              key: formKey,
+              child: Card(
+                elevation: 0,
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        StringConst.NEW_LANGUAGE,
+                        style: textTheme.bodyText1?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                      SpaceH12(),
+                      TextFormField(
+                        controller: controller,
+                        textAlign: TextAlign.center,
+                        style: textTheme.bodyText1?.copyWith(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14.0,
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) return StringConst.LANGUAGE_ERROR;
+                          if (language != null && language.name != value
+                              && user!.languagesLevels.any((l) => l.name == value))
+                            return StringConst.REPEATED_LANGUAGE_ERROR;
+                          return null;
+                        }
+                      ),
+                      SpaceH12(),
+                      _buildSpeakingLevelRow(
+                        value: speakingLevel,
+                        textTheme: textTheme,
+                        onValueChanged: (v) {
+                        setState(() {
+                          speakingLevel = v;
+                        });
+                      },),
+                      SpaceH12(),
+                      _buildWritingLevelRow(
+                        value: writingLevel,
+                        textTheme: textTheme,
+                        onValueChanged: (v) {
+                          setState(() {
+                            writingLevel = v;
+                          });
+                        },),
+                    ],
                   ),
                 ),
-                SpaceH12(),
-                TextField(
-                  controller: controller,
-                  textAlign: TextAlign.center,
-                  style: textTheme.bodyText1?.copyWith(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14.0,
-                  ),
-                )
-              ],
-            ),
-          ),
+              ),
+            );
+          }
         ),
         defaultActionText: StringConst.FORM_ACCEPT,
         onDefaultActionPressed: (context) {
-      if (currentText.isNotEmpty) {
-        user!.languagesLevels.remove(currentText);
+
+      if (formKey.currentState!.validate()) {
+        if (language != null) {
+          user!.languagesLevels.removeWhere((l) => l.name == language.name);
+        }
+        user!.languagesLevels.add(Language(
+            name: controller.text,
+            speakingLevel: speakingLevel.toInt(),
+            writingLevel: writingLevel.toInt())
+        );
+        database.setUserEnreda(user!);
+        writingLevel = 1.0;
+        speakingLevel = 1.0;
+        Navigator.of(context).pop();
       }
-      user!.languagesLevels.add(controller.text);
-      database.setUserEnreda(user!);
-      Navigator.of(context).pop();
     });
-  }*/
+  }
+
+  Widget _buildWritingLevelRow(
+      {required TextTheme textTheme,
+      required double value,
+      dynamic Function(double)? onValueChanged}) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            'Expresión escrita',
+            style: textTheme.bodyText1?.copyWith(
+              fontWeight: FontWeight.normal,
+              fontSize: 14.0,
+            ),
+          ),
+        ),
+        RatingStars(
+          value: value,
+          onValueChanged: onValueChanged,
+          starBuilder: (index, color) => Icon(
+            Icons.circle,
+            color: color,
+          ),
+          starCount: 3,
+          maxValue: 3.0,
+          starSpacing: 20,
+          starSize: 20,
+          valueLabelVisibility: false,
+          animationDuration: Duration(milliseconds: 1000),
+          starOffColor: AppColors.greyUltraLight,
+          starColor: AppColors.greyViolet,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSpeakingLevelRow({
+        required TextTheme textTheme,
+        required double value,
+        dynamic Function(double)? onValueChanged
+      }) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            'Expresión oral',
+            style: textTheme.bodyText1?.copyWith(
+              fontWeight: FontWeight.normal,
+              fontSize: 14.0,
+            ),
+          ),
+        ),
+        RatingStars(
+          value: value,
+          onValueChanged: onValueChanged,
+          starBuilder: (index, color) => Icon(
+            Icons.circle,
+            color: color,
+          ),
+          starCount: 3,
+          maxValue: 3.0,
+          starSpacing: 20,
+          starSize: 20,
+          valueLabelVisibility: false,
+          animationDuration: Duration(milliseconds: 1000),
+          starOffColor: AppColors.greyUltraLight,
+          starColor: AppColors.greyViolet,
+        ),
+      ],
+    );
+  }
 
   Future<bool> _hasEnoughExperiences(BuildContext context) async {
     if (myCompetencies!.length < 3 || myExperiences!.length < 2) {

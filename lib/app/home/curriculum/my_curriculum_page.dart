@@ -563,9 +563,14 @@ class MyCurriculumPage extends StatelessWidget {
                   .toList();
               if (myEducationalExperiencies.isNotEmpty) {
                 final educations = snapshotEducations.data!;
-                final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
-                myEducations.sort((a, b) => a.order.compareTo(b.order));
-                myMaxEducation = myEducations.first.label;
+                final areEduactions = myEducationalExperiencies.any((exp) => exp.education != null && exp.education!.isNotEmpty);
+                if (areEduactions) {
+                  final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
+                  myEducations.sort((a, b) => a.order.compareTo(b.order));
+                  myMaxEducation = myEducations.first.label;
+                } else {
+                  myMaxEducation = user?.education?.label?? "";
+                }
 
                 return CustomTextBody(text: myMaxEducation);
               } else {

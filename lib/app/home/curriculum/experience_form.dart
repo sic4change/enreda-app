@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 import '../../../common_widgets/flex_row_column.dart';
 import '../models/activity.dart';
 
+// TODO: ¿Esta clase no se está usando?
 class ExperienceForm extends StatefulWidget {
   const ExperienceForm({Key? key, this.experience, required this.isEducation, this.isProfesional})
       : super(key: key);
@@ -55,6 +56,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
   List<String> professionActivities = [];
   String? _professionActivityId;
   List<String>? activitiesIds = [];
+  String _otherText = "";
 
   @override
   void initState() {
@@ -70,6 +72,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
       _workType = _experience.workType;
       _context = _experience.context;
       _contextPlace = _experience.contextPlace;
+      _otherText = _experience.otherProfessionActivityString?? "";
     }
   }
 
@@ -608,7 +611,14 @@ class _ExperienceFormState extends State<ExperienceForm> {
               ),
             ],
           );
-        return streamBuilderDropdownProfessionActivities(context, _activity!, activitiesIds!, selectedProfessionActivities);
+        return streamBuilderDropdownProfessionActivities(
+            context,
+            _activity!,
+            activitiesIds!,
+            selectedProfessionActivities,
+            (text) => _otherText = text,
+            _otherText
+        );
       },
     );
     getValuesFromKeyProfessionActivities(selectedValues);
@@ -681,9 +691,10 @@ class _ExperienceFormState extends State<ExperienceForm> {
           workType: _workType!,
           context: _context!,
           contextPlace: _contextPlace!,
-          professionActivities: activitiesIds!,
+          professionActivities: selectedProfessionActivities.map((e) => e.id!).toList(),
           position: _positionController.text,
           professionActivitiesText: _textEditingControllerProfessionsActivities.text,
+          otherProfessionActivityString: _otherText,
       );
 
       await database.addExperience(experience);
@@ -720,7 +731,9 @@ class _ExperienceFormState extends State<ExperienceForm> {
           context: _context!,
           contextPlace: _contextPlace!,
           position: _positionController.text,
+          professionActivities: selectedProfessionActivities.map((e) => e.id!).toList(),
           professionActivitiesText: _textEditingControllerProfessionsActivities.text,
+          otherProfessionActivityString: _otherText,
       );
 
       await database.updateExperience(experience);
@@ -758,6 +771,4 @@ class _ExperienceFormState extends State<ExperienceForm> {
         _updateListCompetenciesPointsActivity(itemChoice);
       }
   }
-
-
 }

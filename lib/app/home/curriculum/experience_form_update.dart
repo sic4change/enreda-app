@@ -57,7 +57,10 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
   Set<Activity> selectedProfessionActivities = {};
   List<String> professionActivities = [];
   String? _professionActivityId;
+
   List<String>? activitiesIds = [];
+  String _otherText = "";
+  List<Activity> _allProffesionActivities = [];
 
   @override
   void initState() {
@@ -74,6 +77,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
       _positionController.text = _experience.position ?? '';
       _locationController.text = _experience.location;
       _textEditingControllerProfessionsActivities.text = _experience.professionActivitiesText ?? '';
+      _otherText = _experience.otherProfessionActivityString?? "";
 
       if(StringConst.EXPERIENCE_WORK_TYPES.contains(_experience.workType)){
         _workType = _experience.workType;
@@ -92,7 +96,14 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
       }else{
         _contextPlace = null;
       }
+
+      _loadProfessionActivities();
     }
+  }
+
+  Future<void> _loadProfessionActivities() async {
+    final database = Provider.of<Database>(context, listen: false);
+    _allProffesionActivities = await database.professionsActivitiesStream().first;
   }
 
   @override
@@ -239,7 +250,6 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
             ) : Container(),
 
             //FOR COMPANY NAME
-
             !_general ? Padding(
                 padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
                 child: TextFormField(
@@ -253,25 +263,8 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                   ),
                 ),
             ) : Container(),
-            
-
-            //FOR POSITION
-            (_type?.name == 'Profesional' || _type?.name == 'Personal') && !_general ? Padding(
-              padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
-              child: TextFormField(
-                controller: _positionController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                decoration: InputDecoration(
-                  label: Text(
-                    'Indica tu cargo...',
-                    style: textTheme.bodyText2,
-                  ),
-                ),
-              ),
-            ) : Container(),
 
             //FOR CITY
-
             !_general ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble/2),
               child: TextFormField(
@@ -291,7 +284,6 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
             ) : Container(),
 
             //FOR DATE
-
             !_general ? CustomFlexRowColumn(
               childLeft: DateTimeField(
                 initialValue: _startDate?.toDate(),
@@ -354,44 +346,44 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
             ) : Container(),
 
             //FOR PROFESSIONS ACTIVITIES
-
-            !_general ? CustomFlexRowColumn(
-              childLeft: _type?.name == 'Profesional' ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    TextFormField(
-                      controller: _textEditingControllerProfessionsActivities,
-                      decoration: InputDecoration(
-                        hintText: 'Indica las tareas que realizaste *',
-                        hintMaxLines: 2,
-                        label: Text(
-                          'Tareas que realizaste',
-                          style: textTheme.bodyText2,
+            (!_general && _type?.name == 'Profesional') ? Padding(
+              padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
+              child: TextFormField(
+                        controller: _textEditingControllerProfessionsActivities,
+                        decoration: InputDecoration(
+                          label: Text(
+                            'Tareas que realizaste *',
+                            style: textTheme.bodyText2,
+                          ),
+                          labelStyle: textTheme.bodyText1?.copyWith(
+                            color: AppColors.greyDark,
+                            height: 1.5,
+                            fontWeight: FontWeight.w400,
+                            fontSize: fontSize,
+                          ),
                         ),
-                        labelStyle: textTheme.bodyText1?.copyWith(
-                          color: AppColors.greyDark,
+                        onTap: () => _showMultiSelectProfessionActivities(context),
+                        validator: (value) {
+                          if (value == null || value == "") return 'Selecciona un valor';
+                          return null;
+                        },
+                        onSaved: (value) => value = _professionActivityId,
+                        //maxLines: 2,
+                        readOnly: true,
+                        style: textTheme.button?.copyWith(
                           height: 1.5,
+                          color: AppColors.greyDark,
                           fontWeight: FontWeight.w400,
                           fontSize: fontSize,
-                        ),
-                      ),
-                      onTap: () => _showMultiSelectProfessionActivities(context),
-                      validator: (value) {
-                        if (value == null || value == "") return 'Selecciona un valor';
-                        return null;
-                      },
-                      onSaved: (value) => value = _professionActivityId,
-                      maxLines: 2,
-                      readOnly: true,
-                      style: textTheme.button?.copyWith(
-                        height: 1.5,
-                        color: AppColors.greyDark,
-                        fontWeight: FontWeight.w400,
-                        fontSize: fontSize,
-                      ),
-                    ),
-                  ]) : Container(),
-              childRight: Container(),/*_type?.name == 'Profesional' ? TextFormField(
+                          overflow: TextOverflow.ellipsis
+                        )
+              ),
+            ) : Container(),
+
+            //FOR POSITION
+            !_general ? Padding(
+              padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
+              child: TextFormField(
                 controller: _positionController,
                 style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
@@ -400,14 +392,12 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                     style: textTheme.bodyText2,
                   ),
                 ),
-              ) : Container(),*/
+              ),
             ) : Container(),
 
-            SpaceW12(),
+            SpaceH36(),
 
             !_general ? CustomTextTitle(title: StringConst.ALL_COMPETENCIES.toUpperCase()) : Container(),
-
-            SpaceW12(),
 
             !_general ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble/2),
@@ -567,6 +557,11 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
       try {
         _activity = _experienceActivities.firstWhere(
             (element) => element.name == widget.experience!.activity);
+        activitiesIds =_activity?.activities;
+        if (activitiesIds != null && activitiesIds!.isNotEmpty) {
+          activitiesIds!.add("30twSwwnuVmpIp3MoE6e");
+        }
+        selectedProfessionActivities.addAll(_allProffesionActivities.where((a) => widget.experience!.professionActivities.contains(a.id)));
       } catch (e) {
         print(e);
       }
@@ -675,8 +670,15 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
         value: _activity,
         onChanged: (newActivity) {
           setState(() {
+            if (_activity?.id != newActivity?.id) {
+              selectedProfessionActivities.clear();
+              _textEditingControllerProfessionsActivities.clear();
+            }
             _activity = newActivity;
             activitiesIds =_activity?.activities;
+            if (activitiesIds != null && activitiesIds!.isNotEmpty) {
+              activitiesIds!.add("30twSwwnuVmpIp3MoE6e");
+            }
           });
         });
   }
@@ -686,19 +688,31 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
     var selectedValues = await showDialog<Set<Activity>>(
       context: context,
       builder: (BuildContext context) {
-        if(_activity == null)
+        if(_activity == null) {
           return AlertDialog(
-            content: Text(StringConst.FORM_ACTIVITIES_EMPTY,  style: textTheme.bodyText1,),
+            content: Text(
+              StringConst.FORM_ACTIVITIES_EMPTY,
+              style: textTheme.bodyText1,
+            ),
             actions: <Widget>[
               ElevatedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text(StringConst.FORM_ACCEPT, style: TextStyle(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.bold))
-              ),
+                  child: Text(StringConst.FORM_ACCEPT,
+                      style: TextStyle(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.bold))),
             ],
           );
-        return streamBuilderDropdownProfessionActivities(context, _activity!, activitiesIds!, selectedProfessionActivities);
+        } else {
+          return streamBuilderDropdownProfessionActivities(
+            context,
+            _activity!,
+            activitiesIds!,
+            selectedProfessionActivities, // TODO:
+            (text) => _otherText = text,
+            _otherText
+          );
+        }
       },
     );
     getValuesFromKeyProfessionActivities(selectedValues);
@@ -711,6 +725,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
       concatenate.write(item.name +' / ');
       activitiesIds.add(item.id);
     });
+
     setState(() {
       this._textEditingControllerProfessionsActivities.text = concatenate.toString();
       this.professionActivities = activitiesIds;
@@ -773,9 +788,10 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           workType: _workType!,
           context: _context!,
           contextPlace: _contextPlace!,
-          professionActivities: activitiesIds!,
+          professionActivities: selectedProfessionActivities.map((e) => e.id!).toList(),
           position: _positionController.text,
           professionActivitiesText: _textEditingControllerProfessionsActivities.text,
+          otherProfessionActivityString: _otherText,
       );
 
       await database.addExperience(experience);
@@ -812,7 +828,9 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           context: _context!,
           contextPlace: _contextPlace!,
           position: _positionController.text,
+          professionActivities: selectedProfessionActivities.map((e) => e.id!).toList(),
           professionActivitiesText: _textEditingControllerProfessionsActivities.text,
+          otherProfessionActivityString: _otherText,
       );
 
       await database.updateExperience(experience);

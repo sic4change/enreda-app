@@ -38,4 +38,12 @@ class Activity {
       'activities': activities,
     };
   }
+
+  @override
+  bool operator ==(Object other){
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is Activity &&
+            other.id == id);
+  }
 }

@@ -24,6 +24,7 @@ class Experience {
     this.education,
     this.institution,
     this.extraData,
+    this.otherProfessionActivityString,
   });
 
   final String? id;
@@ -48,6 +49,7 @@ class Experience {
   final String? education;
   final String? institution;
   final String? extraData;
+  final String? otherProfessionActivityString;
 
   Map<String, dynamic> toMap() {
     return {
@@ -73,6 +75,7 @@ class Experience {
       'education' : education,
       'institution' : institution,
       'extraData' : extraData,
+      'otherProfessionActivityString': otherProfessionActivityString,
     };
   }
 
@@ -98,6 +101,7 @@ class Experience {
     final String education = data['education'] ?? '';
     final String institution = data['institution'] ?? '';
     final String extraData = data['extraData'] ?? '';
+    final String otherProfessionActivityString = data['otherProfessionActivityString'] ?? '';
 
     List<String> professionActivities = [];
     if (data['professionActivities'] != null) {
@@ -130,6 +134,7 @@ class Experience {
       education: education,
       institution: institution,
       extraData: extraData,
+      otherProfessionActivityString: otherProfessionActivityString,
     );
   }
 }

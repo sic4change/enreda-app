@@ -75,7 +75,7 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
           Expanded(
             child: RoundedContainer(
               height: Responsive.isMobile(context) ? 40 : 45,
-              padding: EdgeInsets.all(8),
+              padding: Responsive.isMobile(context) ? EdgeInsets.all(0) : EdgeInsets.all(8),
               margin: EdgeInsets.only(left: 5, right: 5),
               child: Row(children: [
                 SpaceW16(),

@@ -6,10 +6,12 @@ import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/resourceCategory.dart';
 import 'package:enreda_app/app/home/models/resourcePicture.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/filter_text_field_row.dart';
 import 'package:enreda_app/app/home/resources/list_item_builder_grid.dart';
 import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
+import 'package:enreda_app/app/home/trainingPills/training_list_tile.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -36,10 +38,10 @@ class ResourcesPage extends StatefulWidget {
 class _ResourcesPageState extends State<ResourcesPage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final _searchTextController = TextEditingController();
-  FilterResource filterResource = FilterResource("", "");
+  FilterResource filterResource = FilterResource("", "POUBGFk5gU6c5X1DKo1b");
   bool isAlertBoxOpened = false;
   List<ResourceCategory> resourceCategoriesList = [];
-  String _categoryName = '';
+  String _categoryName = 'Empleo';
   String _categoryFormationId = '';
   String _backgroundImageUrl(String categoryId) {
     Map<String, String> backgroundImages = {
@@ -155,7 +157,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
           );
         });
   }
-
 
 
   Widget _buildResourcesPage(BuildContext context) {
@@ -435,16 +436,16 @@ class _ResourcesPageState extends State<ResourcesPage> {
           margin: const EdgeInsets.only(top: 20.0),
           child: Column(
             children: [
-              // FilterTextFieldRow(
-              //     searchTextController: _searchTextController,
-              //     onPressed: () => setStateIfMounted(() {
-              //       filterResource.searchText = _searchTextController.text;
-              //     }),
-              //     onFieldSubmitted: (value) => setStateIfMounted(() {
-              //       filterResource.searchText = _searchTextController.text;
-              //     }),
-              //     clearFilter: () => _clearFilter()),
-              // SpaceH20(),
+              FilterTextFieldRow(
+                  searchTextController: _searchTextController,
+                  onPressed: () => setStateIfMounted(() {
+                    filterResource.searchText = _searchTextController.text;
+                  }),
+                  onFieldSubmitted: (value) => setStateIfMounted(() {
+                    filterResource.searchText = _searchTextController.text;
+                  }),
+                  clearFilter: () => _clearFilter()),
+              SpaceH20(),
               Padding(
                 padding: isBigScreen ? EdgeInsets.symmetric(horizontal: 100.0) : EdgeInsets.symmetric(horizontal: 20.0),
                 child: InkWell(
@@ -470,18 +471,12 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   ),
                 ),
               ),
-              // SpaceH20(),
-              // Text('pills'),
-              SpaceH100(),
-              Center(
-                child: Text('Página en constucción...', style: textTheme.bodyMedium?.copyWith(
-                  color: AppColors.primaryColor,
-                  fontWeight: FontWeight.w600,
-                )),
-              )
             ],
           ),
         ),
+        Container(
+            margin: EdgeInsets.only(top: 150.0),
+            child: _buildTrainingPillsList(context))
       ],
     );
   }
@@ -555,6 +550,37 @@ class _ResourcesPageState extends State<ResourcesPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildTrainingPillsList(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+    return Container(
+      padding: Responsive.isMobile(context)
+          ? EdgeInsets.symmetric(horizontal: 10)
+          : Responsive.isDesktopS(context)
+          ? EdgeInsets.symmetric(horizontal: 20, vertical: 30)
+          : EdgeInsets.symmetric(horizontal: 100, vertical: 30),
+      child: StreamBuilder<List<TrainingPill>>(
+          stream: database.trainingPillStream(),
+          builder: (context, snapshot) {
+            return ListItemBuilderGrid<TrainingPill>(
+              snapshot: snapshot,
+              maxCrossAxisExtentValue: 490,
+              mainAxisExtentValue: 500,
+              itemBuilder: (context, trainingPill) {
+                trainingPill.setTrainingPillCategoryName();
+                return Container(
+                  key: Key('trainingPill-${trainingPill.id}'),
+                  child: TrainingPillListTile(
+                    trainingPill: trainingPill,
+                    onTap: () => context.push(
+                        '${StringConst.PATH_RESOURCES}/${trainingPill.id}'),
+                  ),
+                );
+              }
+            );
+          }),
     );
   }
 

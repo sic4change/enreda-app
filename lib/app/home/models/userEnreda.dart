@@ -1,6 +1,7 @@
 import 'package:enreda_app/app/home/models/addressUser.dart';
 import 'package:enreda_app/app/home/models/education.dart';
 import 'package:enreda_app/app/home/models/interestsUserEnreda.dart';
+import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/profilepic.dart';
 
 class UserEnreda {
@@ -29,7 +30,8 @@ class UserEnreda {
     this.competencies = const {},
     this.education,
     this.dataOfInterest = const [],
-    this.languages = const [],
+    this.languages = const [], // Deprecated
+    this.languagesLevels = const [],
     this.aboutMe,
   });
 
@@ -126,7 +128,20 @@ class UserEnreda {
         languages.add(language.toString());
       });
     } catch (e) {
-      //print('user does not have languages');
+    }
+
+    List<Language> languagesLevels = [];
+    if (data['languagesLevels'] != null) {
+      data['languagesLevels'].forEach((languageLevel) {
+        final languageLevelFirestore = languageLevel as Map<String, dynamic>;
+        languagesLevels.add(
+            Language(
+                name: languageLevelFirestore['name']?? "",
+                speakingLevel: languageLevelFirestore['speakingLevel']?? 1,
+                writingLevel: languageLevelFirestore['writingLevel']?? 1,
+            )
+        );
+      });
     }
 
     final String? aboutMe = data['aboutMe'];
@@ -157,6 +172,7 @@ class UserEnreda {
       education: education,
       dataOfInterest: dataOfInterest,
       languages: languages,
+      languagesLevels: languagesLevels,
       aboutMe: aboutMe,
     );
   }
@@ -186,6 +202,7 @@ class UserEnreda {
   final Map<String, String> competencies;
   final List<String> dataOfInterest;
   final List<String> languages;
+  final List<Language> languagesLevels;
   final String? aboutMe;
 
   Map<String, dynamic> toMap() {
@@ -211,6 +228,7 @@ class UserEnreda {
       'competencies': competencies,
       'dataOfInterest': dataOfInterest,
       'languages': languages,
+      'languagesLevels': languagesLevels.map((e) => e.toMap()).toList(),
       'aboutMe': aboutMe,
       'education': education?.toMap(),
     };
@@ -245,6 +263,7 @@ class UserEnreda {
     Education? education,
     List<String>? dataOfInterest,
     List<String>? languages,
+    List<Language>? languagesLevels,
     String? aboutMe,
   }) {
     return UserEnreda(
@@ -272,6 +291,7 @@ class UserEnreda {
       education: education ?? this.education,
       dataOfInterest: dataOfInterest ?? this.dataOfInterest,
       languages: languages ?? this.languages,
+      languagesLevels: languagesLevels ?? this.languagesLevels,
       aboutMe: aboutMe ?? this.aboutMe,
     );
   }

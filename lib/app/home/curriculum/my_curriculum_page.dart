@@ -1,8 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:enreda_app/app/home/competencies/competency_tile.dart';
-import 'package:enreda_app/app/home/curriculum/add_educational_level.dart';
-import 'package:enreda_app/app/home/curriculum/experience_form.dart';
 import 'package:enreda_app/app/home/curriculum/experience_form_update.dart';
 import 'package:enreda_app/app/home/curriculum/experience_tile.dart';
 import 'package:enreda_app/app/home/curriculum/formation_form.dart';
@@ -27,13 +24,12 @@ import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:provider/provider.dart';
+import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 import '../../../common_widgets/custom_text.dart';
 import '../../../common_widgets/precached_avatar.dart';
 import '../../../utils/my_scroll_behaviour.dart';
 import '../../../values/values.dart';
-import '../models/education.dart';
 
 class MyCurriculumPage extends StatelessWidget {
   UserEnreda? user;
@@ -1369,11 +1365,13 @@ class MyCurriculumPage extends StatelessWidget {
                               _buildSpeakingLevelRow(
                                 value: l.speakingLevel.toDouble(),
                                 textTheme: textTheme,
+                                iconSize: 15.0,
                                 onValueChanged: null,),
                               SpaceH12(),
                               _buildWritingLevelRow(
                                 value: l.writingLevel.toDouble(),
                                 textTheme: textTheme,
+                                iconSize: 15.0,
                                 onValueChanged: null,),
                               Divider(),
                             ],
@@ -1687,10 +1685,12 @@ class MyCurriculumPage extends StatelessWidget {
     });
   }
 
-  Widget _buildWritingLevelRow(
-      {required TextTheme textTheme,
-      required double value,
-      dynamic Function(double)? onValueChanged}) {
+  Widget _buildWritingLevelRow({
+    required TextTheme textTheme,
+    required double value,
+    double iconSize = 20.0,
+    dynamic Function(double)? onValueChanged
+  }) {
     return Row(
       children: [
         Expanded(
@@ -1702,22 +1702,18 @@ class MyCurriculumPage extends StatelessWidget {
             ),
           ),
         ),
-        RatingStars(
-          value: value,
-          onValueChanged: onValueChanged,
-          starBuilder: (index, color) => Icon(
-            Icons.circle,
-            color: color,
-          ),
-          starCount: 3,
-          maxValue: 3.0,
-          starSpacing: 20,
-          starSize: 20,
-          valueLabelVisibility: false,
-          animationDuration: Duration(milliseconds: 1000),
-          starOffColor: AppColors.greyUltraLight,
-          starColor: AppColors.greyViolet,
-        ),
+        SmoothStarRating(
+            allowHalfRating: false,
+            onRatingChanged: onValueChanged,
+            starCount: 3,
+            rating: value,
+            size: iconSize,
+            filledIconData: Icons.circle,
+            defaultIconData: Icons.circle_outlined,
+            color: AppColors.greyViolet,
+            borderColor: AppColors.greyViolet,
+            spacing: 5.0
+        )
       ],
     );
   }
@@ -1725,6 +1721,7 @@ class MyCurriculumPage extends StatelessWidget {
   Widget _buildSpeakingLevelRow({
         required TextTheme textTheme,
         required double value,
+        double iconSize = 20.0,
         dynamic Function(double)? onValueChanged
       }) {
     return Row(
@@ -1738,22 +1735,18 @@ class MyCurriculumPage extends StatelessWidget {
             ),
           ),
         ),
-        RatingStars(
-          value: value,
-          onValueChanged: onValueChanged,
-          starBuilder: (index, color) => Icon(
-            Icons.circle,
-            color: color,
-          ),
-          starCount: 3,
-          maxValue: 3.0,
-          starSpacing: 20,
-          starSize: 20,
-          valueLabelVisibility: false,
-          animationDuration: Duration(milliseconds: 1000),
-          starOffColor: AppColors.greyUltraLight,
-          starColor: AppColors.greyViolet,
-        ),
+        SmoothStarRating(
+            allowHalfRating: false,
+            onRatingChanged: onValueChanged,
+            starCount: 3,
+            rating: value,
+            size: iconSize,
+            filledIconData: Icons.circle,
+            defaultIconData: Icons.circle_outlined,
+            color: AppColors.greyViolet,
+            borderColor: AppColors.greyViolet,
+            spacing: 5.0
+        )
       ],
     );
   }

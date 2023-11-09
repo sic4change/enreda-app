@@ -6,6 +6,7 @@ import 'package:enreda_app/app/home/trainingPills/build_share_training_pill.dart
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -41,7 +42,57 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
     double fontSize = responsiveSize(context, 12, 13, md: 12);
     double sidePadding = responsiveSize(context, 15, 20, md: 17);
     final isBigScreen = MediaQuery.of(context).size.width >= 900;
-    return Scaffold(
+    return Responsive.isMobile(context) ?
+    Container(
+      margin: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+          color: Constants.white,
+      ),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+              width: 120,
+              decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.greyBorder, width: 1),
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  color: Colors.purple,
+              ),
+              child: playArea()),
+          SpaceW24(),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.trainingPill.trainingPillCategoryName!,
+                textAlign: TextAlign.left,
+                maxLines: 1,
+                style: textTheme.titleSmall?.copyWith(
+                  color: Constants.lilac,
+                  height: 1.5,
+                  fontWeight: FontWeight.normal,
+                  fontSize:  isBigScreen ? 18 : 15,
+                ),
+              ),
+              Text(
+                widget.trainingPill.title.toUpperCase(),
+                textAlign: TextAlign.left,
+                maxLines: 2,
+                style: TextStyle(
+                  letterSpacing: 1,
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.blueDark,
+                ),
+              ),
+            ],
+          ),
+        ]
+      ),
+    )
+    : Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
         margin: const EdgeInsets.all(5.0),
@@ -62,12 +113,11 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                flex: 2,
+              AspectRatio(
+                aspectRatio: 16 / 9,
                 child: playArea(),
               ),
               Expanded(
-                flex: 2,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -96,7 +146,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                               ),
                               Padding(
                                 padding: EdgeInsets.only(
-                                    right: sidePadding, left: sidePadding),
+                                    right: sidePadding, left: sidePadding, bottom: sidePadding / 2),
                                 child: Text(
                                   widget.trainingPill.title.toUpperCase(),
                                   textAlign: TextAlign.left,
@@ -110,7 +160,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.all(sidePadding),
+                                padding: EdgeInsets.symmetric(horizontal: sidePadding),
                                 child: Text(
                                   widget.trainingPill.description,
                                   textAlign: TextAlign.left,
@@ -250,32 +300,45 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
   }
 
   Widget playArea() {
+    String urlYoutubeVideo = widget.trainingPill.urlVideo;
+    String idYoutubeVideo = urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
     if (!_isVideoVisible)
       return AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(ImagePath.PLACEHOLDER_VIDEO),
-                  fit: BoxFit.cover,
+        aspectRatio: Responsive.isMobile(context) ? 1.3 : 16 / 9,
+        child: InkWell(
+          onTap: () async {
+            setState(() {
+              setState(() {
+                _isVideoVisible = !_isVideoVisible;
+                _initializeVideo(idYoutubeVideo);
+              });
+            });
+          },
+          child: Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(
+                      YoutubePlayerController.getThumbnail(
+                        videoId: idYoutubeVideo,
+                        quality: ThumbnailQuality.max,
+                      ),
+                    ),
+                    fit: Responsive.isMobile(context) ? BoxFit.cover : BoxFit.fitWidth,
+                  ),
+                  borderRadius: Responsive.isMobile(context) ? BorderRadius.circular(10) :
+                  BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                 ),
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
               ),
-            ),
-            Center(
-              child:  IconButton(
-                onPressed: () async {
-                  setState(() {
-                    _isVideoVisible = !_isVideoVisible;
-                    _initializeVideo(widget.trainingPill.urlVideo);
-                  });
-                },
-                icon: Icon(Icons.play_circle_rounded, color: AppColors.greyTxtAlt.withOpacity(0.9), size: 55,),
-              ),
-            )
-          ],
+              Center(
+                child: Icon(
+                  Icons.play_circle_rounded,
+                  color: AppColors.black100.withOpacity(0.7),
+                  size: Responsive.isMobile(context) ? 30 : 70,),
+                ),
+            ],
+          ),
         ),
       );
     return Container(
@@ -284,23 +347,25 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
       ),
       child: YoutubePlayerControllerProvider( // Provides controller to all the widget below it.
         controller: _controller,
-        child: YoutubePlayerIFrame(
+        child: YoutubePlayer(
+          controller: _controller,
           aspectRatio: 16 / 9,
-        ),
+          enableFullScreenOnVerticalDrag: true,
+        )
       ),
     );
   }
 
   _initializeVideo(String id) {
     // Generate a new controller and set as global _controller
-    final controller = YoutubePlayerController(
+    final controller = YoutubePlayerController.fromVideoId(
+      videoId: id,
+      autoPlay: true,
       params: const YoutubePlayerParams(
-        autoPlay: true,
-        showControls: true,
-        mute: false,
-        showFullscreenButton: true,
-        loop: false,
-      ), initialVideoId: id,
+          showControls: true,
+          mute: false,
+          showFullscreenButton: true,
+      ),
     );
     setState(() {
       _controller = controller;
@@ -308,6 +373,9 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
         _isVideoVisible = true;
       }
     });
+    _controller.toggleFullScreen();
   }
 
 }
+
+

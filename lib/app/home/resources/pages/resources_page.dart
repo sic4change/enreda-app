@@ -10,6 +10,7 @@ import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/filter_text_field_row.dart';
 import 'package:enreda_app/app/home/resources/list_item_builder_grid.dart';
+import 'package:enreda_app/app/home/resources/pages/list_item_builder_vertical.dart';
 import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
 import 'package:enreda_app/app/home/trainingPills/training_list_tile.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
@@ -25,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../utils/functions.dart';
+import '../../assistant/list_item_builder.dart';
 
 class ResourcesPage extends StatefulWidget {
   @override
@@ -476,7 +478,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
         ),
         Container(
             margin: EdgeInsets.only(top: 150.0),
-            child: _buildTrainingPillsList(context))
+            child: Responsive.isMobile(context) ?
+            _buildTrainingPillsListMobile(context)
+                : _buildTrainingPillsList(context)),
       ],
     );
   }
@@ -579,6 +583,31 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   ),
                 );
               }
+            );
+          }),
+    );
+  }
+
+  Widget _buildTrainingPillsListMobile(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: StreamBuilder<List<TrainingPill>>(
+          stream: database.trainingPillStream(),
+          builder: (context, snapshot) {
+            return ListItemBuilderVertical<TrainingPill>(
+                snapshot: snapshot,
+                itemBuilder: (context, trainingPill) {
+                  trainingPill.setTrainingPillCategoryName();
+                  return Container(
+                    key: Key('trainingPill-${trainingPill.id}'),
+                    child: TrainingPillListTile(
+                      trainingPill: trainingPill,
+                      onTap: () => context.push(
+                          '${StringConst.PATH_RESOURCES}/${trainingPill.id}'),
+                    ),
+                  );
+                }
             );
           }),
     );

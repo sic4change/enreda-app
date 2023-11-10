@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/curriculum/pdf_generator/pdf_preview.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
+import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/values.dart';
@@ -29,9 +30,15 @@ class MyCvModelsPage extends StatefulWidget {
     required this.myExperiences,
     required this.myCustomExperiences,
     required this.mySelectedExperiences,
+    required this.myPersonalExperiences,
+    required this.myPersonalCustomExperiences,
+    required this.myPersonalSelectedExperiences,
     required this.myEducation,
     required this.myCustomEducation,
     required this.mySelectedEducation,
+    required this.mySecondaryEducation,
+    required this.mySecondaryCustomEducation,
+    required this.mySecondarySelectedEducation,
     required this.competenciesNames,
     required this.myCustomCompetencies,
     required this.mySelectedCompetencies,
@@ -62,9 +69,15 @@ class MyCvModelsPage extends StatefulWidget {
   final List<Experience>? myExperiences;
   List<Experience> myCustomExperiences;
   List<int> mySelectedExperiences;
+  final List<Experience>? myPersonalExperiences;
+  List<Experience> myPersonalCustomExperiences;
+  List<int> myPersonalSelectedExperiences;
   final List<Experience>? myEducation;
   List<Experience> myCustomEducation;
   List<int> mySelectedEducation;
+  List<Experience>? mySecondaryEducation;
+  List<Experience> mySecondaryCustomEducation;
+  List<int> mySecondarySelectedEducation;
   final List<String> competenciesNames;
   List<String> myCustomCompetencies;
   List<int> mySelectedCompetencies;
@@ -82,7 +95,9 @@ class MyCvModelsPage extends StatefulWidget {
 
 class _MyCvModelsPageState extends State<MyCvModelsPage> {
   int? _selectedEducationIndex;
+  int? _selectedSecondaryEducationIndex;
   int? _selectedExperienceIndex;
+  int? _selectedPersonalExperienceIndex;
   int? _selectedReferenceIndex;
   int? _selectedCompetenciesIndex;
   int? _selectedLanguagesIndex;
@@ -278,7 +293,11 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                     SpaceH40(),
                     _buildMyEducation(context),
                     SpaceH40(),
+                    _buildMySecondaryEducation(context),
+                    SpaceH40(),
                     _buildMyExperiences(context),
+                    SpaceH40(),
+                    _buildMyPersonalExperiences(context),
                     SpaceH40(),
                     _buildMyCompetencies(context),
                   ],
@@ -332,7 +351,9 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                     province: widget.myCustomProvince,
                                     country: widget.myCustomCountry,
                                     myExperiences: widget.myCustomExperiences,
+                                    myPersonalExperiences: widget.myPersonalCustomExperiences,
                                     myEducation: widget.myCustomEducation,
+                                    mySecondaryEducation: widget.mySecondaryCustomEducation,
                                     competenciesNames: widget.myCustomCompetencies,
                                     aboutMe: widget.myCustomAboutMe,
                                     languagesNames: widget.myCustomLanguages,
@@ -459,7 +480,11 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               SpaceH24(),
               _buildMyEducation(context),
               SpaceH24(),
+              _buildMySecondaryEducation(context),
+              SpaceH24(),
               _buildMyExperiences(context),
+              SpaceH24(),
+              _buildMyPersonalExperiences(context),
               SpaceH24(),
               _buildMyCompetencies(context),
               SpaceH24(),
@@ -491,6 +516,42 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               buttonTitle: "Vista previa",
               width: 100,
               onPressed: () async {
+                if(widget.myPersonalCustomExperiences.length > 2){
+                  showAlertDialog(
+                    context,
+                    title: 'Error',
+                    content: 'Ha seleccionado demasiadas experiencias personales',
+                    defaultActionText: 'Ok',
+                  );
+                  return;
+                }
+                if(widget.myCustomExperiences.length > 2){
+                  showAlertDialog(
+                    context,
+                    title: 'Error',
+                    content: 'Ha seleccionado demasiadas experiencias profesionales',
+                    defaultActionText: 'Ok',
+                  );
+                  return;
+                }
+                if(widget.mySecondaryCustomEducation.length > 2){
+                  showAlertDialog(
+                    context,
+                    title: 'Error',
+                    content: 'Ha seleccionado demasiadas formaciones complementarias',
+                    defaultActionText: 'Ok',
+                  );
+                  return;
+                }
+                if(widget.myCustomEducation.length > 2){
+                  showAlertDialog(
+                    context,
+                    title: 'Error',
+                    content: 'Ha seleccionado demasiadas formaciones',
+                    defaultActionText: 'Ok',
+                  );
+                  return;
+                }
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -502,7 +563,9 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             province: widget.myCustomProvince,
                             country: widget.myCustomCountry,
                             myExperiences: widget.myCustomExperiences,
+                            myPersonalExperiences: widget.myPersonalCustomExperiences,
                             myEducation: widget.myCustomEducation,
+                            mySecondaryEducation: widget.mySecondaryCustomEducation,
                             competenciesNames: widget.myCustomCompetencies,
                             aboutMe: widget.myCustomAboutMe,
                             languagesNames: widget.myCustomLanguages,
@@ -934,7 +997,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
-                                  if (widget.myEducation![index].activity != null && widget.myEducation![index].activityRole != null)
+                                  if (widget.myEducation![index].activity != null && widget.myEducation![index].activityRole != null && widget.myEducation![index].activity != '')
                                     RichText(
                                       text: TextSpan(
                                           text: '${widget.myEducation![index].activityRole!.toUpperCase()} -',
@@ -951,6 +1014,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                             )
                                           ]),
                                     ),
+                                  if (widget.myEducation![index].nameFormation != null )
+                                    Text('${widget.myEducation![index].nameFormation!}',
+                                        style: textTheme.bodyText1
+                                            ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
                                   if (widget.myEducation![index].activity != null && widget.myEducation![index].activityRole == null)
                                     Text('${widget.myEducation![index].activity!}',
                                         style: textTheme.bodyText1
@@ -1004,6 +1071,131 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
     );
   }
 
+  Widget _buildMySecondaryEducation(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomTextTitle(title: StringConst.SECONDARY_EDUCATION.toUpperCase()),
+        SpaceH4(),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Constants.white,
+          ),
+          child: widget.mySecondaryEducation!.isNotEmpty
+              ?
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: widget.mySecondaryEducation!.length,
+            itemBuilder: (context, index) {
+              return Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.symmetric(vertical: 0),
+                child: ListTile(
+                  selected: index == _selectedSecondaryEducationIndex,
+                  onTap: (){
+                    print('selected item: ${widget.mySecondaryEducation![index].activity}');
+                    bool exists = widget.mySecondaryCustomEducation.any((element) => element.id == widget.mySecondaryEducation![index].id);
+                    setState(() {
+                      _selectedSecondaryEducationIndex = index;
+                      if (exists == true){
+                        widget.mySecondaryCustomEducation.remove(widget.mySecondaryEducation![index]);
+                        widget.mySecondarySelectedEducation.remove(_selectedSecondaryEducationIndex);
+                      } else {
+                        widget.mySecondaryCustomEducation.add(widget.mySecondaryEducation![index]);
+                        widget.mySecondarySelectedEducation.add(_selectedSecondaryEducationIndex!);
+                      }
+                      print(widget.mySecondaryCustomEducation);
+                      print(widget.mySecondarySelectedEducation);
+                    });
+                  },
+                  title: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              if (widget.mySecondaryEducation![index].activity != null && widget.mySecondaryEducation![index].activityRole != null && widget.mySecondaryEducation![index].activity != '')
+                                RichText(
+                                  text: TextSpan(
+                                      text: '${widget.mySecondaryEducation![index].activityRole!.toUpperCase()} -',
+                                      style: textTheme.bodyText1?.copyWith(
+                                        fontSize: 14.0,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: ' ${widget.mySecondaryEducation![index].activity!.toUpperCase()}',
+                                          style: textTheme.bodyText1?.copyWith(
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      ]),
+                                ),
+                              if (widget.mySecondaryEducation![index].nameFormation != null )
+                                Text('${widget.mySecondaryEducation![index].nameFormation!}',
+                                    style: textTheme.bodyText1
+                                        ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
+                              if (widget.mySecondaryEducation![index].activity != null && widget.mySecondaryEducation![index].activityRole == null)
+                                Text('${widget.mySecondaryEducation![index].activity!}',
+                                    style: textTheme.bodyText1
+                                        ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
+                              if (widget.mySecondaryEducation![index].activity != null) SpaceH8(),
+                              if (widget.mySecondaryEducation![index].organization != null && widget.mySecondaryEducation![index].organization != "") Column(
+                                children: [
+                                  Text(
+                                    widget.mySecondaryEducation![index].organization!,
+                                    style: textTheme.bodyText1?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                  SpaceH8()
+                                ],
+                              ),
+                              Text(
+                                '${formatter.format(widget.mySecondaryEducation![index].startDate.toDate())} / ${widget.mySecondaryEducation![index].endDate != null
+                                    ? formatter.format(widget.mySecondaryEducation![index].endDate!.toDate())
+                                    : 'Actualmente'}',
+                                style: textTheme.bodyText1?.copyWith(
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                              SpaceH8(),
+                              Text(
+                                widget.mySecondaryEducation![index].location,
+                                style: textTheme.bodyText1?.copyWith(
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          widget.mySecondarySelectedEducation.contains(index) ? Icons.check_box : Icons.crop_square,
+                          color: Constants.darkGray,
+                          size: 20.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          )
+              : CustomTextBody(text: StringConst.NO_EDUCATION),
+        ),
+      ],
+    );
+  }
+
   Widget _buildMyExperiences(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -1011,7 +1203,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomTextTitle(title: StringConst.MY_EXPERIENCES.toUpperCase()),
+        CustomTextTitle(title: StringConst.MY_PROFESIONAL_EXPERIENCES.toUpperCase()),
         SpaceH4(),
         Container(
           width: double.infinity,
@@ -1117,6 +1309,127 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                     ),
                   ),
                 );
+            },
+          )
+              : CustomTextBody(text: StringConst.NO_EDUCATION),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMyPersonalExperiences(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomTextTitle(title: StringConst.MY_PERSONAL_EXPERIENCES.toUpperCase()),
+        SpaceH4(),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Constants.white,
+          ),
+          child: widget.myPersonalExperiences!.isNotEmpty
+              ?
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: widget.myPersonalExperiences!.length,
+            itemBuilder: (context, index) {
+              return Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.symmetric(vertical: 0),
+                child: ListTile(
+                  selected: index == _selectedPersonalExperienceIndex,
+                  onTap: (){
+                    print('selected item: ${widget.myPersonalExperiences![index].activity}');
+                    bool exists = widget.myPersonalCustomExperiences.any((element) => element.id == widget.myPersonalExperiences![index].id);
+                    setState(() {
+                      _selectedPersonalExperienceIndex = index;
+                      if (exists == true){
+                        widget.myPersonalCustomExperiences.remove(widget.myPersonalExperiences![index]);
+                        widget.myPersonalSelectedExperiences.remove(_selectedPersonalExperienceIndex);
+                      } else {
+                        widget.myPersonalCustomExperiences.add(widget.myPersonalExperiences![index]);
+                        widget.myPersonalSelectedExperiences.add(_selectedPersonalExperienceIndex!);
+                      }
+                      print(widget.myPersonalCustomExperiences);
+                      print(widget.myPersonalSelectedExperiences);
+                    });
+                  },
+                  title: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              if (widget.myPersonalExperiences![index].activity != null && widget.myPersonalExperiences![index].activityRole != null)
+                                RichText(
+                                  text: TextSpan(
+                                      text: '${widget.myPersonalExperiences![index].activityRole!.toUpperCase()} -',
+                                      style: textTheme.bodyText1?.copyWith(
+                                        fontSize: 14.0,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: ' ${widget.myPersonalExperiences![index].activity!.toUpperCase()}',
+                                          style: textTheme.bodyText1?.copyWith(
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      ]),
+                                ),
+                              if (widget.myPersonalExperiences![index].activity != null && widget.myPersonalExperiences![index].activityRole == null)
+                                Text( widget.myPersonalExperiences![index].position == null || widget.myPersonalExperiences![index].position == "" ? '${widget.myPersonalExperiences![index].activity!}' : '${widget.myPersonalExperiences![index].position}',
+                                    style: textTheme.bodyText1
+                                        ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
+                              if (widget.myPersonalExperiences![index].position != null || widget.myPersonalExperiences![index].activity != null) SpaceH8(),
+                              if (widget.myPersonalExperiences![index].organization != null && widget.myPersonalExperiences![index].organization != "") Column(
+                                children: [
+                                  Text(
+                                    widget.myPersonalExperiences![index].organization!,
+                                    style: textTheme.bodyText1?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                  SpaceH8()
+                                ],
+                              ),
+                              Text(
+                                '${formatter.format(widget.myPersonalExperiences![index].startDate.toDate())} / ${widget.myPersonalExperiences![index].endDate != null
+                                    ? formatter.format(widget.myPersonalExperiences![index].endDate!.toDate())
+                                    : 'Actualmente'}',
+                                style: textTheme.bodyText1?.copyWith(
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                              SpaceH8(),
+                              Text(
+                                widget.myPersonalExperiences![index].location,
+                                style: textTheme.bodyText1?.copyWith(
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          widget.myPersonalSelectedExperiences.contains(index) ? Icons.check_box : Icons.crop_square,
+                          color: Constants.darkGray,
+                          size: 20.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
             },
           )
               : CustomTextBody(text: StringConst.NO_EDUCATION),

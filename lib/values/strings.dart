@@ -24,6 +24,8 @@ class StringConst {
   static const String MY_COMPETENCIES = "Mis Competencias";
   static const String ALL_COMPETENCIES = "Competencias";
   static const String MY_EXPERIENCES = "Mis Experiencias";
+  static const String MY_PERSONAL_EXPERIENCES = "Mis experiencias personales";
+  static const String MY_PROFESIONAL_EXPERIENCES = "Mis experiencias profesionales";
   static const String ABILITIES = "Destrezas";
   static const String EDUCATION = "Formación";
   static const String SECONDARY_EDUCATION = "Formación complementaria";
@@ -423,6 +425,8 @@ class StringConst {
   static const String NEW_DATA_OF_INTEREST = 'Introduce el nuevo dato de interés:';
   static const String NO_LANGUAGES = 'Todavía no has añadido ningún idioma';
   static const String NEW_LANGUAGE = 'Introduce un nuevo idioma:';
+  static const String LANGUAGE_ERROR = "Introduce el idioma";
+  static const String REPEATED_LANGUAGE_ERROR = "Ya has añadido este idioma";
   static const String NEW_CAREER = 'Introduce una nueva carrera:';
   static const String NEW_REFERENCE = 'Introduce nuevos datos:';
   static const String ADD_MORE_EXPERIENCES = 'Añade 2 experiencias y evalúa o certifica 3 competencias para descargar tu CV ';

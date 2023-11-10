@@ -70,13 +70,6 @@ Future<void> shareResource(Resource resource) async {
   );
 }
 
-Future<void> shareTrainingPill(TrainingPill trainingPill) async {
-  await Share.share(
-    StringConst.SHARE_TEXT(trainingPill.title, trainingPill.id),
-    subject: StringConst.APP_NAME,
-  );
-}
-
 void showAlertNullUser(BuildContext context) async {
   final signIn = await showAlertDialog(context,
       title: '¿Te interesa el recurso?',

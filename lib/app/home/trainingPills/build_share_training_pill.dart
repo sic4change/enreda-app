@@ -1,6 +1,7 @@
 import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
+import 'package:enreda_app/app/home/trainingPills/pages/training_pills_actions.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
@@ -44,7 +45,7 @@ Widget buildShareTrainingPill(BuildContext context, TrainingPill trainingPill, C
       switch (value) {
         case 1:
           Clipboard.setData(ClipboardData(
-              text: StringConst.RESOURCE_LINK(trainingPill.id)));
+              text: StringConst.TRAINING_PILL_LINK(trainingPill.id)));
           _showToast();
           break;
         case 2:

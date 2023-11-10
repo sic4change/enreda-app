@@ -93,6 +93,7 @@ abstract class Database {
   Stream<List<CertificationRequest>> myCertificationRequestStream(String userId);
   Stream<List<ResourceCategory>> getCategoriesResources();
   Stream<List<TrainingPill>> trainingPillStream();
+  Stream<TrainingPill> trainingPillStreamById(String id);
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> addUserEnreda(UserEnreda userEnreda);
@@ -404,6 +405,13 @@ class FirestoreDatabase implements Database {
       sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
     );
   }
+
+  @override
+  Stream<TrainingPill> trainingPillStreamById(String id) =>
+      _service.documentStream<TrainingPill>(
+        path: APIPath.trainingPill(id),
+        builder: (data, documentId) => TrainingPill.fromMap(data, documentId),
+      );
 
   @override
   Future<void> addUserEnreda(UserEnreda userEnreda) =>

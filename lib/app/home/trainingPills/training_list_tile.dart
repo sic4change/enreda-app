@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/app/home/trainingPills/build_share_training_pill.dart';
+import 'package:enreda_app/app/home/trainingPills/pages/training_pills_actions.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
@@ -12,8 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
-import '../../../../services/database.dart';
-import '../../../common_widgets/show_alert_dialog.dart';
 import '../../../services/auth.dart';
 
 class TrainingPillListTile extends StatefulWidget {
@@ -30,7 +29,6 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
   late YoutubePlayerController _controller;
   bool _isVideoVisible = false;
 
-
   @override
   void initState() {
     super.initState();
@@ -38,7 +36,8 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Responsive.isMobile(context) ? _trainingPillListMobile()
+    return Responsive.isMobile(context)
+        ? _trainingPillListMobile()
         : _trainingPillListDesktop();
   }
 
@@ -46,7 +45,8 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 12, 13, md: 12);
     String urlYoutubeVideo = widget.trainingPill.urlVideo;
-    String idYoutubeVideo = urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
+    String idYoutubeVideo =
+        urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
     //String idYoutubeVideo = YoutubePlayerController.convertUrlToId(urlYoutubeVideo) ?? "";
     return Container(
       margin: const EdgeInsets.all(10.0),
@@ -75,7 +75,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                       color: Constants.lilac,
                       height: 1.5,
                       fontWeight: FontWeight.normal,
-                      fontSize:  13,
+                      fontSize: 13,
                     ),
                   ),
                 ),
@@ -105,20 +105,18 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                             });
                           });
                         },
-                        icon: Icon(Icons.play_circle_filled), color: AppColors.primaryText1, iconSize: 27),
-                    Text(
-                        '${widget.trainingPill.duration} min',
+                        icon: Icon(Icons.play_circle_filled),
+                        color: AppColors.primaryText1,
+                        iconSize: 27),
+                    Text('${widget.trainingPill.duration} min',
                         style: textTheme.bodySmall?.copyWith(
                           color: AppColors.greyTxtAlt,
-                        )
-                    )
+                        ))
                   ],
                 ),
-
               ],
             ),
-          ]
-      ),
+          ]),
     );
   }
 
@@ -144,8 +142,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                   blurRadius: 1,
                   offset: Offset(0, 0),
                 )
-              ]
-          ),
+              ]),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -175,14 +172,16 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                                     color: Constants.lilac,
                                     height: 1.5,
                                     fontWeight: FontWeight.normal,
-                                    fontSize:  isBigScreen ? 18 : 15,
+                                    fontSize: isBigScreen ? 18 : 15,
                                     //fontSize: fontSize,
                                   ),
                                 ),
                               ),
                               Padding(
                                 padding: EdgeInsets.only(
-                                    right: sidePadding, left: sidePadding, bottom: sidePadding / 2),
+                                    right: sidePadding,
+                                    left: sidePadding,
+                                    bottom: sidePadding / 2),
                                 child: Text(
                                   widget.trainingPill.title.toUpperCase(),
                                   textAlign: TextAlign.left,
@@ -196,7 +195,8 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: sidePadding),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: sidePadding),
                                 child: Text(
                                   widget.trainingPill.description,
                                   textAlign: TextAlign.left,
@@ -205,7 +205,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                                     color: AppColors.greyTxtAlt,
                                     height: 1.5,
                                     fontWeight: FontWeight.normal,
-                                    fontSize:  fontSize,
+                                    fontSize: fontSize,
                                     //fontSize: fontSize,
                                   ),
                                 ),
@@ -218,7 +218,8 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                     Spacer(),
                     Container(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: sidePadding, vertical: sidePadding),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: sidePadding, vertical: sidePadding),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -227,51 +228,62 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                               mouseCursor: MaterialStateMouseCursor.clickable,
                               onTap: widget.onTap,
                               child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: AppColors.greyTxtAlt, width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                                    color: Constants.white
+                                    border: Border.all(
+                                        color: AppColors.greyTxtAlt, width: 1),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    color: Constants.white),
+                                child: Text(
+                                  'Ver más',
+                                  style: TextStyle(
+                                    letterSpacing: 1,
+                                    fontSize: fontSize,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.greyTxtAlt,
+                                  ),
                                 ),
-                                child: Text('Ver más', style: TextStyle(
-                                  letterSpacing: 1,
-                                  fontSize: fontSize,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.greyTxtAlt,
-                                ),),
                               ),
                             ),
                             Spacer(),
-                            buildShareTrainingPill(context, widget.trainingPill, Constants.grey),
+                            buildShareTrainingPill(
+                                context, widget.trainingPill, Constants.grey),
                             SpaceW4(),
                             auth.currentUser == null
                                 ? IconButton(
-                              icon: FaIcon(FontAwesomeIcons.heart),
-                              tooltip: 'Me gusta',
-                              color: Constants.darkGray,
-                              iconSize: 20,
-                              onPressed: () => showAlertNullUser(context),
-                            )
-                                : widget.trainingPill.likes
-                                .contains(auth.currentUser!.uid)
-                                ? IconButton(
-                              icon: FaIcon(FontAwesomeIcons.solidHeart),
-                              tooltip: 'Me gusta',
-                              color: AppColors.red,
-                              iconSize: 20,
-                              onPressed: () {
-                                _removeUserToLike(widget.trainingPill,
-                                    auth.currentUser!.uid);
-                              },
-                            )
-                                : IconButton(
-                              icon: FaIcon(FontAwesomeIcons.heart),
-                              tooltip: 'Me gusta',
-                              color: Constants.darkGray,
-                              onPressed: () {
-                                _addUserToLike(widget.trainingPill);
-                              },
-                            ),
+                                    icon: FaIcon(FontAwesomeIcons.heart),
+                                    tooltip: 'Me gusta',
+                                    color: Constants.darkGray,
+                                    iconSize: 20,
+                                    onPressed: () => showAlertNullUser(context),
+                                  )
+                                : widget.trainingPill.likes.contains(auth.currentUser!.uid)
+                                    ? IconButton(
+                                        icon:
+                                            FaIcon(FontAwesomeIcons.solidHeart),
+                                        tooltip: 'Me gusta',
+                                        color: AppColors.red,
+                                        iconSize: 20,
+                                        onPressed: () {
+                                          removeUserToLikeTrainingPill(
+                                              context: context,
+                                              trainingPill: widget.trainingPill,
+                                              userId: auth.currentUser!.uid);
+                                        },
+                                      )
+                                    : IconButton(
+                                        icon: FaIcon(FontAwesomeIcons.heart),
+                                        tooltip: 'Me gusta',
+                                        color: Constants.darkGray,
+                                        onPressed: () {
+                                          addUserToLikeTrainingPill(
+                                              context: context,
+                                              trainingPill: widget.trainingPill,
+                                              userId: auth.currentUser!.uid);
+                                        },
+                                      ),
                           ],
                         ),
                       ),
@@ -288,7 +300,8 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
 
   Widget playAreaMobile() {
     String urlYoutubeVideo = widget.trainingPill.urlVideo;
-    String idYoutubeVideo = urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
+    String idYoutubeVideo =
+        urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
     if (!_isVideoVisible)
       return AspectRatio(
         aspectRatio: 16 / 9,
@@ -305,8 +318,11 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                   ),
                   fit: BoxFit.fitWidth,
                 ),
-                borderRadius: Responsive.isMobile(context) ? BorderRadius.circular(10) :
-                BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                borderRadius: Responsive.isMobile(context)
+                    ? BorderRadius.circular(10)
+                    : BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
               ),
             ),
           ],
@@ -314,22 +330,24 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
       );
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
       ),
-      child: YoutubePlayerControllerProvider( // Provides controller to all the widget below it.
+      child: YoutubePlayerControllerProvider(
+          // Provides controller to all the widget below it.
           controller: _controller,
           child: YoutubePlayer(
             controller: _controller,
             aspectRatio: 16 / 9,
             enableFullScreenOnVerticalDrag: true,
-          )
-      ),
+          )),
     );
   }
 
   Widget playAreaDesktop() {
     String urlYoutubeVideo = widget.trainingPill.urlVideo;
-    String idYoutubeVideo = urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
+    String idYoutubeVideo =
+        urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
     if (!_isVideoVisible)
       return AspectRatio(
         aspectRatio: 16 / 9,
@@ -355,15 +373,19 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                     ),
                     fit: BoxFit.fitWidth,
                   ),
-                  borderRadius: Responsive.isMobile(context) ? BorderRadius.circular(10) :
-                  BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                  borderRadius: Responsive.isMobile(context)
+                      ? BorderRadius.circular(10)
+                      : BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10)),
                 ),
               ),
               Center(
                 child: Icon(
                   Icons.play_circle_rounded,
                   color: AppColors.black100.withOpacity(0.7),
-                  size: 70,),
+                  size: 70,
+                ),
               ),
             ],
           ),
@@ -371,15 +393,16 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
       );
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
       ),
-      child: YoutubePlayerControllerProvider( // Provides controller to all the widget below it.
+      child: YoutubePlayerControllerProvider(
+          // Provides controller to all the widget below it.
           controller: _controller,
           child: YoutubePlayer(
             controller: _controller,
             aspectRatio: 16 / 9,
-          )
-      ),
+          )),
     );
   }
 
@@ -402,57 +425,4 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
     });
     _controller.toggleFullScreen();
   }
-
-  Future<void> _addUserToLike(TrainingPill trainingPill) async {
-    if (_checkAnonymousUser()) {
-      _showAlertUserAnonymousLike();
-    } else {
-      final auth = Provider.of<AuthBase>(context, listen: false);
-      final database = Provider.of<Database>(context, listen: false);
-      trainingPill.likes.add(auth.currentUser!.uid);
-      await database.setTrainingPill(trainingPill);
-    }
-  }
-
-  Future<void> _removeUserToLike(TrainingPill trainingPill, String userId) async {
-    final database = Provider.of<Database>(context, listen: false);
-    trainingPill.likes.remove(userId);
-    await database.setTrainingPill(trainingPill);
-  }
-
-  bool _checkAnonymousUser() {
-    try {
-      final auth = Provider.of<AuthBase>(context, listen: false);
-      return auth.currentUser!.isAnonymous;
-    } catch (e) {
-      print(e.toString());
-      return true;
-    }
-  }
-
-  _showAlertUserAnonymousLike() async {
-    final didRequestSignOut = await showAlertDialog(context,
-        title: '¿Te interesa este recurso?',
-        content:
-        'Solo los usuarios registrados pueden guardar como favoritos los recursos. ¿Desea entrar como usuario registrado?',
-        cancelActionText: 'Cancelar',
-        defaultActionText: 'Entrar');
-    if (didRequestSignOut == true) {
-      _signOut(context);
-      Navigator.of(context).pop();
-    }
-  }
-
-  Future<void> _signOut(BuildContext context) async {
-    try {
-      final auth = Provider.of<AuthBase>(context, listen: false);
-      await auth.signOut();
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-
 }
-
-

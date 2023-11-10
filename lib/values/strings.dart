@@ -272,6 +272,7 @@ class StringConst {
   static const String LOCATION = 'Localización';
   static const String MODALITY = 'Modalidad';
   static String SHARE_TEXT(String title, String resourceId) => 'El recurso "$title" podría interesarte.\n\nhttps://enredawebapp.web.app/resources/$resourceId';
+  static String SHARE_TEXT_PILLS(String title, String trainingPillId) => 'La píldora informativa: "$title" podría interesarte.\n\nhttps://enredawebapp.web.app/pills/$trainingPillId';
   static const String JOIN_RESOURCE = 'ME INTERESA PARTICIPAR';
   static const String QUIT_RESOURCE = 'NO ME INTERESA PARTICIPAR';
   static const String ENTER = 'Entrar';
@@ -282,7 +283,7 @@ class StringConst {
   static const String NOT_ALLOWED = '¿Te gusta este recurso?';
   static const String REGISTER = 'Registrarse';
   static String RESOURCE_LINK(String resourceId) => 'https://enredawebapp.web.app/resources/$resourceId';
-  static String TRAINING_PILL_LINK(String trainingPillId) => 'https://enredawebapp.web.app/resources/$trainingPillId';
+  static String TRAINING_PILL_LINK(String trainingPillId) => 'https://enredawebapp.web.app/pills/$trainingPillId';
 
 
   //Resource modalities
@@ -398,6 +399,7 @@ class StringConst {
   static const String PATH_LOGIN = "/login";
   static const String PATH_ACCESS = "/access";
   static const String PATH_RESOURCES = "/resources";
+  static const String PATH_TRAINING_PILLS = "/pills";
   static const String PATH_COMPETENCIES = "/competencies";
   //Assistant Chat
   static const String START_CHAT = '¡INICIA EL CHAT!';

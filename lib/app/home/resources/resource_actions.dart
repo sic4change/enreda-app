@@ -1,4 +1,5 @@
 import 'package:enreda_app/app/home/models/resource.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/show_toast.dart';
@@ -65,6 +66,13 @@ Future<void> removeUserToResource(
 Future<void> shareResource(Resource resource) async {
   await Share.share(
     StringConst.SHARE_TEXT(resource.title, resource.resourceId),
+    subject: StringConst.APP_NAME,
+  );
+}
+
+Future<void> shareTrainingPill(TrainingPill trainingPill) async {
+  await Share.share(
+    StringConst.SHARE_TEXT(trainingPill.title, trainingPill.id),
     subject: StringConst.APP_NAME,
   );
 }

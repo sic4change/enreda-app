@@ -1,16 +1,16 @@
-class ResourceCategory {
-  ResourceCategory({required this.name, required this.id, required this.order});
+class TrainingPillCategory {
+  TrainingPillCategory({required this.name, required this.id, required this.order});
 
-  factory ResourceCategory.fromMap(Map<String, dynamic>? data, String documentId) {
+  factory TrainingPillCategory.fromMap(Map<String, dynamic>? data, String documentId) {
     final String name = data?['name'];
     final String id = data?['id'];
     final int order = data?['order'];
 
 
-    return ResourceCategory(
-        name: name,
-        id: id,
-        order: order,
+    return TrainingPillCategory(
+      name: name,
+      id: id,
+      order: order,
     );
   }
 

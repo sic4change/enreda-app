@@ -25,6 +25,7 @@ import 'package:enreda_app/app/home/models/size.dart';
 import 'package:enreda_app/app/home/models/specificinterest.dart';
 import 'package:enreda_app/app/home/models/timeSearching.dart';
 import 'package:enreda_app/app/home/models/timeSpentWeekly.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/unemployedUser.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/models/chatQuestion.dart';
@@ -91,6 +92,7 @@ abstract class Database {
   Stream<CertificationRequest> certificationRequestStream(String certificationRequestId);
   Stream<List<CertificationRequest>> myCertificationRequestStream(String userId);
   Stream<List<ResourceCategory>> getCategoriesResources();
+  Stream<List<TrainingPill>> trainingPillStream();
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> addUserEnreda(UserEnreda userEnreda);
@@ -112,6 +114,7 @@ abstract class Database {
   Future<void> setCertificationRequest(CertificationRequest certificationRequest);
   Future<void> addCertificationRequest(CertificationRequest certificationRequest);
   Future<void> updateCertificationRequest(CertificationRequest certificationRequest, bool certified, bool referenced );
+  Future<void> setTrainingPill(TrainingPill trainingPill);
 }
 
 class FirestoreDatabase implements Database {
@@ -393,6 +396,16 @@ class FirestoreDatabase implements Database {
       );
 
   @override
+  Stream<List<TrainingPill>> trainingPillStream() {
+    return _service.collectionStream(
+      path: APIPath.trainingPills(),
+      queryBuilder: (query) => query.where('status', isEqualTo: 'Disponible'),
+      builder: (data, documentId) => TrainingPill.fromMap(data, documentId),
+      sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+    );
+  }
+
+  @override
   Future<void> addUserEnreda(UserEnreda userEnreda) =>
       _service.addData(path: APIPath.tests(), data: userEnreda.toMap());
 
@@ -419,6 +432,11 @@ class FirestoreDatabase implements Database {
         path: APIPath.certificationRequest(certificationRequest.certificationRequestId!), data: {
       "certified": certified, 'referenced': referenced});
   }
+
+  @override
+  Future<void> setTrainingPill(TrainingPill trainingPill) => _service.updateData(
+      path: APIPath.trainingPill(trainingPill.id), data: trainingPill.toMap());
+
 
   @override
   Stream<List<Country>> countryFormatedStream() => _service.collectionStream(

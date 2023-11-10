@@ -107,9 +107,12 @@ class ImagePath {
   static const String BACKGROUND_6 = '$imageDir/background-voluntariado-2X.png';
   static const String PERSON_6 = '$imageDir/person-voluntariado.png';
   static const String FUNDAULA = '$imageDir/icon-click-fundaula.png';
+
+  //Training pills
   static const String BACKGROUND_PILLS = '$imageDir/background-pildoras.png';
   static const String PERSON_PILL1 = '$imageDir/person-pildora1.png';
   static const String PERSON_PILL2 = '$imageDir/person-pildora2.png';
   static const String PERSON_PILL3 = '$imageDir/person-pildora3.png';
+  static const String PLACEHOLDER_VIDEO = '$imageDir/placeholder_video.png';
 
 }

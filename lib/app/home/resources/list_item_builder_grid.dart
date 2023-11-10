@@ -12,6 +12,8 @@ class ListItemBuilderGrid<T> extends StatelessWidget {
       required this.itemBuilder,
       this.emptyTitle,
       this.emptyMessage,
+      this.maxCrossAxisExtentValue = 520,
+      this.mainAxisExtentValue = 250,
       this.fitSmallerLayout = false})
       : super(key: key);
   final AsyncSnapshot<List<T>> snapshot;
@@ -19,6 +21,8 @@ class ListItemBuilderGrid<T> extends StatelessWidget {
   final String? emptyTitle;
   final String? emptyMessage;
   final bool? fitSmallerLayout;
+  final double? maxCrossAxisExtentValue;
+  final double? mainAxisExtentValue;
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +48,11 @@ class ListItemBuilderGrid<T> extends StatelessWidget {
         shrinkWrap: constraints.maxWidth < 550 ? true : false,
         padding: EdgeInsets.all(4.0),
         itemCount: items.length,
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 520,
-            mainAxisExtent: 250,
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            //maxCrossAxisExtent: 520,
+            maxCrossAxisExtent: maxCrossAxisExtentValue!,
+            //mainAxisExtent: 250,
+            mainAxisExtent: mainAxisExtentValue!,
             crossAxisSpacing: 20,
             mainAxisSpacing: 20
         ),

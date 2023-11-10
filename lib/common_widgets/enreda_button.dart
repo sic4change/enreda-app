@@ -29,7 +29,7 @@ class EnredaButton extends StatelessWidget {
   final TextStyle? titleStyle;
   final Color titleColor;
   final Color buttonColor;
-  final BorderRadius? borderRadius;
+  final BorderRadiusGeometry borderRadius;
   final EdgeInsetsGeometry padding;
   final String url;
   final LinkTarget linkTarget;

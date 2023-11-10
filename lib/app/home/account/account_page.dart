@@ -104,84 +104,89 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget _buildDesktopLayout(UserEnreda userEnreda) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40.0),
-      child:
-      Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 32.0),
-            width: widthOfScreen(context) < 1200
-                ? Constants.sidebarWidth / 2
-                : Constants.sidebarWidth,
-            child: SingleChildScrollView(
-              controller: ScrollController(),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+    return Stack(
+      children: [
+        Container(color: Constants.turquoise, height: 260.0,),
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+            child:
+            Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildMyProfile(userEnreda),
-                  SpaceH20(),
-                  _buildMyParameters(userEnreda)
-                ],
-              ),
-            ),
-          ),
-          SpaceW20(),
-          Expanded(
-            child: _currentPageTitle == StringConst.PERSONAL_DATA.toUpperCase()
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 26.0),
-                    child: _currentPage,
-                  )
-                : _currentPageTitle == StringConst.MY_CV.toUpperCase()
-                    ? Stack(
-                        children: [
-                          _currentPage!,
-                          Responsive.isTablet(context) ? Container() : Positioned(
-                            top: -80,
-                            left: 80,
-                            child: Image.asset(ImagePath.CLIP_CV),
-                            width: 100.0,
-                          ),
-                          Responsive.isTablet(context) ? Container() : Positioned(
-                            top: -80,
-                            right: 80,
-                            child: Image.asset(ImagePath.CLIP_CV),
-                            width: 100.0,
-                          ),
-                        ],
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20.0),
-                        child: Container(
-                          padding: EdgeInsets.all(Constants.mainPadding),
-                          decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Constants.lightGray, width: 1),
-                            borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                            color: Colors.white,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Padding(
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 32.0),
+                  width: widthOfScreen(context) < 1200
+                      ? Constants.sidebarWidth / 2
+                      : Constants.sidebarWidth,
+                  child: SingleChildScrollView(
+                    controller: ScrollController(),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildMyProfile(userEnreda),
+                        SpaceH20(),
+                        _buildMyParameters(userEnreda)
+                      ],
+                    ),
+                  ),
+                ),
+                SpaceW20(),
+                Expanded(
+                  child: _currentPageTitle == StringConst.PERSONAL_DATA.toUpperCase()
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 26.0),
+                          child: _currentPage,
+                        )
+                      : _currentPageTitle == StringConst.MY_CV.toUpperCase()
+                          ? Stack(
+                              children: [
+                                _currentPage!,
+                                Responsive.isTablet(context) ? Container() : Positioned(
+                                  top: -80,
+                                  left: 80,
+                                  child: Image.asset(ImagePath.CLIP_CV),
+                                  width: 100.0,
+                                ),
+                                Responsive.isTablet(context) ? Container() : Positioned(
+                                  top: -80,
+                                  right: 80,
+                                  child: Image.asset(ImagePath.CLIP_CV),
+                                  width: 100.0,
+                                ),
+                              ],
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 20.0),
+                              child: Container(
                                 padding: EdgeInsets.all(Constants.mainPadding),
-                                child: Text(
-                                  _currentPageTitle,
-                                  style: textTheme.bodyText1?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Constants.penBlue,
-                                      fontSize: 16.0),
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Constants.lightGray, width: 1),
+                                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                                  color: Colors.white,
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(Constants.mainPadding),
+                                      child: Text(
+                                        _currentPageTitle,
+                                        style: textTheme.bodyText1?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Constants.penBlue,
+                                            fontSize: 16.0),
+                                      ),
+                                    ),
+                                    Expanded(child: _currentPage!),
+                                  ],
                                 ),
                               ),
-                              Expanded(child: _currentPage!),
-                            ],
-                          ),
-                        ),
-                      ),
-          ),
-        ]),
+                            ),
+                ),
+              ]),
+        ),
+      ],
     );
   }
 

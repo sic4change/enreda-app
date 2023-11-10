@@ -31,9 +31,10 @@ Future<Uint8List> generateResume1(
     String? city,
     String? province,
     String? country,
-    List<Experience>?
-    myExperiences,
+    List<Experience>? myExperiences,
+    List<Experience>? myPersonalExperiences,
     List<Experience>? myEducation,
+    List<Experience>? mySecondaryEducation,
     List<String>? competenciesNames,
     List<String>? languagesNames,
     String? aboutMe,
@@ -208,7 +209,7 @@ Future<Uint8List> generateResume1(
                             )
                         ),
                         pw.SizedBox(height: 40),
-                        myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_EXPERIENCES) : pw.Container(),
+                        myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_PROFESIONAL_EXPERIENCES) : pw.Container(),
                         for (var experience in myExperiences!)
                           _Block(
                             title: experience.activityRole != null &&
@@ -224,12 +225,43 @@ Future<Uint8List> generateResume1(
                             description2: '${experience.location}',
                           ),
                         pw.SizedBox(height: 5),
+
+                        myPersonalExperiences != null && myPersonalExperiences.isNotEmpty ? _Category(title: StringConst.MY_PERSONAL_EXPERIENCES) : pw.Container(),
+                        for (var experience in myPersonalExperiences!)
+                          _Block(
+                            title: experience.activityRole != null &&
+                                experience.activity != null
+                                ? '${experience.activityRole} - ${experience.activity}'
+                                : experience.position == ""
+                                ? experience.activity
+                                : experience.organization == ""
+                                ? experience.position
+                                : '${experience.position} - ${experience.organization}',
+                            description1:
+                            '${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
+                            description2: '${experience.location}',
+                          ),
+                        pw.SizedBox(height: 5),
+
                         myEducation!.isNotEmpty ? _Category(title: StringConst.EDUCATION) : pw.Container(),
                         for (var education in myEducation)
                           _Block(
-                            title: education.activityRole == null
-                                ? education.activity
-                                : '${education.activityRole} - ${education.activity}',
+                            title: education.activity == null || education.activity == ''
+                                ? education.nameFormation
+                                : education.activity,
+                            description1:'${formatter.format(education.startDate.toDate())} / ${education.endDate != null
+                                ? formatter.format(education.endDate!.toDate())
+                                : 'Actualmente'}',
+                            description2: '${education.location}',
+                          ),
+                        pw.SizedBox(height: 5),
+
+                        mySecondaryEducation!.isNotEmpty ? _Category(title: StringConst.SECONDARY_EDUCATION) : pw.Container(),
+                        for (var education in mySecondaryEducation)
+                          _Block(
+                            title: education.activity == null || education.activity == ''
+                                ? education.nameFormation
+                                : education.activity,
                             description1:'${formatter.format(education.startDate.toDate())} / ${education.endDate != null
                                 ? formatter.format(education.endDate!.toDate())
                                 : 'Actualmente'}',

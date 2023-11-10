@@ -34,9 +34,10 @@ Future<Uint8List> generateResume3(
     String? city,
     String? province,
     String? country,
-    List<Experience>?
-    myExperiences,
+    List<Experience>? myExperiences,
+    List<Experience>? myPersonalExperiences,
     List<Experience>? myEducation,
+    List<Experience>? mySecondaryEducation,
     List<String>? competenciesNames,
     List<String>? languagesNames,
     String? aboutMe,
@@ -234,7 +235,7 @@ Future<Uint8List> generateResume3(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: <pw.Widget>[
-                        myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_EXPERIENCES, color: green) : pw.Container(),
+                        myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_PROFESIONAL_EXPERIENCES, color: green) : pw.Container(),
                         for (var experience in myExperiences!)
                           _Block(
                             title: experience.activityRole != null &&
@@ -251,17 +252,50 @@ Future<Uint8List> generateResume3(
                             descriptionPlace: '${experience.location}',
                           ),
                         pw.SizedBox(height: 5),
+
+                        myPersonalExperiences != null && myPersonalExperiences.isNotEmpty ? _Category(title: StringConst.MY_PERSONAL_EXPERIENCES, color: green) : pw.Container(),
+                        for (var experience in myPersonalExperiences!)
+                          _Block(
+                            title: experience.activityRole != null &&
+                                experience.activity != null
+                                ? '${experience.activityRole} - ${experience.activity}'
+                                : experience.position == ""
+                                ? experience.activity
+                                : experience.organization == ""
+                                ? experience.position
+                                : '${experience.position} - ${experience.organization}',
+                            descriptionDate:'${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null
+                                ? formatter.format(experience.endDate!.toDate())
+                                : 'Actualmente'}',
+                            descriptionPlace: '${experience.location}',
+                          ),
+                        pw.SizedBox(height: 5),
+
                         myEducation!.isNotEmpty ? _Category(title: StringConst.EDUCATION, color: green) : pw.Container(),
                         for (var education in myEducation)
                           _Block(
-                            title: education.activityRole == null
-                                ? education.activity
-                                : '${education.activityRole} - ${education.activity}',
+                            title: education.activity == null || education.activity == ''
+                                ? education.nameFormation
+                                : education.activity,
                             descriptionDate:'${formatter.format(education.startDate.toDate())} / ${education.endDate != null
                                 ? formatter.format(education.endDate!.toDate())
                                 : 'Actualmente'}',
                             descriptionPlace: '${education.location}',
                           ),
+                        pw.SizedBox(height: 5),
+
+                        mySecondaryEducation!.isNotEmpty ? _Category(title: StringConst.SECONDARY_EDUCATION, color: green) : pw.Container(),
+                        for (var education in mySecondaryEducation)
+                          _Block(
+                            title: education.activity == null || education.activity == ''
+                                ? education.nameFormation
+                                : education.activity,
+                            descriptionDate:'${formatter.format(education.startDate.toDate())} / ${education.endDate != null
+                                ? formatter.format(education.endDate!.toDate())
+                                : 'Actualmente'}',
+                            descriptionPlace: '${education.location}',
+                          ),
+
                         pw.SizedBox(height: 15),
                         pw.Partitions(
                             children: [

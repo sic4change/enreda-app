@@ -601,10 +601,18 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   trainingPill.setTrainingPillCategoryName();
                   return Container(
                     key: Key('trainingPill-${trainingPill.id}'),
-                    child: TrainingPillListTile(
-                      trainingPill: trainingPill,
-                      onTap: () => context.push(
-                          '${StringConst.PATH_RESOURCES}/${trainingPill.id}'),
+                    child: Column(
+                      children: [
+                        TrainingPillListTile(
+                          trainingPill: trainingPill,
+                          onTap: () => context.push(
+                              '${StringConst.PATH_RESOURCES}/${trainingPill.id}'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Divider(thickness: 1.5),
+                        ),
+                      ],
                     ),
                   );
                 }

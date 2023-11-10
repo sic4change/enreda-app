@@ -30,6 +30,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
   late YoutubePlayerController _controller;
   bool _isVideoVisible = false;
 
+
   @override
   void initState() {
     super.initState();
@@ -37,62 +38,97 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
 
   @override
   Widget build(BuildContext context) {
+    return Responsive.isMobile(context) ? _trainingPillListMobile()
+        : _trainingPillListDesktop();
+  }
+
+  Widget _trainingPillListMobile() {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    double fontSize = responsiveSize(context, 12, 13, md: 12);
+    String urlYoutubeVideo = widget.trainingPill.urlVideo;
+    String idYoutubeVideo = urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
+    //String idYoutubeVideo = YoutubePlayerController.convertUrlToId(urlYoutubeVideo) ?? "";
+    return Container(
+      margin: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: Constants.white,
+      ),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+                width: 150,
+                margin: const EdgeInsets.only(right: 8.0),
+                child: playAreaMobile()),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    widget.trainingPill.trainingPillCategoryName!.toUpperCase(),
+                    textAlign: TextAlign.left,
+                    maxLines: 1,
+                    style: textTheme.titleSmall?.copyWith(
+                      color: Constants.lilac,
+                      height: 1.5,
+                      fontWeight: FontWeight.normal,
+                      fontSize:  13,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    widget.trainingPill.title,
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: TextStyle(
+                      letterSpacing: 1,
+                      fontSize: fontSize,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.greyTxtAlt,
+                    ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                        onPressed: () async {
+                          setState(() {
+                            setState(() {
+                              _isVideoVisible = !_isVideoVisible;
+                              _initializeVideo(idYoutubeVideo);
+                            });
+                          });
+                        },
+                        icon: Icon(Icons.play_circle_filled), color: AppColors.primaryText1, iconSize: 27),
+                    Text(
+                        '${widget.trainingPill.duration} min',
+                        style: textTheme.bodySmall?.copyWith(
+                          color: AppColors.greyTxtAlt,
+                        )
+                    )
+                  ],
+                ),
+
+              ],
+            ),
+          ]
+      ),
+    );
+  }
+
+  Widget _trainingPillListDesktop() {
     final auth = Provider.of<AuthBase>(context, listen: false);
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 12, 13, md: 12);
     double sidePadding = responsiveSize(context, 15, 20, md: 17);
     final isBigScreen = MediaQuery.of(context).size.width >= 900;
-    return Responsive.isMobile(context) ?
-    Container(
-      margin: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-          color: Constants.white,
-      ),
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-              width: 120,
-              decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.greyBorder, width: 1),
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  color: Colors.purple,
-              ),
-              child: playArea()),
-          SpaceW24(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.trainingPill.trainingPillCategoryName!,
-                textAlign: TextAlign.left,
-                maxLines: 1,
-                style: textTheme.titleSmall?.copyWith(
-                  color: Constants.lilac,
-                  height: 1.5,
-                  fontWeight: FontWeight.normal,
-                  fontSize:  isBigScreen ? 18 : 15,
-                ),
-              ),
-              Text(
-                widget.trainingPill.title.toUpperCase(),
-                textAlign: TextAlign.left,
-                maxLines: 2,
-                style: TextStyle(
-                  letterSpacing: 1,
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.blueDark,
-                ),
-              ),
-            ],
-          ),
-        ]
-      ),
-    )
-    : Scaffold(
+    return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
         margin: const EdgeInsets.all(5.0),
@@ -115,7 +151,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
             children: [
               AspectRatio(
                 aspectRatio: 16 / 9,
-                child: playArea(),
+                child: playAreaDesktop(),
               ),
               Expanded(
                 child: Column(
@@ -250,6 +286,123 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
     );
   }
 
+  Widget playAreaMobile() {
+    String urlYoutubeVideo = widget.trainingPill.urlVideo;
+    String idYoutubeVideo = urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
+    if (!_isVideoVisible)
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(
+                    YoutubePlayerController.getThumbnail(
+                      videoId: idYoutubeVideo,
+                      quality: ThumbnailQuality.max,
+                    ),
+                  ),
+                  fit: BoxFit.fitWidth,
+                ),
+                borderRadius: Responsive.isMobile(context) ? BorderRadius.circular(10) :
+                BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+              ),
+            ),
+          ],
+        ),
+      );
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+      ),
+      child: YoutubePlayerControllerProvider( // Provides controller to all the widget below it.
+          controller: _controller,
+          child: YoutubePlayer(
+            controller: _controller,
+            aspectRatio: 16 / 9,
+            enableFullScreenOnVerticalDrag: true,
+          )
+      ),
+    );
+  }
+
+  Widget playAreaDesktop() {
+    String urlYoutubeVideo = widget.trainingPill.urlVideo;
+    String idYoutubeVideo = urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
+    if (!_isVideoVisible)
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: InkWell(
+          onTap: () async {
+            setState(() {
+              setState(() {
+                _isVideoVisible = !_isVideoVisible;
+                _initializeVideo(idYoutubeVideo);
+              });
+            });
+          },
+          child: Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(
+                      YoutubePlayerController.getThumbnail(
+                        videoId: idYoutubeVideo,
+                        quality: ThumbnailQuality.max,
+                      ),
+                    ),
+                    fit: BoxFit.fitWidth,
+                  ),
+                  borderRadius: Responsive.isMobile(context) ? BorderRadius.circular(10) :
+                  BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                ),
+              ),
+              Center(
+                child: Icon(
+                  Icons.play_circle_rounded,
+                  color: AppColors.black100.withOpacity(0.7),
+                  size: 70,),
+              ),
+            ],
+          ),
+        ),
+      );
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+      ),
+      child: YoutubePlayerControllerProvider( // Provides controller to all the widget below it.
+          controller: _controller,
+          child: YoutubePlayer(
+            controller: _controller,
+            aspectRatio: 16 / 9,
+          )
+      ),
+    );
+  }
+
+  _initializeVideo(String id) {
+    // Generate a new controller and set as global _controller
+    final controller = YoutubePlayerController.fromVideoId(
+      videoId: id,
+      autoPlay: true,
+      params: const YoutubePlayerParams(
+        showControls: true,
+        mute: false,
+        showFullscreenButton: true,
+      ),
+    );
+    setState(() {
+      _controller = controller;
+      if (_isVideoVisible == false) {
+        _isVideoVisible = true;
+      }
+    });
+    _controller.toggleFullScreen();
+  }
+
   Future<void> _addUserToLike(TrainingPill trainingPill) async {
     if (_checkAnonymousUser()) {
       _showAlertUserAnonymousLike();
@@ -299,82 +452,6 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
     }
   }
 
-  Widget playArea() {
-    String urlYoutubeVideo = widget.trainingPill.urlVideo;
-    String idYoutubeVideo = urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
-    if (!_isVideoVisible)
-      return AspectRatio(
-        aspectRatio: Responsive.isMobile(context) ? 1.3 : 16 / 9,
-        child: InkWell(
-          onTap: () async {
-            setState(() {
-              setState(() {
-                _isVideoVisible = !_isVideoVisible;
-                _initializeVideo(idYoutubeVideo);
-              });
-            });
-          },
-          child: Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      YoutubePlayerController.getThumbnail(
-                        videoId: idYoutubeVideo,
-                        quality: ThumbnailQuality.max,
-                      ),
-                    ),
-                    fit: Responsive.isMobile(context) ? BoxFit.cover : BoxFit.fitWidth,
-                  ),
-                  borderRadius: Responsive.isMobile(context) ? BorderRadius.circular(10) :
-                  BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                ),
-              ),
-              Center(
-                child: Icon(
-                  Icons.play_circle_rounded,
-                  color: AppColors.black100.withOpacity(0.7),
-                  size: Responsive.isMobile(context) ? 30 : 70,),
-                ),
-            ],
-          ),
-        ),
-      );
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-      ),
-      child: YoutubePlayerControllerProvider( // Provides controller to all the widget below it.
-        controller: _controller,
-        child: YoutubePlayer(
-          controller: _controller,
-          aspectRatio: 16 / 9,
-          enableFullScreenOnVerticalDrag: true,
-        )
-      ),
-    );
-  }
-
-  _initializeVideo(String id) {
-    // Generate a new controller and set as global _controller
-    final controller = YoutubePlayerController.fromVideoId(
-      videoId: id,
-      autoPlay: true,
-      params: const YoutubePlayerParams(
-          showControls: true,
-          mute: false,
-          showFullscreenButton: true,
-      ),
-    );
-    setState(() {
-      _controller = controller;
-      if (_isVideoVisible == false) {
-        _isVideoVisible = true;
-      }
-    });
-    _controller.toggleFullScreen();
-  }
 
 }
 

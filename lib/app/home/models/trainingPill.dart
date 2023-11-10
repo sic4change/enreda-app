@@ -8,7 +8,7 @@ class TrainingPill {
     this.trainingPillCategoryName,
     required this.order,
     required this.urlVideo,
-    required this.placeholderImage,
+    required this.duration,
     required this.likes,
   });
 
@@ -20,7 +20,7 @@ class TrainingPill {
     final String trainingPillCategory = data?['trainingPillCategory'];
     final String? trainingPillCategoryName = data?['trainingPillCategoryName'];
     final String urlVideo = data?['urlVideo'];
-    final String placeholderImage = data?['placeholderImage'];
+    final String duration = data?['duration'];
     final int order = data?['order'];
     List<String> likes = [];
     if (data?['likes'] != null) {
@@ -36,7 +36,7 @@ class TrainingPill {
         trainingPillCategoryName: trainingPillCategoryName,
         order: order,
         urlVideo: urlVideo,
-        placeholderImage: placeholderImage,
+        duration: duration,
         likes: likes
     );
   }
@@ -49,8 +49,8 @@ class TrainingPill {
   String? trainingPillCategoryName;
   final int order;
   final String urlVideo;
-  final String placeholderImage;
   final List<String> likes;
+  final String duration;
 
   Map<String, dynamic> toMap() {
     return {
@@ -62,8 +62,8 @@ class TrainingPill {
       'trainingPillCategoryName' : trainingPillCategoryName,
       'order' : order,
       'urlVideo' : urlVideo,
-      'placeholderImage' : placeholderImage,
-      'likes' : likes
+      'likes' : likes,
+      'duration' : duration
     };
   }
   void setTrainingPillCategoryName() {

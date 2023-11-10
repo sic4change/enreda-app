@@ -579,7 +579,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   child: TrainingPillListTile(
                     trainingPill: trainingPill,
                     onTap: () => context.push(
-                        '${StringConst.PATH_RESOURCES}/${trainingPill.id}'),
+                        '${StringConst.PATH_TRAINING_PILLS}/${trainingPill.id}'),
                   ),
                 );
               }
@@ -606,7 +606,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                         TrainingPillListTile(
                           trainingPill: trainingPill,
                           onTap: () => context.push(
-                              '${StringConst.PATH_RESOURCES}/${trainingPill.id}'),
+                              '${StringConst.PATH_TRAINING_PILLS}/${trainingPill.id}'),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),

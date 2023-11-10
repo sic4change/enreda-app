@@ -64,11 +64,23 @@ class MyCurriculumPage extends StatelessWidget {
 
   List<int> mySelectedExperiences = [];
 
+  List<Experience>? myPersonalExperiences = [];
+
+  List<Experience> myPersonalCustomExperiences = [];
+
+  List<int> myPersonalSelectedExperiences = [];
+
   List<Experience>? myEducation = [];
 
   List<Experience> myCustomEducation = [];
 
   List<int> mySelectedEducation = [];
+
+  List<Experience>? mySecondaryEducation = [];
+
+  List<Experience> mySecondaryCustomEducation = [];
+
+  List<int> mySecondarySelectedEducation = [];
 
   List<CertificationRequest>? myReferences = [];
 
@@ -325,9 +337,15 @@ class MyCurriculumPage extends StatelessWidget {
                                       myExperiences: myExperiences!,
                                       myCustomExperiences: myCustomExperiences,
                                       mySelectedExperiences: mySelectedExperiences,
+                                      myPersonalExperiences: myPersonalExperiences,
+                                      myPersonalSelectedExperiences: myPersonalSelectedExperiences,
+                                      myPersonalCustomExperiences: myPersonalCustomExperiences,
                                       myEducation: myEducation!,
                                       myCustomEducation: myCustomEducation,
                                       mySelectedEducation: mySelectedEducation,
+                                      mySecondaryEducation: mySecondaryEducation,
+                                      mySecondaryCustomEducation: mySecondaryCustomEducation,
+                                      mySecondarySelectedEducation: mySecondarySelectedEducation,
                                       competenciesNames: competenciesNames,
                                       myCustomCompetencies: myCustomCompetencies,
                                       mySelectedCompetencies: mySelectedCompetencies,
@@ -504,9 +522,15 @@ class MyCurriculumPage extends StatelessWidget {
                               myExperiences: myExperiences!,
                               myCustomExperiences: myCustomExperiences,
                               mySelectedExperiences: mySelectedExperiences,
+                              myPersonalExperiences: myPersonalExperiences,
+                              myPersonalSelectedExperiences: myPersonalSelectedExperiences,
+                              myPersonalCustomExperiences: myPersonalCustomExperiences,
                               myEducation: myEducation!,
                               myCustomEducation: myCustomEducation,
                               mySelectedEducation: mySelectedEducation,
+                              mySecondaryEducation: mySecondaryEducation,
+                              mySecondaryCustomEducation: mySecondaryCustomEducation,
+                              mySecondarySelectedEducation: mySecondarySelectedEducation,
                               competenciesNames: competenciesNames,
                               myCustomCompetencies: myCustomCompetencies,
                               mySelectedCompetencies: mySelectedCompetencies,
@@ -1005,20 +1029,20 @@ class MyCurriculumPage extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData &&
                   snapshot.connectionState == ConnectionState.active) {
-                myEducation = snapshot.data!
+                mySecondaryEducation = snapshot.data!
                     .where((experience) => experience.type == 'Complementaria')
                     .toList();
-                myCustomEducation = myEducation!.map((element) => element).toList();
-                mySelectedEducation = List.generate(myCustomEducation.length, (i) => i);
+                mySecondaryCustomEducation = mySecondaryEducation!.map((element) => element).toList();
+                mySecondarySelectedEducation = List.generate(mySecondaryCustomEducation.length, (i) => i);
                 return Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30.0),
                     color: Constants.lightLilac,
                   ),
-                  child: myEducation!.isNotEmpty
+                  child: mySecondaryEducation!.isNotEmpty
                       ? Wrap(
-                    children: myEducation!
+                    children: mySecondaryEducation!
                         .map((e) => Column(
                       crossAxisAlignment:
                       CrossAxisAlignment.start,
@@ -1050,7 +1074,7 @@ class MyCurriculumPage extends StatelessWidget {
       children: [
         Row(
           children: [
-            CustomTextSubTitle(title: 'Experiencia Profesional'.toUpperCase()),
+            CustomTextSubTitle(title: StringConst.MY_PROFESIONAL_EXPERIENCES.toUpperCase()),
             SpaceW8(),
 
             _addButton(() {
@@ -1118,7 +1142,7 @@ class MyCurriculumPage extends StatelessWidget {
       children: [
         Row(
           children: [
-            CustomTextSubTitle(title: 'Experiencia Personal'.toUpperCase()),
+            CustomTextSubTitle(title: StringConst.MY_PERSONAL_EXPERIENCES.toUpperCase()),
             SpaceW8(),
 
             _addButton(() {
@@ -1141,20 +1165,20 @@ class MyCurriculumPage extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData &&
                   snapshot.connectionState == ConnectionState.active) {
-                myExperiences = snapshot.data!
+                myPersonalExperiences = snapshot.data!
                     .where((experience) => experience.type == 'Personal')
                     .toList();
-                myCustomExperiences = myExperiences!.map((element) => element).toList();
-                mySelectedExperiences = List.generate(myCustomExperiences.length, (i) => i);
+                myPersonalCustomExperiences = myPersonalExperiences!.map((element) => element).toList();
+                myPersonalSelectedExperiences = List.generate(myPersonalCustomExperiences.length, (i) => i);
                 return Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30.0),
                     color: Constants.lightLilac,
                   ),
-                  child: myExperiences!.isNotEmpty
+                  child: myPersonalExperiences!.isNotEmpty
                       ? Wrap(
-                    children: myExperiences!
+                    children: myPersonalExperiences!
                         .map((e) => Column(
                       crossAxisAlignment:
                       CrossAxisAlignment.start,

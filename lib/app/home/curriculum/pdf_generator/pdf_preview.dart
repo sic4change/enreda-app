@@ -23,7 +23,9 @@ class MyCv extends StatefulWidget {
     required this.province,
     required this.country,
     required this.myExperiences,
+    required this.myPersonalExperiences,
     required this.myEducation,
+    required this.mySecondaryEducation,
     required this.competenciesNames,
     required this.languagesNames,
     required this.aboutMe,
@@ -40,7 +42,9 @@ class MyCv extends StatefulWidget {
   final String? province;
   final String? country;
   final List<Experience>? myExperiences;
+  final List<Experience>? myPersonalExperiences;
   final List<Experience>? myEducation;
+  final List<Experience>? mySecondaryEducation;
   final List<String> competenciesNames;
   final List<String> languagesNames;
   final String? aboutMe;
@@ -172,7 +176,9 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
             widget.province!,
             widget.country!,
             widget.myExperiences!,
+            widget.myPersonalExperiences,
             widget.myEducation!,
+            widget.mySecondaryEducation,
             widget.competenciesNames,
             widget.languagesNames,
             widget.aboutMe,
@@ -187,6 +193,7 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
         canDebug: false,
         onPrinted: _showPrintedToast,
         onShared: _showSharedToast,
+        canChangeOrientation: false,
       ),
     );
   }

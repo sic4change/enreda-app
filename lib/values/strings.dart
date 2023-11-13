@@ -272,7 +272,7 @@ class StringConst {
   static const String LOCATION = 'Localización';
   static const String MODALITY = 'Modalidad';
   static String SHARE_TEXT(String title, String resourceId) => 'El recurso "$title" podría interesarte.\n\nhttps://enredawebapp.web.app/resources/$resourceId';
-  static String SHARE_TEXT_PILLS(String title, String trainingPillId) => 'La píldora informativa: "$title" podría interesarte.\n\nhttps://enredawebapp.web.app/pills/$trainingPillId';
+  static String SHARE_TEXT_PILLS(String title, String trainingPillId) => 'La píldora formativa: "$title" podría interesarte.\n\nhttps://enredawebapp.web.app/pills/$trainingPillId';
   static const String JOIN_RESOURCE = 'ME INTERESA PARTICIPAR';
   static const String QUIT_RESOURCE = 'NO ME INTERESA PARTICIPAR';
   static const String ENTER = 'Entrar';

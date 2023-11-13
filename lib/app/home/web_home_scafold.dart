@@ -1,9 +1,6 @@
 import 'package:enreda_app/app/home/account/account_page.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
-import 'package:enreda_app/app/home/home_page.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
-import 'package:enreda_app/app/sign_in/sign_out_admin.dart';
-import 'package:enreda_app/common_widgets/background_web.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -139,6 +136,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                       onPressed: () {
                         setState(() {
                           WebHomeScaffold.selectedIndex.value = 0;
+                          ResourcesPage.selectedIndex.value = 0;
                         });
                       },
                       child: Text(
@@ -165,6 +163,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                       onPressed: () {
                         setState(() {
                           WebHomeScaffold.selectedIndex.value = 1;
+                          ResourcesPage.selectedIndex.value = 0;
                         });
                       },
                       child: Text(

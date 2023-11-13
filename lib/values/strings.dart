@@ -226,7 +226,7 @@ class StringConst {
   static const String NEW_WEB_ENREDA_URL = 'https://www.enredas.org/';
   static const String WEB_COMPANIES_URL_ACCESS = 'https://enreda-empresas.web.app/';
   static const String WEB_ADMIN_ACCESS = 'https://enreda-d3b41.web.app/';
-  static const String WEB_FUNDAULA_ACCESS = 'https://www.fundaula.es/';
+  static const String WEB_FUNDAULA_ACCESS = 'https://fundaula-lp.cclearning.accenture.com/?p=12510';
 
   //Contact form
   static const String CONFIRM = "Confirmado";

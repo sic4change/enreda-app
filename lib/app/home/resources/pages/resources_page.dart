@@ -213,7 +213,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
     final isDesktopScreen = MediaQuery.of(context).size.width >= 1350;
     return Container(
       color: AppColors.greyLightAlt,
-      height: Responsive.isMobile(context) ? 400 : Responsive.isDesktopS(context) ? 600 : 500,
+      height: Responsive.isMobile(context) ? 400 : Responsive.isDesktopS(context) ? 600 : 550,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -241,7 +241,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
               alignment: Alignment.bottomCenter,
               children: [
                 Padding(
-                  padding: Responsive.isMobile(context) ? EdgeInsets.only(right: 30, left: 30, top: 30) : EdgeInsets.all(0),
+                  padding: Responsive.isMobile(context) ? EdgeInsets.only(right: 30, left: 30, top: 30) : EdgeInsets.only(top: 30),
                   child: Container(
                     width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.7,
                     height: Responsive.isMobile(context) ? 140 : 280,
@@ -256,7 +256,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 ),
                 Positioned(
                   bottom: 0,
-                  left: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/5 : 5,
+                  left: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/8 : 5,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -270,7 +270,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 ),
                 Positioned(
                   bottom: 0,
-                  right: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/5 : 15,
+                  right: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/7 : 15,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -290,7 +290,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     children: [
                       Container(
                           alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 180 : 300,
+                          height: Responsive.isMobile(context) ? 180 : 350,
                           child: Image.asset(ImagePath.PERSON_PILL2)),
                     ],
                   ),
@@ -527,7 +527,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   Positioned(
                     top: 0,
                     child: Padding(
-                      padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 10.0) : EdgeInsets.only(top: 30.0),
+                      padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 10.0) : EdgeInsets.only(top: 25.0),
                       child: Container(
                         constraints: BoxConstraints(
                           maxWidth: Responsive.isMobile(context) ? 150 : 300,
@@ -546,7 +546,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     ),
                   ),
                   Padding(
-                    padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 35.0) : EdgeInsets.all(0),
+                    padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 35.0) : EdgeInsets.only(top: 60),
                     child: Image.asset(_personImageUrl(resourceCategories[index].id)),
                   ),
                 ],

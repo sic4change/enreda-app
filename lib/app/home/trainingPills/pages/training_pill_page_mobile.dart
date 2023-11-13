@@ -52,7 +52,7 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
             appBar: AppBar(
               title: Row(
                 children: [
-                  Text('Pildoras informativas',
+                  Text('Pildoras formativas',
                     textAlign: TextAlign.start,
                     style: textTheme.titleSmall?.copyWith(
                       color: Constants.white,

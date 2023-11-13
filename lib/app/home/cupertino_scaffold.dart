@@ -75,6 +75,9 @@ class CupertinoScaffold extends StatelessWidget {
             height: 70,
             onTap: (index) {
               controller.index = index;
+              if(index != 0){
+                ResourcesPage.selectedIndex.value = 0;
+              }
             }),
         tabBuilder: (context, index) {
           final item = tabItems[index];

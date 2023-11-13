@@ -163,7 +163,6 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                       onPressed: () {
                         setState(() {
                           WebHomeScaffold.selectedIndex.value = 1;
-                          ResourcesPage.selectedIndex.value = 0;
                         });
                       },
                       child: Text(

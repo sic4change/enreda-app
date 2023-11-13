@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/app/home/trainingPills/build_share_training_pill.dart';
@@ -99,10 +97,8 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                     IconButton(
                         onPressed: () async {
                           setState(() {
-                            setState(() {
-                              _isVideoVisible = !_isVideoVisible;
-                              _initializeVideo(idYoutubeVideo);
-                            });
+                            _isVideoVisible = !_isVideoVisible;
+                            _initializeVideo(idYoutubeVideo);
                           });
                         },
                         icon: Icon(Icons.play_circle_filled),
@@ -224,29 +220,6 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            InkWell(
-                              mouseCursor: MaterialStateMouseCursor.clickable,
-                              onTap: widget.onTap,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: AppColors.greyTxtAlt, width: 1),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20)),
-                                    color: Constants.white),
-                                child: Text(
-                                  'Ver más',
-                                  style: TextStyle(
-                                    letterSpacing: 1,
-                                    fontSize: fontSize,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.greyTxtAlt,
-                                  ),
-                                ),
-                              ),
-                            ),
                             Spacer(),
                             buildShareTrainingPill(
                                 context, widget.trainingPill, Constants.grey),
@@ -423,6 +396,5 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
         _isVideoVisible = true;
       }
     });
-    _controller.toggleFullScreen();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:enreda_app/app/home/account/gamification_page.dart';
 import 'package:enreda_app/app/home/competencies/my_competencies_page.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/curriculum/my_curriculum_page.dart';
@@ -383,6 +384,15 @@ class _AccountPageState extends State<AccountPage> {
               _currentPage = FavoriteResourcesPage();
               _currentPageTitle = StringConst.FAVORITES.toUpperCase();
               _selectedPageName = StringConst.FAVORITES;
+            }),
+          ),
+          _buildMyProfileRow(
+            text: 'Gamificación',
+            imagePath: ImagePath.ICON_FAV_BLUE,
+            onTap: () => setState(() {
+              _currentPage = Gamification();
+              _currentPageTitle = 'Gamificación'.toUpperCase();
+              _selectedPageName = 'Gamificación';
             }),
           ),
         ],

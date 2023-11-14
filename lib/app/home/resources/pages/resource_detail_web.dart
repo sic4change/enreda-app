@@ -7,6 +7,7 @@ import 'package:enreda_app/app/home/models/organization.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/models/userPoints.dart';
 import 'package:enreda_app/app/home/resources/build_share_button.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/common_widgets/background_web.dart';
@@ -420,6 +421,7 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
   }
 
   Widget _buildActionButtons() {
+    final database = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context);
     final userId = auth.currentUser?.uid ?? '';
     final textTheme = Theme.of(context).textTheme;
@@ -431,25 +433,31 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
             children: [
               Expanded(
                 child: TextButton(
-                  onPressed: () =>
-                  auth.currentUser == null
-                      ? showAlertNullUser(context)
-                      : resource.participants.contains(userId)
-                          ? removeUserToResource(
-                              context: context,
-                              userId: userId,
-                              resource: resource)
-                          : resource.link == null || resource.link == "" &&
-                                  resource.contactEmail == null || resource.contactEmail == "" &&
-                                  resource.contactPhone == null || resource.contactPhone == ""
-                              ? addUserToResource(
-                                  context: context,
-                                  userId: userId,
-                                  resource: resource)
-                              : resource.link != null
-                                  ? launchURL(resource.link!)
-                                  : showContactDialog(
-                                      context: context, resource: resource),
+                  onPressed: () async {
+                    if (auth.currentUser == null) {
+                      showAlertNullUser(context);
+                    } else if (resource.participants.contains(userId)){
+                      removeUserToResource(
+                          context: context,
+                          userId: userId,
+                          resource: resource);
+                    } else if (
+                        resource.link == null || resource.link == "" &&
+                        resource.contactEmail == null || resource.contactEmail == "" &&
+                        resource.contactPhone == null || resource.contactPhone == "") {
+                      await addUserToResource(context: context, userId: userId, resource: resource);
+                      final userEnreda = await database.userEnredaStreamByUserId(userId).first;
+                      final userPoints = await database.userPointsStreamById(UserPoints.JOIN_RESOURCE_ID).first;
+                      await database.addPointsToUserEnreda(userEnreda, userPoints.points);
+                      if (userPoints.showPopup) {
+                        showPointsSnackbar(context: context, userPoints: userPoints);
+                      }
+                    } else if (resource.link != null) {
+                      await launchURL(resource.link!);
+                    } else {
+                      showContactDialog(context: context, resource: resource);
+                    }
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: Text(

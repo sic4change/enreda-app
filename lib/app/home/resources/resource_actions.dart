@@ -45,9 +45,8 @@ Future<void> addUserToResource(
   resource.participants.add(userId);
   resource.assistants = resource.participants.length.toString();
   await database.setResource(resource);
-  showToast(context,
-      title: 'Se ha apuntado satisfactoriamente al recurso',
-      color: Constants.chatDarkBlue);
+  // Ahora se muestra el Snackbar de gamificación
+  // showToast(context, title: 'Se ha apuntado satisfactoriamente al recurso', color: Constants.chatDarkBlue);
 }
 
 Future<void> removeUserToResource(

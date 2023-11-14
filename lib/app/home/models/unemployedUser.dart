@@ -24,6 +24,7 @@ class UnemployedUser {
     this.interests,
     this.education,
     this.unemployedType,
+    this.points,
   });
 
   String? email;
@@ -45,6 +46,7 @@ class UnemployedUser {
   final Interests? interests;
   final Education? education;
   final String? unemployedType;
+  final int? points;
 
   factory UnemployedUser.fromMap(Map<String, dynamic> data, String documentId) {
 
@@ -107,8 +109,8 @@ class UnemployedUser {
         motivation: motivation,
         interests: interestsUser,
         education: education,
-        unemployedType: data['unemployedType']
-
+        unemployedType: data['unemployedType'],
+        points: data['points']?? 0
     );
   }
 
@@ -126,6 +128,7 @@ class UnemployedUser {
       'interests': interests?.toMap(),
       'education': education?.toMap(),
       'unemployedType': unemployedType,
+      'points': points,
     };
   }
 }

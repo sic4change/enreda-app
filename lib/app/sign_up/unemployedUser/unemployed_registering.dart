@@ -17,6 +17,7 @@ import 'package:enreda_app/app/home/models/timeSearching.dart';
 import 'package:enreda_app/app/home/models/timeSpentWeekly.dart';
 import 'package:enreda_app/app/home/models/unemployedUser.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/models/userPoints.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_page.dart';
 import 'package:enreda_app/app/sign_up/unemployedUser/unemployed_revision_form.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/checkbox_form.dart';
@@ -39,6 +40,7 @@ import 'package:enreda_app/common_widgets/show_exception_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/text_form_field.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -271,7 +273,8 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           education: education,
           address: address,
           role: 'Desempleado',
-          unemployedType: unemployedType
+          unemployedType: unemployedType,
+          points: 100,
       );
       try {
         final database = Provider.of<Database>(context, listen: false);
@@ -283,12 +286,17 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           title: StringConst.FORM_SUCCESS,
           content: StringConst.FORM_SUCCESS_MAIL,
           defaultActionText: StringConst.FORM_ACCEPT,
-        ).then((value) => {
+        ).then((value) async {
+          final userPoints = await database.userPointsStreamById(UserPoints.SIGN_UP_ID).first;
+          // No adding points because we're already creating the user with 100 points
+          if (userPoints.showPopup){
+            showPointsSnackbar(context: context, userPoints: userPoints);
+          }
           Navigator.of(this.context).push(
             MaterialPageRoute<void>(
               builder: ((context) => EmailSignInPage()),
             ),
-          )
+          );
         },
         );
       } on FirebaseException catch (e) {

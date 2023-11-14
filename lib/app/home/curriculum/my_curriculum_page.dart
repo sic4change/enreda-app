@@ -13,6 +13,7 @@ import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/models/userPoints.dart';
 import 'package:enreda_app/common_widgets/delete_button.dart';
 import 'package:enreda_app/common_widgets/edit_button.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
@@ -20,6 +21,7 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
@@ -106,9 +108,9 @@ class MyCurriculumPage extends StatelessWidget {
   double writingLevel = 1.0;
 
   @override
-  Widget build(BuildContext context) {
-    final auth = Provider.of<AuthBase>(context, listen: false);
-    final database = Provider.of<Database>(context, listen: false);
+  Widget build(BuildContext buildContext) {
+    final auth = Provider.of<AuthBase>(buildContext, listen: false);
+    final database = Provider.of<Database>(buildContext, listen: false);
 
     return Stack(
       children: [
@@ -159,9 +161,9 @@ class MyCurriculumPage extends StatelessWidget {
                         myCustomLanguages = myLanguages.map((element) => element.name).toList();
                         mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
 
-                      return Responsive.isDesktop(context)
-                          ? _myCurriculumWeb(context, user, profilePic, competenciesNames )
-                          : _myCurriculumMobile(context, user, profilePic, competenciesNames);
+                      return Responsive.isDesktop(buildContext)
+                          ? _myCurriculumWeb(buildContext, user, profilePic, competenciesNames )
+                          : _myCurriculumMobile(buildContext, user, profilePic, competenciesNames);
                     });
               } else {
                 return Center(child: CircularProgressIndicator());
@@ -1695,23 +1697,34 @@ class MyCurriculumPage extends StatelessWidget {
           }
         ),
         defaultActionText: StringConst.FORM_ACCEPT,
-        onDefaultActionPressed: (context) {
-
+        onDefaultActionPressed: (context) async {
       if (formKey.currentState!.validate()) {
         if (language != null) {
           user!.languagesLevels.removeWhere((l) => l.name == language.name);
+        } else {
+          // Sólo damos puntos si es un idioma nuevo
+          await _addUserPoints(context);
         }
         user!.languagesLevels.add(Language(
             name: controller.text,
             speakingLevel: speakingLevel.toInt(),
             writingLevel: writingLevel.toInt())
         );
-        database.setUserEnreda(user!);
+        await database.setUserEnreda(user!);
         writingLevel = 1.0;
         speakingLevel = 1.0;
         Navigator.of(context).pop();
       }
     });
+  }
+
+  Future<void> _addUserPoints(BuildContext context) async {
+    final database = Provider.of<Database>(context, listen: false);
+    final userPoints = await database.userPointsStreamById(UserPoints.UPDATE_CV_ID).first;
+    await database.addPointsToUserEnreda(user!, userPoints.points);
+    if (userPoints.showPopup) {
+      showPointsSnackbar(context: context, userPoints: userPoints);
+    }
   }
 
   Widget _buildWritingLevelRow({

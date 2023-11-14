@@ -46,4 +46,5 @@ class UserPoints {
 
   static const String ACCESS_ID = "jWuQfDYscjgCBbqDpB5P";
   static const String SIGN_UP_ID = "bdWYX9kC6zL3XEQPiWzN";
+  static const String UPDATE_CV_ID = "Mk2p3HdKVJICxGOusYQJ";
 }

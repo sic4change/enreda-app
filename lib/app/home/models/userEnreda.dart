@@ -5,6 +5,7 @@ import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/profilepic.dart';
 
 class UserEnreda {
+
   UserEnreda({
     required this.email,
     this.firstName,
@@ -33,6 +34,7 @@ class UserEnreda {
     this.languages = const [], // Deprecated
     this.languagesLevels = const [],
     this.aboutMe,
+    this.points,
   });
 
   factory UserEnreda.fromMap(Map<String, dynamic> data, String documentId) {
@@ -145,6 +147,7 @@ class UserEnreda {
     }
 
     final String? aboutMe = data['aboutMe'];
+    final int? points = data['points']?? 0;
 
     return UserEnreda(
       email: email,
@@ -174,6 +177,7 @@ class UserEnreda {
       languages: languages,
       languagesLevels: languagesLevels,
       aboutMe: aboutMe,
+      points: points,
     );
   }
 
@@ -204,6 +208,7 @@ class UserEnreda {
   final List<String> languages;
   final List<Language> languagesLevels;
   final String? aboutMe;
+  final int? points;
 
   Map<String, dynamic> toMap() {
     InterestsUserEnreda interestUserEnreda = InterestsUserEnreda(
@@ -231,6 +236,7 @@ class UserEnreda {
       'languagesLevels': languagesLevels.map((e) => e.toMap()).toList(),
       'aboutMe': aboutMe,
       'education': education?.toMap(),
+      'points': points,
     };
   }
 
@@ -265,6 +271,7 @@ class UserEnreda {
     List<String>? languages,
     List<Language>? languagesLevels,
     String? aboutMe,
+    int? points,
   }) {
     return UserEnreda(
       email: email ?? this.email,
@@ -293,6 +300,7 @@ class UserEnreda {
       languages: languages ?? this.languages,
       languagesLevels: languagesLevels ?? this.languagesLevels,
       aboutMe: aboutMe ?? this.aboutMe,
+      points: points ?? this.points,
     );
   }
 }

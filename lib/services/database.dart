@@ -29,6 +29,7 @@ import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/unemployedUser.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/models/chatQuestion.dart';
+import 'package:enreda_app/app/home/models/userPoints.dart';
 import 'package:enreda_app/common_widgets/remove_diacritics.dart';
 import 'package:enreda_app/services/api_path.dart';
 import 'package:enreda_app/services/firestore_service.dart';
@@ -94,8 +95,10 @@ abstract class Database {
   Stream<List<ResourceCategory>> getCategoriesResources();
   Stream<List<TrainingPill>> trainingPillStream();
   Stream<TrainingPill> trainingPillStreamById(String id);
+  Stream<UserPoints> userPointsStreamById(String id);
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
+  Future<void> addPointsToUserEnreda(UserEnreda userEnreda, int points);
   Future<void> addUserEnreda(UserEnreda userEnreda);
   Future<void> deleteUser(UserEnreda userEnreda);
   Future<void> uploadUserAvatar(String userId, Uint8List data);
@@ -421,6 +424,13 @@ class FirestoreDatabase implements Database {
   Future<void> setUserEnreda(UserEnreda userEnreda) {
     return _service.updateData(
         path: APIPath.user(userEnreda.userId!), data: userEnreda.toMap());
+  }
+
+  @override
+  Future<void> addPointsToUserEnreda(UserEnreda userEnreda, int points) {
+    return _service.updateData(
+        path: APIPath.user(userEnreda.userId!),
+        data: userEnreda.copyWith(points: userEnreda.points! + points).toMap());
   }
 
   @override
@@ -759,6 +769,13 @@ class FirestoreDatabase implements Database {
       queryBuilder: (query) => query.where('id', isEqualTo: activityId),
     );
   }
+
+  @override
+  Stream<UserPoints> userPointsStreamById(String id) =>
+      _service.documentStream<UserPoints>(
+        path: APIPath.userPoint(id),
+        builder: (data, documentId) => UserPoints.fromMap(data, documentId),
+      );
 
 }
 

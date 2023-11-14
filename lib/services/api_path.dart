@@ -51,6 +51,8 @@ class APIPath {
   static String activityChoices() => 'activityChoices';
   static String activityRoleChoices() => 'activityRoleChoices';
   static String activityLevelChoices() => 'activityLevelChoices';
+  static String userPoints() => 'userPoints';
+  static String userPoint(String? id) => 'userPoints/$id';
 
   static String tests() => 'tests';
   static String test(String testId) => 'tests/$testId';

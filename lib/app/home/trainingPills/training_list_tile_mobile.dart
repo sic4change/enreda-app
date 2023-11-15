@@ -172,20 +172,20 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
   }
 
 
-Widget playVideoArea() {
-  return Container(
-    child: YoutubePlayerControllerProvider(
-      // Provides controller to all the widget below it.
-        controller: _controller,
-        child: YoutubePlayer(
+  Widget playVideoArea() {
+    return Container(
+      child: YoutubePlayerControllerProvider(
+        // Provides controller to all the widget below it.
           controller: _controller,
-          aspectRatio: 16 / 9,
-          enableFullScreenOnVerticalDrag: true,
-        )),
-  );
-}
+          child: YoutubePlayer(
+            controller: _controller,
+            aspectRatio: 16 / 9,
+            enableFullScreenOnVerticalDrag: true,
+          )),
+    );
+  }
 
-Widget detailVideoArea() {
+  Widget detailVideoArea() {
   return Container(
     child: AspectRatio(
       aspectRatio: 16 / 9,

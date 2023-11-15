@@ -6,6 +6,7 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -103,7 +104,6 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
-
     return ValueListenableBuilder<int>(
         valueListenable: WebHomeScaffold.selectedIndex,
         builder: (context, selectedIndex, child) {
@@ -113,7 +113,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
               backgroundColor: Constants.white,
               title: Row(
                 children: [
-                  SizedBox(width: 100,),
+                  Responsive.isDesktop(context) ? SizedBox(width: 100,) : Container(),
                   InkWell(
                     onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
                     child: Image.asset(
@@ -217,7 +217,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                         height: Sizes.ICON_SIZE_30,
                       ),),
                   ),
-                  SizedBox(width: 100,)
+                Responsive.isDesktop(context) || Responsive.isDesktopS(context) ? SizedBox(width: 100,) : Container(),
               ],
             ),
             body: bodyWidget[selectedIndex],

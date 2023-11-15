@@ -1,20 +1,14 @@
 import 'package:enreda_app/app/home/account/account_page.dart';
 import 'package:enreda_app/app/home/assistant/assistant_page_mobile.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
-import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/tab_item.dart';
 import 'package:enreda_app/common_widgets/background_mobile.dart';
-import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
-import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'resources/pages/resources_page.dart';
 
-class CupertinoScaffold extends StatelessWidget {
+class CupertinoScaffold extends StatefulWidget {
   const CupertinoScaffold({
     Key? key,
     required this.showChatNotifier,
@@ -23,6 +17,11 @@ class CupertinoScaffold extends StatelessWidget {
   final ValueNotifier<bool> showChatNotifier;
   static final controller = CupertinoTabController();
 
+  @override
+  State<CupertinoScaffold> createState() => _CupertinoScaffoldState();
+}
+
+class _CupertinoScaffoldState extends State<CupertinoScaffold> {
   @override
   Widget build(BuildContext context) {
     final tabItems = [
@@ -43,7 +42,7 @@ class CupertinoScaffold extends StatelessWidget {
             children: [
               BackgroundMobileAccount(backgroundHeight: BackgroundHeight.Small),
               CompetenciesPage(
-                showChatNotifier: showChatNotifier,
+                showChatNotifier: widget.showChatNotifier,
               ),
             ],
           ),
@@ -63,7 +62,7 @@ class CupertinoScaffold extends StatelessWidget {
 
     return Scaffold(
       body: CupertinoTabScaffold(
-        controller: controller,
+        controller: CupertinoScaffold.controller,
         tabBar: CupertinoTabBar(
             inactiveColor: Constants.chatDarkGray,
             items: [
@@ -74,9 +73,11 @@ class CupertinoScaffold extends StatelessWidget {
             ],
             height: 70,
             onTap: (index) {
-              controller.index = index;
-              if(index != 0){
-                ResourcesPage.selectedIndex.value = 0;
+              CupertinoScaffold.controller.index = index;
+              if(index == 0){
+                setState(() {
+                  ResourcesPage.selectedIndex.value = 0;
+                });
               }
             }),
         tabBuilder: (context, index) {

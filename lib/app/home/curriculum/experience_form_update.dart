@@ -3,6 +3,7 @@ import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:enreda_app/app/home/curriculum/stream_builder_professionsActivities.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
+import 'package:enreda_app/app/home/models/userPoints.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_competencies.dart';
@@ -12,6 +13,7 @@ import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
@@ -801,15 +803,27 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
       _updateCompetenciesPoints(_role);
       _updateCompetenciesPoints(_level);
       _updateListCompetenciesPoints(selectedProfessionActivities);
+
       // TODO: Update competencies of other fields (in assistant_page too)
       await showCompetencies(context, userCompetencies: userCompetencies,
           onDismiss: (dialogContext) async {
-        Navigator.of(context).pop();
-        Navigator.of(context).pop();
-        await showAlertDialog(context,
-            title: 'Información guardada',
-            content: 'La información ha sido guardada en tu CV correctamente',
-            defaultActionText: 'Ok');
+            final database = Provider.of<Database>(context, listen: false);
+            final auth = Provider.of<AuthBase>(context, listen: false);
+            final userPoints = await database.userPointsStreamById(UserPoints.UPDATE_CV_ID).first;
+            final userEnreda = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
+            await database.addPointsToUserEnreda(userEnreda, userPoints.points);
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+
+            if (userPoints.showPopup) {
+              showPointsSnackbar(context: context, userPoints: userPoints);
+            }
+            /*
+            await showAlertDialog(context,
+                title: 'Información guardada',
+                content: 'La información ha sido guardada en tu CV correctamente',
+                defaultActionText: 'Ok');
+            */
       });
     } else {
       final experience = Experience(

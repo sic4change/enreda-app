@@ -1520,12 +1520,15 @@ class MyCurriculumPage extends StatelessWidget {
           ),
         ),
         defaultActionText: StringConst.FORM_ACCEPT,
-        onDefaultActionPressed: (context) {
+        onDefaultActionPressed: (context) async {
       if (currentText.isNotEmpty) {
         user!.dataOfInterest.remove(currentText);
+      } else {
+        // Sólo damos puntos si es un dato nuevo
+        await _addUserPoints(context);
       }
       user!.dataOfInterest.add(controller.text);
-      database.setUserEnreda(user!);
+      await database.setUserEnreda(user!);
       Navigator.of(context).pop();
     });
   }

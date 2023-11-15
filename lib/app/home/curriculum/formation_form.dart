@@ -348,7 +348,7 @@ class _FormationFormState extends State<FormationForm> {
       await database.addExperience(experience);
       final userPoints = await database.userPointsStreamById(UserPoints.UPDATE_CV_ID).first;
       final userEnreda = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-      await database.addPointsToUserEnreda(userEnreda, userPoints.points);
+      await database.setUserEnreda(userEnreda.copyWith(points: userEnreda.points! + userPoints.points),);
       // TODO: Update competencies of other fields (in assistant_page too)
       Navigator.of(context).pop();
       if (userPoints.showPopup) {

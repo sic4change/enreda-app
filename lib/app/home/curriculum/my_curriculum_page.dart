@@ -108,9 +108,9 @@ class MyCurriculumPage extends StatelessWidget {
   double writingLevel = 1.0;
 
   @override
-  Widget build(BuildContext buildContext) {
-    final auth = Provider.of<AuthBase>(buildContext, listen: false);
-    final database = Provider.of<Database>(buildContext, listen: false);
+  Widget build(BuildContext context) {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    final database = Provider.of<Database>(context, listen: false);
 
     return Stack(
       children: [
@@ -121,6 +121,13 @@ class MyCurriculumPage extends StatelessWidget {
                   snapshot.connectionState == ConnectionState.active) {
                 user = snapshot.data!.isNotEmpty ? snapshot.data!.first : null;
                 var profilePic = user?.profilePic?.src ?? "";
+
+                if (user != null
+                    && user!.competencies.values.where((value) => value == "certified").length >= 5
+                    && !user!.points5CertifiedReceived!) {
+                  _addUserPoints(context, UserPoints.CERTIFY_5_ID);
+                }
+                
                 return StreamBuilder<List<Competency>>(
                     stream: database.competenciesStream(),
                     builder: (context, snapshot) {
@@ -161,9 +168,9 @@ class MyCurriculumPage extends StatelessWidget {
                         myCustomLanguages = myLanguages.map((element) => element.name).toList();
                         mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
 
-                      return Responsive.isDesktop(buildContext)
-                          ? _myCurriculumWeb(buildContext, user, profilePic, competenciesNames )
-                          : _myCurriculumMobile(buildContext, user, profilePic, competenciesNames);
+                      return Responsive.isDesktop(context)
+                          ? _myCurriculumWeb(context, user, profilePic, competenciesNames )
+                          : _myCurriculumMobile(context, user, profilePic, competenciesNames);
                     });
               } else {
                 return Center(child: CircularProgressIndicator());
@@ -1525,7 +1532,7 @@ class MyCurriculumPage extends StatelessWidget {
         user!.dataOfInterest.remove(currentText);
       } else {
         // Sólo damos puntos si es un dato nuevo
-        await _addUserPoints(context);
+        await _addUserPoints(context, UserPoints.UPDATE_CV_ID);
       }
       user!.dataOfInterest.add(controller.text);
       await database.setUserEnreda(user!);
@@ -1706,7 +1713,7 @@ class MyCurriculumPage extends StatelessWidget {
           user!.languagesLevels.removeWhere((l) => l.name == language.name);
         } else {
           // Sólo damos puntos si es un idioma nuevo
-          await _addUserPoints(context);
+          await _addUserPoints(context, UserPoints.UPDATE_CV_ID);
         }
         user!.languagesLevels.add(Language(
             name: controller.text,
@@ -1721,10 +1728,17 @@ class MyCurriculumPage extends StatelessWidget {
     });
   }
 
-  Future<void> _addUserPoints(BuildContext context) async {
+  Future<void> _addUserPoints(BuildContext context, String userPointsId) async {
     final database = Provider.of<Database>(context, listen: false);
-    final userPoints = await database.userPointsStreamById(UserPoints.UPDATE_CV_ID).first;
-    await database.addPointsToUserEnreda(user!, userPoints.points);
+    final userPoints = await database.userPointsStreamById(userPointsId).first;
+    if (userPointsId == UserPoints.CERTIFY_5_ID) {
+      await database.setUserEnreda(user!.copyWith(
+        points5CertifiedReceived: true,
+        points: user!.points! + userPoints.points
+      ),);
+    } else {
+      await database.setUserEnreda(user!.copyWith(points: user!.points! + userPoints.points),);
+    }
     if (userPoints.showPopup) {
       showPointsSnackbar(context: context, userPoints: userPoints);
     }

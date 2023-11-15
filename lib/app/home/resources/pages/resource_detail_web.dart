@@ -448,7 +448,7 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                       await addUserToResource(context: context, userId: userId, resource: resource);
                       final userEnreda = await database.userEnredaStreamByUserId(userId).first;
                       final userPoints = await database.userPointsStreamById(UserPoints.JOIN_RESOURCE_ID).first;
-                      await database.addPointsToUserEnreda(userEnreda, userPoints.points);
+                      await database.setUserEnreda(userEnreda.copyWith(points: userEnreda.points! + userPoints.points),);
                       if (userPoints.showPopup) {
                         showPointsSnackbar(context: context, userPoints: userPoints);
                       }

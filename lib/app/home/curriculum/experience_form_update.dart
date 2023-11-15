@@ -811,7 +811,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
             final auth = Provider.of<AuthBase>(context, listen: false);
             final userPoints = await database.userPointsStreamById(UserPoints.UPDATE_CV_ID).first;
             final userEnreda = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-            await database.addPointsToUserEnreda(userEnreda, userPoints.points);
+            await database.setUserEnreda(userEnreda.copyWith(points: userEnreda.points! + userPoints.points),);
             Navigator.of(context).pop();
             Navigator.of(context).pop();
 

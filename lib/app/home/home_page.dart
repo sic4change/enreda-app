@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
       final database = Provider.of<Database>(context, listen: false);
       final userEnreda = await database.userEnredaStreamByUserId(user.uid).first;
       final userPoints = await database.userPointsStreamById(UserPoints.ACCESS_ID).first;
-      await database.addPointsToUserEnreda(userEnreda, userPoints.points);
+      await database.setUserEnreda(userEnreda.copyWith(points: userEnreda.points! + userPoints.points),);
       if (userPoints.showPopup) {
         showPointsSnackbar(context: context, userPoints: userPoints);
       }

@@ -98,7 +98,6 @@ abstract class Database {
   Stream<UserPoints> userPointsStreamById(String id);
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
-  Future<void> addPointsToUserEnreda(UserEnreda userEnreda, int points);
   Future<void> addUserEnreda(UserEnreda userEnreda);
   Future<void> deleteUser(UserEnreda userEnreda);
   Future<void> uploadUserAvatar(String userId, Uint8List data);
@@ -424,13 +423,6 @@ class FirestoreDatabase implements Database {
   Future<void> setUserEnreda(UserEnreda userEnreda) {
     return _service.updateData(
         path: APIPath.user(userEnreda.userId!), data: userEnreda.toMap());
-  }
-
-  @override
-  Future<void> addPointsToUserEnreda(UserEnreda userEnreda, int points) {
-    return _service.updateData(
-        path: APIPath.user(userEnreda.userId!),
-        data: userEnreda.copyWith(points: userEnreda.points! + points).toMap());
   }
 
   @override

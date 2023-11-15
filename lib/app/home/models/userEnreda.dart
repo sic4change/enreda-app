@@ -35,6 +35,7 @@ class UserEnreda {
     this.languagesLevels = const [],
     this.aboutMe,
     this.points,
+    this.points5CertifiedReceived,
   });
 
   factory UserEnreda.fromMap(Map<String, dynamic> data, String documentId) {
@@ -148,6 +149,7 @@ class UserEnreda {
 
     final String? aboutMe = data['aboutMe'];
     final int? points = data['points']?? 0;
+    final bool? points5CertifiedReceived = data['points5CertifiedReceived']?? false;
 
     return UserEnreda(
       email: email,
@@ -178,6 +180,7 @@ class UserEnreda {
       languagesLevels: languagesLevels,
       aboutMe: aboutMe,
       points: points,
+      points5CertifiedReceived: points5CertifiedReceived,
     );
   }
 
@@ -209,6 +212,7 @@ class UserEnreda {
   final List<Language> languagesLevels;
   final String? aboutMe;
   final int? points;
+  final bool? points5CertifiedReceived;
 
   Map<String, dynamic> toMap() {
     InterestsUserEnreda interestUserEnreda = InterestsUserEnreda(
@@ -237,6 +241,7 @@ class UserEnreda {
       'aboutMe': aboutMe,
       'education': education?.toMap(),
       'points': points,
+      'points5CertifiedReceived': points5CertifiedReceived,
     };
   }
 
@@ -272,6 +277,7 @@ class UserEnreda {
     List<Language>? languagesLevels,
     String? aboutMe,
     int? points,
+    bool? points5CertifiedReceived,
   }) {
     return UserEnreda(
       email: email ?? this.email,
@@ -301,6 +307,7 @@ class UserEnreda {
       languagesLevels: languagesLevels ?? this.languagesLevels,
       aboutMe: aboutMe ?? this.aboutMe,
       points: points ?? this.points,
+      points5CertifiedReceived: points5CertifiedReceived ?? this.points5CertifiedReceived,
     );
   }
 }

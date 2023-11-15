@@ -479,7 +479,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
         ),
         Container(
             margin: EdgeInsets.only(top: 150.0),
-            child: Responsive.isMobile(context) ?
+            child: Responsive.isMobile(context) || Responsive.isMobileHorizontal(context) ?
             _buildTrainingPillsListMobile(context)
                 : _buildTrainingPillsList(context)),
       ],
@@ -572,7 +572,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
             return ListItemBuilderGrid<TrainingPill>(
               snapshot: snapshot,
               maxCrossAxisExtentValue: 490,
-              mainAxisExtentValue: Responsive.isMobile(context) ? 305 : Responsive.isDesktopS(context) ? 410 : 500,
+              mainAxisExtentValue: Responsive.isMobile(context) ? 305 : Responsive.isDesktopS(context) ? 480 : 500,
               itemBuilder: (context, trainingPill) {
                 trainingPill.setTrainingPillCategoryName();
                 return Container(

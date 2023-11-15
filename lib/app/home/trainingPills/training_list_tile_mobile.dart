@@ -157,16 +157,40 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
             ),
           ),
         ),
-        IconButton(
-          onPressed: () {
-            setState(() {
-              _isVideoVisible = !_isVideoVisible;
-              _initializeVideo(idYoutubeVideo);
-            });
-          },
-          icon: const Icon(
-            Icons.play_circle_fill_outlined,
-            color: Constants.darkGray, size: 35,),)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _isVideoVisible = !_isVideoVisible;
+                    _initializeVideo(idYoutubeVideo);
+                  });
+                },
+                icon: const Icon(
+                  Icons.play_circle_fill_outlined,
+                  color: Constants.chatButtonsGray, size: 30,),),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                '${widget.trainingPill.duration} min',
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: TextStyle(
+                  letterSpacing: 1,
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.w700,
+                  color: colorText,
+                ),
+              ),
+            ),
+          ],
+        ),
       ]
     );
   }

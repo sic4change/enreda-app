@@ -34,86 +34,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Responsive.isMobile(context)
-        ? _trainingPillListMobile()
-        : _trainingPillListDesktop();
-  }
-
-  Widget _trainingPillListMobile() {
-    TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 12, 13, md: 12);
-    String urlYoutubeVideo = widget.trainingPill.urlVideo;
-    String idYoutubeVideo =
-        urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
-    //String idYoutubeVideo = YoutubePlayerController.convertUrlToId(urlYoutubeVideo) ?? "";
-    return Container(
-      margin: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        color: Constants.white,
-      ),
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-                width: 150,
-                margin: const EdgeInsets.only(right: 8.0),
-                child: playAreaMobile()),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(
-                    widget.trainingPill.trainingPillCategoryName!.toUpperCase(),
-                    textAlign: TextAlign.left,
-                    maxLines: 1,
-                    style: textTheme.titleSmall?.copyWith(
-                      color: Constants.lilac,
-                      height: 1.5,
-                      fontWeight: FontWeight.normal,
-                      fontSize: 13,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(
-                    widget.trainingPill.title,
-                    textAlign: TextAlign.left,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    style: TextStyle(
-                      letterSpacing: 1,
-                      fontSize: fontSize,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.greyTxtAlt,
-                    ),
-                  ),
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                        onPressed: () async {
-                          setState(() {
-                            _isVideoVisible = !_isVideoVisible;
-                            _initializeVideo(idYoutubeVideo);
-                          });
-                        },
-                        icon: Icon(Icons.play_circle_filled),
-                        color: AppColors.primaryText1,
-                        iconSize: 27),
-                    Text('${widget.trainingPill.duration} min',
-                        style: textTheme.bodySmall?.copyWith(
-                          color: AppColors.greyTxtAlt,
-                        ))
-                  ],
-                ),
-              ],
-            ),
-          ]),
-    );
+    return _trainingPillListDesktop();
   }
 
   Widget _trainingPillListDesktop() {
@@ -159,7 +80,8 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               Padding(
-                                padding: EdgeInsets.all(sidePadding),
+                                padding: Responsive.isMobile(context) ? EdgeInsets.all(8.0)
+                                    : EdgeInsets.all(sidePadding),
                                 child: Text(
                                   widget.trainingPill.trainingPillCategoryName!,
                                   textAlign: TextAlign.left,
@@ -174,9 +96,8 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.only(
-                                    right: sidePadding,
-                                    left: sidePadding,
+                                padding: Responsive.isMobile(context) ? EdgeInsets.symmetric(horizontal: 8.0)
+                                    : EdgeInsets.only(right: sidePadding, left: sidePadding,
                                     bottom: sidePadding / 2),
                                 child: Text(
                                   widget.trainingPill.title.toUpperCase(),
@@ -190,9 +111,9 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                                   ),
                                 ),
                               ),
+                              Responsive.isMobile(context) ? Container() :
                               Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: sidePadding),
+                                padding: EdgeInsets.symmetric(horizontal: sidePadding),
                                 child: Text(
                                   widget.trainingPill.description,
                                   textAlign: TextAlign.left,
@@ -214,15 +135,14 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                     Spacer(),
                     Container(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: sidePadding, vertical: sidePadding),
+                        padding: Responsive.isMobile(context) ? EdgeInsets.all(8) :
+                        EdgeInsets.symmetric(horizontal: sidePadding, vertical: sidePadding),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Spacer(),
-                            buildShareTrainingPill(
-                                context, widget.trainingPill, Constants.grey),
+                            buildShareTrainingPill(context, widget.trainingPill, Constants.grey),
                             SpaceW4(),
                             auth.currentUser == null
                                 ? IconButton(

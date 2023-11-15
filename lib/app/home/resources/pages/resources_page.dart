@@ -12,6 +12,7 @@ import 'package:enreda_app/app/home/resources/filter_text_field_row.dart';
 import 'package:enreda_app/app/home/resources/list_item_builder_grid.dart';
 import 'package:enreda_app/app/home/resources/pages/list_item_builder_vertical.dart';
 import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
+import 'package:enreda_app/app/home/trainingPills/training_list_tile_mobile.dart';
 import 'package:enreda_app/app/home/trainingPills/training_list_tile.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -571,7 +572,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
             return ListItemBuilderGrid<TrainingPill>(
               snapshot: snapshot,
               maxCrossAxisExtentValue: 490,
-              mainAxisExtentValue: 500,
+              mainAxisExtentValue: Responsive.isMobile(context) ? 305 : Responsive.isDesktopS(context) ? 410 : 500,
               itemBuilder: (context, trainingPill) {
                 trainingPill.setTrainingPillCategoryName();
                 return Container(
@@ -590,34 +591,36 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   Widget _buildTrainingPillsListMobile(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: StreamBuilder<List<TrainingPill>>(
-          stream: database.trainingPillStream(),
-          builder: (context, snapshot) {
-            return ListItemBuilderVertical<TrainingPill>(
-                snapshot: snapshot,
-                itemBuilder: (context, trainingPill) {
-                  trainingPill.setTrainingPillCategoryName();
-                  return Container(
-                    key: Key('trainingPill-${trainingPill.id}'),
-                    child: Column(
-                      children: [
-                        TrainingPillListTile(
-                          trainingPill: trainingPill,
-                          onTap: () => context.push(
-                              '${StringConst.PATH_TRAINING_PILLS}/${trainingPill.id}'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Divider(thickness: 1.5),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-            );
-          }),
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: StreamBuilder<List<TrainingPill>>(
+            stream: database.trainingPillStream(),
+            builder: (context, snapshot) {
+              return ListItemBuilderVertical<TrainingPill>(
+                  snapshot: snapshot,
+                  itemBuilder: (context, trainingPill) {
+                    trainingPill.setTrainingPillCategoryName();
+                    return Container(
+                      key: Key('trainingPill-${trainingPill.id}'),
+                      child: Column(
+                        children: [
+                          TrainingPillsListTileMobile(
+                            trainingPill: trainingPill,
+                            onTap: () => context.push(
+                                '${StringConst.PATH_TRAINING_PILLS}/${trainingPill.id}'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Divider(thickness: 1.5),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+              );
+            }),
+      ),
     );
   }
 

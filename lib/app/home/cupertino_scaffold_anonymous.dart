@@ -3,12 +3,11 @@ import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/tab_item.dart';
 import 'package:enreda_app/common_widgets/background_mobile.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'resources/pages/resources_page.dart';
 
-class CupertinoScaffoldAnonymous extends StatelessWidget {
+class CupertinoScaffoldAnonymous extends StatefulWidget {
   const CupertinoScaffoldAnonymous({
     Key? key,
     required this.showChatNotifier,
@@ -18,6 +17,11 @@ class CupertinoScaffoldAnonymous extends StatelessWidget {
 
   static final controller = CupertinoTabController();
 
+  @override
+  State<CupertinoScaffoldAnonymous> createState() => _CupertinoScaffoldAnonymousState();
+}
+
+class _CupertinoScaffoldAnonymousState extends State<CupertinoScaffoldAnonymous> {
   @override
   Widget build(BuildContext context) {
     final tabItems = [TabItem.resources, TabItem.competencies, TabItem.account];
@@ -33,7 +37,7 @@ class CupertinoScaffoldAnonymous extends StatelessWidget {
             children: [
               BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
               CompetenciesPage(
-                showChatNotifier: showChatNotifier,
+                showChatNotifier: widget.showChatNotifier,
               ),
             ],
           ),
@@ -48,7 +52,7 @@ class CupertinoScaffoldAnonymous extends StatelessWidget {
     return Scaffold(
       body: CupertinoTabScaffold(
         backgroundColor: Colors.transparent,
-        controller: controller,
+        controller: CupertinoScaffoldAnonymous.controller,
         tabBar: CupertinoTabBar(
             items: [
               _buildItem(TabItem.resources),
@@ -56,7 +60,12 @@ class CupertinoScaffoldAnonymous extends StatelessWidget {
               _buildItem(TabItem.account),
             ],
             onTap: (index) {
-              controller.index = index;
+              CupertinoScaffoldAnonymous.controller.index = index;
+              if(index == 0){
+                setState(() {
+                  ResourcesPage.selectedIndex.value = 0;
+                });
+              }
             }),
         tabBuilder: (context, index) {
           final item = tabItems[index];

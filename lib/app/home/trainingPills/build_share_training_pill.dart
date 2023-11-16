@@ -5,6 +5,7 @@ import 'package:enreda_app/app/home/trainingPills/pages/training_pills_actions.d
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
@@ -96,8 +97,8 @@ Widget buildShareTrainingPill(BuildContext context, TrainingPill trainingPill, C
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset(ImagePath.ICON_SHARE, height: 20),
-        SizedBox(width: 10),
+        Image.asset(ImagePath.ICON_SHARE, height: Responsive.isMobile(context) ? 15 : 20),
+        Responsive.isMobile(context) ? SizedBox(width: 0) : SizedBox(width: 10),
       ],
     ),
   );

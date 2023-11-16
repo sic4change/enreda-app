@@ -478,7 +478,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
           ),
         ),
         Container(
-            margin: EdgeInsets.only(top: 150.0),
+            margin: !kIsWeb ? EdgeInsets.only(top: 120.0) : EdgeInsets.only(top: 150.0),
             child: Responsive.isMobile(context) || Responsive.isMobileHorizontal(context) ?
             _buildTrainingPillsListMobile(context)
                 : _buildTrainingPillsList(context)),

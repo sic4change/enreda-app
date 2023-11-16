@@ -11,7 +11,7 @@ class NonEmptyStringValidator implements StringValidator {
 
 }
 
-class EmailAndPasswordValidator {
+mixin class EmailAndPasswordValidator {
   final StringValidator emailValidator = NonEmptyStringValidator();
   final StringValidator passwordValidator = NonEmptyStringValidator();
   final String invalidEmailErrorText = 'El correo no puede estar vacío';

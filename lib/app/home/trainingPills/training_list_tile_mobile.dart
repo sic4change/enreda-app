@@ -162,6 +162,7 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             IconButton(
+              padding: EdgeInsets.zero,
               onPressed: () {
                 setState(() {
                   _isVideoVisible = !_isVideoVisible;
@@ -183,42 +184,46 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
                 color: colorText,
               ),
             ),
-            SizedBox(width: 32,),
+            SizedBox(width: 25,),
             buildShareTrainingPill(context, widget.trainingPill, Constants.grey),
+            SizedBox(width: 5,),
             auth.currentUser == null
-                ? IconButton(
-              icon: FaIcon(FontAwesomeIcons.heart),
-              tooltip: 'Me gusta',
-              color: Constants.darkGray,
-              iconSize: 20,
-              onPressed: () => showAlertNullUser(context),
-            )
-                : widget.trainingPill.likes.contains(auth.currentUser!.uid)
-                ? IconButton(
-              icon:
-              FaIcon(FontAwesomeIcons.solidHeart),
-              tooltip: 'Me gusta',
-              color: AppColors.red,
-              iconSize: 20,
-              onPressed: () {
-                removeUserToLikeTrainingPill(
-                    context: context,
-                    trainingPill: widget.trainingPill,
-                    userId: auth.currentUser!.uid);
-              },
-            )
-                : IconButton(
-              icon: FaIcon(FontAwesomeIcons.heart),
-              tooltip: 'Me gusta',
-              color: Constants.darkGray,
-              onPressed: () {
-                addUserToLikeTrainingPill(
-                    context: context,
-                    trainingPill: widget.trainingPill,
-                    userId: auth.currentUser!.uid);
-              },
-            )
-          ],
+                  ? IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: FaIcon(FontAwesomeIcons.heart),
+                      tooltip: 'Me gusta',
+                      color: Constants.darkGray,
+                      iconSize: 15,
+                      onPressed: () => showAlertNullUser(context),
+                    )
+                  : widget.trainingPill.likes.contains(auth.currentUser!.uid)
+                      ? IconButton(
+                          padding: EdgeInsets.zero,
+                          icon: FaIcon(FontAwesomeIcons.solidHeart),
+                          tooltip: 'Me gusta',
+                          color: AppColors.red,
+                          iconSize: 15,
+                          onPressed: () {
+                            removeUserToLikeTrainingPill(
+                                context: context,
+                                trainingPill: widget.trainingPill,
+                                userId: auth.currentUser!.uid);
+                          },
+                        )
+                      : IconButton(
+                          padding: EdgeInsets.zero,
+                          icon: FaIcon(FontAwesomeIcons.heart),
+                          tooltip: 'Me gusta',
+                          color: Constants.darkGray,
+                          iconSize: 15,
+                          onPressed: () {
+                            addUserToLikeTrainingPill(
+                                context: context,
+                                trainingPill: widget.trainingPill,
+                                userId: auth.currentUser!.uid);
+                          },
+                        )
+            ],
         ),
       ]
     );
@@ -259,7 +264,7 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
                     quality: ThumbnailQuality.max,
                   ),
                 ),
-                fit: BoxFit.fitWidth,
+                fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(5),
             ),

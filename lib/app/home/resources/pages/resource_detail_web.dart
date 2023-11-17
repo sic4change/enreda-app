@@ -779,6 +779,9 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                 Expanded(
                   flex: 1,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Constants.turquoise,
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(StringConst.CANCEL.toUpperCase(),
@@ -797,6 +800,9 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                 Expanded(
                   flex: 1,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Constants.turquoise,
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(StringConst.SEND.toUpperCase(),

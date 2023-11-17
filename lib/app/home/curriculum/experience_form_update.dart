@@ -724,7 +724,11 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
     var concatenate = StringBuffer();
     List<String> activitiesIds = [];
     selectedValues.forEach((item){
-      concatenate.write(item.name +' / ');
+      String text = item.name;
+      if (item.id == '30twSwwnuVmpIp3MoE6e') {
+        text = '${item.name}: $_otherText';
+      }
+      concatenate.write(text +' / ');
       activitiesIds.add(item.id);
     });
 

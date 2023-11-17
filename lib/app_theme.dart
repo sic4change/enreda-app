@@ -28,6 +28,7 @@ class AppTheme {
 
   static ThemeData themeData(ColorScheme colorScheme, Color focusColor) {
     return ThemeData(
+      dialogTheme: DialogTheme().copyWith(surfaceTintColor: Colors.white,),
       primarySwatch: white,
       textTheme: _textTheme,
       iconTheme: IconThemeData(color: AppColors.white),

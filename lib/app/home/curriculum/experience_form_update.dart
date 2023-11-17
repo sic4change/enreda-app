@@ -303,6 +303,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                     firstDate: new DateTime(DateTime.now().year - 100,),
                     initialDate: currentValue ?? _endDate?.toDate() ?? DateTime.now(),
                     lastDate: _endDate?.toDate() ?? DateTime.now(),
+                    initialEntryMode: DatePickerEntryMode.calendarOnly,
                   );
                 },
                 onChanged: (dateTime) {
@@ -332,6 +333,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                     firstDate: _startDate?.toDate() ?? new DateTime(DateTime.now().year - 100,),
                     initialDate: currentValue ?? DateTime.now(),
                     lastDate: DateTime.now(),
+                    initialEntryMode: DatePickerEntryMode.calendarOnly,
                   );
                 },
                 onChanged: (dateTime) {

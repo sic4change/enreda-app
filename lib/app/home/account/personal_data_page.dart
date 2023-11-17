@@ -546,6 +546,7 @@ class _PersonalDataState extends State<PersonalData> {
                   initialDate: currentValue ?? DateTime.now(),
                   lastDate: new DateTime(DateTime.now().year - 16,
                       DateTime.now().month, DateTime.now().day),
+                  initialEntryMode: DatePickerEntryMode.calendarOnly,
                 );
               },
               onChanged: (dateTime) {

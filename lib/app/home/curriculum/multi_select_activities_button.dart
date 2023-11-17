@@ -1,4 +1,5 @@
 import 'package:enreda_app/app/home/models/activity.dart';
+import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
@@ -113,6 +114,7 @@ class _MultiSelectActivitiesDialogState<V> extends State<MultiSelectActivitiesDi
       ),
       actions: <Widget>[
         ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: Constants.turquoise),
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Text(StringConst.FORM_ACCEPT, style: TextStyle(

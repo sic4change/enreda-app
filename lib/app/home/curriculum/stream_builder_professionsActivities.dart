@@ -1,6 +1,7 @@
 import 'package:enreda_app/app/home/curriculum/multi_select_activities_button.dart';
 import 'package:enreda_app/app/home/models/activity.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
+import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,7 @@ Widget streamBuilderDropdownProfessionActivities (
     content: Text(StringConst.FORM_ACTIVITIES_EMPTY),
     actions: <Widget>[
       ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: Constants.turquoise),
           onPressed: () => Navigator.pop(context),
           child: Text(StringConst.FORM_ACCEPT, style: TextStyle(
               color: AppColors.white,

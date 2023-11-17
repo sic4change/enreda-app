@@ -698,6 +698,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
             ),
             actions: <Widget>[
               ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Constants.turquoise),
                   onPressed: () => Navigator.pop(context),
                   child: Text(StringConst.FORM_ACCEPT,
                       style: TextStyle(

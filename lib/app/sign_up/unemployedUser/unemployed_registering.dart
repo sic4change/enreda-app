@@ -419,6 +419,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                                 initialDate: new DateTime(DateTime.now().year - 16, DateTime.now().month, DateTime.now().day),
                                 firstDate: new DateTime(DateTime.now().year - 100, DateTime.now().month, DateTime.now().day),
                                 lastDate: new DateTime(DateTime.now().year - 16, DateTime.now().month, DateTime.now().day),
+                                initialEntryMode: DatePickerEntryMode.calendarOnly,
                             );
                             if(pickedDate != null ){
                               print(pickedDate);  //pickedDate output format => 2021-03-10 00:00:00.000

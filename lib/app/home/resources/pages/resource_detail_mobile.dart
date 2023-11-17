@@ -695,6 +695,9 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
                 Expanded(
                   flex: 1,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Constants.turquoise,
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(StringConst.CANCEL.toUpperCase(),
@@ -713,6 +716,9 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
                 Expanded(
                   flex: 1,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Constants.turquoise,
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(StringConst.SEND.toUpperCase(),

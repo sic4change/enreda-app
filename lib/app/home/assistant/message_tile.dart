@@ -283,6 +283,7 @@ class _MessageTileState extends State<MessageTile> {
                 DateTime.now().month, DateTime.now().day),
             initialDate: currentValue ?? DateTime.now(),
             lastDate: DateTime.now(),
+            initialEntryMode: DatePickerEntryMode.calendarOnly,
           );
         },
         onChanged: (dateTime) {

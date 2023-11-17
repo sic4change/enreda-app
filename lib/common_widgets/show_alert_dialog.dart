@@ -34,6 +34,9 @@ Future showAlertDialog(
           if (cancelActionText != null)
             // ignore: deprecated_member_use
             ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Constants.turquoise,
+                ),
                 onPressed: () => Navigator.of(context).pop((false)),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -45,6 +48,9 @@ Future showAlertDialog(
                           fontSize: fontSize)),
                 )),
           ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Constants.turquoise,
+              ),
               onPressed: () => Navigator.of(context).pop((true)),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -82,6 +88,9 @@ Future showAlertDialog(
           if (cancelActionText != null)
             // ignore: deprecated_member_use
             ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Constants.turquoise,
+                ),
                 onPressed: () => Navigator.of(context).pop((false)),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -93,6 +102,9 @@ Future showAlertDialog(
                           fontSize: fontSize)),
                 )),
           ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Constants.turquoise,
+              ),
               onPressed: () => Navigator.of(context).pop((true)),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

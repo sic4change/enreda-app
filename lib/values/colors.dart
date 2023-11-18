@@ -29,6 +29,7 @@ class AppColors {
 
   //Green
   static const Color greenLight = Color(0xFFA4F5F6);
+  static const Color greenDark = Color(0xFF054C5E);
 
   //Blue
   static const Color blue300 = Color(0xFF2867F0);
@@ -40,6 +41,7 @@ class AppColors {
 
   //Yellow
   static const Color yellow = Color(0xFFFDE934);
+  static const Color yellowDark = Color(0xFFFFCB77);
 
   //Pink
   static const Color pink300 = Color(0xFFDC5687);

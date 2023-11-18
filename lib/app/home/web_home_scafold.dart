@@ -111,68 +111,74 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
             appBar: AppBar(
               elevation: 1.0,
               backgroundColor: Constants.white,
-              title: Row(
-                children: [
-                  Responsive.isDesktop(context) ? SizedBox(width: 100,) : Container(),
-                  InkWell(
-                    onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
-                    child: Image.asset(
-                      ImagePath.LOGO,
-                      height: 20,
-                    ),
-                  ),
-                  SpaceW24(),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border(
-                      bottom: BorderSide(
-                        color: selectedIndex == 0
-                            ? _underlineColor
-                            : Colors.transparent,
-                        width: 4.0,
+              title: Padding(
+                padding: Responsive.isMobile(context)
+                    ? EdgeInsets.symmetric(horizontal: 30)
+                    : Responsive.isDesktopS(context)
+                    ? EdgeInsets.symmetric(horizontal: 30)
+                    : EdgeInsets.symmetric(horizontal: 100),
+                child: Row(
+                  children: [
+                    InkWell(
+                      onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
+                      child: Image.asset(
+                        ImagePath.LOGO,
+                        height: 20,
                       ),
-                    )),
-                    child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          WebHomeScaffold.selectedIndex.value = 0;
-                          ResourcesPage.selectedIndex.value = 0;
-                        });
-                      },
-                      child: Text(
-                        StringConst.RESOURCES,
-                        style: GoogleFonts.ibmPlexMono(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                    ),
+                    SpaceW24(),
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border(
+                        bottom: BorderSide(
+                          color: selectedIndex == 0
+                              ? _underlineColor
+                              : Colors.transparent,
+                          width: 4.0,
+                        ),
+                      )),
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            WebHomeScaffold.selectedIndex.value = 0;
+                            ResourcesPage.selectedIndex.value = 0;
+                          });
+                        },
+                        child: Text(
+                          StringConst.RESOURCES,
+                          style: GoogleFonts.ibmPlexMono(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SpaceW24(),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border(
-                      bottom: BorderSide(
-                        color: WebHomeScaffold.selectedIndex.value == 1
-                            ? _underlineColor
-                            : Colors.transparent,
-                        width: 4.0,
-                      ),
-                    )),
-                    child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          WebHomeScaffold.selectedIndex.value = 1;
-                        });
-                      },
-                      child: Text(
-                        StringConst.COMPETENCIES,
-                        style: GoogleFonts.ibmPlexMono(
-                            color: Colors.black, fontWeight: FontWeight.bold),
+                    SpaceW24(),
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border(
+                        bottom: BorderSide(
+                          color: WebHomeScaffold.selectedIndex.value == 1
+                              ? _underlineColor
+                              : Colors.transparent,
+                          width: 4.0,
+                        ),
+                      )),
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            WebHomeScaffold.selectedIndex.value = 1;
+                          });
+                        },
+                        child: Text(
+                          StringConst.COMPETENCIES,
+                          style: GoogleFonts.ibmPlexMono(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               actions: <Widget>[
                 if (!auth.isNullUser)
@@ -217,7 +223,14 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                         height: Sizes.ICON_SIZE_30,
                       ),),
                   ),
-                Responsive.isDesktop(context) || Responsive.isDesktopS(context) ? SizedBox(width: 100,) : Container(),
+                Padding(
+                  padding: Responsive.isMobile(context)
+                      ? EdgeInsets.only(right: 30)
+                      : Responsive.isDesktopS(context)
+                      ? EdgeInsets.only(right: 30)
+                      : EdgeInsets.only(right: 100),
+                  child: SizedBox(),
+                ),
               ],
             ),
             body: bodyWidget[selectedIndex],

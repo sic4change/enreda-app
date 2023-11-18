@@ -5,6 +5,7 @@ import 'package:enreda_app/app/home/curriculum/experience_tile.dart';
 import 'package:enreda_app/app/home/curriculum/formation_form.dart';
 import 'package:enreda_app/app/home/curriculum/my-custom_cv.dart';
 import 'package:enreda_app/app/home/curriculum/reference_tile.dart';
+import 'package:enreda_app/app/home/curriculum/tooltip_video/training_tooltip_video.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
@@ -12,7 +13,10 @@ import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/province.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/resources/pages/list_item_builder_vertical.dart';
+import 'package:enreda_app/common_widgets/videos/custom_tooltip.dart';
 import 'package:enreda_app/common_widgets/delete_button.dart';
 import 'package:enreda_app/common_widgets/edit_button.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
@@ -438,6 +442,7 @@ class MyCurriculumPage extends StatelessWidget {
                   ),
                 ],
               ),
+              _buildCustomTooltip(context),
               //SpaceH24(),
               //_buildMyCareer(context),
               SpaceH24(),
@@ -568,6 +573,7 @@ class MyCurriculumPage extends StatelessWidget {
               color: Constants.penBlue),
         ),
         SpaceH20(),
+        _buildCustomTooltip(context),
       ],
     );
   }
@@ -1807,4 +1813,72 @@ class MyCurriculumPage extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildCustomTooltip(BuildContext context) {
+    return CustomTooltip(
+      tooltip: Container(
+        padding: const EdgeInsets.all(13.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.5, 0.5],
+            colors: [
+              AppColors.yellowDark,
+              AppColors.white,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        width: 300,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: CustomTextTitle(title: '¿No sabes por dónde empezar tu CV?', color: AppColors.greenDark,),
+            ),
+            Stack(
+              children: [
+                Card(
+                    shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: _buildTrainingTooltipVideo(context)),
+              ],
+            ),
+          ],
+        ),
+      ),
+      child: Icon(Icons.info_outline, size: 24, color: AppColors.primaryColor,),
+    );
+  }
+
+  Widget _buildTrainingTooltipVideo(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+    return SingleChildScrollView(
+      child: Container(
+        child: StreamBuilder<List<TrainingPill>>(
+            stream: database.trainingPillStream(),
+            builder: (context, snapshot) {
+              return ListItemBuilderVertical<TrainingPill>(
+                  snapshot: snapshot,
+                  itemBuilder: (context, trainingPill) {
+                    trainingPill.setTrainingPillCategoryName();
+                    if(trainingPill.urlVideo == 'https://www.youtube.com/watch?v=Au8ZS-8fcl4'){
+                      return Container(
+                        key: Key('trainingPill-${trainingPill.id}'),
+                        child: TrainingTooltipVideo(
+                          trainingPill: trainingPill,
+                        ),
+                      );
+                    }
+                    return Container();
+                  }
+              );
+            }),
+      ),
+    );
+  }
+
 }

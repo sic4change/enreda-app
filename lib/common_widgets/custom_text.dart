@@ -4,8 +4,9 @@ import '../utils/adaptive.dart';
 
 class CustomTextTitle extends StatelessWidget {
 
-  CustomTextTitle({ required this.title });
+  CustomTextTitle({ required this.title, this.color = AppColors.greyViolet });
   final String title;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class CustomTextTitle extends StatelessWidget {
       child: Text(
         title,
         style: textTheme.bodySmall?.copyWith(
-          color: AppColors.greyViolet,
+          color: color,
           height: 1.5,
           fontWeight: FontWeight.w600,
         ),

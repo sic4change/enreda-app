@@ -66,9 +66,12 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 15, 16, md: 15);
-    final isBigScreen = MediaQuery.of(context).size.width >= 900;
     return Container(
-      margin: isBigScreen ? EdgeInsets.symmetric(horizontal: 100.0) : EdgeInsets.symmetric(horizontal: 10.0),
+      margin: Responsive.isMobile(context)
+          ? EdgeInsets.symmetric(horizontal: 10)
+          : Responsive.isDesktopS(context)
+          ? EdgeInsets.symmetric(horizontal: 30)
+          : EdgeInsets.symmetric(horizontal: 100),
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         children: [

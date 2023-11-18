@@ -324,7 +324,11 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   clearFilter: () => _clearFilter()),
               SpaceH20(),
               Padding(
-                padding: isBigScreen ? EdgeInsets.symmetric(horizontal: 100.0) : EdgeInsets.symmetric(horizontal: 20.0),
+                padding: Responsive.isMobile(context)
+                    ? EdgeInsets.symmetric(horizontal: 15)
+                    : Responsive.isDesktopS(context)
+                    ? EdgeInsets.symmetric(horizontal: 30)
+                    : EdgeInsets.symmetric(horizontal: 100),
                 child: InkWell(
                   onTap: () {
                     setStateIfMounted(() {
@@ -355,7 +359,11 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 child: Stack(
                   children: [
                     Padding(
-                      padding: isBigScreen ? EdgeInsets.symmetric(horizontal: 110.0) : EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: Responsive.isMobile(context)
+                          ? EdgeInsets.symmetric(horizontal: 20)
+                          : Responsive.isDesktopS(context)
+                          ? EdgeInsets.symmetric(horizontal: 30)
+                          : EdgeInsets.symmetric(horizontal: 100),
                       child: Column(
                         children: [
                           InkWell(
@@ -423,7 +431,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
         Container(
           margin: _categoryFormationId == "6ag9Px7zkFpHgRe17PQk"
               ? EdgeInsets.only(top: 230.0)
-              : EdgeInsets.only(top: 150.0),
+              : EdgeInsets.only(top: 120.0),
           child: _buildContents(context),
         ),
       ],
@@ -450,7 +458,11 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   clearFilter: () => _clearFilter()),
               SpaceH20(),
               Padding(
-                padding: isBigScreen ? EdgeInsets.symmetric(horizontal: 100.0) : EdgeInsets.symmetric(horizontal: 20.0),
+                padding: Responsive.isMobile(context)
+                    ? EdgeInsets.symmetric(horizontal: 15)
+                    : Responsive.isDesktopS(context)
+                    ? EdgeInsets.symmetric(horizontal: 30)
+                    : EdgeInsets.symmetric(horizontal: 100),
                 child: InkWell(
                   onTap: () {
                     setStateIfMounted(() {
@@ -478,7 +490,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
           ),
         ),
         Container(
-            margin: !kIsWeb ? EdgeInsets.only(top: 120.0) : EdgeInsets.only(top: 150.0),
+            margin: !kIsWeb ? EdgeInsets.only(top: 120.0) : EdgeInsets.only(top: 120.0),
             child: Responsive.isMobile(context) || Responsive.isMobileHorizontal(context) ?
             _buildTrainingPillsListMobile(context)
                 : _buildTrainingPillsList(context)),
@@ -540,7 +552,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                           style: textTheme.headlineSmall?.copyWith(
                           color: Colors.white,
                           letterSpacing: 1,
-                          fontSize: Responsive.isMobile(context) ? 15 : 34,
+                          fontSize: Responsive.isMobile(context) ? 15 : Responsive.isDesktopS(context) ? 25 : 34,
                           fontWeight: FontWeight.w900,
                         ),),
                       ),

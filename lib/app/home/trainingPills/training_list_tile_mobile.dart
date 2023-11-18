@@ -6,10 +6,10 @@ import 'package:enreda_app/app/home/trainingPills/pages/play_pause_button.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/training_pills_actions.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/video_position_seeker.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
+import 'package:enreda_app/common_widgets/videos/video_thumbnail_area.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -53,7 +53,7 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
                 Container(
                     width: 150,
                     margin: const EdgeInsets.only(right: 8.0),
-                    child: detailVideoArea()),
+                    child: videoThumbnailArea(idYoutubeVideo)),
                 videoDescription(Constants.lilac, AppColors.greyTxtAlt),
               ]
           ),
@@ -243,39 +243,7 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
     );
   }
 
-  Widget detailVideoArea() {
-  return Container(
-    child: AspectRatio(
-      aspectRatio: 16 / 9,
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.white,
-                  blurRadius: 20,
-                )
-              ],
-              image: DecorationImage(
-                image: NetworkImage(
-                  YoutubePlayerController.getThumbnail(
-                    videoId: idYoutubeVideo,
-                    quality: ThumbnailQuality.max,
-                  ),
-                ),
-                fit: BoxFit.cover,
-              ),
-              borderRadius: BorderRadius.circular(5),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-  }
-
-  _initializeVideo(String id) async {
+  void _initializeVideo(String id) async {
     // Generate a new controller and set as global _controller
     final controller = YoutubePlayerController.fromVideoId(
       videoId: id,

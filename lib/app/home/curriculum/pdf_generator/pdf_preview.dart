@@ -26,6 +26,10 @@ class MyCv extends StatefulWidget {
     required this.myPersonalExperiences,
     required this.myEducation,
     required this.mySecondaryEducation,
+    required this.idSelectedDateEducation,
+    required this.idSelectedDateSecondaryEducation,
+    required this.idSelectedDateExperience,
+    required this.idSelectedDatePersonalExperience,
     required this.competenciesNames,
     required this.languagesNames,
     required this.aboutMe,
@@ -45,6 +49,10 @@ class MyCv extends StatefulWidget {
   final List<Experience>? myPersonalExperiences;
   final List<Experience>? myEducation;
   final List<Experience>? mySecondaryEducation;
+  final List<String>? idSelectedDateEducation;
+  final List<String>? idSelectedDateSecondaryEducation;
+  final List<String>? idSelectedDateExperience;
+  final List<String>? idSelectedDatePersonalExperience;
   final List<String> competenciesNames;
   final List<String> languagesNames;
   final String? aboutMe;
@@ -179,6 +187,10 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
             widget.myPersonalExperiences,
             widget.myEducation!,
             widget.mySecondaryEducation,
+            widget.idSelectedDateEducation,
+            widget.idSelectedDateSecondaryEducation,
+            widget.idSelectedDateExperience,
+            widget.idSelectedDatePersonalExperience,
             widget.competenciesNames,
             widget.languagesNames,
             widget.aboutMe,

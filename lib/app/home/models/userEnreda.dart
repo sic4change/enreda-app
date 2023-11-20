@@ -33,6 +33,7 @@ class UserEnreda {
     this.languages = const [], // Deprecated
     this.languagesLevels = const [],
     this.aboutMe,
+    this.checkAgreeCV,
   });
 
   factory UserEnreda.fromMap(Map<String, dynamic> data, String documentId) {
@@ -145,6 +146,7 @@ class UserEnreda {
     }
 
     final String? aboutMe = data['aboutMe'];
+    final bool? checkAgreeCV = data['checkAgreeCV'];
 
     return UserEnreda(
       email: email,
@@ -174,6 +176,7 @@ class UserEnreda {
       languages: languages,
       languagesLevels: languagesLevels,
       aboutMe: aboutMe,
+      checkAgreeCV: checkAgreeCV,
     );
   }
 
@@ -204,6 +207,7 @@ class UserEnreda {
   final List<String> languages;
   final List<Language> languagesLevels;
   final String? aboutMe;
+  final bool? checkAgreeCV;
 
   Map<String, dynamic> toMap() {
     InterestsUserEnreda interestUserEnreda = InterestsUserEnreda(
@@ -231,6 +235,7 @@ class UserEnreda {
       'languagesLevels': languagesLevels.map((e) => e.toMap()).toList(),
       'aboutMe': aboutMe,
       'education': education?.toMap(),
+      'checkAgreeCV': checkAgreeCV,
     };
   }
 
@@ -265,6 +270,7 @@ class UserEnreda {
     List<String>? languages,
     List<Language>? languagesLevels,
     String? aboutMe,
+    bool? checkAgreeCV,
   }) {
     return UserEnreda(
       email: email ?? this.email,
@@ -293,6 +299,7 @@ class UserEnreda {
       languages: languages ?? this.languages,
       languagesLevels: languagesLevels ?? this.languagesLevels,
       aboutMe: aboutMe ?? this.aboutMe,
+      checkAgreeCV: checkAgreeCV ?? this.checkAgreeCV,
     );
   }
 }

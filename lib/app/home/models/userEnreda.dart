@@ -35,6 +35,7 @@ class UserEnreda {
     this.aboutMe,
     this.points,
     this.resourcesAccessCount,
+    this.checkAgreeCV,
   });
 
   factory UserEnreda.fromMap(Map<String, dynamic> data, String documentId) {
@@ -149,6 +150,7 @@ class UserEnreda {
     final String? aboutMe = data['aboutMe'];
     final int points = data['points']?? 0;
     final int resourcesAccessCount = data['resourcesAccessCount']?? 0;
+    final bool? checkAgreeCV = data['checkAgreeCV'];
 
     return UserEnreda(
       email: email,
@@ -180,6 +182,7 @@ class UserEnreda {
       aboutMe: aboutMe,
       points: points,
       resourcesAccessCount: resourcesAccessCount,
+      checkAgreeCV: checkAgreeCV,
     );
   }
 
@@ -212,6 +215,7 @@ class UserEnreda {
   final String? aboutMe;
   final int? points;
   final int? resourcesAccessCount;
+  final bool? checkAgreeCV;
 
   Map<String, dynamic> toMap() {
     InterestsUserEnreda interestUserEnreda = InterestsUserEnreda(
@@ -241,6 +245,7 @@ class UserEnreda {
       'education': education?.toMap(),
       'points': points,
       'resourcesAccessCount': resourcesAccessCount,
+      'checkAgreeCV': checkAgreeCV,
     };
   }
 
@@ -277,6 +282,7 @@ class UserEnreda {
     String? aboutMe,
     int? points,
     int? resourcesAccessCount,
+    bool? checkAgreeCV,
   }) {
     return UserEnreda(
       email: email ?? this.email,
@@ -307,6 +313,7 @@ class UserEnreda {
       aboutMe: aboutMe ?? this.aboutMe,
       points: points ?? this.points,
       resourcesAccessCount: resourcesAccessCount ?? this.resourcesAccessCount,
+      checkAgreeCV: checkAgreeCV ?? this.checkAgreeCV,
     );
   }
 }

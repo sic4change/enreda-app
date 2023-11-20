@@ -24,6 +24,7 @@ class MessageTile extends StatefulWidget {
     required this.chatQuestion,
     required this.currentChoicesNotifier,
     required this.sourceAutoCompleteNotifier,
+    this.showSportOptions,
   });
 
   final Question question;
@@ -32,6 +33,7 @@ class MessageTile extends StatefulWidget {
   final ValueNotifier<List<Choice>> sourceAutoCompleteNotifier;
   static String? experienceTypeId, experienceSubtypeId;
   static List<String> recommendedActivities = [];
+  ValueNotifier<bool>? showSportOptions;
 
   @override
   State<MessageTile> createState() => _MessageTileState();
@@ -167,7 +169,7 @@ class _MessageTileState extends State<MessageTile> {
 
   Widget _buildSingleChoiceResponse(
       {required List<String> source, required Function(String) onChanged}) {
-    return source.length <= 9  || Responsive.isMobile(context) ?
+    return source.length <= 9  || Responsive.isMobile(context) || (widget.showSportOptions?.value ?? false) ?
     ChipsChoice<String>.single(
       choiceItems: C2Choice.listFrom<String, String>(
         source: source,

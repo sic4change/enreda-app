@@ -35,6 +35,10 @@ Future<Uint8List> generateResume2(
     List<Experience>? myPersonalExperiences,
     List<Experience>? myEducation,
     List<Experience>? mySecondaryEducation,
+    List<String>? idSelectedDateEducation,
+    List<String>? idSelectedDateSecondaryEducation,
+    List<String>? idSelectedDateExperience,
+    List<String>? idSelectedDatePersonalExperience,
     List<String>? competenciesNames,
     List<String>? languagesNames,
     String? aboutMe,
@@ -247,6 +251,7 @@ Future<Uint8List> generateResume2(
                                 : experience.organization == ""
                                 ? experience.position
                                 : '${experience.position} - ${experience.organization}',
+                            showDescriptionDate: idSelectedDateExperience!.contains(experience.id),
                             descriptionDate:'${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null
                                 ? formatter.format(experience.endDate!.toDate())
                                 : 'Actualmente'}',
@@ -265,6 +270,7 @@ Future<Uint8List> generateResume2(
                                 : experience.organization == ""
                                 ? experience.position
                                 : '${experience.position} - ${experience.organization}',
+                            showDescriptionDate: idSelectedDatePersonalExperience!.contains(experience.id),
                             descriptionDate:'${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null
                                 ? formatter.format(experience.endDate!.toDate())
                                 : 'Actualmente'}',
@@ -278,6 +284,7 @@ Future<Uint8List> generateResume2(
                             title: education.activity == null || education.activity == ''
                                 ? education.nameFormation
                                 : education.activity,
+                            showDescriptionDate: idSelectedDateEducation!.contains(education.id),
                             descriptionDate:'${formatter.format(education.startDate.toDate())} / ${education.endDate != null
                                 ? formatter.format(education.endDate!.toDate())
                                 : 'Actualmente'}',
@@ -291,6 +298,7 @@ Future<Uint8List> generateResume2(
                             title: education.activity == null || education.activity == ''
                                 ? education.nameFormation
                                 : education.activity,
+                            showDescriptionDate: idSelectedDateSecondaryEducation!.contains(education.id),
                             descriptionDate:'${formatter.format(education.startDate.toDate())} / ${education.endDate != null
                                 ? formatter.format(education.endDate!.toDate())
                                 : 'Actualmente'}',
@@ -373,11 +381,13 @@ class _Block extends pw.StatelessWidget {
     this.title,
     this.descriptionDate,
     this.descriptionPlace,
+    this.showDescriptionDate,
   });
 
   final String? title;
   final String? descriptionDate;
   final String? descriptionPlace;
+  final bool? showDescriptionDate;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -402,13 +412,14 @@ class _Block extends pw.StatelessWidget {
             child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: <pw.Widget>[
-                  pw.Text(descriptionDate!,
+                  (showDescriptionDate ?? true) ? pw.Text(descriptionDate!,
                       textScaleFactor: 0.8,
                       style: pw.Theme.of(context)
                           .defaultTextStyle
                           .copyWith(
                           fontWeight: pw.FontWeight.normal,
-                          color: grey)),
+                          color: grey))
+                      : pw.Container(),
                 ]),
           ),
           pw.Container(

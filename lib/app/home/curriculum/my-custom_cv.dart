@@ -112,10 +112,35 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
   bool _isSelectedMaxEducation = true;
   String _myMaxEducation = '';
 
+  List<int> mySelectedDateEducation = [];
+  List<String> idSelectedDateEducation = [];
+  List<int> mySelectedDateSecondaryEducation = [];
+  List<String> idSelectedDateSecondaryEducation = [];
+  List<int>  mySelectedDateExperience = [];
+  List<String> idSelectedDateExperience = [];
+  List<int>  mySelectedDatePersonalExperience = [];
+  List<String> idSelectedDatePersonalExperience = [];
+
   @override
   void initState() {
     super.initState();
     _myMaxEducation = widget.myMaxEducation;
+    widget.mySelectedEducation.forEach((element) {
+      mySelectedDateEducation.add(element);
+      idSelectedDateEducation.add(widget.myEducation!.elementAt(element).id!);
+    });
+    widget.mySecondarySelectedEducation.forEach((element) {
+      mySelectedDateSecondaryEducation.add(element);
+      idSelectedDateSecondaryEducation.add(widget.mySecondaryEducation!.elementAt(element).id!);
+    });
+    widget.mySelectedExperiences.forEach((element) {
+      mySelectedDateExperience.add(element);
+      idSelectedDateExperience.add(widget.myExperiences!.elementAt(element).id!);
+    });
+    widget.myPersonalSelectedExperiences.forEach((element) {
+      mySelectedDatePersonalExperience.add(element);
+      idSelectedDatePersonalExperience.add(widget.myPersonalExperiences!.elementAt(element).id!);
+    });
   }
 
   @override
@@ -354,6 +379,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                     myPersonalExperiences: widget.myPersonalCustomExperiences,
                                     myEducation: widget.myCustomEducation,
                                     mySecondaryEducation: widget.mySecondaryCustomEducation,
+                                    idSelectedDateEducation: idSelectedDateEducation,
+                                    idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
+                                    idSelectedDateExperience: idSelectedDateExperience,
+                                    idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
                                     competenciesNames: widget.myCustomCompetencies,
                                     aboutMe: widget.myCustomAboutMe,
                                     languagesNames: widget.myCustomLanguages,
@@ -566,6 +595,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             myPersonalExperiences: widget.myPersonalCustomExperiences,
                             myEducation: widget.myCustomEducation,
                             mySecondaryEducation: widget.mySecondaryCustomEducation,
+                            idSelectedDateEducation: idSelectedDateEducation,
+                            idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
+                            idSelectedDateExperience: idSelectedDateExperience,
+                            idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
                             competenciesNames: widget.myCustomCompetencies,
                             aboutMe: widget.myCustomAboutMe,
                             languagesNames: widget.myCustomLanguages,
@@ -972,22 +1005,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                     padding: EdgeInsets.symmetric(vertical: 0),
                     child: ListTile(
                       selected: index == _selectedEducationIndex,
-                      onTap: (){
-                        print('selected item: ${widget.myEducation![index].activity}');
-                        bool exists = widget.myCustomEducation.any((element) => element.id == widget.myEducation![index].id);
-                        setState(() {
-                          _selectedEducationIndex = index;
-                          if (exists == true){
-                            widget.myCustomEducation.remove(widget.myEducation![index]);
-                            widget.mySelectedEducation.remove(_selectedEducationIndex);
-                          } else {
-                            widget.myCustomEducation.add(widget.myEducation![index]);
-                            widget.mySelectedEducation.add(_selectedEducationIndex!);
-                          }
-                          print(widget.myCustomEducation);
-                          print(widget.mySelectedEducation);
-                        });
-                      },
                       title: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Row(
@@ -1035,13 +1052,41 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                       SpaceH8()
                                     ],
                                   ),
-                                  Text(
-                                    '${formatter.format(widget.myEducation![index].startDate.toDate())} / ${widget.myEducation![index].endDate != null
-                                        ? formatter.format(widget.myEducation![index].endDate!.toDate())
-                                        : 'Actualmente'}',
-                                    style: textTheme.bodyText1?.copyWith(
-                                      fontSize: 14.0,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '${formatter.format(widget.myEducation![index].startDate.toDate())} / ${widget.myEducation![index].endDate != null
+                                            ? formatter.format(widget.myEducation![index].endDate!.toDate())
+                                            : 'Actualmente'}',
+                                        style: textTheme.bodyText1?.copyWith(
+                                          fontSize: 14.0,
+                                        ),
+                                      ),
+                                      SpaceW8(),
+                                      IconButton(
+                                        icon: Icon(mySelectedDateEducation.contains(index) ? Icons.check_box : Icons.crop_square),
+                                        color: Constants.darkGray,
+                                        iconSize: 15.0,
+                                        onPressed: (){
+
+                                          setState(() {
+                                            if(widget.mySelectedEducation.contains(index)){
+                                              if(mySelectedDateEducation.contains(index)){
+                                                mySelectedDateEducation.remove(index);
+                                                idSelectedDateEducation.remove(widget.myEducation!.elementAt(index).id);
+                                              }
+                                              else {
+                                                mySelectedDateEducation.add(index);
+                                                idSelectedDateEducation.add(widget.myEducation!.elementAt(index).id!);
+                                              }
+                                              //print(widget.mySelectedEducation);
+                                              //print(mySelectedDateEducation);
+                                              idSelectedDateEducation.forEach((element) {print(element);});
+                                            }
+                                          });
+                                        },
+                                      ),
+                                    ],
                                   ),
                                   SpaceH8(),
                                   Text(
@@ -1053,10 +1098,32 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                 ],
                               ),
                             ),
-                            Icon(
-                              widget.mySelectedEducation.contains(index) ? Icons.check_box : Icons.crop_square,
+                            IconButton(
+                              onPressed: (){
+                                  print('selected item: ${widget.myEducation![index].activity}');
+                                  bool exists = widget.myCustomEducation.any((element) => element.id == widget.myEducation![index].id);
+                                  setState(() {
+                                    _selectedEducationIndex = index;
+                                    if (exists == true){
+                                      widget.myCustomEducation.remove(widget.myEducation![index]);
+                                      widget.mySelectedEducation.remove(_selectedEducationIndex);
+                                      //Disguise date
+                                      mySelectedDateEducation.remove(index);
+                                      idSelectedDateEducation.remove(widget.myEducation!.elementAt(index).id);
+                                    } else {
+                                      widget.myCustomEducation.add(widget.myEducation![index]);
+                                      widget.mySelectedEducation.add(_selectedEducationIndex!);
+                                      //Show date
+                                      mySelectedDateEducation.add(index);
+                                      idSelectedDateEducation.add(widget.myEducation!.elementAt(index).id!);
+                                    }
+                                    print(widget.myCustomEducation);
+                                    print(widget.mySelectedEducation);
+                                  });
+                              },
+                              icon: Icon(widget.mySelectedEducation.contains(index) ? Icons.check_box : Icons.crop_square),
+                              iconSize: 20,
                               color: Constants.darkGray,
-                              size: 20.0,
                             ),
                           ],
                         ),
@@ -1097,22 +1164,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 padding: EdgeInsets.symmetric(vertical: 0),
                 child: ListTile(
                   selected: index == _selectedSecondaryEducationIndex,
-                  onTap: (){
-                    print('selected item: ${widget.mySecondaryEducation![index].activity}');
-                    bool exists = widget.mySecondaryCustomEducation.any((element) => element.id == widget.mySecondaryEducation![index].id);
-                    setState(() {
-                      _selectedSecondaryEducationIndex = index;
-                      if (exists == true){
-                        widget.mySecondaryCustomEducation.remove(widget.mySecondaryEducation![index]);
-                        widget.mySecondarySelectedEducation.remove(_selectedSecondaryEducationIndex);
-                      } else {
-                        widget.mySecondaryCustomEducation.add(widget.mySecondaryEducation![index]);
-                        widget.mySecondarySelectedEducation.add(_selectedSecondaryEducationIndex!);
-                      }
-                      print(widget.mySecondaryCustomEducation);
-                      print(widget.mySecondarySelectedEducation);
-                    });
-                  },
                   title: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Row(
@@ -1160,13 +1211,39 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                   SpaceH8()
                                 ],
                               ),
-                              Text(
-                                '${formatter.format(widget.mySecondaryEducation![index].startDate.toDate())} / ${widget.mySecondaryEducation![index].endDate != null
-                                    ? formatter.format(widget.mySecondaryEducation![index].endDate!.toDate())
-                                    : 'Actualmente'}',
-                                style: textTheme.bodyText1?.copyWith(
-                                  fontSize: 14.0,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    '${formatter.format(widget.mySecondaryEducation![index].startDate.toDate())} / ${widget.mySecondaryEducation![index].endDate != null
+                                        ? formatter.format(widget.mySecondaryEducation![index].endDate!.toDate())
+                                        : 'Actualmente'}',
+                                    style: textTheme.bodyText1?.copyWith(
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                  SpaceW8(),
+                                  IconButton(
+                                    icon: Icon(mySelectedDateSecondaryEducation.contains(index) ? Icons.check_box : Icons.crop_square),
+                                    color: Constants.darkGray,
+                                    iconSize: 15.0,
+                                    onPressed: (){
+
+                                      setState(() {
+                                        if(widget.mySecondarySelectedEducation.contains(index)){
+                                          if(mySelectedDateSecondaryEducation.contains(index)){
+                                            mySelectedDateSecondaryEducation.remove(index);
+                                            idSelectedDateSecondaryEducation.remove(widget.mySecondaryEducation!.elementAt(index).id);
+                                          }
+                                          else {
+                                            mySelectedDateSecondaryEducation.add(index);
+                                            idSelectedDateSecondaryEducation.add(widget.mySecondaryEducation!.elementAt(index).id!);
+                                          }
+                                          idSelectedDateSecondaryEducation.forEach((element) {print(element);});
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ],
                               ),
                               SpaceH8(),
                               Text(
@@ -1178,10 +1255,32 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             ],
                           ),
                         ),
-                        Icon(
-                          widget.mySecondarySelectedEducation.contains(index) ? Icons.check_box : Icons.crop_square,
+                        IconButton(
+                          onPressed: (){
+                            print('selected item: ${widget.mySecondaryEducation![index].activity}');
+                            bool exists = widget.mySecondaryCustomEducation.any((element) => element.id == widget.mySecondaryEducation![index].id);
+                            setState(() {
+                              _selectedSecondaryEducationIndex = index;
+                              if (exists == true){
+                                widget.mySecondaryCustomEducation.remove(widget.mySecondaryEducation![index]);
+                                widget.mySecondarySelectedEducation.remove(_selectedSecondaryEducationIndex);
+                                //Disguise date
+                                mySelectedDateSecondaryEducation.remove(index);
+                                idSelectedDateSecondaryEducation.remove(widget.mySecondaryEducation!.elementAt(index).id);
+                              } else {
+                                widget.mySecondaryCustomEducation.add(widget.mySecondaryEducation![index]);
+                                widget.mySecondarySelectedEducation.add(_selectedSecondaryEducationIndex!);
+                                //Show date
+                                mySelectedDateSecondaryEducation.add(index);
+                                idSelectedDateSecondaryEducation.add(widget.mySecondaryEducation!.elementAt(index).id!);
+                              }
+                              print(widget.mySecondaryCustomEducation);
+                              print(widget.mySecondarySelectedEducation);
+                            });
+                          },
+                          icon: Icon(widget.mySecondarySelectedEducation.contains(index) ? Icons.check_box : Icons.crop_square),
+                          iconSize: 20,
                           color: Constants.darkGray,
-                          size: 20.0,
                         ),
                       ],
                     ),
@@ -1222,22 +1321,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   padding: EdgeInsets.symmetric(vertical: 0),
                   child: ListTile(
                     selected: index == _selectedExperienceIndex,
-                    onTap: (){
-                      print('selected item: ${widget.myExperiences![index].activity}');
-                      bool exists = widget.myCustomExperiences.any((element) => element.id == widget.myExperiences![index].id);
-                      setState(() {
-                        _selectedExperienceIndex = index;
-                        if (exists == true){
-                          widget.myCustomExperiences.remove(widget.myExperiences![index]);
-                          widget.mySelectedExperiences.remove(_selectedExperienceIndex);
-                        } else {
-                          widget.myCustomExperiences.add(widget.myExperiences![index]);
-                          widget.mySelectedExperiences.add(_selectedExperienceIndex!);
-                        }
-                        print(widget.myCustomExperiences);
-                        print(widget.mySelectedExperiences);
-                      });
-                    },
                     title: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
@@ -1281,13 +1364,39 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                     SpaceH8()
                                   ],
                                 ),
-                                Text(
-                                  '${formatter.format(widget.myExperiences![index].startDate.toDate())} / ${widget.myExperiences![index].endDate != null
-                                      ? formatter.format(widget.myExperiences![index].endDate!.toDate())
-                                      : 'Actualmente'}',
-                                  style: textTheme.bodyText1?.copyWith(
-                                    fontSize: 14.0,
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${formatter.format(widget.myExperiences![index].startDate.toDate())} / ${widget.myExperiences![index].endDate != null
+                                          ? formatter.format(widget.myExperiences![index].endDate!.toDate())
+                                          : 'Actualmente'}',
+                                      style: textTheme.bodyText1?.copyWith(
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                    SpaceW8(),
+                                    IconButton(
+                                      icon: Icon(mySelectedDateExperience.contains(index) ? Icons.check_box : Icons.crop_square),
+                                      color: Constants.darkGray,
+                                      iconSize: 15.0,
+                                      onPressed: (){
+
+                                        setState(() {
+                                          if(widget.mySelectedExperiences.contains(index)){
+                                            if(mySelectedDateExperience.contains(index)){
+                                              mySelectedDateExperience.remove(index);
+                                              idSelectedDateExperience.remove(widget.myExperiences!.elementAt(index).id);
+                                            }
+                                            else {
+                                              mySelectedDateExperience.add(index);
+                                              idSelectedDateExperience.add(widget.myExperiences!.elementAt(index).id!);
+                                            }
+                                            idSelectedDateExperience.forEach((element) {print(element);});
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  ],
                                 ),
                                 SpaceH8(),
                                 Text(
@@ -1299,10 +1408,32 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               ],
                             ),
                           ),
-                          Icon(
-                            widget.mySelectedExperiences.contains(index) ? Icons.check_box : Icons.crop_square,
+                          IconButton(
+                            onPressed: (){
+                              print('selected item: ${widget.myExperiences![index].activity}');
+                              bool exists = widget.myCustomExperiences.any((element) => element.id == widget.myExperiences![index].id);
+                              setState(() {
+                                _selectedExperienceIndex = index;
+                                if (exists == true){
+                                  widget.myCustomExperiences.remove(widget.myExperiences![index]);
+                                  widget.mySelectedExperiences.remove(_selectedExperienceIndex);
+                                  //Disguise date
+                                  mySelectedDateExperience.remove(index);
+                                  idSelectedDateExperience.remove(widget.myExperiences!.elementAt(index).id);
+                                } else {
+                                  widget.myCustomExperiences.add(widget.myExperiences![index]);
+                                  widget.mySelectedExperiences.add(_selectedExperienceIndex!);
+                                  //Show date
+                                  mySelectedDateExperience.add(index);
+                                  idSelectedDateExperience.add(widget.myExperiences!.elementAt(index).id!);
+                                }
+                                print(widget.myCustomExperiences);
+                                print(widget.mySelectedExperiences);
+                              });
+                            },
+                            icon: Icon(widget.mySelectedExperiences.contains(index) ? Icons.check_box : Icons.crop_square),
+                            iconSize: 20,
                             color: Constants.darkGray,
-                            size: 20.0,
                           ),
                         ],
                       ),
@@ -1343,22 +1474,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 padding: EdgeInsets.symmetric(vertical: 0),
                 child: ListTile(
                   selected: index == _selectedPersonalExperienceIndex,
-                  onTap: (){
-                    print('selected item: ${widget.myPersonalExperiences![index].activity}');
-                    bool exists = widget.myPersonalCustomExperiences.any((element) => element.id == widget.myPersonalExperiences![index].id);
-                    setState(() {
-                      _selectedPersonalExperienceIndex = index;
-                      if (exists == true){
-                        widget.myPersonalCustomExperiences.remove(widget.myPersonalExperiences![index]);
-                        widget.myPersonalSelectedExperiences.remove(_selectedPersonalExperienceIndex);
-                      } else {
-                        widget.myPersonalCustomExperiences.add(widget.myPersonalExperiences![index]);
-                        widget.myPersonalSelectedExperiences.add(_selectedPersonalExperienceIndex!);
-                      }
-                      print(widget.myPersonalCustomExperiences);
-                      print(widget.myPersonalSelectedExperiences);
-                    });
-                  },
                   title: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Row(
@@ -1402,13 +1517,39 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                   SpaceH8()
                                 ],
                               ),
-                              Text(
-                                '${formatter.format(widget.myPersonalExperiences![index].startDate.toDate())} / ${widget.myPersonalExperiences![index].endDate != null
-                                    ? formatter.format(widget.myPersonalExperiences![index].endDate!.toDate())
-                                    : 'Actualmente'}',
-                                style: textTheme.bodyText1?.copyWith(
-                                  fontSize: 14.0,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    '${formatter.format(widget.myPersonalExperiences![index].startDate.toDate())} / ${widget.myPersonalExperiences![index].endDate != null
+                                        ? formatter.format(widget.myPersonalExperiences![index].endDate!.toDate())
+                                        : 'Actualmente'}',
+                                    style: textTheme.bodyText1?.copyWith(
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                  SpaceW8(),
+                                  IconButton(
+                                    icon: Icon(mySelectedDatePersonalExperience.contains(index) ? Icons.check_box : Icons.crop_square),
+                                    color: Constants.darkGray,
+                                    iconSize: 15.0,
+                                    onPressed: (){
+
+                                      setState(() {
+                                        if(widget.myPersonalSelectedExperiences.contains(index)){
+                                          if(mySelectedDatePersonalExperience.contains(index)){
+                                            mySelectedDatePersonalExperience.remove(index);
+                                            idSelectedDatePersonalExperience.remove(widget.myPersonalExperiences!.elementAt(index).id);
+                                          }
+                                          else {
+                                            mySelectedDatePersonalExperience.add(index);
+                                            idSelectedDatePersonalExperience.add(widget.myPersonalExperiences!.elementAt(index).id!);
+                                          }
+                                          idSelectedDatePersonalExperience.forEach((element) {print(element);});
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ],
                               ),
                               SpaceH8(),
                               Text(
@@ -1420,10 +1561,32 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             ],
                           ),
                         ),
-                        Icon(
-                          widget.myPersonalSelectedExperiences.contains(index) ? Icons.check_box : Icons.crop_square,
+                        IconButton(
+                          onPressed: (){
+                            print('selected item: ${widget.myPersonalExperiences![index].activity}');
+                            bool exists = widget.myPersonalCustomExperiences.any((element) => element.id == widget.myPersonalExperiences![index].id);
+                            setState(() {
+                              _selectedPersonalExperienceIndex = index;
+                              if (exists == true){
+                                widget.myPersonalCustomExperiences.remove(widget.myPersonalExperiences![index]);
+                                widget.myPersonalSelectedExperiences.remove(_selectedPersonalExperienceIndex);
+                                //Disguise date
+                                mySelectedDatePersonalExperience.remove(index);
+                                idSelectedDatePersonalExperience.remove(widget.myPersonalExperiences!.elementAt(index).id);
+                              } else {
+                                widget.myPersonalCustomExperiences.add(widget.myPersonalExperiences![index]);
+                                widget.myPersonalSelectedExperiences.add(_selectedPersonalExperienceIndex!);
+                                //Show date
+                                mySelectedDatePersonalExperience.add(index);
+                                idSelectedDatePersonalExperience.add(widget.myPersonalExperiences!.elementAt(index).id!);
+                              }
+                              print(widget.myPersonalCustomExperiences);
+                              print(widget.myPersonalSelectedExperiences);
+                            });
+                          },
+                          icon: Icon(widget.myPersonalSelectedExperiences.contains(index) ? Icons.check_box : Icons.crop_square),
+                          iconSize: 20,
                           color: Constants.darkGray,
-                          size: 20.0,
                         ),
                       ],
                     ),

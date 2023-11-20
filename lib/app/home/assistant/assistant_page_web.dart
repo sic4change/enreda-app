@@ -41,6 +41,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
   ValueNotifier<List<Choice>> sourceAutoCompleteNotifier =  ValueNotifier<List<Choice>>([]);
   late ChatQuestion _currentChatQuestion;
   late FocusNode _focusNode = FocusNode();
+  ValueNotifier<bool> showSportOptions = ValueNotifier<bool>(false);
 
 
 
@@ -65,6 +66,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     messageEditingController.dispose();
     MessageTile.experienceTypeId = null;
     MessageTile.experienceSubtypeId = null;
+    showSportOptions.value = false;
     super.dispose();
   }
 
@@ -181,6 +183,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                             chatQuestion: chatQuestion,
                             currentChoicesNotifier: currentChoicesNotifier,
                             sourceAutoCompleteNotifier: sourceAutoCompleteNotifier,
+                            showSportOptions: showSportOptions,
                           );
                         } else {
                           return Container();
@@ -311,10 +314,14 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                                 question.type ==
                                     StringConst.MULTICHOICE_QUESTION) &&
                             currentChoice.isEmpty) {
+                          messageEditingController.clear();
+                          setState(() {
+                            showSportOptions.value = true;
+                          });
                           showAlertDialog(
                             this.context,
                             title: 'Aviso',
-                            content: 'Seleccione una respuesta',
+                            content: 'No he entendido tu respuesta. Selecciona una de las posibles',
                             defaultActionText: 'Ok',
                           );
                           return;
@@ -625,6 +632,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     messageEditingController.clear();
     setState(() {
       sourceAutoCompleteNotifier.notifyListeners();
+      showSportOptions.value = false;
     });
 
     if (_currentQuestion.type == StringConst.NONE_QUESTION) {

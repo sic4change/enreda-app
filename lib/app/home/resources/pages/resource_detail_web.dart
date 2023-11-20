@@ -18,7 +18,6 @@ import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -55,6 +54,7 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
     _email = "";
     _name = "";
     _text = "";
+    _countUserAccess();
   }
 
   @override
@@ -73,6 +73,15 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
         ],
       ),
     );
+  }
+
+  Future<void> _countUserAccess() async {
+    final database = Provider.of<Database>(context, listen: false);
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    if (auth.currentUser != null) {
+      final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
+      database.setUserEnreda(user.copyWith(resourcesAccessCount: user.resourcesAccessCount! + 1));
+    }
   }
 
   Widget _buildContent() {

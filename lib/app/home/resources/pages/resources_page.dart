@@ -1,6 +1,7 @@
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/filterResource.dart';
+import 'package:enreda_app/app/home/models/filterTrainingPills.dart';
 import 'package:enreda_app/app/home/models/organization.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
@@ -27,7 +28,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../utils/functions.dart';
-import '../../assistant/list_item_builder.dart';
 
 class ResourcesPage extends StatefulWidget {
   @override
@@ -41,7 +41,8 @@ class ResourcesPage extends StatefulWidget {
 class _ResourcesPageState extends State<ResourcesPage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final _searchTextController = TextEditingController();
-  FilterResource filterResource = FilterResource("", "POUBGFk5gU6c5X1DKo1b");
+  FilterResource filterResource = FilterResource("", "");
+  FilterTrainingPill filterTrainingPill = FilterTrainingPill("", "");
   bool isAlertBoxOpened = false;
   List<ResourceCategory> resourceCategoriesList = [];
   String _categoryName = 'Empleo';
@@ -321,7 +322,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   onFieldSubmitted: (value) => setStateIfMounted(() {
                     filterResource.searchText = _searchTextController.text;
                   }),
-                  clearFilter: () => _clearFilter()),
+                  clearFilter: () => _clearFilter(),
+                  hintText: 'Nombre del recurso, organizador, país...',
+              ),
               SpaceH20(),
               Padding(
                 padding: Responsive.isMobile(context)
@@ -450,12 +453,14 @@ class _ResourcesPageState extends State<ResourcesPage> {
               FilterTextFieldRow(
                   searchTextController: _searchTextController,
                   onPressed: () => setStateIfMounted(() {
-                    filterResource.searchText = _searchTextController.text;
+                    filterTrainingPill.searchText = _searchTextController.text;
                   }),
                   onFieldSubmitted: (value) => setStateIfMounted(() {
-                    filterResource.searchText = _searchTextController.text;
+                    filterTrainingPill.searchText = _searchTextController.text;
                   }),
-                  clearFilter: () => _clearFilter()),
+                  clearFilter: () => _clearFilter(),
+                  hintText: 'Nombre del video, categoría...',
+              ),
               SpaceH20(),
               Padding(
                 padding: Responsive.isMobile(context)
@@ -579,7 +584,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
           ? EdgeInsets.symmetric(horizontal: 20, vertical: 30)
           : EdgeInsets.symmetric(horizontal: 100, vertical: 30),
       child: StreamBuilder<List<TrainingPill>>(
-          stream: database.trainingPillStream(),
+          stream: database.filteredTrainingPillStream(filterTrainingPill),
           builder: (context, snapshot) {
             return ListItemBuilderGrid<TrainingPill>(
               snapshot: snapshot,
@@ -607,7 +612,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: StreamBuilder<List<TrainingPill>>(
-            stream: database.trainingPillStream(),
+            stream: database.filteredTrainingPillStream(filterTrainingPill),
             builder: (context, snapshot) {
               return ListItemBuilderVertical<TrainingPill>(
                   snapshot: snapshot,
@@ -966,6 +971,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
     setState(() {
       _searchTextController.clear();
       filterResource.searchText = '';
+      filterTrainingPill.searchText = '';
     });
   }
 }

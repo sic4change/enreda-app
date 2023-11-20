@@ -2,8 +2,8 @@ import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/meta_data_section.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/play_pause_button.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/video_position_seeker.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/video_thumbnail_area.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
-import 'package:enreda_app/common_widgets/videos/video_thumbnail_area.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 

@@ -26,12 +26,12 @@ class _CustomTooltipState extends State<CustomTooltip> {
     _overlayEntry = OverlayEntry(builder: (context) {
       return Positioned(
         // Position the tooltip relative to the widget
-        top: Responsive.isMobile(context)
-            ? MediaQuery.of(context).size.height * 0.1
-            : MediaQuery.of(context).size.height * 0.4,
-        right: Responsive.isMobile(context)
-            ? MediaQuery.of(context).size.width * 0.09
-            : MediaQuery.of(context).size.width * 0.25,
+        top: Responsive.isMobile(context) ? 100
+            : Responsive.isTablet(context) || Responsive.isDesktopS(context) ? 200
+                : MediaQuery.of(context).size.height * 0.32,
+        right: Responsive.isMobile(context) ? 20
+            : Responsive.isTablet(context) || Responsive.isDesktopS(context) ? 50
+                : MediaQuery.of(context).size.width * 0.25,
         child: Card(
           color: Colors.transparent,
           elevation: 0,

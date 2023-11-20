@@ -3,7 +3,6 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../utils/adaptive.dart';
 import '../../../values/values.dart';
@@ -23,7 +22,7 @@ class FilterTextFieldRow extends StatefulWidget {
   final void Function(String) onFieldSubmitted;
   final void Function() onPressed;
   final void Function() clearFilter;
-  late final String hintText;
+  late String hintText;
 
   @override
   State<FilterTextFieldRow> createState() => _FilterTextFieldRowState();
@@ -34,16 +33,20 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
 
   FocusNode _focusNode = FocusNode();
 
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
+
   @override
   void initState() {
     widget.searchTextController.addListener(() {
       if (widget.searchTextController.text.isNotEmpty && !_isClearTextVisible) {
-        setState(() {
+        setStateIfMounted(() {
           _isClearTextVisible = true;
         });
       } else if (widget.searchTextController.text.isEmpty &&
           _isClearTextVisible) {
-        setState(() {
+        setStateIfMounted(() {
           _isClearTextVisible = false;
         });
       }
@@ -51,12 +54,12 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
 
     _focusNode.addListener(() {
       if (_focusNode.hasFocus && widget.hintText.isNotEmpty) {
-        setState(() {
+        setStateIfMounted(() {
           widget.hintText = '';
         });
       } else if (!_focusNode.hasFocus && widget.hintText.isEmpty) {
-        setState(() {
-          widget.hintText = 'Nombre del recurso, organizador, país...';
+        setStateIfMounted(() {
+          widget.hintText = widget.hintText;
         });
       }
     });

@@ -88,7 +88,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   getResourceCategories() {
     final database = Provider.of<Database>(context, listen: false);
     database.getCategoriesResources().listen((categoriesList) {
-      setState(() => resourceCategoriesList = categoriesList);
+      setStateIfMounted(() => resourceCategoriesList = categoriesList);
     });
   }
 
@@ -634,7 +634,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
                         ],
                       ),
                     );
-                  }
+                  },
+                emptyTitle: 'Sin píldoras formativas',
+                emptyMessage: 'No tenemos videos que mostrarte con la búsqueda',
               );
             }),
       ),
@@ -968,7 +970,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   }
 
   void _clearFilter() {
-    setState(() {
+    setStateIfMounted(() {
       _searchTextController.clear();
       filterResource.searchText = '';
       filterTrainingPill.searchText = '';

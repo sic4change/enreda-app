@@ -88,6 +88,7 @@ class _CustomTooltipState extends State<CustomTooltip> {
   @override
   void dispose() {
     _overlayEntry.remove();
+    _overlayEntry.dispose();
     super.dispose();
   }
 
@@ -112,6 +113,7 @@ class _CustomTooltipState extends State<CustomTooltip> {
         builder: (context, snapshot) {
           if(snapshot.hasData) {
             TrainingPill trainingPill = snapshot.data!;
+            trainingPill.setTrainingPillCategoryName();
             return Container(
               key: Key('trainingPill-${trainingPill.id}'),
               child: TrainingTooltipVideo(

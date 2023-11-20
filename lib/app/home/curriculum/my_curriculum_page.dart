@@ -19,6 +19,7 @@ import 'package:enreda_app/app/home/resources/pages/list_item_builder_vertical.d
 import 'package:enreda_app/common_widgets/videos/custom_tooltip.dart';
 import 'package:enreda_app/common_widgets/delete_button.dart';
 import 'package:enreda_app/common_widgets/edit_button.dart';
+import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -292,6 +293,8 @@ class MyCurriculumPage extends StatelessWidget {
                     _buildMyExperiences(context, user),
                     SpaceH30(),
                     _buildMyCompetencies(context, user),
+                    SpaceH30(),
+                    _buildFinalCheck(context, user),
                   ],
                 ),
               ))
@@ -325,6 +328,15 @@ class MyCurriculumPage extends StatelessWidget {
                     flex: 1,
                     child: InkWell(
                       onTap: () async {
+                        final checkAgreeDownload = user?.checkAgreeCV ?? false;
+                        if(!checkAgreeDownload){
+                          showAlertDialog(context,
+                              title: 'Error',
+                              content: 'Por favor, acepta las condiciones antes de continuar',
+                              defaultActionText: 'Ok'
+                          );
+                          return;
+                        }
                         if (await _hasEnoughExperiences(context))
                           Navigator.push(
                             context,
@@ -486,6 +498,8 @@ class MyCurriculumPage extends StatelessWidget {
               SpaceH24(),
               _buildMyCompetencies(context, user),
               SpaceH24(),
+              _buildFinalCheck(context, user),
+              SpaceH24(),
               _buildAboutMe(context),
               SpaceH24(),
               _buildMyDataOfInterest(context),
@@ -511,6 +525,15 @@ class MyCurriculumPage extends StatelessWidget {
           children: [
             InkWell(
               onTap: () async {
+                final checkAgreeDownload = user?.checkAgreeCV ?? false;
+                if(!checkAgreeDownload){
+                  showAlertDialog(context,
+                      title: 'Error',
+                      content: 'Por favor, acepta las condiciones antes de continuar',
+                      defaultActionText: 'Ok'
+                  );
+                  return;
+                }
                 if (await _hasEnoughExperiences(context))
                   Navigator.push(
                     context,
@@ -918,6 +941,34 @@ class MyCurriculumPage extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         }
       },
+    );
+  }
+
+  Widget _buildFinalCheck(BuildContext context, UserEnreda? user){
+    final database = Provider.of<Database>(context, listen: false);
+    final textTheme = Theme.of(context).textTheme;
+    final bool checkFinal = user?.checkAgreeCV ?? false;
+    return Row(
+      children: [
+        IconButton(
+            icon: Icon(checkFinal ? Icons.check_box : Icons.crop_square),
+        color: Constants.darkGray,
+        iconSize: 20.0,
+        onPressed: (){
+          database.setUserEnreda(
+              user!.copyWith(checkAgreeCV: !checkFinal));
+            }),
+        Expanded(
+          child: Text(
+            'Según la Ley de Protección de datos, autorizo a la empresa al uso y tratamiento de mis datos con fines exclusivamente de selección de personal y bolsas de empleo.',
+            maxLines: 5,
+            softWrap: true,
+            style: textTheme.bodyLarge?.copyWith(
+              fontSize: Responsive.isDesktop(context) ? 12 : 10,
+              color: Constants.darkGray),
+          ),
+        ),
+      ],
     );
   }
 

@@ -27,10 +27,10 @@ class _CustomTooltipState extends State<CustomTooltip> {
       return Positioned(
         // Position the tooltip relative to the widget
         top: Responsive.isMobile(context)
-            ? MediaQuery.of(context).size.height * 0.2
+            ? MediaQuery.of(context).size.height * 0.1
             : MediaQuery.of(context).size.height * 0.4,
         right: Responsive.isMobile(context)
-            ? MediaQuery.of(context).size.width * 0.1
+            ? MediaQuery.of(context).size.width * 0.09
             : MediaQuery.of(context).size.width * 0.25,
         child: Card(
           color: Colors.transparent,

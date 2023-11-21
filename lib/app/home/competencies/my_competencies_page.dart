@@ -6,6 +6,7 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -80,18 +81,7 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
                                             competency: competency,
                                             database: database,
                                             auth: auth,
-                                            onComingBack: () async {
-                                              if (auth.currentUser != null) {
-                                                final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-                                                if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_EVALUATE_COMPETENCY) || !user.gamificationFlags[UserEnreda.FLAG_EVALUATE_COMPETENCY]!) {
-                                                  user.gamificationFlags[UserEnreda.FLAG_EVALUATE_COMPETENCY] = true;
-                                                  database.setUserEnreda(user);
-                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                    content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
-                                                  ));
-                                                }
-                                              }
-                                            },
+                                            onComingBack: () => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_EVALUATE_COMPETENCY)
                                         ),
                                       if (status ==
                                           StringConst.BADGE_VALIDATED ||

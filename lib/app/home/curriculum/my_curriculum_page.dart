@@ -25,6 +25,7 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
@@ -661,21 +662,8 @@ class MyCurriculumPage extends StatelessWidget {
               InkWell(
                 onTap: () async {
                   if (isEditable) {
-                    await database.setUserEnreda(
-                        user!.copyWith(aboutMe: textController.text));
-                    final auth = Provider.of<AuthBase>(context, listen: false);
-                    if (auth.currentUser != null) {
-                      final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-                      if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CV_ABOUT_ME) ||
-                          !user.gamificationFlags[UserEnreda.FLAG_CV_ABOUT_ME]!) {
-                        user.gamificationFlags[UserEnreda.FLAG_CV_ABOUT_ME] = true;
-                        await database.setUserEnreda(user);
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content:
-                              Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
-                        ));
-                      }
-                    }
+                    await database.setUserEnreda(user!.copyWith(aboutMe: textController.text));
+                    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_ABOUT_ME);
                   }
                   setState(() {
                     isEditable = !isEditable;
@@ -1005,21 +993,7 @@ class MyCurriculumPage extends StatelessWidget {
                   builder: (dialogContext) => AlertDialog(
                     content: FormationForm(
                       isMainEducation: true,
-                      onComingBack: () async {
-                        final database = Provider.of<Database>(context, listen: false);
-                        final auth = Provider.of<AuthBase>(context, listen: false);
-                        if (auth.currentUser != null) {
-                          final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-                          if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CV_FORMATION) ||
-                              !user.gamificationFlags[UserEnreda.FLAG_CV_FORMATION]!) {
-                            user.gamificationFlags[UserEnreda.FLAG_CV_FORMATION] = true;
-                            await database.setUserEnreda(user);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
-                            ));
-                          }
-                        }
-                      },
+                      onComingBack: () => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_FORMATION),
                     ),
                   )
               );
@@ -1103,21 +1077,7 @@ class MyCurriculumPage extends StatelessWidget {
                   builder: (dialogContext) => AlertDialog(
                     content: FormationForm(
                       isMainEducation: false,
-                      onComingBack: () async {
-                        final database = Provider.of<Database>(context, listen: false);
-                        final auth = Provider.of<AuthBase>(context, listen: false);
-                        if (auth.currentUser != null) {
-                          final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-                          if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION) ||
-                              !user.gamificationFlags[UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION]!) {
-                            user.gamificationFlags[UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION] = true;
-                            await database.setUserEnreda(user);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
-                            ));
-                          }
-                        }
-                      },
+                      onComingBack: () => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
                     ),
                   )
               );
@@ -1186,21 +1146,7 @@ class MyCurriculumPage extends StatelessWidget {
                   builder: (dialogContext) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: true,
-                      onComingBack: (_) async {
-                        final database = Provider.of<Database>(context, listen: false);
-                        final auth = Provider.of<AuthBase>(context, listen: false);
-                        if (auth.currentUser != null) {
-                          final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-                          if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CV_PROFESSIONAL) ||
-                              !user.gamificationFlags[UserEnreda.FLAG_CV_PROFESSIONAL]!) {
-                            user.gamificationFlags[UserEnreda.FLAG_CV_PROFESSIONAL] = true;
-                            await database.setUserEnreda(user);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
-                            ));
-                          }
-                        }
-                      },
+                      onComingBack: (_) => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PROFESSIONAL),
                     ),
                   )
               );
@@ -1269,21 +1215,7 @@ class MyCurriculumPage extends StatelessWidget {
                   builder: (dialogContext) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: false,
-                      onComingBack: (_) async {
-                        final database = Provider.of<Database>(context, listen: false);
-                        final auth = Provider.of<AuthBase>(context, listen: false);
-                        if (auth.currentUser != null) {
-                          final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-                          if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CV_PERSONAL) ||
-                              !user.gamificationFlags[UserEnreda.FLAG_CV_PERSONAL]!) {
-                            user.gamificationFlags[UserEnreda.FLAG_CV_PERSONAL] = true;
-                            await database.setUserEnreda(user);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
-                            ));
-                          }
-                        }
-                      },
+                      onComingBack: (_) => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PERSONAL),
                     ),
                   )
               );
@@ -1353,31 +1285,11 @@ class MyCurriculumPage extends StatelessWidget {
                     content: ExperienceFormUpdate(
                       isProfesional: false,
                       general: true,
-                      onComingBack: (isProfessional) async {
-                        final database = Provider.of<Database>(context, listen: false);
-                        final auth = Provider.of<AuthBase>(context, listen: false);
-                        if (auth.currentUser != null) {
-                          final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-                          if (isProfessional) {
-                            if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CV_PROFESSIONAL) ||
-                                !user.gamificationFlags[UserEnreda.FLAG_CV_PROFESSIONAL]!) {
-                              user.gamificationFlags[UserEnreda.FLAG_CV_PROFESSIONAL] = true;
-                              await database.setUserEnreda(user);
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
-                              ));
-                            }
-                          } else {
-                            if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CV_PERSONAL) ||
-                                !user.gamificationFlags[UserEnreda.FLAG_CV_PERSONAL]!) {
-                              user.gamificationFlags[UserEnreda.FLAG_CV_PERSONAL] = true;
-                              await database.setUserEnreda(user);
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
-                              ));
-                            }
-                          }
-
+                      onComingBack: (isProfessional) {
+                        if (isProfessional) {
+                          setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PROFESSIONAL);
+                        } else {
+                          setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PERSONAL);
                         }
                       },
                     ),
@@ -1687,17 +1599,7 @@ class MyCurriculumPage extends StatelessWidget {
           Navigator.of(context).pop();
        });
 
-    if (auth.currentUser != null) {
-      final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-      if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CV_DATA_OF_INTEREST) ||
-          !user.gamificationFlags[UserEnreda.FLAG_CV_DATA_OF_INTEREST]!) {
-        user.gamificationFlags[UserEnreda.FLAG_CV_DATA_OF_INTEREST] = true;
-        await database.setUserEnreda(user);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content:  Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
-        ));
-      }
-    }
+    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_DATA_OF_INTEREST);
   }
 
   void _showReferencesDialog(BuildContext context, CertificationRequest certificationRequest) {

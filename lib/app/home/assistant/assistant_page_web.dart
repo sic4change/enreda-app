@@ -14,6 +14,7 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -56,7 +57,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
   void initState() {
     super.initState();
     _resetQuestions();
-    _setGamificationFlag();
+    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CHAT);
   }
 
   @override
@@ -742,21 +743,5 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
       Navigator.of(dialogContext).pop();
       widget.onClose(true);
     });
-  }
-
-  Future<void> _setGamificationFlag() async {
-    final database = Provider.of<Database>(context, listen: false);
-    final auth = Provider.of<AuthBase>(context, listen: false);
-
-    if (auth.currentUser != null) {
-      final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-      if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CHAT) || !user.gamificationFlags[UserEnreda.FLAG_CHAT]!) {
-        user.gamificationFlags[UserEnreda.FLAG_CHAT] = true;
-        database.setUserEnreda(user);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
-        ));
-      }
-    }
   }
 }

@@ -36,6 +36,7 @@ class UserEnreda {
     this.points,
     this.resourcesAccessCount,
     this.checkAgreeCV,
+    this.gamificationFlags = const {},
   });
 
   factory UserEnreda.fromMap(Map<String, dynamic> data, String documentId) {
@@ -152,6 +153,13 @@ class UserEnreda {
     final int resourcesAccessCount = data['resourcesAccessCount']?? 0;
     final bool? checkAgreeCV = data['checkAgreeCV'];
 
+    Map<String, bool> gamificationFlags = {};
+    if (data['gamificationFlags'] != null) {
+      (data['gamificationFlags'] as Map<String, dynamic>).forEach((key, value) {
+        gamificationFlags[key] = value as bool;
+      });
+    }
+
     return UserEnreda(
       email: email,
       firstName: firstName,
@@ -183,6 +191,7 @@ class UserEnreda {
       points: points,
       resourcesAccessCount: resourcesAccessCount,
       checkAgreeCV: checkAgreeCV,
+      gamificationFlags: gamificationFlags,
     );
   }
 
@@ -216,6 +225,7 @@ class UserEnreda {
   final int? points;
   final int? resourcesAccessCount;
   final bool? checkAgreeCV;
+  final Map<String, bool> gamificationFlags;
 
   Map<String, dynamic> toMap() {
     InterestsUserEnreda interestUserEnreda = InterestsUserEnreda(
@@ -246,6 +256,7 @@ class UserEnreda {
       'points': points,
       'resourcesAccessCount': resourcesAccessCount,
       'checkAgreeCV': checkAgreeCV,
+      'gamificationFlags': gamificationFlags,
     };
   }
 
@@ -283,6 +294,7 @@ class UserEnreda {
     int? points,
     int? resourcesAccessCount,
     bool? checkAgreeCV,
+    Map<String, bool>? gamificationFlags,
   }) {
     return UserEnreda(
       email: email ?? this.email,
@@ -314,6 +326,21 @@ class UserEnreda {
       points: points ?? this.points,
       resourcesAccessCount: resourcesAccessCount ?? this.resourcesAccessCount,
       checkAgreeCV: checkAgreeCV ?? this.checkAgreeCV,
+      gamificationFlags: gamificationFlags ?? this.gamificationFlags,
     );
   }
+
+  static const String FLAG_PILL_TRAVEL_BEGINS = "pillTravelBegins";
+  static const String FLAG_PILL_COMPETENCIES = "pillCompetencies";
+  static const String FLAG_CHAT = "chat";
+  static const String FLAG_EVALUATE_COMPETENCY = "evaluateCompetency";
+  static const String FLAG_PILL_CV_COMPETENCIES = "pillCvCompetencies";
+  static const String FLAG_PILL_HOW_TO_DO_CV = "pillHowToDoCv";
+  static const String FLAG_CV_FORMATION = "cvFormation";
+  static const String FLAG_CV_COMPLEMENTARY_FORMATION = "cvComplementaryFormation";
+  static const String FLAG_CV_PERSONAL = "cvPersonal";
+  static const String FLAG_CV_PROFESSIONAL = "cvProfessional";
+  static const String FLAG_CV_ABOUT_ME = "cvAboutMe";
+  static const String FLAG_CV_PHOTO = "cvPhoto";
+  static const String FLAG_JOIN_RESOURCE = "joinResource";
 }

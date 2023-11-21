@@ -246,9 +246,7 @@ class _AccountPageState extends State<AccountPage> {
         children: [
           InkWell(
             mouseCursor: MaterialStateMouseCursor.clickable,
-            onTap: () => !kIsWeb
-                ? _displayPickImageDialog()
-                : _onImageButtonPressed(ImageSource.gallery),
+            onTap: () => !kIsWeb? _displayPickImageDialog(): _onImageButtonPressed(ImageSource.gallery),
             child: Container(
               width: 120,
               height: 120,
@@ -562,8 +560,19 @@ class _AccountPageState extends State<AccountPage> {
       if (pickedFile != null) {
         setState(() async {
           final database = Provider.of<Database>(context, listen: false);
-          await database.uploadUserAvatar(
-              _userId, await pickedFile.readAsBytes());
+          final auth = Provider.of<AuthBase>(context, listen: false);
+          await database.uploadUserAvatar(_userId, await pickedFile.readAsBytes());
+          if (auth.currentUser != null) {
+            final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
+            if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CV_PHOTO) ||
+                !user.gamificationFlags[UserEnreda.FLAG_CV_PHOTO]!) {
+              user.gamificationFlags[UserEnreda.FLAG_CV_PHOTO] = true;
+              await database.setUserEnreda(user);
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
+              ));
+            }
+          }
         });
       }
     } catch (e) {

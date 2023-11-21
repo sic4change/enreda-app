@@ -659,10 +659,24 @@ class MyCurriculumPage extends StatelessWidget {
                 CustomTextTitle(title: StringConst.ABOUT_ME.toUpperCase()),
               ),
               InkWell(
-                onTap: () {
-                  if (isEditable)
-                    database.setUserEnreda(
+                onTap: () async {
+                  if (isEditable) {
+                    await database.setUserEnreda(
                         user!.copyWith(aboutMe: textController.text));
+                    final auth = Provider.of<AuthBase>(context, listen: false);
+                    if (auth.currentUser != null) {
+                      final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
+                      if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CV_ABOUT_ME) ||
+                          !user.gamificationFlags[UserEnreda.FLAG_CV_ABOUT_ME]!) {
+                        user.gamificationFlags[UserEnreda.FLAG_CV_ABOUT_ME] = true;
+                        await database.setUserEnreda(user);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content:
+                              Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
+                        ));
+                      }
+                    }
+                  }
                   setState(() {
                     isEditable = !isEditable;
                     if (isEditable) focusNode.requestFocus();
@@ -1627,14 +1641,15 @@ class MyCurriculumPage extends StatelessWidget {
     );
   }
 
-  void _showDataOfInterestDialog(BuildContext context, String currentText) {
+  Future<void> _showDataOfInterestDialog(BuildContext context, String currentText) async {
     final database = Provider.of<Database>(context, listen: false);
+    final auth = Provider.of<AuthBase>(context, listen: false);
     final controller = TextEditingController();
     final textTheme = Theme.of(context).textTheme;
     if (currentText.isNotEmpty) {
       controller.text = currentText;
     }
-    showCustomDialog(context,
+    await showCustomDialog(context,
         content: Card(
           elevation: 0,
           color: Colors.white,
@@ -1664,13 +1679,25 @@ class MyCurriculumPage extends StatelessWidget {
         ),
         defaultActionText: StringConst.FORM_ACCEPT,
         onDefaultActionPressed: (context) {
-      if (currentText.isNotEmpty) {
-        user!.dataOfInterest.remove(currentText);
+          if (currentText.isNotEmpty) {
+            user!.dataOfInterest.remove(currentText);
+          }
+          user!.dataOfInterest.add(controller.text);
+          database.setUserEnreda(user!);
+          Navigator.of(context).pop();
+       });
+
+    if (auth.currentUser != null) {
+      final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
+      if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CV_DATA_OF_INTEREST) ||
+          !user.gamificationFlags[UserEnreda.FLAG_CV_DATA_OF_INTEREST]!) {
+        user.gamificationFlags[UserEnreda.FLAG_CV_DATA_OF_INTEREST] = true;
+        await database.setUserEnreda(user);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:  Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
+        ));
       }
-      user!.dataOfInterest.add(controller.text);
-      database.setUserEnreda(user!);
-      Navigator.of(context).pop();
-    });
+    }
   }
 
   void _showReferencesDialog(BuildContext context, CertificationRequest certificationRequest) {

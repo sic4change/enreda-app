@@ -8,6 +8,7 @@ import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/question.dart';
 import 'package:enreda_app/app/home/assistant/list_item_builder.dart';
+import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_competencies.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -51,6 +52,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
   void initState() {
     super.initState();
     _resetQuestions();
+    _setGamificationFlag();
   }
 
   @override
@@ -610,5 +612,21 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
         content: Text(StringConst.EXPERIENCE_ADDED),
       ));
     });
+  }
+
+  Future<void> _setGamificationFlag() async {
+    final database = Provider.of<Database>(context, listen: false);
+    final auth = Provider.of<AuthBase>(context, listen: false);
+
+    if (auth.currentUser != null) {
+      final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
+      if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_CHAT) || !user.gamificationFlags[UserEnreda.FLAG_CHAT]!) {
+        user.gamificationFlags[UserEnreda.FLAG_CHAT] = true;
+        database.setUserEnreda(user);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
+        ));
+      }
+    }
   }
 }

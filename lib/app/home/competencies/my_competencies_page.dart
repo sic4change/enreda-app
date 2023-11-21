@@ -79,7 +79,20 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
                                         ValidateCompetencyButton(
                                             competency: competency,
                                             database: database,
-                                            auth: auth),
+                                            auth: auth,
+                                            onComingBack: () async {
+                                              if (auth.currentUser != null) {
+                                                final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
+                                                if (!user.gamificationFlags.containsKey(UserEnreda.FLAG_EVALUATE_COMPETENCY) || !user.gamificationFlags[UserEnreda.FLAG_EVALUATE_COMPETENCY]!) {
+                                                  user.gamificationFlags[UserEnreda.FLAG_EVALUATE_COMPETENCY] = true;
+                                                  database.setUserEnreda(user);
+                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                    content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
+                                                  ));
+                                                }
+                                              }
+                                            },
+                                        ),
                                       if (status ==
                                           StringConst.BADGE_VALIDATED ||
                                           status == StringConst.BADGE_CERTIFIED)

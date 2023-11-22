@@ -24,7 +24,9 @@ import 'package:provider/provider.dart';
 import 'message_tile.dart';
 
 class AssistantPageMobile extends StatefulWidget {
-  const AssistantPageMobile({Key? key}) : super(key: key);
+  const AssistantPageMobile({Key? key, required this.onFinish}) : super(key: key);
+
+  final void Function(String gamificationFlagName) onFinish;
 
   @override
   _AssistantPageMobileState createState() => _AssistantPageMobileState();
@@ -611,6 +613,24 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(StringConst.EXPERIENCE_ADDED),
       ));
+      // show Gamification snackbar
+      switch (type) {
+        case 'Formativa':
+          widget.onFinish(UserEnreda.FLAG_CV_FORMATION);
+          break;
+        case 'Complementaria':
+          widget.onFinish(UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION);
+          break;
+        case 'Personal':
+          widget.onFinish(UserEnreda.FLAG_CV_PERSONAL);
+          break;
+        case 'Profesional':
+          widget.onFinish(UserEnreda.FLAG_CV_PROFESSIONAL);
+          break;
+        default:
+          widget.onFinish("");
+          break;
+      }
     });
   }
 }

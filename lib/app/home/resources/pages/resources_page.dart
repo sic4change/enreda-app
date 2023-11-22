@@ -212,27 +212,17 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   Widget _buildTrainingPillsButton(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    final isDesktopScreen = MediaQuery.of(context).size.width >= 1350;
     return Container(
-      color: AppColors.greyLightAlt,
-      height: Responsive.isMobile(context) ? 400 : Responsive.isDesktopS(context) ? 600 : 550,
+      margin: Responsive.isMobile(context)
+          ? EdgeInsets.symmetric(horizontal: 30)
+          : Responsive.isDesktopS(context)
+          ? EdgeInsets.symmetric(horizontal: 30)
+          : EdgeInsets.symmetric(horizontal: 100),
+      height: Responsive.isMobile(context) ? 350 : Responsive.isDesktopS(context) ? 600 : 450,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Responsive.isMobile(context) ? SpaceH20(): SpaceH50(),
-          Text( StringConst.PILLS_TITLE, style: textTheme.titleSmall?.copyWith(
-            color: AppColors.greyAlt,
-            height: 1.5,
-            letterSpacing: 0.5,
-            fontWeight: FontWeight.w700,
-            fontSize: 25,
-          ),),
-          SpaceH20(),
-          Container(
-              alignment: Alignment.center,
-              padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 30) : EdgeInsets.symmetric(horizontal: 100.0),
-              child: Text(StringConst.PILLS_SUBTITLE, textAlign: TextAlign.center, style: TextStyle(fontSize: 15,),)),
-          Responsive.isMobile(context) ? SpaceH12() : SpaceH50(),
           InkWell(
             onTap: () {
               setStateIfMounted(() {
@@ -240,59 +230,157 @@ class _ResourcesPageState extends State<ResourcesPage> {
               });
             },
             child: Stack(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.center,
               children: [
-                Padding(
-                  padding: Responsive.isMobile(context) ? EdgeInsets.only(right: 30, left: 30, top: 30) : EdgeInsets.only(top: 30),
+                Container(
+                  margin: Responsive.isDesktop(context) ? EdgeInsets.only(top: 25) : EdgeInsets.zero,
+                  height: Responsive.isMobile(context) ? 200 : Responsive.isDesktopS(context) ? 380 : 280,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage(ImagePath.BACKGROUND_PILLS),
+                      )
+                  ),
+                ),
+                Responsive.isDesktop(context) ? Positioned(
+                  left: 100,
                   child: Container(
-                    width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.7,
-                    height: Responsive.isMobile(context) ? 140 : 280,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage(ImagePath.BACKGROUND_PILLS),
-                        )
+                    constraints:  BoxConstraints(
+                      maxWidth: 400
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(StringConst.PILLS_TITLE,
+                          style: textTheme.headlineSmall?.copyWith(
+                            color: Colors.white,
+                            letterSpacing: 1,
+                            fontSize: Responsive.isMobile(context) ? 15 : Responsive.isDesktopS(context) ? 25 : 34,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        SpaceH8(),
+                        Text(StringConst.PILLS_SUBTITLE, style: textTheme.bodySmall?.copyWith(
+                          color: Colors.white,
+                          letterSpacing: 1,
+                          fontSize: Responsive.isMobile(context) ? 12 : Responsive.isDesktopS(context) ? 15 : 18,
+                         ),),
+                      ],
+                    ),
+                  ),
+                ) : Positioned(
+                  top: 0,
+                  child: Container(
+                    constraints:  BoxConstraints(
+                        maxWidth: Responsive.isMobile(context) ? 280 : 400
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 30.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: Responsive.isDesktop(context) ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+                        children: [
+                          Text(StringConst.PILLS_TITLE,
+                            style: textTheme.headlineSmall?.copyWith(
+                              color: Colors.white,
+                              letterSpacing: 1,
+                              fontSize: Responsive.isMobile(context) ? 15 : Responsive.isDesktopS(context) ? 25 : 34,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          SpaceH8(),
+                          Text(StringConst.PILLS_SUBTITLE,
+                            textAlign: Responsive.isDesktop(context) ? TextAlign.left : TextAlign.center,
+                            style: textTheme.bodySmall?.copyWith(
+                            color: Colors.white,
+                            letterSpacing: 1,
+                            fontSize: Responsive.isMobile(context) ? 12 : Responsive.isDesktopS(context) ? 15 : 18,
+                          ),),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                Positioned(
+                Responsive.isDesktop(context) ? Positioned(
                   bottom: 0,
-                  left: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/8 : 5,
+                  right: 490,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Container(
                           alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 120 : 300,
+                          height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 280,
+                          child: Image.asset(ImagePath.PERSON_PILL1)),
+                    ],
+                  ),
+                ) : Positioned(
+                  bottom: 0,
+                  left: MediaQuery.of(context).size.width * 0.1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                          alignment: Alignment.bottomCenter,
+                          height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 280,
                           child: Image.asset(ImagePath.PERSON_PILL1)),
                     ],
                   ),
                 ),
-                Positioned(
+                Responsive.isDesktop(context) ? Positioned(
                   bottom: 0,
-                  right: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/7 : 15,
+                  right: 50,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Container(
                           alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 120 : 300,
+                          height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 290,
+                          child: Image.asset(ImagePath.PERSON_PILL3)),
+                    ],
+                  ),
+                ) : Positioned(
+                  bottom: 0,
+                  right: MediaQuery.of(context).size.width * 0.1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                          alignment: Alignment.bottomCenter,
+                          height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 290,
                           child: Image.asset(ImagePath.PERSON_PILL3)),
                     ],
                   ),
                 ),
-                Positioned(
+                Responsive.isDesktop(context) ? Positioned(
                   bottom: 0,
+                  right: 230,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Container(
                           alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 180 : 350,
+                          height: Responsive.isMobile(context) ? 120 : Responsive.isDesktopS(context) ? 280 : 350,
+                          child: Image.asset(ImagePath.PERSON_PILL2)),
+                    ],
+                  ),
+                ) : Positioned(
+                  bottom: 0,
+                  right: 0,
+                  left: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                          alignment: Alignment.bottomCenter,
+                          height: Responsive.isMobile(context) ? 120 : Responsive.isDesktopS(context) ? 280 : 350,
                           child: Image.asset(ImagePath.PERSON_PILL2)),
                     ],
                   ),

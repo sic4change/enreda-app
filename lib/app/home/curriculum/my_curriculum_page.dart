@@ -25,6 +25,7 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
@@ -659,10 +660,11 @@ class MyCurriculumPage extends StatelessWidget {
                 CustomTextTitle(title: StringConst.ABOUT_ME.toUpperCase()),
               ),
               InkWell(
-                onTap: () {
-                  if (isEditable)
-                    database.setUserEnreda(
-                        user!.copyWith(aboutMe: textController.text));
+                onTap: () async {
+                  if (isEditable) {
+                    await database.setUserEnreda(user!.copyWith(aboutMe: textController.text));
+                    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_ABOUT_ME);
+                  }
                   setState(() {
                     isEditable = !isEditable;
                     if (isEditable) focusNode.requestFocus();
@@ -974,6 +976,7 @@ class MyCurriculumPage extends StatelessWidget {
 
   Widget _buildMyEducation(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
+    final auth = Provider.of<AuthBase>(context, listen: false);
 
     bool dismissible = true;
     return Column(
@@ -987,9 +990,10 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (dialogContext) => AlertDialog(
                     content: FormationForm(
                       isMainEducation: true,
+                      onComingBack: () => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_FORMATION),
                     ),
                   )
               );
@@ -1070,9 +1074,10 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (dialogContext) => AlertDialog(
                     content: FormationForm(
                       isMainEducation: false,
+                      onComingBack: () => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
                     ),
                   )
               );
@@ -1138,9 +1143,10 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (dialogContext) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: true,
+                      onComingBack: (_) => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PROFESSIONAL),
                     ),
                   )
               );
@@ -1206,9 +1212,10 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (dialogContext) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: false,
+                      onComingBack: (_) => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PERSONAL),
                     ),
                   )
               );
@@ -1274,10 +1281,17 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (dialogContext) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: false,
                       general: true,
+                      onComingBack: (isProfessional) {
+                        if (isProfessional) {
+                          setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PROFESSIONAL);
+                        } else {
+                          setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PERSONAL);
+                        }
+                      },
                     ),
                   )
               );
@@ -1539,14 +1553,15 @@ class MyCurriculumPage extends StatelessWidget {
     );
   }
 
-  void _showDataOfInterestDialog(BuildContext context, String currentText) {
+  Future<void> _showDataOfInterestDialog(BuildContext context, String currentText) async {
     final database = Provider.of<Database>(context, listen: false);
+    final auth = Provider.of<AuthBase>(context, listen: false);
     final controller = TextEditingController();
     final textTheme = Theme.of(context).textTheme;
     if (currentText.isNotEmpty) {
       controller.text = currentText;
     }
-    showCustomDialog(context,
+    await showCustomDialog(context,
         content: Card(
           elevation: 0,
           color: Colors.white,
@@ -1576,13 +1591,15 @@ class MyCurriculumPage extends StatelessWidget {
         ),
         defaultActionText: StringConst.FORM_ACCEPT,
         onDefaultActionPressed: (context) {
-      if (currentText.isNotEmpty) {
-        user!.dataOfInterest.remove(currentText);
-      }
-      user!.dataOfInterest.add(controller.text);
-      database.setUserEnreda(user!);
-      Navigator.of(context).pop();
-    });
+          if (currentText.isNotEmpty) {
+            user!.dataOfInterest.remove(currentText);
+          }
+          user!.dataOfInterest.add(controller.text);
+          database.setUserEnreda(user!);
+          Navigator.of(context).pop();
+       });
+
+    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_DATA_OF_INTEREST);
   }
 
   void _showReferencesDialog(BuildContext context, CertificationRequest certificationRequest) {

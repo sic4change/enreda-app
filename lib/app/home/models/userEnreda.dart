@@ -341,6 +341,7 @@ class UserEnreda {
   static const String FLAG_CV_PERSONAL = "cvPersonal";
   static const String FLAG_CV_PROFESSIONAL = "cvProfessional";
   static const String FLAG_CV_ABOUT_ME = "cvAboutMe";
+  static const String FLAG_CV_DATA_OF_INTEREST = "cvDataOfInterest";
   static const String FLAG_CV_PHOTO = "cvPhoto";
   static const String FLAG_JOIN_RESOURCE = "joinResource";
 }

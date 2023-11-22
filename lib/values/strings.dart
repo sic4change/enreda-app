@@ -283,8 +283,8 @@ class StringConst {
   static const String NOT_ALLOWED = '¿Te gusta este recurso?';
   static const String REGISTER = 'Registrarse';
   static String RESOURCE_LINK(String resourceId) => 'https://enredawebapp.web.app/resources/$resourceId';
-  //static String TRAINING_PILL_LINK(String trainingPillId) => 'https://enredawebapp.web.app/pills/$trainingPillId';
-  static String TRAINING_PILL_LINK(String trainingPillId) => 'https://test-enreda.web.app/pills/$trainingPillId';
+  static String TRAINING_PILL_LINK(String trainingPillId) => 'https://enredawebapp.web.app/pills/$trainingPillId';
+  //static String TRAINING_PILL_LINK(String trainingPillId) => 'https://test-enreda.web.app/pills/$trainingPillId';
 
 
   //Resource modalities

@@ -386,6 +386,7 @@ class _AccountPageState extends State<AccountPage> {
               _selectedPageName = StringConst.FAVORITES;
             }),
           ),
+          /*
           _buildMyProfileRow(
             text: 'Gamificación',
             imagePath: ImagePath.ICON_FAV_BLUE,
@@ -395,6 +396,7 @@ class _AccountPageState extends State<AccountPage> {
               _selectedPageName = 'Gamificación';
             }),
           ),
+          */
         ],
       ),
     );

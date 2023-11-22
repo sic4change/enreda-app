@@ -41,7 +41,7 @@ class StringConst {
   static const String SEARCH = "Busca por área";
   static const String SEARCH_SUBTITLE = "EnREDa te conecta con recursos educativos, actividades, empresas y pleabilidad y construir tu camino vital. Porque las oportunidades no se compran, se crean.";
   static const String PILLS_TITLE = "Píldoras formativas";
-  static const String PILLS_SUBTITLE = "¡Hemos recopilado todo este contenido para ti!";
+  static const String PILLS_SUBTITLE = "EnREDa te conecta con recursos educativos, actividades, empresas y empleabilidad.";
   static const String FUNDAULA_BUTTON = "Accede a la formación online que te acerca al mundo digital y al empleo desde enREDa";
 
   //Header Section

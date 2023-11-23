@@ -221,6 +221,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
           : EdgeInsets.symmetric(horizontal: 100),
       height: Responsive.isMobile(context) ? 380 : Responsive.isDesktopS(context) ? 550 : 450,
       child: Stack(
+        alignment: Alignment.center,
         children: [
           InkWell(
             onTap: () {
@@ -232,7 +233,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
               alignment: Alignment.center,
               children: [
                 Container(
-                  margin: Responsive.isDesktop(context) ? EdgeInsets.only(top: 25) : EdgeInsets.only(top: 25),
+                  margin: Responsive.isDesktop(context) ? EdgeInsets.only(top: 25) : EdgeInsets.only(top: 0),
                   height: Responsive.isMobile(context) ? 220 : Responsive.isDesktopS(context) ? 380 : 280,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20)),

@@ -72,5 +72,11 @@ class AppColors {
   static const Color lightPurple = Color(0xFFA100FE);
   static const Color ultraLightPurple = Color(0xFFF5EDF9);
 
+  //Gamificacion
+  static const Color bronze = Color(0xFF8F6C32);
+  static const Color silver = Color(0xFF676B6D);
+  static const Color gold = Color(0xFFE8930A);
+  static const Color greymissing = Color(0xFFDCE7EA);
+
 
 }

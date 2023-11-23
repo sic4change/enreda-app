@@ -15,6 +15,7 @@ import 'package:enreda_app/app/home/resources/pages/list_item_builder_vertical.d
 import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
 import 'package:enreda_app/app/home/trainingPills/training_list_tile_mobile.dart';
 import 'package:enreda_app/app/home/trainingPills/training_list_tile.dart';
+import 'package:enreda_app/common_widgets/custom_person_pill_image.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -218,10 +219,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
           : Responsive.isDesktopS(context)
           ? EdgeInsets.symmetric(horizontal: 30)
           : EdgeInsets.symmetric(horizontal: 100),
-      height: Responsive.isMobile(context) ? 350 : Responsive.isDesktopS(context) ? 600 : 450,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+      height: Responsive.isMobile(context) ? 380 : Responsive.isDesktopS(context) ? 550 : 450,
+      child: Stack(
         children: [
           InkWell(
             onTap: () {
@@ -233,8 +232,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
               alignment: Alignment.center,
               children: [
                 Container(
-                  margin: Responsive.isDesktop(context) ? EdgeInsets.only(top: 25) : EdgeInsets.zero,
-                  height: Responsive.isMobile(context) ? 200 : Responsive.isDesktopS(context) ? 380 : 280,
+                  margin: Responsive.isDesktop(context) ? EdgeInsets.only(top: 25) : EdgeInsets.only(top: 25),
+                  height: Responsive.isMobile(context) ? 220 : Responsive.isDesktopS(context) ? 380 : 280,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                       image: DecorationImage(
@@ -244,7 +243,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   ),
                 ),
                 Responsive.isDesktop(context) ? Positioned(
-                  left: 100,
+                  left: Responsive.isDesktopS(context) ? 50 : 100,
                   child: Container(
                     constraints:  BoxConstraints(
                       maxWidth: 400
@@ -305,85 +304,43 @@ class _ResourcesPageState extends State<ResourcesPage> {
                 ),
                 Responsive.isDesktop(context) ? Positioned(
                   bottom: 0,
-                  right: 490,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                          alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 280,
-                          child: Image.asset(ImagePath.PERSON_PILL1)),
-                    ],
-                  ),
+                  left: MediaQuery.of(context).size.width * 0.4,
+                  child: CustomPersonPillImage(
+                    personPillImagePath: ImagePath.PERSON_PILL1,
+                    height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 280,),
                 ) : Positioned(
                   bottom: 0,
                   left: MediaQuery.of(context).size.width * 0.1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                          alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 280,
-                          child: Image.asset(ImagePath.PERSON_PILL1)),
-                    ],
-                  ),
+                  child: CustomPersonPillImage(
+                    personPillImagePath: ImagePath.PERSON_PILL1,
+                    height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 280,),
                 ),
                 Responsive.isDesktop(context) ? Positioned(
                   bottom: 0,
-                  right: 50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                          alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 290,
-                          child: Image.asset(ImagePath.PERSON_PILL3)),
-                    ],
-                  ),
+                  left: MediaQuery.of(context).size.width * 0.7,
+                  child: CustomPersonPillImage(
+                    personPillImagePath: ImagePath.PERSON_PILL3,
+                    height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 290,),
                 ) : Positioned(
                   bottom: 0,
                   right: MediaQuery.of(context).size.width * 0.1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                          alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 290,
-                          child: Image.asset(ImagePath.PERSON_PILL3)),
-                    ],
-                  ),
+                  child: CustomPersonPillImage(
+                    personPillImagePath: ImagePath.PERSON_PILL3,
+                    height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 290,),
                 ),
                 Responsive.isDesktop(context) ? Positioned(
                   bottom: 0,
-                  right: 230,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                          alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 120 : Responsive.isDesktopS(context) ? 280 : 350,
-                          child: Image.asset(ImagePath.PERSON_PILL2)),
-                    ],
-                  ),
+                  left: MediaQuery.of(context).size.width * 0.53,
+                  child: CustomPersonPillImage(
+                    personPillImagePath: ImagePath.PERSON_PILL2,
+                    height: Responsive.isMobile(context) ? 120 : Responsive.isDesktopS(context) ? 280 : 350,),
                 ) : Positioned(
                   bottom: 0,
                   right: 0,
                   left: 0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                          alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 120 : Responsive.isDesktopS(context) ? 280 : 350,
-                          child: Image.asset(ImagePath.PERSON_PILL2)),
-                    ],
-                  ),
+                  child: CustomPersonPillImage(
+                      personPillImagePath: ImagePath.PERSON_PILL2,
+                      height: Responsive.isMobile(context) ? 120 : Responsive.isDesktopS(context) ? 280 : 350),
                 ),
               ],
             ),
@@ -392,6 +349,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
       ),
     );
   }
+
 
   Widget _buildFilteredResourcesPage(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;

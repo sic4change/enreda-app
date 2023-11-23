@@ -17,10 +17,11 @@ import 'package:provider/provider.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class TrainingPillsListTileMobile extends StatefulWidget {
-  const TrainingPillsListTileMobile({Key? key, required this.trainingPill, this.onTap})
+  TrainingPillsListTileMobile({Key? key, required this.trainingPill, this.onTap})
       : super(key: key);
   final TrainingPill trainingPill;
   final VoidCallback? onTap;
+  static ValueNotifier<bool> isFullScreen = ValueNotifier<bool>(false);
 
   @override
   State<TrainingPillsListTileMobile> createState() => _TrainingPillsListTileMobileState();
@@ -39,85 +40,95 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
     idYoutubeVideo = YoutubePlayerController.convertUrlToId(urlYoutubeVideo) ?? "";
   }
 
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   TrainingPillsListTileMobile.isFullScreen.value = false;
+  // }
+
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    return Column(
-      children: [
-        if (!_isVideoVisible) Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                    width: 150,
-                    margin: const EdgeInsets.only(right: 8.0),
-                    child: videoThumbnailArea(idYoutubeVideo)),
-                videoDescription(Constants.lilac, AppColors.greyTxtAlt),
-              ]
-          ),
-        ),
-        if(_isVideoVisible) YoutubePlayerControllerProvider(
-          controller: _controller,
-          child: Container(
-            color: Colors.black.withOpacity(0.8),
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(top: 40.0, bottom: 20.0),
-                      width: MediaQuery.of(context).size.width,
-                        child: AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: playVideoArea())),
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: IconButton(
-                          icon: const Icon(Icons.close),
-                          color: Colors.white,
-                          onPressed: () {
-                            setState(() {
-                              _isVideoVisible = !_isVideoVisible;
-                            });
-                          }
-                      ),
-                    ),
-                  ],
+    return ValueListenableBuilder<bool>(
+        valueListenable: TrainingPillsListTileMobile.isFullScreen,
+        builder: (BuildContext context, bool value, Widget? child) {
+          return Column(
+            children: [
+              if (!_isVideoVisible) Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          width: 150,
+                          margin: const EdgeInsets.only(right: 8.0),
+                          child: videoThumbnailArea(idYoutubeVideo)),
+                      videoDescription(Constants.lilac, AppColors.greyTxtAlt),
+                    ]
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Text(
-                        widget.trainingPill.trainingPillCategoryName!.toUpperCase(),
-                        textAlign: TextAlign.left,
-                        maxLines: 1,
-                        style: textTheme.titleSmall?.copyWith(
-                          height: 1.5,
-                          fontWeight: FontWeight.normal,
-                          fontSize:  13,
-                          color: Colors.white,
-                        ),
+              ),
+              if(_isVideoVisible) YoutubePlayerControllerProvider(
+                controller: _controller,
+                child: Container(
+                  color: Colors.black.withOpacity(0.8),
+                  child: Column(
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                              padding: EdgeInsets.only(top: 40.0, bottom: 20.0),
+                              width: MediaQuery.of(context).size.width,
+                              child: AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: playVideoArea())),
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: IconButton(
+                                icon: const Icon(Icons.close),
+                                color: Colors.white,
+                                onPressed: () {
+                                  setState(() {
+                                    _isVideoVisible = !_isVideoVisible;
+                                  });
+                                }
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    SpaceH2(),
-                    MetaDataSection(),
-                    VideoPositionSeeker(),
-                    PlayPauseButtonBar(),
-                  ],
-                ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Text(
+                              widget.trainingPill.trainingPillCategoryName!.toUpperCase(),
+                              textAlign: TextAlign.left,
+                              maxLines: 1,
+                              style: textTheme.titleSmall?.copyWith(
+                                height: 1.5,
+                                fontWeight: FontWeight.normal,
+                                fontSize:  13,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          SpaceH2(),
+                          MetaDataSection(),
+                          VideoPositionSeeker(),
+                          PlayPauseButtonBar(),
+                        ],
+                      ),
 
-              ],
-            ),
-          ),
-        )
-      ],
-    );
+                    ],
+                  ),
+                ),
+              )
+            ],
+          );
+        });
   }
 
   Widget videoDescription(Color? colorTitle, Color? colorText) {
@@ -158,7 +169,7 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
           ),
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             IconButton(
@@ -184,9 +195,9 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
                 color: colorText,
               ),
             ),
-            SizedBox(width: 25,),
+            SizedBox(width: 18,),
             buildShareTrainingPill(context, widget.trainingPill, Constants.grey),
-            SizedBox(width: 5,),
+            SizedBox(width: 0,),
             auth.currentUser == null
                   ? IconButton(
                       padding: EdgeInsets.zero,
@@ -238,10 +249,10 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
           child: YoutubePlayer(
             controller: _controller,
             aspectRatio: 16 / 9,
-            enableFullScreenOnVerticalDrag: true,
           )),
     );
   }
+
 
   void _initializeVideo(String id) async {
     // Generate a new controller and set as global _controller
@@ -262,18 +273,21 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
           (_) async {
         final videoData = await _controller.videoData;
         final startSeconds = await _controller.currentTime;
+        TrainingPillsListTileMobile.isFullScreen.value = true;
         final currentTime =
         await FullscreenYoutubePlayer.launch(
           context,
           videoId: videoData.videoId,
           startSeconds: startSeconds,
         );
-
         if (currentTime != null) {
           _controller.seekTo(seconds: currentTime);
         }
+        TrainingPillsListTileMobile.isFullScreen.value = false;
+        _controller.seekTo(seconds: currentTime!);
       },
     );
+
   }
 
 }

@@ -40,12 +40,6 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
     idYoutubeVideo = YoutubePlayerController.convertUrlToId(urlYoutubeVideo) ?? "";
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  //   TrainingPillsListTileMobile.isFullScreen.value = false;
-  // }
-
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;

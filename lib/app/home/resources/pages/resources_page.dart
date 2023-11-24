@@ -215,13 +215,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
       margin: Responsive.isMobile(context)
-          ? EdgeInsets.symmetric(horizontal: 30)
+          ? EdgeInsets.symmetric(horizontal: 30, vertical: 20)
           : Responsive.isDesktopS(context)
           ? EdgeInsets.symmetric(horizontal: 30)
           : EdgeInsets.symmetric(horizontal: 100),
       height: Responsive.isMobile(context) ? 380 : Responsive.isDesktopS(context) ? 550 : 450,
       child: Stack(
-        alignment: Alignment.center,
+        alignment: Responsive.isMobile(context) ? Alignment.topCenter : Alignment.center,
         children: [
           InkWell(
             onTap: () {

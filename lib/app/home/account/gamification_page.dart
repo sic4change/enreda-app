@@ -4,6 +4,7 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
@@ -45,102 +46,119 @@ class _GamificationState extends State<Gamification> {
             _gamificationFlags.forEach((key, value) {
               print(key);
             });
-            return SingleChildScrollView(
-              controller: ScrollController(),
-              child: Column(
-                children: [
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    alignment: WrapAlignment.center,
-                    direction: Axis.horizontal,
-                    runSpacing: 20,
-                    spacing: 20,
-                    children: [
-                      _getStar('BRONCE'),
-                      _getStar('PLATA'),
-                      _getStar('ORO'),
-                    ],
-                  ),
-                  SpaceH30(),
-                  Wrap(
-                    children: [
-                      _getStepTile(UserEnreda.FLAG_PILL_TRAVEL_BEGINS),
-                      _getStepTile(UserEnreda.FLAG_PILL_COMPETENCIES),
-                      _getStepTile(UserEnreda.FLAG_PILL_CV_COMPETENCIES),
-                      _getStepTile(UserEnreda.FLAG_PILL_HOW_TO_DO_CV),
-                      _getStepTile(UserEnreda.FLAG_CHAT),
-                      _getStepTile(UserEnreda.FLAG_EVALUATE_COMPETENCY),
-                      _getStepTile(UserEnreda.FLAG_CV_FORMATION),
-                      _getStepTile(UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
-                      _getStepTile(UserEnreda.FLAG_CV_PERSONAL),
-                      _getStepTile(UserEnreda.FLAG_CV_PROFESSIONAL),
-                      _getStepTile(UserEnreda.FLAG_CV_ABOUT_ME),
-                      _getStepTile(UserEnreda.FLAG_CV_PHOTO),
-                      _getStepTile(UserEnreda.FLAG_CV_DATA_OF_INTEREST),
-                    ]
-                  ),
-                  SpaceH12(),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                     children: _gamificationFlags.entries.map((entry){
-                       return Padding(
-                         padding: const EdgeInsets.all(8.0),
-                         child: Container(
-                           height: 70,
-                           width: 200,
-                           decoration: BoxDecoration(
-                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                             color: entry.value ? Colors.greenAccent : Colors.grey,
-                           ),
-                           child: Center(
-                             child:
-                               Padding(
-                                 padding: const EdgeInsets.all(4.0),
-                                 child: Text(
-                                     _getDescription(entry.key, entry.value,),
-                                   textAlign: TextAlign.center,
-                                 ),
-                               )
-                           ),
-                         ),
-                       );
-                       return Text(entry.key);
+
+            return Responsive.isDesktop(context)
+                ? _gamificationWeb()
+                : _gamificationMobile();
 
 
-                     }).toList()
-                  ),
-                ],
-              ),
-            );
-            return Column(
-              children: [
-                Text(
-                  '$_firstName $_lastName',
-                  style:
-                    textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Constants.grey,
-                      fontSize: 14.0
-                    ),
-                ),
-                SpaceH8(),
-                Text(
-                  'Puntos: ${_gamificationFlags['chat']}',
-                  style:
-                  textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Constants.penLightBlue,
-                    fontSize: 14.0
-                  ),
-                ),
-
-              ],
-            );
           }
           else{
             return Container();
           }
         });
+  }
+
+  Widget _gamificationWeb(){
+    return SingleChildScrollView(
+      controller: ScrollController(),
+      child: Column(
+        children: [
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            alignment: WrapAlignment.center,
+            direction: Axis.horizontal,
+            runSpacing: 20,
+            spacing: 20,
+            children: [
+              _getStar('BRONCE'),
+              _getStar('PLATA'),
+              _getStar('ORO'),
+            ],
+          ),
+          SpaceH40(),
+          Wrap(
+              children: [
+                _getStepTile(UserEnreda.FLAG_SIGN_UP),
+                _getStepTile(UserEnreda.FLAG_PILL_WHAT_IS_ENREDA),
+                _getStepTile(UserEnreda.FLAG_PILL_TRAVEL_BEGINS),
+                _getStepTile(UserEnreda.FLAG_PILL_COMPETENCIES),
+                _getStepTile(UserEnreda.FLAG_PILL_CV_COMPETENCIES),
+                _getStepTile(UserEnreda.FLAG_PILL_HOW_TO_DO_CV),
+                _getStepTile(UserEnreda.FLAG_CHAT),
+                _getStepTile(UserEnreda.FLAG_EVALUATE_COMPETENCY),
+                _getStepTile(UserEnreda.FLAG_CV_FORMATION),
+                _getStepTile(UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
+                _getStepTile(UserEnreda.FLAG_CV_PERSONAL),
+                _getStepTile(UserEnreda.FLAG_CV_PROFESSIONAL),
+                _getStepTile(UserEnreda.FLAG_CV_ABOUT_ME),
+                _getStepTile(UserEnreda.FLAG_CV_PHOTO),
+                _getStepTile(UserEnreda.FLAG_CV_DATA_OF_INTEREST),
+              ]
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _gamificationMobile(){
+    return SingleChildScrollView(
+      controller: ScrollController(),
+      child: Column(
+        children: [
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            alignment: WrapAlignment.center,
+            direction: Axis.horizontal,
+            runSpacing: 15,
+            spacing: 15,
+            children: [
+              _getStarMobile('BRONCE'),
+              _getStarMobile('PLATA'),
+              _getStarMobile('ORO'),
+            ],
+          ),
+          SpaceH12(),
+          _getStepTileMobile(UserEnreda.FLAG_SIGN_UP),
+          _getStepTileMobile(UserEnreda.FLAG_PILL_WHAT_IS_ENREDA),
+          _getStepTileMobile(UserEnreda.FLAG_PILL_TRAVEL_BEGINS),
+          _getStepTileMobile(UserEnreda.FLAG_PILL_COMPETENCIES),
+          _getStepTileMobile(UserEnreda.FLAG_PILL_CV_COMPETENCIES),
+          _getStepTileMobile(UserEnreda.FLAG_PILL_HOW_TO_DO_CV),
+          _getStepTileMobile(UserEnreda.FLAG_CHAT),
+          _getStepTileMobile(UserEnreda.FLAG_EVALUATE_COMPETENCY),
+          _getStepTileMobile(UserEnreda.FLAG_CV_FORMATION),
+          _getStepTileMobile(UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
+          _getStepTileMobile(UserEnreda.FLAG_CV_PERSONAL),
+          _getStepTileMobile(UserEnreda.FLAG_CV_PROFESSIONAL),
+          _getStepTileMobile(UserEnreda.FLAG_CV_ABOUT_ME),
+          _getStepTileMobile(UserEnreda.FLAG_CV_PHOTO),
+          _getStepTileMobile(UserEnreda.FLAG_CV_DATA_OF_INTEREST),
+
+          /*
+          SpaceH40(),
+          Wrap(
+              children: [
+                _getStepTile(UserEnreda.FLAG_SIGN_UP),
+                _getStepTile(UserEnreda.FLAG_PILL_WHAT_IS_ENREDA),
+                _getStepTile(UserEnreda.FLAG_PILL_TRAVEL_BEGINS),
+                _getStepTile(UserEnreda.FLAG_PILL_COMPETENCIES),
+                _getStepTile(UserEnreda.FLAG_PILL_CV_COMPETENCIES),
+                _getStepTile(UserEnreda.FLAG_PILL_HOW_TO_DO_CV),
+                _getStepTile(UserEnreda.FLAG_CHAT),
+                _getStepTile(UserEnreda.FLAG_EVALUATE_COMPETENCY),
+                _getStepTile(UserEnreda.FLAG_CV_FORMATION),
+                _getStepTile(UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
+                _getStepTile(UserEnreda.FLAG_CV_PERSONAL),
+                _getStepTile(UserEnreda.FLAG_CV_PROFESSIONAL),
+                _getStepTile(UserEnreda.FLAG_CV_ABOUT_ME),
+                _getStepTile(UserEnreda.FLAG_CV_PHOTO),
+                _getStepTile(UserEnreda.FLAG_CV_DATA_OF_INTEREST),
+              ]
+          ),*/
+        ],
+      ),
+    );
   }
 
   String _getDescription(String key, bool value){
@@ -171,6 +189,13 @@ class _GamificationState extends State<Gamification> {
         return value ? 'Buen trabajo agregando una foto al curriculum ' : 'Prueba a incluir una foto a tu curriculum';
       case UserEnreda.FLAG_JOIN_RESOURCE:
         return value ? '¡Bien hecho uniendote a un recurso!' : 'Te sería muy útil unirte a un recurso';
+      case UserEnreda.FLAG_CV_DATA_OF_INTEREST:
+        return value ? 'Ya tienes un dato de interes en tu curriculum' : '¿Que tal si agregas un dato de interes a tu curriculum?';
+      case UserEnreda.FLAG_SIGN_UP:
+        return value ? '¡Enhorabuena por crearte la cuenta!' : '¿Aún no te has creado una cuenta?';
+      case UserEnreda.FLAG_PILL_WHAT_IS_ENREDA:
+        return value ? 'Has visto la píldora: ¿Qué es enREDa?' : 'Tienes pendiente ver la píldora de: ¿Qué es enREDa?';
+
       default:
         return '';
     }
@@ -277,6 +302,108 @@ class _GamificationState extends State<Gamification> {
     );
   }
 
+  Widget _getStarMobile(String order){
+    int completedStars = 0;
+    Color colorStar = Colors.black;
+    String textStar = '';
+    switch(order){
+      case 'BRONCE':
+        textStar = StringConst.BRONZE_STAR;
+        colorStar = AppColors.bronze;
+        if(_points >= 5){
+          completedStars = 5;
+        }
+        else{
+          completedStars = _points;
+        }
+      case 'PLATA':
+        textStar = StringConst.SILVER_STAR;
+        colorStar = AppColors.silver;
+        if(_points <= 5){
+          completedStars = 0;
+        }
+        else if(_points >= 10){
+          completedStars = 5;
+        }
+        else{
+          completedStars = _points - 5;
+        }
+      case 'ORO':
+        textStar = StringConst.GOLD_STAR;
+        colorStar = AppColors.gold;
+        if(_points <= 10){
+          completedStars = 0;
+        }
+        else if(_points >= 15){
+          completedStars = 5;
+        }
+        else{
+          completedStars = _points - 10;
+        }
+    }
+    return Container(
+      width: 120,
+      height: 120,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: AppColors.starsBackgroundColor,
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 12, bottom: 2),
+            child: Container(
+              height: 60,
+              width: 60,
+              decoration: ShapeDecoration(
+                color: completedStars == 5 ? colorStar : Colors.transparent,
+                shape: StarBorder(
+                    pointRounding: 0.2,
+                    valleyRounding: 0.1,
+                    side: BorderSide(
+                        color: colorStar,
+                        width: 2)
+                ),
+              ),
+            ),
+          ),
+          Text(
+            textStar,
+            style: TextStyle(
+              fontSize: 10,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[for(int index = 1; index<=5; index++)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Container(
+                    height: 18,
+                    width: 18,
+                    decoration: ShapeDecoration(
+                      color: completedStars >= index ? colorStar : Colors.transparent,
+                      shape: StarBorder(
+                          pointRounding: 0.2,
+                          valleyRounding: 0.1,
+                          side: BorderSide(
+                              color: colorStar,
+                              width: 1)
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _getStepTile(String step){
     return Padding(
       padding: const EdgeInsets.all(15.0),
@@ -284,7 +411,23 @@ class _GamificationState extends State<Gamification> {
         width: 140,
         height: 160,
         decoration: BoxDecoration(
-          color: (_gamificationFlags[step] ?? false) ? AppColors.yellowDark : AppColors.greymissing,
+          gradient: (_gamificationFlags[step] ?? false) ? LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [
+              AppColors.yellowDark,
+              AppColors.yellowLight,
+            ]
+          )
+          :
+          LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [
+              AppColors.greyMissing,
+              AppColors.greyMissingLight,
+            ]
+          ),
           borderRadius: BorderRadius.circular(15),
         ),
         child: Column(
@@ -293,7 +436,7 @@ class _GamificationState extends State<Gamification> {
               padding: const EdgeInsets.symmetric(vertical: 7),
               child: Icon(
                 Icons.access_time_filled_sharp,
-                color: Colors.grey,
+                color: (_gamificationFlags[step] ?? false) ? AppColors.greenCheckIcon : Colors.grey,
                 size: 40,
               ),
             ),
@@ -308,6 +451,61 @@ class _GamificationState extends State<Gamification> {
           ],
         )
       ),
+    );
+  }
+
+  Widget _getStepTileMobile(String step){
+    double width = MediaQuery.of(context).size.width;
+    return Column(
+      children: [
+        Divider(
+          color: AppColors.starsBackgroundColor,
+        ),
+        Container(
+          height: 50,
+          width: width*0.95,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(23.5),
+            gradient: (_gamificationFlags[step] ?? false) ? LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                AppColors.yellowDark,
+                AppColors.yellowLight,
+              ]
+            )
+          : LinearGradient(colors: [Colors.transparent, Colors.transparent]),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 12),
+                child: Icon(
+                  Icons.access_time_filled_sharp,
+                  color: (_gamificationFlags[step] ?? false) ? AppColors.greenCheckIcon : Colors.grey,
+                  size: 32,
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 2, right: 4),
+                  child: Text(
+                    _getDescription(step, _gamificationFlags[step]!),
+                    softWrap: true,
+                    maxLines: 3,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: (_gamificationFlags[step] ?? false) ? FontWeight.w300 : FontWeight.w500,
+                      color: AppColors.greenDark,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          )
+        ),
+      ],
     );
   }
 

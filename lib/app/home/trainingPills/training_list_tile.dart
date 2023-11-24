@@ -7,6 +7,7 @@ import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -316,5 +317,23 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
         _isVideoVisible = true;
       }
     });
+    if (!kIsWeb) {
+      _controller..setFullScreenListener(
+            (_) async {
+          final videoData = await _controller.videoData;
+          final startSeconds = await _controller.currentTime;
+          final currentTime =
+          await FullscreenYoutubePlayer.launch(
+            context,
+            videoId: videoData.videoId,
+            startSeconds: startSeconds,
+          );
+          if (currentTime != null) {
+            _controller.seekTo(seconds: currentTime);
+          }
+          _controller.seekTo(seconds: currentTime!);
+        },
+      );
+    }
   }
 }

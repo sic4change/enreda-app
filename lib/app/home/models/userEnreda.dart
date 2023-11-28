@@ -330,6 +330,8 @@ class UserEnreda {
     );
   }
 
+  static const String FLAG_SIGN_UP = "signUp";
+  static const String FLAG_PILL_WHAT_IS_ENREDA = "pillWhatIs";
   static const String FLAG_PILL_TRAVEL_BEGINS = "pillTravelBegins";
   static const String FLAG_PILL_COMPETENCIES = "pillCompetencies";
   static const String FLAG_CHAT = "chat";

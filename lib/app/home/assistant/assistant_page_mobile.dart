@@ -525,7 +525,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
     late String location;
     late String workType;
     late String experienceContext;
-    late String experienceContextPlace;
+    String experienceContextPlace = "";
 
     chatQuestions =
         await database.chatQuestionsStream(auth.currentUser!.uid).first;

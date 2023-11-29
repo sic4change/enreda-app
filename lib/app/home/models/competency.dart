@@ -9,12 +9,16 @@ class Competency {
     this.badgesImages = const {},
     this.testQuestions = const [],
     this.trickQuestion,
+    this.competencyCategoryId,
+    this.competencySubCategoryId,
   });
 
   factory Competency.fromMap(Map<String, dynamic> data, String documentId) {
     final String id = data['id'];
     final String name = data['name'];
     final String description = data['description'];
+    final String? competencyCategoryId = data['competencyCategoryId'];
+    final String? competencySubCategoryId = data['competencySubCategoryId'];
 
     Map<String, String> badgesImages = {};
     if (data['badgesImages'] != null) {
@@ -47,6 +51,8 @@ class Competency {
       badgesImages: badgesImages,
       testQuestions: testQuestions,
       trickQuestion: trickQuestion,
+      competencyCategoryId: competencyCategoryId,
+      competencySubCategoryId: competencySubCategoryId,
     );
   }
 
@@ -56,6 +62,8 @@ class Competency {
   final Map<String, String> badgesImages;
   final List<String> testQuestions;
   final String? trickQuestion;
+  final String? competencyCategoryId;
+  final String? competencySubCategoryId;
 
   final ValueNotifier<bool> selected = ValueNotifier<bool>(false);
 
@@ -67,6 +75,8 @@ class Competency {
       'badgesImages': badgesImages,
       'testQuestions': testQuestions,
       'trickQuestion': trickQuestion,
+      'competencyCategoryId': competencyCategoryId,
+      'competencySubCategoryId': competencySubCategoryId
     };
   }
 }

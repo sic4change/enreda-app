@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enreda_app/app/home/account/account_page.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
@@ -50,6 +53,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
       AccountPage()
     ];
     super.initState();
+
   }
 
   Widget _buildMyUserName(BuildContext context) {
@@ -250,4 +254,45 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
       GoRouter.of(context).go(StringConst.PATH_HOME);
     }
   }
+
+
+  Future<void> updateFieldsFromJsonArray(String jsonStr, String collectionName) async {
+    try {
+      // Parse the JSON string into an array of objects
+      List<dynamic> jsonArray = jsonDecode(jsonStr);
+
+      // Get an instance of Firestore
+      FirebaseFirestore db = FirebaseFirestore.instance;
+
+      // Create a batch to perform multiple writes as a single operation
+      WriteBatch batch = db.batch();
+
+      for (var jsonObj in jsonArray) {
+        // Check if each object has the necessary fields
+        String? name = jsonObj['name'];
+        var fieldValueA = jsonObj['competencyCategoryId']; // Replace 'var' with the expected type
+        var fieldValueB = jsonObj['competencySubCategoryId']; // Replace 'var' with the expected type
+
+        // Query the documents in the collection matching the productName
+        QuerySnapshot querySnapshot = await db.collection(collectionName)
+            .where('name', isEqualTo: name)
+            .limit(1)
+            .get();
+
+        for (var doc in querySnapshot.docs) {
+          // Update fields 'a' and 'b' in each matched document
+          DocumentReference docRef = doc.reference;
+          batch.update(docRef, {'competencyCategoryId': fieldValueA, 'competencySubCategoryId': fieldValueB});
+        }
+      }
+
+      // Commit the batch
+      await batch.commit();
+      print('All fields updated successfully.');
+    } catch (e) {
+      print('Error updating fields: $e');
+    }
+  }
+
+
 }

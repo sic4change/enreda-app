@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enreda_app/app/home/models/ability.dart';
 import 'package:enreda_app/app/home/models/certificate.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
@@ -727,7 +728,8 @@ class FirestoreDatabase implements Database {
         queryBuilder: (query) =>
             query.where('userId', isEqualTo: userId),
         builder: (data, documentId) => Experience.fromMap(data, documentId),
-        sort: (lhs, rhs) => rhs.startDate.compareTo(lhs.startDate),
+        sort: (lhs, rhs) => (rhs.startDate?? Timestamp.fromMicrosecondsSinceEpoch(0))
+            .compareTo(lhs.startDate?? Timestamp.fromMicrosecondsSinceEpoch(0)),
       );
 
   @override

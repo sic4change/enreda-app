@@ -520,11 +520,11 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
     List<String> professionActivities = [];
     String? peopleAffected;
     String? organization;
-    late Timestamp startDate;
+    Timestamp? startDate;
     Timestamp? endDate;
-    late String location;
-    late String workType;
-    late String experienceContext;
+    String location = "";
+    String workType = "";
+    String experienceContext = "";
     String experienceContextPlace = "";
 
     chatQuestions =

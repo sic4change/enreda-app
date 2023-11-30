@@ -124,23 +124,25 @@ Future<Uint8List> generateResume(
                     title: experience.activityRole != null &&
                         experience.activity != null
                         ? '${experience.activityRole} - ${experience.activity}'
-                        : experience.position == ""
+                        : (experience.position == null || experience.position == "")
                         ? experience.activity
-                        : experience.organization == ""
+                        : (experience.organization == null || experience.organization == "")
                         ? experience.position
                         : '${experience.position} - ${experience.organization}',
-                    description:'${experience.location}, ${formatter.format(experience.startDate.toDate())} - ${experience.endDate != null
+                    description:'${experience.location}, ${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : 'Desconocida'} - '
+                        '${experience.subtype == 'Responsabilidades familiares'? 'Desconocida':experience.endDate != null
                     ? formatter.format(experience.endDate!.toDate())
                         : 'Actualmente'}',
                   ),
                   pw.SizedBox(height: 20),
                   myEducation!.isNotEmpty ? _Category(title: StringConst.EDUCATION) : pw.Container(),
                   for (var education in myEducation)
-                    _Block(
+                    _Block( 
                       title: education.activityRole == null
                           ? education.activity
                           : '${education.activityRole} - ${education.activity}',
-                      description:'${education.location}, ${formatter.format(education.startDate.toDate())} - ${education.endDate != null
+                      description:'${education.location}, ${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} - '
+                          '${education.subtype == 'Responsabilidades familiares'? 'Desconocida':education.endDate != null
                           ? formatter.format(education.endDate!.toDate())
                           : 'Actualmente'}',
                     ),

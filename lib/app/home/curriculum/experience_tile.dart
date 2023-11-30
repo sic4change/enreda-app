@@ -23,7 +23,10 @@ class ExperienceTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final DateFormat formatter = DateFormat('yyyy');
     bool dismissible = true;
-    String endDate = experience.endDate != null
+    String startDate = experience.startDate != null
+        ? formatter.format(experience.startDate!.toDate())
+        : 'Desconocida';
+    String endDate = experience.subtype == 'Responsabilidades familiares'? 'Desconocida': experience.endDate != null
         ? formatter.format(experience.endDate!.toDate())
         : 'Actualmente';
 
@@ -90,7 +93,7 @@ class ExperienceTile extends StatelessWidget {
               ],
             ),
             Text(
-              '${formatter.format(experience.startDate.toDate())} / $endDate',
+              '$startDate / $endDate',
               style: textTheme.bodyText1?.copyWith(
                 fontSize: 14.0,
               ),

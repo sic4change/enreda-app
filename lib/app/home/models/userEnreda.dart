@@ -33,10 +33,7 @@ class UserEnreda {
     this.languages = const [], // Deprecated
     this.languagesLevels = const [],
     this.aboutMe,
-    this.points,
-    this.resourcesAccessCount,
     this.checkAgreeCV,
-    this.gamificationFlags = const {},
   });
 
   factory UserEnreda.fromMap(Map<String, dynamic> data, String documentId) {
@@ -149,16 +146,7 @@ class UserEnreda {
     }
 
     final String? aboutMe = data['aboutMe'];
-    final int points = data['points']?? 0;
-    final int resourcesAccessCount = data['resourcesAccessCount']?? 0;
     final bool? checkAgreeCV = data['checkAgreeCV'];
-
-    Map<String, bool> gamificationFlags = {};
-    if (data['gamificationFlags'] != null) {
-      (data['gamificationFlags'] as Map<String, dynamic>).forEach((key, value) {
-        gamificationFlags[key] = value as bool;
-      });
-    }
 
     return UserEnreda(
       email: email,
@@ -188,10 +176,7 @@ class UserEnreda {
       languages: languages,
       languagesLevels: languagesLevels,
       aboutMe: aboutMe,
-      points: points,
-      resourcesAccessCount: resourcesAccessCount,
       checkAgreeCV: checkAgreeCV,
-      gamificationFlags: gamificationFlags,
     );
   }
 
@@ -222,10 +207,7 @@ class UserEnreda {
   final List<String> languages;
   final List<Language> languagesLevels;
   final String? aboutMe;
-  final int? points;
-  final int? resourcesAccessCount;
   final bool? checkAgreeCV;
-  final Map<String, bool> gamificationFlags;
 
   Map<String, dynamic> toMap() {
     InterestsUserEnreda interestUserEnreda = InterestsUserEnreda(
@@ -253,10 +235,7 @@ class UserEnreda {
       'languagesLevels': languagesLevels.map((e) => e.toMap()).toList(),
       'aboutMe': aboutMe,
       'education': education?.toMap(),
-      'points': points,
-      'resourcesAccessCount': resourcesAccessCount,
       'checkAgreeCV': checkAgreeCV,
-      'gamificationFlags': gamificationFlags,
     };
   }
 
@@ -291,10 +270,7 @@ class UserEnreda {
     List<String>? languages,
     List<Language>? languagesLevels,
     String? aboutMe,
-    int? points,
-    int? resourcesAccessCount,
     bool? checkAgreeCV,
-    Map<String, bool>? gamificationFlags,
   }) {
     return UserEnreda(
       email: email ?? this.email,
@@ -323,27 +299,7 @@ class UserEnreda {
       languages: languages ?? this.languages,
       languagesLevels: languagesLevels ?? this.languagesLevels,
       aboutMe: aboutMe ?? this.aboutMe,
-      points: points ?? this.points,
-      resourcesAccessCount: resourcesAccessCount ?? this.resourcesAccessCount,
       checkAgreeCV: checkAgreeCV ?? this.checkAgreeCV,
-      gamificationFlags: gamificationFlags ?? this.gamificationFlags,
     );
   }
-
-  static const String FLAG_SIGN_UP = "iIcnoLQfpVs7MmDzRGg7";
-  static const String FLAG_PILL_WHAT_IS_ENREDA = "9tnftkYhk6xNUzokdi88";
-  static const String FLAG_PILL_TRAVEL_BEGINS = "X1Lzl17lvipjLRfXkXyB";
-  static const String FLAG_PILL_COMPETENCIES = "08IEuCZq5ZpSihRHolTw";
-  static const String FLAG_CHAT = "sfEkAorz3lEPflUwmfKv";
-  static const String FLAG_EVALUATE_COMPETENCY = "7pFCCgX4X67ps2K3Mx0o";
-  static const String FLAG_PILL_CV_COMPETENCIES = "0OSUTbLQWbQav69HBBPa";
-  static const String FLAG_PILL_HOW_TO_DO_CV = "jw5RlKNEbCMeSZIwhrfo";
-  static const String FLAG_CV_FORMATION = "jKZDpf8eb9iLsruDJr2H";
-  static const String FLAG_CV_COMPLEMENTARY_FORMATION = "FIzQqM0tXwZoIH1V9CSP";
-  static const String FLAG_CV_PERSONAL = "EDZWlWGf1IbAmQfB1TBU";
-  static const String FLAG_CV_PROFESSIONAL = "PMpPOn5hMZCJR1qdU4sW";
-  static const String FLAG_CV_ABOUT_ME = "KhDJqMIR6du9t4zOjKTx";
-  static const String FLAG_CV_DATA_OF_INTEREST = "c6h0owyqz66P6MqbrSB6";
-  static const String FLAG_CV_PHOTO = "fjr17WGx5vegzNHc9RWY";
-  static const String FLAG_JOIN_RESOURCE = "oreFRQYdp5TNusvu3ubK";
 }

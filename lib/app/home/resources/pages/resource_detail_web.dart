@@ -18,6 +18,7 @@ import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -54,7 +55,6 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
     _email = "";
     _name = "";
     _text = "";
-    _countUserAccess();
   }
 
   @override
@@ -73,15 +73,6 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
         ],
       ),
     );
-  }
-
-  Future<void> _countUserAccess() async {
-    final database = Provider.of<Database>(context, listen: false);
-    final auth = Provider.of<AuthBase>(context, listen: false);
-    if (auth.currentUser != null) {
-      final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-      database.setUserEnreda(user.copyWith(resourcesAccessCount: user.resourcesAccessCount! + 1));
-    }
   }
 
   Widget _buildContent() {
@@ -440,22 +431,25 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
             children: [
               Expanded(
                 child: TextButton(
-                  onPressed: () {
-                    if (auth.currentUser == null) {
-                      showAlertNullUser(context);
-                    } else if (resource.participants.contains(userId)) {
-                      removeUserToResource(context: context, userId: userId, resource: resource);
-                    } else if ((resource.link == null || resource.link!.isEmpty) &&
-                        (resource.contactEmail == null || resource.contactEmail!.isEmpty) &&
-                        (resource.contactPhone == null || resource.contactPhone!.isEmpty)) {
-                      addUserToResource(context: context, userId: userId, resource: resource);
-                      setGamificationFlag(context: context, flagName: UserEnreda.FLAG_JOIN_RESOURCE);
-                    } else if (resource.link != null) {
-                      launchURL(resource.link!);
-                    } else {
-                      showContactDialog(context: context, resource: resource);
-                    }
-                  },
+                  onPressed: () =>
+                  auth.currentUser == null
+                      ? showAlertNullUser(context)
+                      : resource.participants.contains(userId)
+                          ? removeUserToResource(
+                              context: context,
+                              userId: userId,
+                              resource: resource)
+                          : resource.link == null || resource.link == "" &&
+                                  resource.contactEmail == null || resource.contactEmail == "" &&
+                                  resource.contactPhone == null || resource.contactPhone == ""
+                              ? addUserToResource(
+                                  context: context,
+                                  userId: userId,
+                                  resource: resource)
+                              : resource.link != null
+                                  ? launchURL(resource.link!)
+                                  : showContactDialog(
+                                      context: context, resource: resource),
                   child: Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: Text(

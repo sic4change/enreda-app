@@ -1,12 +1,10 @@
 import 'package:enreda_app/app/home/models/trainingPill.dart';
-import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/app/home/trainingPills/build_share_training_pill.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/training_pills_actions.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/foundation.dart';
@@ -249,23 +247,6 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
         aspectRatio: 16 / 9,
         child: InkWell(
           onTap: () async {
-            switch (widget.trainingPill.order){
-              case 2:
-                setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_TRAVEL_BEGINS);
-                break;
-              case 3:
-                setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_COMPETENCIES);
-                break;
-              case 4:
-                setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_CV_COMPETENCIES);
-                break;
-              case 5:
-                setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_HOW_TO_DO_CV);
-                break;
-              default:
-                break;
-            }
-
             setState(() {
               setState(() {
                 _isVideoVisible = !_isVideoVisible;

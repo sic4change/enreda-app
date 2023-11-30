@@ -23,19 +23,12 @@ import '../../../common_widgets/flex_row_column.dart';
 import '../models/activity.dart';
 
 class ExperienceFormUpdate extends StatefulWidget {
-  const ExperienceFormUpdate({
-    Key? key,
-    this.experience,
-    required this.isProfesional,
-    this.general,
-    this.onComingBack,
-  })
+  const ExperienceFormUpdate({Key? key, this.experience, required this.isProfesional, this.general})
       : super(key: key);
 
   final Experience? experience;
   final bool isProfesional; //if false -> personal exprience
   final bool? general;
-  final void Function(bool isProfesional)? onComingBack;
 
   @override
   State<ExperienceFormUpdate> createState() => _ExperienceFormUpdateState();
@@ -824,9 +817,6 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
             title: 'Información guardada',
             content: 'La información ha sido guardada en tu CV correctamente',
             defaultActionText: 'Ok');
-        if (widget.onComingBack != null) {
-          widget.onComingBack!(_isProfesional);
-        }
       });
     } else {
       final experience = Experience(

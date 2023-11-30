@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,14 +8,12 @@ import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/question.dart';
 import 'package:enreda_app/app/home/assistant/list_item_builder.dart';
-import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_competencies.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,9 +23,7 @@ import 'package:provider/provider.dart';
 import 'message_tile.dart';
 
 class AssistantPageMobile extends StatefulWidget {
-  const AssistantPageMobile({Key? key, required this.onFinish}) : super(key: key);
-
-  final void Function(String gamificationFlagName) onFinish;
+  const AssistantPageMobile({Key? key}) : super(key: key);
 
   @override
   _AssistantPageMobileState createState() => _AssistantPageMobileState();
@@ -54,7 +51,6 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
   void initState() {
     super.initState();
     _resetQuestions();
-    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CHAT);
   }
 
   @override
@@ -613,24 +609,6 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(StringConst.EXPERIENCE_ADDED),
       ));
-      // show Gamification snackbar
-      switch (type) {
-        case 'Formativa':
-          widget.onFinish(UserEnreda.FLAG_CV_FORMATION);
-          break;
-        case 'Complementaria':
-          widget.onFinish(UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION);
-          break;
-        case 'Personal':
-          widget.onFinish(UserEnreda.FLAG_CV_PERSONAL);
-          break;
-        case 'Profesional':
-          widget.onFinish(UserEnreda.FLAG_CV_PROFESSIONAL);
-          break;
-        default:
-          widget.onFinish("");
-          break;
-      }
     });
   }
 }

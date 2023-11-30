@@ -357,21 +357,22 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextButton(
-          onPressed: () =>
-          auth.currentUser == null
-              ? showAlertNullUser(context)
-              : resource.participants.contains(userId)
-                  ? removeUserToResource(
-                      context: context, userId: userId, resource: resource)
-                  : resource.link == null &&
-                          resource.contactEmail == null &&
-                          resource.contactPhone == null
-                      ? addUserToResource(
-                          context: context, userId: userId, resource: resource)
-                      : resource.link != null
-                          ? launchURL(resource.link!)
-                          : showContactDialog(
-                              context: context, resource: resource),
+          onPressed: () {
+            if (auth.currentUser == null) {
+              showAlertNullUser(context);
+            } else if (resource.participants.contains(userId)) {
+              removeUserToResource(context: context, userId: userId, resource: resource);
+            } else if ((resource.link == null || resource.link!.isEmpty) &&
+                (resource.contactEmail == null || resource.contactEmail!.isEmpty) &&
+                (resource.contactPhone == null || resource.contactPhone!.isEmpty)) {
+              addUserToResource(context: context, userId: userId, resource: resource);
+              setGamificationFlag(context: context, flagName: UserEnreda.FLAG_JOIN_RESOURCE);
+            } else if (resource.link != null) {
+              launchURL(resource.link!);
+            } else {
+              showContactDialog(context: context, resource: resource);
+            }
+          },
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Text(

@@ -1,5 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/curriculum/pdf_generator/resume1_mobile.dart';
+import 'package:enreda_app/app/home/models/gamificationFlags.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/common_widgets/precached_avatar.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
@@ -7,6 +10,7 @@ import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +27,7 @@ class _GamificationState extends State<Gamification> {
   String _lastName = '';
   int _points = 10;
   Map<String,bool> _gamificationFlags = {};
+  List<GamificationFlag> _gamificationValues = [];
   late TextTheme textTheme;
 
   @override
@@ -46,12 +51,23 @@ class _GamificationState extends State<Gamification> {
             _gamificationFlags.forEach((key, value) {
               print(key);
             });
+            return StreamBuilder(
+              stream: database.gamificationFlagsStream(),
+              builder: (context, snapshot){
+                if(!snapshot.hasData) return Container();
+                if(snapshot.hasData){
+                  _gamificationValues = snapshot.data!;
+                  _gamificationValues.forEach((element) {print(element.description);});
 
-            return Responsive.isDesktop(context)
-                ? _gamificationWeb()
-                : _gamificationMobile();
-
-
+                  return Responsive.isDesktop(context)
+                      ? _gamificationWeb()
+                      : _gamificationMobile();
+                }
+                else{
+                  return Container();
+                }
+              }
+            );
           }
           else{
             return Container();
@@ -77,23 +93,10 @@ class _GamificationState extends State<Gamification> {
             ],
           ),
           SpaceH40(),
+
           Wrap(
               children: [
-                _getStepTile(UserEnreda.FLAG_SIGN_UP),
-                _getStepTile(UserEnreda.FLAG_PILL_WHAT_IS_ENREDA),
-                _getStepTile(UserEnreda.FLAG_PILL_TRAVEL_BEGINS),
-                _getStepTile(UserEnreda.FLAG_PILL_COMPETENCIES),
-                _getStepTile(UserEnreda.FLAG_PILL_CV_COMPETENCIES),
-                _getStepTile(UserEnreda.FLAG_PILL_HOW_TO_DO_CV),
-                _getStepTile(UserEnreda.FLAG_CHAT),
-                _getStepTile(UserEnreda.FLAG_EVALUATE_COMPETENCY),
-                _getStepTile(UserEnreda.FLAG_CV_FORMATION),
-                _getStepTile(UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
-                _getStepTile(UserEnreda.FLAG_CV_PERSONAL),
-                _getStepTile(UserEnreda.FLAG_CV_PROFESSIONAL),
-                _getStepTile(UserEnreda.FLAG_CV_ABOUT_ME),
-                _getStepTile(UserEnreda.FLAG_CV_PHOTO),
-                _getStepTile(UserEnreda.FLAG_CV_DATA_OF_INTEREST),
+                for(var item in _gamificationValues) _getStepTile(item),
               ]
           ),
         ],
@@ -119,6 +122,8 @@ class _GamificationState extends State<Gamification> {
             ],
           ),
           SpaceH12(),
+          for(var item in _gamificationValues) _getStepTileMobile(item),
+          /*
           _getStepTileMobile(UserEnreda.FLAG_SIGN_UP),
           _getStepTileMobile(UserEnreda.FLAG_PILL_WHAT_IS_ENREDA),
           _getStepTileMobile(UserEnreda.FLAG_PILL_TRAVEL_BEGINS),
@@ -134,6 +139,9 @@ class _GamificationState extends State<Gamification> {
           _getStepTileMobile(UserEnreda.FLAG_CV_ABOUT_ME),
           _getStepTileMobile(UserEnreda.FLAG_CV_PHOTO),
           _getStepTileMobile(UserEnreda.FLAG_CV_DATA_OF_INTEREST),
+          _getStepTileMobile(UserEnreda.FLAG_JOIN_RESOURCE),
+
+           */
 
           /*
           SpaceH40(),
@@ -159,47 +167,6 @@ class _GamificationState extends State<Gamification> {
         ],
       ),
     );
-  }
-
-  String _getDescription(String key, bool value){
-    switch(key){
-      case UserEnreda.FLAG_PILL_TRAVEL_BEGINS:
-        return value ? '¡Felicidades! Ya has visto la píldora del inicio de viaje' :'Aún tienes que consumir la píldora del inicio del viaje';
-      case UserEnreda.FLAG_PILL_COMPETENCIES:
-        return value ? '¡Felicidades! Ya has visto la píldora sobre competencias' : 'Tienes pendiente ver la píldora de las competencias';
-      case UserEnreda.FLAG_CHAT:
-        return value ? 'Buen trabajo utilizando el chat' : 'Prueba a usar el chat';
-      case UserEnreda.FLAG_EVALUATE_COMPETENCY:
-        return value ? 'Has evaluado correctamente una competencia' : 'Todavia no has evaluado ninguna competencia';
-      case UserEnreda.FLAG_PILL_CV_COMPETENCIES:
-        return value ? '¡Genial! Ya has visto la píldora sobre las competencias del curriculum' : 'Echale un vistazo a la píldora sobre las competencias del curriculum';
-      case UserEnreda.FLAG_PILL_HOW_TO_DO_CV:
-        return value ? 'Seguro que has aprendido todo lo relacionado con tu curriculum' : 'Intenta ver la píldora del curriculum para no tener ninguna duda';
-      case UserEnreda.FLAG_CV_FORMATION:
-        return value ? 'Ya has incluido alguna formación a tu curriculum. ¡Bien hecho!' : 'Tu curriculum necesita alguna formación';
-      case UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION:
-        return value ? 'Tu curriculum está mucho más completo gracias a la formación complementaria' : 'Seguro que una formación complementaria le aportaría mucho a tu curriculum';
-      case UserEnreda.FLAG_CV_PERSONAL:
-        return value ? 'Ahora se te conocerá mejor gracias a las experiencias personales' : 'Las experiencias personales aportan valor al curriculum. Prueba a incluir alguna';
-      case UserEnreda.FLAG_CV_PROFESSIONAL:
-        return value ? '!Ya has incluido una experiencia profesional!' : 'Es importante incluir alguna experiencia profesional al curriculum';
-      case UserEnreda.FLAG_CV_ABOUT_ME:
-        return value ? 'Tu curriculum es mucho más personal con esa descripción ¡Genial!' : 'Agrega una pequeña descripción sobre ti a tu curriculum';
-      case UserEnreda.FLAG_CV_PHOTO:
-        return value ? 'Buen trabajo agregando una foto al curriculum ' : 'Prueba a incluir una foto a tu curriculum';
-      case UserEnreda.FLAG_JOIN_RESOURCE:
-        return value ? '¡Bien hecho uniendote a un recurso!' : 'Te sería muy útil unirte a un recurso';
-      case UserEnreda.FLAG_CV_DATA_OF_INTEREST:
-        return value ? 'Ya tienes un dato de interes en tu curriculum' : '¿Que tal si agregas un dato de interes a tu curriculum?';
-      case UserEnreda.FLAG_SIGN_UP:
-        return value ? '¡Enhorabuena por crearte la cuenta!' : '¿Aún no te has creado una cuenta?';
-      case UserEnreda.FLAG_PILL_WHAT_IS_ENREDA:
-        return value ? 'Has visto la píldora: ¿Qué es enREDa?' : 'Tienes pendiente ver la píldora de: ¿Qué es enREDa?';
-
-      default:
-        return '';
-    }
-
   }
 
   Widget _getStar(String order){
@@ -404,14 +371,15 @@ class _GamificationState extends State<Gamification> {
     );
   }
 
-  Widget _getStepTile(String step){
+  Widget _getStepTile(GamificationFlag item){
+    bool completed = (_gamificationFlags[item.id]) ?? false;
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Container(
         width: 140,
-        height: 160,
+        height: 140,
         decoration: BoxDecoration(
-          gradient: (_gamificationFlags[step] ?? false) ? LinearGradient(
+          gradient: completed ? LinearGradient(
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
             colors: [
@@ -434,28 +402,44 @@ class _GamificationState extends State<Gamification> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 7),
-              child: Icon(
-                Icons.access_time_filled_sharp,
-                color: (_gamificationFlags[step] ?? false) ? AppColors.greenCheckIcon : Colors.grey,
-                size: 40,
-              ),
+              child:
+                !kIsWeb ? CachedNetworkImage(
+                  width: 40,
+                  progressIndicatorBuilder:
+                      (context, url, downloadProgress) => Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  imageUrl: completed ? item.iconEnabled : item.iconDisabled)
+                  : PrecacheCompetencyCard(
+              imageUrl: completed ? item.iconEnabled : item.iconDisabled,
+              imageWidth: 40,
+              )
             ),
             Padding(
               padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
               child: Text(
                 textAlign: TextAlign.center,
-                _getDescription(step, (_gamificationFlags[step] ?? false),
+                item.description,
+                style: TextStyle(
+                    fontSize: 13.0,
+                    fontWeight: completed ? FontWeight.w500 : FontWeight.w400,
+                    color: AppColors.greenDark,
+                    ),
+                  ),
                 )
-              ),
-            )
           ],
         )
       ),
     );
   }
 
-  Widget _getStepTileMobile(String step){
+  Widget _getStepTileMobile(GamificationFlag item){
     double width = MediaQuery.of(context).size.width;
+    bool completed = (_gamificationFlags[item.id]) ?? false;
     return Column(
       children: [
         Divider(
@@ -466,7 +450,7 @@ class _GamificationState extends State<Gamification> {
           width: width*0.95,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(23.5),
-            gradient: (_gamificationFlags[step] ?? false) ? LinearGradient(
+            gradient: completed ? LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               colors: [
@@ -481,22 +465,32 @@ class _GamificationState extends State<Gamification> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 12),
-                child: Icon(
-                  Icons.access_time_filled_sharp,
-                  color: (_gamificationFlags[step] ?? false) ? AppColors.greenCheckIcon : Colors.grey,
-                  size: 32,
-                ),
+                child: !kIsWeb ? CachedNetworkImage(
+                    width: 32,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) => Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    imageUrl: completed ? item.iconEnabled : item.iconDisabled)
+                    : PrecacheCompetencyCard(
+                  imageUrl: completed ? item.iconEnabled : item.iconDisabled,
+                  imageWidth: 40,
+                )
               ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 2, bottom: 2, right: 4),
                   child: Text(
-                    _getDescription(step, _gamificationFlags[step]!),
+                    item.description,
                     softWrap: true,
                     maxLines: 3,
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: (_gamificationFlags[step] ?? false) ? FontWeight.w300 : FontWeight.w500,
+                      fontWeight: completed ? FontWeight.w300 : FontWeight.w500,
                       color: AppColors.greenDark,
                     ),
                   ),

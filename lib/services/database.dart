@@ -38,6 +38,7 @@ import '../app/home/models/certificationRequest.dart';
 import '../app/home/models/resourcePicture.dart';
 import '../app/home/models/activity.dart';
 import '../app/home/models/question.dart';
+import '../app/home/models/gamificationFlags.dart';
 import 'package:async/async.dart' show StreamGroup;
 
 abstract class Database {
@@ -94,6 +95,7 @@ abstract class Database {
   Stream<List<ResourceCategory>> getCategoriesResources();
   Stream<List<TrainingPill>> trainingPillStream();
   Stream<TrainingPill> trainingPillStreamById(String id);
+  Stream<List<GamificationFlag>> gamificationFlagsStream();
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> addUserEnreda(UserEnreda userEnreda);
@@ -759,6 +761,14 @@ class FirestoreDatabase implements Database {
       queryBuilder: (query) => query.where('id', isEqualTo: activityId),
     );
   }
+
+  @override
+  Stream<List<GamificationFlag>> gamificationFlagsStream() => _service.collectionStream(
+    path: APIPath.gamificationFlags(),
+    queryBuilder: (query) => query.where('id', isNotEqualTo: null),
+    builder: (data, documentId) => GamificationFlag.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+  );
 
 }
 

@@ -1,6 +1,7 @@
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/filterResource.dart';
+import 'package:enreda_app/app/home/models/filterTrainingPills.dart';
 import 'package:enreda_app/app/home/models/organization.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
@@ -14,6 +15,7 @@ import 'package:enreda_app/app/home/resources/pages/list_item_builder_vertical.d
 import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
 import 'package:enreda_app/app/home/trainingPills/training_list_tile_mobile.dart';
 import 'package:enreda_app/app/home/trainingPills/training_list_tile.dart';
+import 'package:enreda_app/common_widgets/custom_person_pill_image.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -27,7 +29,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../utils/functions.dart';
-import '../../assistant/list_item_builder.dart';
 
 class ResourcesPage extends StatefulWidget {
   @override
@@ -41,7 +42,8 @@ class ResourcesPage extends StatefulWidget {
 class _ResourcesPageState extends State<ResourcesPage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final _searchTextController = TextEditingController();
-  FilterResource filterResource = FilterResource("", "POUBGFk5gU6c5X1DKo1b");
+  FilterResource filterResource = FilterResource("", "");
+  FilterTrainingPill filterTrainingPill = FilterTrainingPill("", "");
   bool isAlertBoxOpened = false;
   List<ResourceCategory> resourceCategoriesList = [];
   String _categoryName = 'Empleo';
@@ -87,7 +89,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   getResourceCategories() {
     final database = Provider.of<Database>(context, listen: false);
     database.getCategoriesResources().listen((categoriesList) {
-      setState(() => resourceCategoriesList = categoriesList);
+      setStateIfMounted(() => resourceCategoriesList = categoriesList);
     });
   }
 
@@ -211,27 +213,16 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   Widget _buildTrainingPillsButton(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    final isDesktopScreen = MediaQuery.of(context).size.width >= 1350;
     return Container(
-      color: AppColors.greyLightAlt,
-      height: Responsive.isMobile(context) ? 400 : Responsive.isDesktopS(context) ? 600 : 550,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      margin: Responsive.isMobile(context)
+          ? EdgeInsets.symmetric(horizontal: 30, vertical: 20)
+          : Responsive.isDesktopS(context)
+          ? EdgeInsets.symmetric(horizontal: 30)
+          : EdgeInsets.symmetric(horizontal: 100),
+      height: Responsive.isMobile(context) ? 380 : Responsive.isDesktopS(context) ? 550 : 450,
+      child: Stack(
+        alignment: Responsive.isMobile(context) ? Alignment.topCenter : Alignment.center,
         children: [
-          Responsive.isMobile(context) ? SpaceH20(): SpaceH50(),
-          Text( StringConst.PILLS_TITLE, style: textTheme.titleSmall?.copyWith(
-            color: AppColors.greyAlt,
-            height: 1.5,
-            letterSpacing: 0.5,
-            fontWeight: FontWeight.w700,
-            fontSize: 25,
-          ),),
-          SpaceH20(),
-          Container(
-              alignment: Alignment.center,
-              padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 30) : EdgeInsets.symmetric(horizontal: 100.0),
-              child: Text(StringConst.PILLS_SUBTITLE, textAlign: TextAlign.center, style: TextStyle(fontSize: 15,),)),
-          Responsive.isMobile(context) ? SpaceH12() : SpaceH50(),
           InkWell(
             onTap: () {
               setStateIfMounted(() {
@@ -239,62 +230,118 @@ class _ResourcesPageState extends State<ResourcesPage> {
               });
             },
             child: Stack(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.center,
               children: [
-                Padding(
-                  padding: Responsive.isMobile(context) ? EdgeInsets.only(right: 30, left: 30, top: 30) : EdgeInsets.only(top: 30),
+                Container(
+                  margin: Responsive.isDesktop(context) ? EdgeInsets.only(top: 25) : EdgeInsets.only(top: 0),
+                  height: Responsive.isMobile(context) ? 220 : Responsive.isDesktopS(context) ? 380 : 280,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage(ImagePath.BACKGROUND_PILLS),
+                      )
+                  ),
+                ),
+                Responsive.isDesktop(context) ? Positioned(
+                  left: Responsive.isDesktopS(context) ? 50 : 100,
                   child: Container(
-                    width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.7,
-                    height: Responsive.isMobile(context) ? 140 : 280,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage(ImagePath.BACKGROUND_PILLS),
-                        )
+                    constraints:  BoxConstraints(
+                      maxWidth: 400
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(StringConst.PILLS_TITLE,
+                          style: textTheme.headlineSmall?.copyWith(
+                            color: Colors.white,
+                            letterSpacing: 1,
+                            fontSize: Responsive.isMobile(context) ? 15 : Responsive.isDesktopS(context) ? 25 : 34,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        SpaceH8(),
+                        Text(StringConst.PILLS_SUBTITLE, style: textTheme.bodySmall?.copyWith(
+                          color: Colors.white,
+                          letterSpacing: 1,
+                          fontSize: Responsive.isMobile(context) ? 12 : Responsive.isDesktopS(context) ? 15 : 18,
+                         ),),
+                      ],
+                    ),
+                  ),
+                ) : Positioned(
+                  top: 0,
+                  child: Container(
+                    constraints:  BoxConstraints(
+                        maxWidth: Responsive.isMobile(context) ? 280 : 400
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 30.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: Responsive.isDesktop(context) ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+                        children: [
+                          Text(StringConst.PILLS_TITLE,
+                            style: textTheme.headlineSmall?.copyWith(
+                              color: Colors.white,
+                              letterSpacing: 1,
+                              fontSize: Responsive.isMobile(context) ? 15 : Responsive.isDesktopS(context) ? 25 : 34,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          SpaceH8(),
+                          Text(StringConst.PILLS_SUBTITLE,
+                            textAlign: Responsive.isDesktop(context) ? TextAlign.left : TextAlign.center,
+                            style: textTheme.bodySmall?.copyWith(
+                            color: Colors.white,
+                            letterSpacing: 1,
+                            fontSize: Responsive.isMobile(context) ? 12 : Responsive.isDesktopS(context) ? 15 : 18,
+                          ),),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                Positioned(
+                Responsive.isDesktop(context) ? Positioned(
                   bottom: 0,
-                  left: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/8 : 5,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                          alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 120 : 300,
-                          child: Image.asset(ImagePath.PERSON_PILL1)),
-                    ],
-                  ),
+                  left: MediaQuery.of(context).size.width * 0.4,
+                  child: CustomPersonPillImage(
+                    personPillImagePath: ImagePath.PERSON_PILL1,
+                    height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 280,),
+                ) : Positioned(
+                  bottom: 0,
+                  left: MediaQuery.of(context).size.width * 0.1,
+                  child: CustomPersonPillImage(
+                    personPillImagePath: ImagePath.PERSON_PILL1,
+                    height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 280,),
                 ),
-                Positioned(
+                Responsive.isDesktop(context) ? Positioned(
                   bottom: 0,
-                  right: isDesktopScreen ? (MediaQuery.of(context).size.width * 0.7)/7 : 15,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                          alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 120 : 300,
-                          child: Image.asset(ImagePath.PERSON_PILL3)),
-                    ],
-                  ),
+                  left: MediaQuery.of(context).size.width * 0.7,
+                  child: CustomPersonPillImage(
+                    personPillImagePath: ImagePath.PERSON_PILL3,
+                    height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 290,),
+                ) : Positioned(
+                  bottom: 0,
+                  right: MediaQuery.of(context).size.width * 0.1,
+                  child: CustomPersonPillImage(
+                    personPillImagePath: ImagePath.PERSON_PILL3,
+                    height: Responsive.isMobile(context) ? 100 : Responsive.isDesktopS(context) ? 220 : 290,),
                 ),
-                Positioned(
+                Responsive.isDesktop(context) ? Positioned(
                   bottom: 0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                          alignment: Alignment.bottomCenter,
-                          height: Responsive.isMobile(context) ? 180 : 350,
-                          child: Image.asset(ImagePath.PERSON_PILL2)),
-                    ],
-                  ),
+                  left: MediaQuery.of(context).size.width * 0.53,
+                  child: CustomPersonPillImage(
+                    personPillImagePath: ImagePath.PERSON_PILL2,
+                    height: Responsive.isMobile(context) ? 120 : Responsive.isDesktopS(context) ? 280 : 350,),
+                ) : Positioned(
+                  bottom: 0,
+                  right: 0,
+                  left: 0,
+                  child: CustomPersonPillImage(
+                      personPillImagePath: ImagePath.PERSON_PILL2,
+                      height: Responsive.isMobile(context) ? 120 : Responsive.isDesktopS(context) ? 280 : 350),
                 ),
               ],
             ),
@@ -303,6 +350,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
       ),
     );
   }
+
 
   Widget _buildFilteredResourcesPage(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -321,7 +369,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   onFieldSubmitted: (value) => setStateIfMounted(() {
                     filterResource.searchText = _searchTextController.text;
                   }),
-                  clearFilter: () => _clearFilter()),
+                  clearFilter: () => _clearFilter(),
+                  hintText: 'Nombre del recurso, organizador, país...',
+              ),
               SpaceH20(),
               Padding(
                 padding: Responsive.isMobile(context)
@@ -450,12 +500,14 @@ class _ResourcesPageState extends State<ResourcesPage> {
               FilterTextFieldRow(
                   searchTextController: _searchTextController,
                   onPressed: () => setStateIfMounted(() {
-                    filterResource.searchText = _searchTextController.text;
+                    filterTrainingPill.searchText = _searchTextController.text;
                   }),
                   onFieldSubmitted: (value) => setStateIfMounted(() {
-                    filterResource.searchText = _searchTextController.text;
+                    filterTrainingPill.searchText = _searchTextController.text;
                   }),
-                  clearFilter: () => _clearFilter()),
+                  clearFilter: () => _clearFilter(),
+                  hintText: 'Nombre del video, categoría...',
+              ),
               SpaceH20(),
               Padding(
                 padding: Responsive.isMobile(context)
@@ -579,7 +631,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
           ? EdgeInsets.symmetric(horizontal: 20, vertical: 30)
           : EdgeInsets.symmetric(horizontal: 100, vertical: 30),
       child: StreamBuilder<List<TrainingPill>>(
-          stream: database.trainingPillStream(),
+          stream: database.filteredTrainingPillStream(filterTrainingPill),
           builder: (context, snapshot) {
             return ListItemBuilderGrid<TrainingPill>(
               snapshot: snapshot,
@@ -607,7 +659,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: StreamBuilder<List<TrainingPill>>(
-            stream: database.trainingPillStream(),
+            stream: database.filteredTrainingPillStream(filterTrainingPill),
             builder: (context, snapshot) {
               return ListItemBuilderVertical<TrainingPill>(
                   snapshot: snapshot,
@@ -629,7 +681,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
                         ],
                       ),
                     );
-                  }
+                  },
+                emptyTitle: 'Sin píldoras formativas',
+                emptyMessage: 'No tenemos videos que mostrarte con la búsqueda',
               );
             }),
       ),
@@ -963,9 +1017,10 @@ class _ResourcesPageState extends State<ResourcesPage> {
   }
 
   void _clearFilter() {
-    setState(() {
+    setStateIfMounted(() {
       _searchTextController.clear();
       filterResource.searchText = '';
+      filterTrainingPill.searchText = '';
     });
   }
 }

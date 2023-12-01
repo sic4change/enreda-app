@@ -5,7 +5,6 @@ import 'package:enreda_app/app/home/curriculum/experience_tile.dart';
 import 'package:enreda_app/app/home/curriculum/formation_form.dart';
 import 'package:enreda_app/app/home/curriculum/my-custom_cv.dart';
 import 'package:enreda_app/app/home/curriculum/reference_tile.dart';
-import 'package:enreda_app/app/home/curriculum/tooltip_video/training_tooltip_video.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
@@ -13,10 +12,8 @@ import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/province.dart';
-import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
-import 'package:enreda_app/app/home/resources/pages/list_item_builder_vertical.dart';
-import 'package:enreda_app/common_widgets/videos/custom_tooltip.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/custom_tooltip.dart';
 import 'package:enreda_app/common_widgets/delete_button.dart';
 import 'package:enreda_app/common_widgets/edit_button.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
@@ -25,7 +22,6 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
@@ -36,6 +32,7 @@ import '../../../common_widgets/custom_text.dart';
 import '../../../common_widgets/precached_avatar.dart';
 import '../../../utils/my_scroll_behaviour.dart';
 import '../../../values/values.dart';
+import '../../anallytics/analytics.dart';
 
 class MyCurriculumPage extends StatelessWidget {
   UserEnreda? user;
@@ -455,7 +452,7 @@ class MyCurriculumPage extends StatelessWidget {
                   ),
                 ],
               ),
-              _buildCustomTooltip(context),
+              CustomTooltip(),
               //SpaceH24(),
               //_buildMyCareer(context),
               SpaceH24(),
@@ -597,7 +594,7 @@ class MyCurriculumPage extends StatelessWidget {
               color: Constants.penBlue),
         ),
         SpaceH20(),
-        _buildCustomTooltip(context),
+        CustomTooltip(),
       ],
     );
   }
@@ -660,11 +657,10 @@ class MyCurriculumPage extends StatelessWidget {
                 CustomTextTitle(title: StringConst.ABOUT_ME.toUpperCase()),
               ),
               InkWell(
-                onTap: () async {
-                  if (isEditable) {
-                    await database.setUserEnreda(user!.copyWith(aboutMe: textController.text));
-                    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_ABOUT_ME);
-                  }
+                onTap: () {
+                  if (isEditable)
+                    database.setUserEnreda(
+                        user!.copyWith(aboutMe: textController.text));
                   setState(() {
                     isEditable = !isEditable;
                     if (isEditable) focusNode.requestFocus();
@@ -976,7 +972,6 @@ class MyCurriculumPage extends StatelessWidget {
 
   Widget _buildMyEducation(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
-    final auth = Provider.of<AuthBase>(context, listen: false);
 
     bool dismissible = true;
     return Column(
@@ -990,10 +985,9 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (dialogContext) => AlertDialog(
+                  builder: (context) => AlertDialog(
                     content: FormationForm(
                       isMainEducation: true,
-                      onComingBack: () => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_FORMATION),
                     ),
                   )
               );
@@ -1074,10 +1068,9 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (dialogContext) => AlertDialog(
+                  builder: (context) => AlertDialog(
                     content: FormationForm(
                       isMainEducation: false,
-                      onComingBack: () => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
                     ),
                   )
               );
@@ -1143,10 +1136,9 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (dialogContext) => AlertDialog(
+                  builder: (context) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: true,
-                      onComingBack: (_) => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PROFESSIONAL),
                     ),
                   )
               );
@@ -1212,10 +1204,9 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (dialogContext) => AlertDialog(
+                  builder: (context) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: false,
-                      onComingBack: (_) => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PERSONAL),
                     ),
                   )
               );
@@ -1281,17 +1272,10 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (dialogContext) => AlertDialog(
+                  builder: (context) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: false,
                       general: true,
-                      onComingBack: (isProfessional) {
-                        if (isProfessional) {
-                          setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PROFESSIONAL);
-                        } else {
-                          setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PERSONAL);
-                        }
-                      },
                     ),
                   )
               );
@@ -1553,15 +1537,14 @@ class MyCurriculumPage extends StatelessWidget {
     );
   }
 
-  Future<void> _showDataOfInterestDialog(BuildContext context, String currentText) async {
+  void _showDataOfInterestDialog(BuildContext context, String currentText) {
     final database = Provider.of<Database>(context, listen: false);
-    final auth = Provider.of<AuthBase>(context, listen: false);
     final controller = TextEditingController();
     final textTheme = Theme.of(context).textTheme;
     if (currentText.isNotEmpty) {
       controller.text = currentText;
     }
-    await showCustomDialog(context,
+    showCustomDialog(context,
         content: Card(
           elevation: 0,
           color: Colors.white,
@@ -1591,15 +1574,13 @@ class MyCurriculumPage extends StatelessWidget {
         ),
         defaultActionText: StringConst.FORM_ACCEPT,
         onDefaultActionPressed: (context) {
-          if (currentText.isNotEmpty) {
-            user!.dataOfInterest.remove(currentText);
-          }
-          user!.dataOfInterest.add(controller.text);
-          database.setUserEnreda(user!);
-          Navigator.of(context).pop();
-       });
-
-    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_DATA_OF_INTEREST);
+      if (currentText.isNotEmpty) {
+        user!.dataOfInterest.remove(currentText);
+      }
+      user!.dataOfInterest.add(controller.text);
+      database.setUserEnreda(user!);
+      Navigator.of(context).pop();
+    });
   }
 
   void _showReferencesDialog(BuildContext context, CertificationRequest certificationRequest) {
@@ -1682,16 +1663,19 @@ class MyCurriculumPage extends StatelessWidget {
             final index = myReferences?.indexWhere((element) => element.certifierName == certificationRequest.certifierName);
             if (index! >= 0) myReferences?[index].certifierName = (controllerName.text);
             database.setCertificationRequest(myReferences![index]);
+            sendBasicAnalyticsEvent(context, "enreda_app_set_certification_request");
           }
           if (certificationRequest.certifierPosition.isNotEmpty) {
             final index = myReferences?.indexWhere((element) => element.certifierPosition == certificationRequest.certifierPosition);
             if (index! >= 0) myReferences?[index].certifierPosition = (controllerPosition.text);
             database.setCertificationRequest(myReferences![index]);
+            sendBasicAnalyticsEvent(context, "enreda_app_set_certification_request");
           }
           if (certificationRequest.certifierCompany.isNotEmpty) {
             final index = myReferences?.indexWhere((element) => element.certifierCompany == certificationRequest.certifierCompany);
             if (index! >= 0) myReferences?[index].certifierCompany = (controllerCompany.text);
             database.setCertificationRequest(myReferences![index]);
+            sendBasicAnalyticsEvent(context, "enreda_app_set_certification_request");
           }
           Navigator.of(context).pop();
         });
@@ -1882,71 +1866,5 @@ class MyCurriculumPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomTooltip(BuildContext context) {
-    return CustomTooltip(
-      tooltip: Container(
-        padding: const EdgeInsets.all(13.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [0.5, 0.5],
-            colors: [
-              AppColors.yellowDark,
-              AppColors.white,
-            ],
-          ),
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        width: 300,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: CustomTextTitle(title: '¿No sabes por dónde empezar tu CV?', color: AppColors.greenDark,),
-            ),
-            Stack(
-              children: [
-                Card(
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: _buildTrainingTooltipVideo(context)),
-              ],
-            ),
-          ],
-        ),
-      ),
-      child: Icon(Icons.info_outline, size: 24, color: AppColors.primaryColor,),
-    );
-  }
-
-  Widget _buildTrainingTooltipVideo(BuildContext context) {
-    final database = Provider.of<Database>(context, listen: false);
-    return SingleChildScrollView(
-      child: Container(
-        child: StreamBuilder<List<TrainingPill>>(
-            stream: database.trainingPillStream(),
-            builder: (context, snapshot) {
-              return ListItemBuilderVertical<TrainingPill>(
-                  snapshot: snapshot,
-                  itemBuilder: (context, trainingPill) {
-                    trainingPill.setTrainingPillCategoryName();
-                    if(trainingPill.urlVideo == 'https://www.youtube.com/watch?v=Au8ZS-8fcl4'){
-                      return Container(
-                        key: Key('trainingPill-${trainingPill.id}'),
-                        child: TrainingTooltipVideo(
-                          trainingPill: trainingPill,
-                        ),
-                      );
-                    }
-                    return Container();
-                  }
-              );
-            }),
-      ),
-    );
-  }
 
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/account/gamification_certificate.dart';
 import 'package:enreda_app/app/home/curriculum/pdf_generator/resume1_mobile.dart';
@@ -5,14 +6,13 @@ import 'package:enreda_app/app/home/models/gamificationFlags.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
+=======
+import 'package:enreda_app/app/home/models/userEnreda.dart';
+>>>>>>> develop
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/responsive.dart';
-import 'package:enreda_app/values/strings.dart';
-import 'package:enreda_app/values/values.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,9 +27,7 @@ class _GamificationState extends State<Gamification> {
   String _userId = '';
   String _firstName = '';
   String _lastName = '';
-  int _points = 10;
-  Map<String,bool> _gamificationFlags = {};
-  List<GamificationFlag> _gamificationValues = [];
+  int _points = 0;
   late TextTheme textTheme;
   bool _allTasksDone = false;
 
@@ -48,6 +46,7 @@ class _GamificationState extends State<Gamification> {
             _userId = userEnreda.userId ?? '';
             _firstName = userEnreda.firstName ?? '';
             _lastName = userEnreda.lastName ?? '';
+<<<<<<< HEAD
             _gamificationFlags = userEnreda.gamificationFlags ?? {};
             ///TO DO  / Ajustar al campo correcto del usuario que contenga el contador de recursos
             _points = userEnreda.points ?? 0;
@@ -61,22 +60,42 @@ class _GamificationState extends State<Gamification> {
                 if(snapshot.hasData){
                   _gamificationValues = snapshot.data!;
                   _gamificationValues.forEach((element) {print(element.description);});
+=======
+            //_points = userEnreda.points ?? 0;
+            return Column(
+              children: [
+                Text(
+                  '$_firstName $_lastName',
+                  style:
+                    textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Constants.grey,
+                      fontSize: 14.0
+                    ),
+                ),
+                SpaceH8(),
+                Text(
+                  'Puntos: ${_points}',
+                  style:
+                  textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Constants.penLightBlue,
+                    fontSize: 14.0
+                  ),
+                ),
+>>>>>>> develop
 
-                  return Responsive.isDesktop(context)
-                      ? _gamificationWeb()
-                      : _gamificationMobile();
-                }
-                else{
-                  return Container();
-                }
-              }
+              ],
             );
           }
           else{
             return Container();
           }
         });
+
+    return Text(auth.currentUser!.email!);
   }
+<<<<<<< HEAD
 
   Widget _gamificationWeb(){
     return SingleChildScrollView(
@@ -595,4 +614,6 @@ class _GamificationState extends State<Gamification> {
     );
   }
 
+=======
+>>>>>>> develop
 }

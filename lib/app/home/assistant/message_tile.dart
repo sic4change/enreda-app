@@ -169,6 +169,8 @@ class _MessageTileState extends State<MessageTile> {
 
   Widget _buildSingleChoiceResponse(
       {required List<String> source, required Function(String) onChanged}) {
+
+
     return source.length <= 9  || Responsive.isMobile(context) || (widget.showSportOptions?.value ?? false) ?
     ChipsChoice<String>.single(
       choiceItems: C2Choice.listFrom<String, String>(
@@ -351,27 +353,26 @@ class _MessageTileState extends State<MessageTile> {
       _choicesSelected = MessageTile.recommendedActivities;
     }
 
-    database
-        .choicesStream(widget.question.choicesCollection!, typeId, subtypeId)
-        .first
+    database.choicesStream(widget.question.choicesCollection!, typeId, subtypeId).first
         .then((value) => value.forEach((choice) {
               setState(() {
                 if (!_choices.any((element) => element.id == choice.id))
                   _choices.add(choice);
 
-                if (widget.question.choicesCollection ==
-                        StringConst.ACTIVITIES_CHOICES &&
+                if (widget.question.choicesCollection == StringConst.ACTIVITIES_CHOICES &&
                     _choicesSelected.contains(choice.name)) {
-                  if (!widget.currentChoicesNotifier.value
-                      .any((element) => element.id == choice.id))
+                  if (!widget.currentChoicesNotifier.value.any((element) => element.id == choice.id))
                     widget.currentChoicesNotifier.value.add(choice);
                 }
-                _choices.forEach((element) {
-                  widget.sourceAutoCompleteNotifier.value.add(element);
-                });
+                _choices.forEach((element) {widget.sourceAutoCompleteNotifier.value.add(element);});
               });
             }))
-        .whenComplete(() => _choices
-            .sort((a, b) => _choicesSelected.contains(a.name) ? 1 : -1));
+        .whenComplete(() {
+          if (!_choices.any((c) => c.order == null)) {
+            _choices.sort((a,b) => a.order!.compareTo(b.order!));
+          } else {
+            _choices.sort((a, b) => _choicesSelected.contains(a.name) ? 1 : -1);
+          }
+    });
   }
 }

@@ -3,24 +3,26 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../utils/adaptive.dart';
 import '../../../values/values.dart';
 
 class FilterTextFieldRow extends StatefulWidget {
-  const FilterTextFieldRow(
+   FilterTextFieldRow(
       {Key? key,
       required this.searchTextController,
       required this.onFieldSubmitted,
       required this.onPressed,
-      required this.clearFilter})
+      required this.clearFilter,
+      required this.hintText,
+      })
       : super(key: key);
 
   final TextEditingController searchTextController;
   final void Function(String) onFieldSubmitted;
   final void Function() onPressed;
   final void Function() clearFilter;
+  late String hintText;
 
   @override
   State<FilterTextFieldRow> createState() => _FilterTextFieldRowState();
@@ -28,33 +30,36 @@ class FilterTextFieldRow extends StatefulWidget {
 
 class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
   bool _isClearTextVisible = false;
-  String _hintText = 'Nombre del recurso, organizador, país...';
 
   FocusNode _focusNode = FocusNode();
+
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
 
   @override
   void initState() {
     widget.searchTextController.addListener(() {
       if (widget.searchTextController.text.isNotEmpty && !_isClearTextVisible) {
-        setState(() {
+        setStateIfMounted(() {
           _isClearTextVisible = true;
         });
       } else if (widget.searchTextController.text.isEmpty &&
           _isClearTextVisible) {
-        setState(() {
+        setStateIfMounted(() {
           _isClearTextVisible = false;
         });
       }
     });
 
     _focusNode.addListener(() {
-      if (_focusNode.hasFocus && _hintText.isNotEmpty) {
-        setState(() {
-          _hintText = '';
+      if (_focusNode.hasFocus && widget.hintText.isNotEmpty) {
+        setStateIfMounted(() {
+          widget.hintText = '';
         });
-      } else if (!_focusNode.hasFocus && _hintText.isEmpty) {
-        setState(() {
-          _hintText = 'Nombre del recurso, organizador, país...';
+      } else if (!_focusNode.hasFocus && widget.hintText.isEmpty) {
+        setStateIfMounted(() {
+          widget.hintText = widget.hintText;
         });
       }
     });
@@ -89,7 +94,7 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
                       textAlignVertical: TextAlignVertical.center,
                       focusNode: _focusNode,
                       decoration: InputDecoration(
-                        hintText: _hintText,
+                        hintText: widget.hintText,
                         border: InputBorder.none,
                       ),
                       controller: widget.searchTextController,

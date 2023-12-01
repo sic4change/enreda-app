@@ -1,9 +1,4 @@
-import 'package:enreda_app/app/home/models/userEnreda.dart';
-import 'package:enreda_app/services/auth.dart';
-import 'package:enreda_app/services/database.dart';
-import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const kDuration = Duration(milliseconds: 600);
@@ -48,24 +43,4 @@ String removeDiacritics(String str) {
   }
 
   return str;
-}
-
-Future<void> setGamificationFlag({
-  required BuildContext context,
-  required String flagName,
-}) async {
-  final database = Provider.of<Database>(context, listen: false);
-  final auth = Provider.of<AuthBase>(context, listen: false);
-
-  if (auth.currentUser != null) {
-    final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-    if (!user.gamificationFlags.containsKey(flagName) ||
-        !user.gamificationFlags[flagName]!) {
-      user.gamificationFlags[flagName] = true;
-      await database.setUserEnreda(user);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
-      ));
-  }
-  }
 }

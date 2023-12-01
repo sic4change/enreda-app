@@ -42,7 +42,6 @@ class AppColors {
   //Yellow
   static const Color yellow = Color(0xFFFDE934);
   static const Color yellowDark = Color(0xFFFFCB77);
-  static const Color yellowLight = Color(0xFFFFE7BF);
 
   //Pink
   static const Color pink300 = Color(0xFFDC5687);
@@ -72,15 +71,6 @@ class AppColors {
   static const Color darkPurple = Color(0xFF460174);
   static const Color lightPurple = Color(0xFFA100FE);
   static const Color ultraLightPurple = Color(0xFFF5EDF9);
-
-  //Gamificacion
-  static const Color bronze = Color(0xFF8F6C32);
-  static const Color silver = Color(0xFF676B6D);
-  static const Color gold = Color(0xFFE8930A);
-  static const Color greyMissing = Color(0xFFDCE7EA);
-  static const Color greyMissingLight = Color(0xFFF5FAFB);
-  static const Color greenCheckIcon = Color(0xFF18C5C1);
-  static const Color starsBackgroundColor = Color(0xFFE6EDEF);
 
 
 }

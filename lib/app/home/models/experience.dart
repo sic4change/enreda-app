@@ -14,7 +14,7 @@ class Experience {
     this.organization,
     this.position,
     this.professionActivitiesText,
-    required this.startDate,
+    this.startDate,
     this.endDate,
     required this.location,
     required this.workType,
@@ -39,7 +39,7 @@ class Experience {
   final String? organization;
   final String? position;
   final String? professionActivitiesText;
-  final Timestamp startDate;
+  final Timestamp? startDate;
   final Timestamp? endDate;
   final String location;
   final String workType;
@@ -91,7 +91,7 @@ class Experience {
     final String? organization = data['organization'];
     final String? position = data['position'];
     final String? professionActivitiesText = data['professionActivitiesText'];
-    final Timestamp startDate = data['startDate'];
+    final Timestamp? startDate = data['startDate'];
     final Timestamp? endDate = data['endDate'];
     final String location = data['location'];
     final String workType = data['workType'];

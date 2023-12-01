@@ -7,25 +7,24 @@ import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/question.dart';
 import 'package:enreda_app/app/home/assistant/list_item_builder.dart';
-import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_competencies.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
+import '../../anallytics/analytics.dart';
 import 'message_tile.dart';
 
 class AssistantPageWeb extends StatefulWidget {
   const AssistantPageWeb({Key? key, required this.onClose}) : super(key: key);
-  final void Function(bool showSuccessMessage, String gamificationFlagName) onClose;
+  final void Function(bool showSuccessMessage) onClose;
 
   @override
   _AssistantPageWebState createState() => _AssistantPageWebState();
@@ -57,7 +56,6 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
   void initState() {
     super.initState();
     _resetQuestions();
-    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CHAT);
   }
 
   @override
@@ -76,7 +74,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-
+    sendBasicAnalyticsEvent(context, "enreda_app_open_chat");
     return StreamBuilder<User?>(
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
@@ -129,7 +127,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                             child: Container(),
                           ),
                           IconButton(
-                              onPressed: () => widget.onClose(false, ""),
+                              onPressed: () => widget.onClose(false),
                               icon: Icon(
                                 Icons.close,
                                 color: Constants.white,
@@ -657,12 +655,12 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     List<String> professionActivities = [];
     String? peopleAffected;
     String? organization;
-    late Timestamp startDate;
+    Timestamp? startDate;
     Timestamp? endDate;
-    late String location;
-    late String workType;
-    late String experienceContext;
-    late String experienceContextPlace;
+    String location = "";
+    String workType = "";
+    String experienceContext = "";
+    String experienceContextPlace = "";
 
     chatQuestions =
         await database.chatQuestionsStream(auth.currentUser!.uid).first;
@@ -721,6 +719,8 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
       }
     });
 
+    sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
+
     await database.addExperience(Experience(
         userId: auth.currentUser!.uid,
         type: type,
@@ -741,27 +741,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     showCompetencies(context, userCompetencies: userCompetencies,
         onDismiss: (dialogContext) {
       Navigator.of(dialogContext).pop();
-
-      String gamificationFlagName = "";
-
-      switch (type) {
-        case 'Formativa':
-          gamificationFlagName = UserEnreda.FLAG_CV_FORMATION;
-          break;
-        case 'Complementaria':
-          gamificationFlagName = UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION;
-          break;
-        case 'Personal':
-          gamificationFlagName = UserEnreda.FLAG_CV_PERSONAL;
-          break;
-        case 'Profesional':
-          gamificationFlagName = UserEnreda.FLAG_CV_PROFESSIONAL;
-          break;
-        default:
-          break;
-      }
-
-      widget.onClose(true, gamificationFlagName);
+      widget.onClose(true);
     });
   }
 }

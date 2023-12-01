@@ -7,6 +7,9 @@
       "hosting": {
         "enredatest": [
           "test-enreda"
+        ],
+        "enredapp": [
+          "enredawebapp"
         ]
       }
     }

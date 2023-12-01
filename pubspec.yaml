@@ -32,6 +32,7 @@ dependencies:
   provider: ^6.1.1
   cloud_firestore: ^4.13.1
   firebase_storage: ^11.5.1
+  firebase_analytics: ^10.7.2
   intl: ^0.18.1
   url_launcher: ^6.2.1
   chips_choice: 3.0.1
@@ -161,12 +162,16 @@ flutter:
     - images/background-pildoras.png
     - images/fundaula-logo.png
     - images/placeholder_video.png
+<<<<<<< HEAD
     - images/gamification_certificate/medail.svg
     - images/gamification_certificate/garland.svg
     - images/gamification_certificate/swirls.svg
     - images/gamification_certificate/swirls1.svg
     - images/gamification_certificate/swirls2.svg
     - images/gamification_certificate/swirls3.svg
+=======
+    - images/info_icon.png
+>>>>>>> develop
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

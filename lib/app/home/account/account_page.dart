@@ -386,7 +386,7 @@ class _AccountPageState extends State<AccountPage> {
           ),
           _buildMyProfileRow(
             text: 'Gamificación',
-            imagePath: ImagePath.ICON_FAV_BLUE,
+            imagePath: ImagePath.ICON_GAMIFICATION,
             onTap: () => setState(() {
               _currentPage = Gamification();
               _currentPageTitle = 'Gamificación'.toUpperCase();

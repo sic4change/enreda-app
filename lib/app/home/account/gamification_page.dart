@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:enreda_app/app/home/account/gamification_certificate.dart';
 import 'package:enreda_app/app/home/curriculum/pdf_generator/resume1_mobile.dart';
 import 'package:enreda_app/app/home/models/gamificationFlags.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -29,6 +31,7 @@ class _GamificationState extends State<Gamification> {
   Map<String,bool> _gamificationFlags = {};
   List<GamificationFlag> _gamificationValues = [];
   late TextTheme textTheme;
+  bool _allTasksDone = false;
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +51,9 @@ class _GamificationState extends State<Gamification> {
             _gamificationFlags = userEnreda.gamificationFlags ?? {};
             ///TO DO  / Ajustar al campo correcto del usuario que contenga el contador de recursos
             _points = userEnreda.points ?? 0;
-            _gamificationFlags.forEach((key, value) {
-              print(key);
-            });
+            if (!_gamificationFlags.containsValue(false)){
+              _allTasksDone = true;
+            }
             return StreamBuilder(
               stream: database.gamificationFlagsStream(),
               builder: (context, snapshot){
@@ -92,7 +95,11 @@ class _GamificationState extends State<Gamification> {
               _getStar('ORO'),
             ],
           ),
-          SpaceH40(),
+          SpaceH20(),
+
+          _allTasksDone ? _getCertificateButtonWeb() : Container(),
+
+          SpaceH20(),
 
           Wrap(
               children: [
@@ -123,47 +130,8 @@ class _GamificationState extends State<Gamification> {
           ),
           SpaceH12(),
           for(var item in _gamificationValues) _getStepTileMobile(item),
-          /*
-          _getStepTileMobile(UserEnreda.FLAG_SIGN_UP),
-          _getStepTileMobile(UserEnreda.FLAG_PILL_WHAT_IS_ENREDA),
-          _getStepTileMobile(UserEnreda.FLAG_PILL_TRAVEL_BEGINS),
-          _getStepTileMobile(UserEnreda.FLAG_PILL_COMPETENCIES),
-          _getStepTileMobile(UserEnreda.FLAG_PILL_CV_COMPETENCIES),
-          _getStepTileMobile(UserEnreda.FLAG_PILL_HOW_TO_DO_CV),
-          _getStepTileMobile(UserEnreda.FLAG_CHAT),
-          _getStepTileMobile(UserEnreda.FLAG_EVALUATE_COMPETENCY),
-          _getStepTileMobile(UserEnreda.FLAG_CV_FORMATION),
-          _getStepTileMobile(UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
-          _getStepTileMobile(UserEnreda.FLAG_CV_PERSONAL),
-          _getStepTileMobile(UserEnreda.FLAG_CV_PROFESSIONAL),
-          _getStepTileMobile(UserEnreda.FLAG_CV_ABOUT_ME),
-          _getStepTileMobile(UserEnreda.FLAG_CV_PHOTO),
-          _getStepTileMobile(UserEnreda.FLAG_CV_DATA_OF_INTEREST),
-          _getStepTileMobile(UserEnreda.FLAG_JOIN_RESOURCE),
-
-           */
-
-          /*
-          SpaceH40(),
-          Wrap(
-              children: [
-                _getStepTile(UserEnreda.FLAG_SIGN_UP),
-                _getStepTile(UserEnreda.FLAG_PILL_WHAT_IS_ENREDA),
-                _getStepTile(UserEnreda.FLAG_PILL_TRAVEL_BEGINS),
-                _getStepTile(UserEnreda.FLAG_PILL_COMPETENCIES),
-                _getStepTile(UserEnreda.FLAG_PILL_CV_COMPETENCIES),
-                _getStepTile(UserEnreda.FLAG_PILL_HOW_TO_DO_CV),
-                _getStepTile(UserEnreda.FLAG_CHAT),
-                _getStepTile(UserEnreda.FLAG_EVALUATE_COMPETENCY),
-                _getStepTile(UserEnreda.FLAG_CV_FORMATION),
-                _getStepTile(UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
-                _getStepTile(UserEnreda.FLAG_CV_PERSONAL),
-                _getStepTile(UserEnreda.FLAG_CV_PROFESSIONAL),
-                _getStepTile(UserEnreda.FLAG_CV_ABOUT_ME),
-                _getStepTile(UserEnreda.FLAG_CV_PHOTO),
-                _getStepTile(UserEnreda.FLAG_CV_DATA_OF_INTEREST),
-              ]
-          ),*/
+          SpaceH12(),
+          _allTasksDone ? _getCertificateButtonMobile() : Container(),
         ],
       ),
     );
@@ -500,6 +468,130 @@ class _GamificationState extends State<Gamification> {
           )
         ),
       ],
+    );
+  }
+
+  Widget _getCertificateButtonWeb(){
+    return Center(
+      child: Column(
+        children: [
+          _getCertificateImage(),
+          SpaceH24(),
+
+          EnredaButton(
+              buttonTitle: "Descárgatelo",
+              width: 150,
+              height: 35,
+              borderRadius:
+              BorderRadius.all(
+                Radius.circular(20),
+              ),
+              onPressed: (){
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => GamificationCertificate()
+                    )
+                );
+              }
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getCertificateButtonMobile(){
+    double width = MediaQuery.of(context).size.width;
+    return Center(
+      child: Container(
+        width: width*0.95,
+        height: 290,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: AppColors.yellowDark,
+              width: 3,
+            )
+        ),
+        alignment: Alignment.center,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            children: [
+              _getCertificateImage(),
+              SpaceH20(),
+
+              EnredaButton(
+                  buttonTitle: "Descárgatelo",
+                  width: width*0.85,
+                  height: 70,
+                  borderRadius:
+                  BorderRadius.all(
+                    Radius.circular(15),
+                  ),
+                  onPressed: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => GamificationCertificate()
+                        )
+                    );
+                  }
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _getCertificateImage(){
+    return Container(
+      height: 160,
+      width: 330,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: ExactAssetImage(ImagePath.WALL_STARS),
+          fit: BoxFit.cover,
+        )
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              '¡Felicidades!',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.greenDark,
+              ),
+            ),
+
+            Text(
+              '¡Has conseguido tu certificado!',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                color: AppColors.greenDark,
+              ),
+            ),
+
+            SpaceH12(),
+
+            Container(
+              height: 100,
+              width: 90,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: ExactAssetImage(ImagePath.CERTIFICATE_ICON),
+                  fit: BoxFit.cover,
+                )
+              ),
+            ),
+          ],
+        ),
+      )
     );
   }
 

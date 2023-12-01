@@ -1,3 +1,4 @@
+import 'package:enreda_app/app/anallytics/analytics.dart';
 import 'package:enreda_app/app/home/assistant/assistant_page_web.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
@@ -12,6 +13,7 @@ import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -29,14 +31,17 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ValueNotifier<bool> showChatNotifier = ValueNotifier<bool>(false);
 
+
   @override
   void dispose() {
     showChatNotifier.dispose();
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
+    sendBasicAnalyticsEvent(context, "enreda_app_visit_home_page");
     return StreamBuilder<User?>(
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {

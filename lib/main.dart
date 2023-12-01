@@ -10,6 +10,7 @@ import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,6 +35,7 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
+
   final _router = GoRouter(
     initialLocation: StringConst.PATH_HOME,
     urlPathStrategy: UrlPathStrategy.path,
@@ -91,12 +93,17 @@ class MyApp extends StatelessWidget {
     ),
   );
 
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         Provider<AuthBase>(create: (context) => Auth()),
         Provider<Database>(create: (_) => FirestoreDatabase()),
+        Provider<FirebaseAnalytics>.value(value: analytics),
+        Provider<FirebaseAnalyticsObserver>.value(value: observer),
       ],
       child: Layout(
         child: MaterialApp.router(

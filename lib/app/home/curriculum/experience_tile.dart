@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../anallytics/analytics.dart';
+
 class ExperienceTile extends StatelessWidget {
   const ExperienceTile({Key? key, required this.experience, this.onTap, required this.type})
       : super(key: key);
@@ -171,16 +173,17 @@ class ExperienceTile extends StatelessWidget {
                   defaultActionText: 'Eliminar',
                   cancelActionText: 'Cancelar',
                   onDefaultActionPressed: (dialogContext) {
-                database.deleteExperience(experience);
-                showCustomDialog(dialogContext,
-                    content: Text(
-                        'La ${experience.type == 'Formativa' ? 'formación' : 'experiencia'} ha sido eliminada de tu CV', style: textTheme.bodyText1,),
-                    defaultActionText: 'Ok',
-                    onDefaultActionPressed: (dialog2Context) {
-                  Navigator.of(dialog2Context).pop();
-                  Navigator.of(dialog2Context).pop();
+                    sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
+                    database.deleteExperience(experience);
+                    showCustomDialog(dialogContext,
+                        content: Text(
+                            'La ${experience.type == 'Formativa' ? 'formación' : 'experiencia'} ha sido eliminada de tu CV', style: textTheme.bodyText1,),
+                        defaultActionText: 'Ok',
+                        onDefaultActionPressed: (dialog2Context) {
+                      Navigator.of(dialog2Context).pop();
+                      Navigator.of(dialog2Context).pop();
+                    });
                 });
-              });
             },
           ),
           SpaceW8()

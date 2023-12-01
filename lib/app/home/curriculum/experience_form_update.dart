@@ -20,6 +20,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common_widgets/flex_row_column.dart';
+import '../../anallytics/analytics.dart';
 import '../models/activity.dart';
 
 class ExperienceFormUpdate extends StatefulWidget {
@@ -801,6 +802,8 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           otherProfessionActivityString: _otherText,
       );
 
+      sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
+
       await database.addExperience(experience);
       _updateCompetenciesPoints(_type);
       _updateCompetenciesPoints(_subtype);
@@ -840,6 +843,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           otherProfessionActivityString: _otherText,
       );
 
+      sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
       await database.updateExperience(experience);
       Navigator.of(context).pop();
       await showAlertDialog(context,

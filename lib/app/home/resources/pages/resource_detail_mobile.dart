@@ -27,6 +27,7 @@ import '../../../../common_widgets/show_exception_alert_dialog.dart';
 import '../../../../utils/adaptive.dart';
 import '../../../../utils/functions.dart';
 import '../../../../values/values.dart';
+import '../../../anallytics/analytics.dart';
 
 class ResourceDetailPageMobile extends StatefulWidget {
   const ResourceDetailPageMobile({Key? key, required this.resourceId})
@@ -76,7 +77,7 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
 
   Widget _buildContent() {
     final database = Provider.of<Database>(context, listen: false);
-
+    sendResourceAnalyticsEvent(context, "enreda_app_open_resource", resource.resourceTypeName!);
     return StreamBuilder<Resource>(
         stream: database.resourceStream(widget.resourceId),
         builder: (context, snapshotResource) {

@@ -20,6 +20,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
+import '../../anallytics/analytics.dart';
 import 'message_tile.dart';
 
 class AssistantPageMobile extends StatefulWidget {
@@ -67,7 +68,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-
+    sendBasicAnalyticsEvent(context, "enreda_app_open_chat");
     return StreamBuilder<User?>(
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
@@ -584,6 +585,8 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
       }
     });
 
+    sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
+
     await database.addExperience(Experience(
         userId: auth.currentUser!.uid,
         type: type,
@@ -600,6 +603,8 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
         workType: workType,
         context: experienceContext,
         contextPlace: experienceContextPlace));
+
+    sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
 
     //_resetQuestions();
     showCompetencies(context, userCompetencies: userCompetencies,

@@ -28,6 +28,7 @@ import '../../../../common_widgets/show_exception_alert_dialog.dart';
 import '../../../../utils/adaptive.dart';
 import '../../../../utils/functions.dart';
 import '../../../../values/values.dart';
+import '../../../anallytics/analytics.dart';
 
 class ResourceDetailPageWeb extends StatefulWidget {
   const ResourceDetailPageWeb({Key? key, required this.resourceId})
@@ -77,7 +78,7 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
 
   Widget _buildContent() {
     final database = Provider.of<Database>(context, listen: false);
-
+    sendResourceAnalyticsEvent(context, "enreda_app_open_resource", resource.resourceTypeName!);
     return StreamBuilder<Resource>(
         stream: database.resourceStream(widget.resourceId),
         builder: (context, snapshotResource) {
@@ -324,99 +325,11 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
               ),
             ),
 
-            // Column(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     SpaceH30(),
-            //     Text(
-            //       StringConst.RESOURCE_TYPE.toUpperCase(),
-            //       style: textTheme.bodyText1?.copyWith(
-            //           color: Constants.penBlue, fontWeight: FontWeight.bold),
-            //     ),
-            //     SpaceH8(),
-            //     Text('${resource.resourceTypeName}', style: textTheme.bodyText1,),
-            //     SpaceH30(),
-            //     Text(
-            //       StringConst.LOCATION.toUpperCase(),
-            //       style: textTheme.bodyText1?.copyWith(
-            //           color: Constants.penBlue, fontWeight: FontWeight.bold),
-            //     ),
-            //     SpaceH8(),
-            //     Text(_getLocationText(resource), style: textTheme.bodyText1,),
-            //     SpaceH30(),
-            //     Text(
-            //       StringConst.CAPACITY.toUpperCase(),
-            //       style: textTheme.bodyText1?.copyWith(
-            //           color: Constants.penBlue, fontWeight: FontWeight.bold),
-            //     ),
-            //     SpaceH8(),
-            //     Text('${resource.capacity}', style: textTheme.bodyText1,),
-            //     SpaceH30(),
-            //     Text(
-            //       StringConst.DATE.toUpperCase(),
-            //       style: textTheme.bodyText1?.copyWith(
-            //           color: Constants.penBlue, fontWeight: FontWeight.bold),
-            //     ),
-            //     SpaceH8(),
-            //     DateFormat('dd/MM/yyyy').format(resource.start) ==
-            //             '31/12/2050'
-            //         ? Text(
-            //             StringConst.ALWAYS_AVAILABLE,
-            //             textAlign: TextAlign.center,
-            //       style: textTheme.bodyText1,
-            //           )
-            //         : Text(
-            //             '${DateFormat('dd/MM/yyyy').format(resource.start)} - ${DateFormat('dd/MM/yyyy').format(resource.end)}',
-            //             textAlign: TextAlign.center,
-            //       style: textTheme.bodyText1,
-            //           ),
-            //     SpaceH30(),
-            //     Text(
-            //       StringConst.CONTRACT_TYPE.toUpperCase(),
-            //       style: textTheme.bodyText1?.copyWith(
-            //           color: Constants.penBlue, fontWeight: FontWeight.bold),
-            //     ),
-            //     SpaceH8(),
-            //     Text(
-            //       resource.contractType == null ||
-            //               resource.contractType!.isEmpty
-            //           ? 'Sin especificar'
-            //           : resource.contractType!,
-            //       textAlign: TextAlign.center,
-            //       style: textTheme.bodyText1,
-            //     ),
-            //     SpaceH30(),
-            //     Text(
-            //       StringConst.SALARY.toUpperCase(),
-            //       style: textTheme.bodyText1?.copyWith(
-            //           color: Constants.penBlue, fontWeight: FontWeight.bold),
-            //     ),
-            //     SpaceH8(),
-            //     Text(
-            //       resource.salary == null || resource.salary!.isEmpty
-            //           ? 'Sin especificar'
-            //           : resource.salary!,
-            //       textAlign: TextAlign.center,
-            //       style: textTheme.bodyText1,
-            //     ),
-            //     SpaceH30(),
-            //   ],
-            // ),
           ),
           flex: 4,
         ),
       ],
     );
-    /*
-            if (resource.organizerName != null)
-              Center(
-                child: Text(
-                  'Recomienda: ${resource.organizerName}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 15, color: Constants.textPrimary),
-                ),
-              ),
-              */
   }
 
   Widget _buildActionButtons() {

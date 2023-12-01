@@ -78,7 +78,6 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
 
   Widget _buildContent() {
     final database = Provider.of<Database>(context, listen: false);
-    sendResourceAnalyticsEvent(context, "enreda_app_open_resource", resource.resourceTypeName!);
     return StreamBuilder<Resource>(
         stream: database.resourceStream(widget.resourceId),
         builder: (context, snapshotResource) {
@@ -87,6 +86,7 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
             resource = snapshotResource.data!;
             resource.setResourceTypeName();
             resource.setResourceCategoryName();
+            sendResourceAnalyticsEvent(context, "enreda_app_open_resource", resource.resourceTypeName!);
             return StreamBuilder(
                 stream: resource.organizerType == 'Organización'
                     ? database.organizationStream(resource.organizer)

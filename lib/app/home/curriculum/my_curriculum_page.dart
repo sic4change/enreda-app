@@ -32,6 +32,7 @@ import '../../../common_widgets/custom_text.dart';
 import '../../../common_widgets/precached_avatar.dart';
 import '../../../utils/my_scroll_behaviour.dart';
 import '../../../values/values.dart';
+import '../../anallytics/analytics.dart';
 
 class MyCurriculumPage extends StatelessWidget {
   UserEnreda? user;
@@ -1662,16 +1663,19 @@ class MyCurriculumPage extends StatelessWidget {
             final index = myReferences?.indexWhere((element) => element.certifierName == certificationRequest.certifierName);
             if (index! >= 0) myReferences?[index].certifierName = (controllerName.text);
             database.setCertificationRequest(myReferences![index]);
+            sendBasicAnalyticsEvent(context, "enreda_app_set_certification_request");
           }
           if (certificationRequest.certifierPosition.isNotEmpty) {
             final index = myReferences?.indexWhere((element) => element.certifierPosition == certificationRequest.certifierPosition);
             if (index! >= 0) myReferences?[index].certifierPosition = (controllerPosition.text);
             database.setCertificationRequest(myReferences![index]);
+            sendBasicAnalyticsEvent(context, "enreda_app_set_certification_request");
           }
           if (certificationRequest.certifierCompany.isNotEmpty) {
             final index = myReferences?.indexWhere((element) => element.certifierCompany == certificationRequest.certifierCompany);
             if (index! >= 0) myReferences?[index].certifierCompany = (controllerCompany.text);
             database.setCertificationRequest(myReferences![index]);
+            sendBasicAnalyticsEvent(context, "enreda_app_set_certification_request");
           }
           Navigator.of(context).pop();
         });

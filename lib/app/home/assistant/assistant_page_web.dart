@@ -19,6 +19,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
+import '../../anallytics/analytics.dart';
 import 'message_tile.dart';
 
 class AssistantPageWeb extends StatefulWidget {
@@ -73,7 +74,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-
+    sendBasicAnalyticsEvent(context, "enreda_app_open_chat");
     return StreamBuilder<User?>(
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
@@ -717,6 +718,8 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
         }
       }
     });
+
+    sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
 
     await database.addExperience(Experience(
         userId: auth.currentUser!.uid,

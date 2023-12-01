@@ -20,6 +20,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common_widgets/flex_row_column.dart';
+import '../../anallytics/analytics.dart';
 import '../../sign_up/validating_form_controls/stream_builder_education.dart';
 import '../models/activity.dart';
 
@@ -345,6 +346,7 @@ class _FormationFormState extends State<FormationForm> {
 
       );
 
+      sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
       await database.addExperience(experience);
       //_updateCompetenciesPoints(_type);
       //_updateCompetenciesPoints(_subtype);
@@ -386,6 +388,7 @@ class _FormationFormState extends State<FormationForm> {
           extraData: _extraDataController.text,
       );
 
+      sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
       await database.updateExperience(experience);
       Navigator.of(context).pop();
       await showAlertDialog(context,

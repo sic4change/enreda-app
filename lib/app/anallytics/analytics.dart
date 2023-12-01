@@ -13,3 +13,14 @@ Future<void> sendBasicAnalyticsEvent(BuildContext context, String analytic) asyn
       }
   ).whenComplete(() => print('logEvent $analytic'));
 }
+
+Future<void> sendResourceAnalyticsEvent(BuildContext context, String analytic, String type) async {
+  FirebaseAnalytics analytics = Provider.of<FirebaseAnalytics>(context);
+  await analytics.logEvent(
+      name: analytic,
+      parameters: {
+        analytic: 'ok',
+        type: type
+      }
+  ).whenComplete(() => print('logEvent $analytic'));
+}

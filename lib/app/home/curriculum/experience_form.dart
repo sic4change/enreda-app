@@ -19,7 +19,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common_widgets/flex_row_column.dart';
-import '../../anallytics/analytics.dart';
 import '../models/activity.dart';
 
 // TODO: ¿Esta clase no se está usando?
@@ -700,8 +699,6 @@ class _ExperienceFormState extends State<ExperienceForm> {
           otherProfessionActivityString: _otherText,
       );
 
-      sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
-
       await database.addExperience(experience);
       _updateCompetenciesPoints(_type);
       _updateCompetenciesPoints(_subtype);
@@ -741,7 +738,6 @@ class _ExperienceFormState extends State<ExperienceForm> {
           otherProfessionActivityString: _otherText,
       );
 
-      sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
       await database.updateExperience(experience);
       Navigator.of(context).pop();
       await showAlertDialog(context,

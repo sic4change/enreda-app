@@ -18,7 +18,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../utils/adaptive.dart';
 import '../../../utils/functions.dart';
 import '../../../values/values.dart';
-import '../../anallytics/analytics.dart';
 
 Future<void> addUserToLike(
     {required BuildContext context,
@@ -49,7 +48,6 @@ Future<void> addUserToResource(
   showToast(context,
       title: 'Se ha apuntado satisfactoriamente al recurso',
       color: Constants.chatDarkBlue);
-  sendResourceAnalyticsEvent(context, "enreda_app_subscribe_resource", resource.resourceTypeName!);
 }
 
 Future<void> removeUserToResource(

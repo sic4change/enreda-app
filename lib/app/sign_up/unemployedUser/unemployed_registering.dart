@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:enreda_app/app/anallytics/analytics.dart';
 import 'package:enreda_app/app/home/models/ability.dart';
 import 'package:enreda_app/app/home/models/addressUser.dart';
 import 'package:enreda_app/app/home/models/city.dart';
@@ -41,7 +40,6 @@ import 'package:enreda_app/common_widgets/text_form_field.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -934,7 +932,6 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
 
   @override
   Widget build(BuildContext context) {
-    sendBasicAnalyticsEvent(context, "enreda_app_visit_sign_in_page");
     final isLastStep = currentStep == getSteps().length-1;
     double screenWidth = widthOfScreen(context);
     double screenHeight = heightOfScreen(context);

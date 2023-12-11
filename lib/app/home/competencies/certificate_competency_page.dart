@@ -20,7 +20,6 @@ import '../../../common_widgets/flex_row_column.dart';
 import '../../../common_widgets/show_alert_dialog.dart';
 import '../../../common_widgets/show_exception_alert_dialog.dart';
 import '../../../common_widgets/text_form_field.dart';
-import '../../anallytics/analytics.dart';
 import '../models/userEnreda.dart';
 
 class CompetencyDetailPage extends StatefulWidget {
@@ -319,7 +318,6 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
         final database = Provider.of<Database>(context, listen: false);
         setState(() => isLoading = true);
         await database.addCertificationRequest(certificateCompetency);
-        sendBasicAnalyticsEvent(context, "enreda_app_send_certification_request");
         widget.user.competencies[widget.competency.id!] = StringConst.BADGE_PROCESSING;
         database.setUserEnreda(widget.user);
         setState(() => isLoading = false);

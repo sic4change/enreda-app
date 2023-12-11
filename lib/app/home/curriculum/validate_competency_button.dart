@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:enreda_app/app/home/models/competency.dart';
+import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -11,11 +12,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ValidateCompetencyButton extends StatelessWidget {
-  const ValidateCompetencyButton({Key? key, required this.competency, required this.database, required this.auth}) : super(key: key);
+  const ValidateCompetencyButton({
+    Key? key,
+    required this.competency,
+    required this.database,
+    required this.auth,
+    required this.onComingBack,
+  }) : super(key: key);
 
   final Competency competency;
   final Database database;
   final AuthBase auth;
+  final VoidCallback onComingBack;
 
   @override
   Widget build(BuildContext context) {
@@ -145,13 +153,11 @@ class ValidateCompetencyButton extends StatelessWidget {
                     ],
                   ),
                   defaultActionText: 'Ok',
-                  onDefaultActionPressed: (con) =>
-                      Navigator.of(con).pop(true));
-              database
-                  .userStream(
-                  auth.currentUser!.email)
-                  .first
-                  .then((users) {
+                  onDefaultActionPressed: (con) async {
+                    Navigator.of(con).pop(true);
+                    onComingBack();
+                  });
+              database.userStream(auth.currentUser!.email).first.then((users) {
                 final userEnreda = users[0];
                 userEnreda.competencies[
                 competency.id!] =

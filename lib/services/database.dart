@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enreda_app/app/home/models/ability.dart';
 import 'package:enreda_app/app/home/models/certificate.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
@@ -12,7 +11,6 @@ import 'package:enreda_app/app/home/models/dedication.dart';
 import 'package:enreda_app/app/home/models/education.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/filterResource.dart';
-import 'package:enreda_app/app/home/models/filterTrainingPills.dart';
 import 'package:enreda_app/app/home/models/gender.dart';
 import 'package:enreda_app/app/home/models/interest.dart';
 import 'package:enreda_app/app/home/models/mentorUser.dart';
@@ -40,6 +38,7 @@ import '../app/home/models/certificationRequest.dart';
 import '../app/home/models/resourcePicture.dart';
 import '../app/home/models/activity.dart';
 import '../app/home/models/question.dart';
+import '../app/home/models/gamificationFlags.dart';
 import 'package:async/async.dart' show StreamGroup;
 
 abstract class Database {
@@ -95,8 +94,8 @@ abstract class Database {
   Stream<List<CertificationRequest>> myCertificationRequestStream(String userId);
   Stream<List<ResourceCategory>> getCategoriesResources();
   Stream<List<TrainingPill>> trainingPillStream();
-  Stream<List<TrainingPill>> filteredTrainingPillStream(FilterTrainingPill filter);
   Stream<TrainingPill> trainingPillStreamById(String id);
+  Stream<List<GamificationFlag>> gamificationFlagsStream();
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> addUserEnreda(UserEnreda userEnreda);
@@ -410,42 +409,6 @@ class FirestoreDatabase implements Database {
   }
 
   @override
-  Stream<List<TrainingPill>> filteredTrainingPillStream(FilterTrainingPill filter) {
-    return _service.filteredCollectionStream(
-      path: APIPath.trainingPills(),
-      queryBuilder: (query) {
-        query = query.where('id', isNotEqualTo: null);
-        return query;
-      },
-      builder: (data, documentId) {
-        final searchTextChallenge = removeDiacritics((data['searchText'] ?? '').toLowerCase());
-        final searchListSolution = searchTextChallenge.split(';');
-        final searchTextFilter = removeDiacritics(filter.searchText.toLowerCase());
-        final searchListFilter = searchTextFilter.split(' ');
-
-        if (filter.searchText == '')
-          return TrainingPill.fromMap(data, documentId);
-
-        // The following code checks if an idea is selected by applying filters
-        bool textFilterSelection = false; // Initialize textFilter result to false
-
-        // If search text exists in filter, filter through the search list
-        if (filter.searchText != '') {
-          searchListFilter.forEach((filterElement) {
-            // For each element in searchListFilter, check against each element in searchListIdea
-            if (searchListSolution.any(
-                    (resourceElement) => resourceElement.contains(filterElement))) {
-              textFilterSelection = textFilterSelection || true; // Set ideaSelected false if a match isn't found
-            }
-          });
-        }
-        return textFilterSelection ? TrainingPill.fromMap(data, documentId) : null;
-      },
-      sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
-    );
-  }
-
-  @override
   Stream<TrainingPill> trainingPillStreamById(String id) =>
       _service.documentStream<TrainingPill>(
         path: APIPath.trainingPill(id),
@@ -728,8 +691,7 @@ class FirestoreDatabase implements Database {
         queryBuilder: (query) =>
             query.where('userId', isEqualTo: userId),
         builder: (data, documentId) => Experience.fromMap(data, documentId),
-        sort: (lhs, rhs) => (rhs.startDate?? Timestamp.fromMicrosecondsSinceEpoch(0))
-            .compareTo(lhs.startDate?? Timestamp.fromMicrosecondsSinceEpoch(0)),
+        sort: (lhs, rhs) => rhs.startDate.compareTo(lhs.startDate),
       );
 
   @override
@@ -799,6 +761,14 @@ class FirestoreDatabase implements Database {
       queryBuilder: (query) => query.where('id', isEqualTo: activityId),
     );
   }
+
+  @override
+  Stream<List<GamificationFlag>> gamificationFlagsStream() => _service.collectionStream(
+    path: APIPath.gamificationFlags(),
+    queryBuilder: (query) => query.where('id', isNotEqualTo: null),
+    builder: (data, documentId) => GamificationFlag.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+  );
 
 }
 

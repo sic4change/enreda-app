@@ -92,11 +92,7 @@ class ImagePath {
   static const String LOGOUT = '$imageDir/icon-logout.png';
   static const String ICON_SHARE = '$imageDir/icon-share.png';
   static const String ICON_CLICK_FUNDAULA = '$imageDir/icon-click-fundaula.png';
-<<<<<<< HEAD
   static const String ICON_GAMIFICATION = '$imageDir/icon-gami.png';
-=======
-  static const String ICON_INFO = '$imageDir/info_icon.png';
->>>>>>> develop
 
   //Resources Categories
   static const String BACKGROUND_1 = '$imageDir/background-empleo-2X.png';

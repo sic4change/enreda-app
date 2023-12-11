@@ -242,14 +242,13 @@ Future<Uint8List> generateResume2(
                             title: experience.activityRole != null &&
                                 experience.activity != null
                                 ? '${experience.activityRole} - ${experience.activity}'
-                                : (experience.position == null || experience.position == "")
+                                : experience.position == ""
                                 ? experience.activity
-                                : (experience.organization == null || experience.organization == "")
+                                : experience.organization == ""
                                 ? experience.position
                                 : '${experience.position} - ${experience.organization}',
                             showDescriptionDate: idSelectedDateExperience!.contains(experience.id),
-                            descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : 'Desconocida'} / '
-                                '${experience.subtype == 'Responsabilidades familiares'? 'Desconocida': experience.endDate != null
+                            descriptionDate:'${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null
                                 ? formatter.format(experience.endDate!.toDate())
                                 : 'Actualmente'}',
                             descriptionPlace: '${experience.location}',
@@ -262,14 +261,13 @@ Future<Uint8List> generateResume2(
                             title: experience.activityRole != null &&
                                 experience.activity != null
                                 ? '${experience.activityRole} - ${experience.activity}'
-                                : (experience.position == null || experience.position == "")
+                                : experience.position == ""
                                 ? experience.activity
-                                : (experience.organization == null || experience.organization == "")
+                                : experience.organization == ""
                                 ? experience.position
                                 : '${experience.position} - ${experience.organization}',
                             showDescriptionDate: idSelectedDatePersonalExperience!.contains(experience.id),
-                            descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : 'Desconocida'} / '
-                                '${experience.subtype == 'Responsabilidades familiares'? 'Desconocida':experience.endDate != null
+                            descriptionDate:'${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null
                                 ? formatter.format(experience.endDate!.toDate())
                                 : 'Actualmente'}',
                             descriptionPlace: '${experience.location}',
@@ -283,8 +281,7 @@ Future<Uint8List> generateResume2(
                                 ? education.nameFormation
                                 : education.activity,
                             showDescriptionDate: idSelectedDateEducation!.contains(education.id),
-                            descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} / '
-                                '${education.subtype == 'Responsabilidades familiares'? 'Desconocida':education.endDate != null
+                            descriptionDate:'${formatter.format(education.startDate.toDate())} / ${education.endDate != null
                                 ? formatter.format(education.endDate!.toDate())
                                 : 'Actualmente'}',
                             descriptionPlace: '${education.location}',
@@ -298,8 +295,7 @@ Future<Uint8List> generateResume2(
                                 ? education.nameFormation
                                 : education.activity,
                             showDescriptionDate: idSelectedDateSecondaryEducation!.contains(education.id),
-                            descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} / '
-                                '${education.subtype == 'Responsabilidades familiares'? 'Desconocida':education.endDate != null
+                            descriptionDate:'${formatter.format(education.startDate.toDate())} / ${education.endDate != null
                                 ? formatter.format(education.endDate!.toDate())
                                 : 'Actualmente'}',
                             descriptionPlace: '${education.location}',

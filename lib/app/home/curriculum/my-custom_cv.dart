@@ -1055,10 +1055,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                   Row(
                                     children: [
                                       Text(
-                                        '${widget.myEducation![index].startDate != null
-                                            ? formatter.format(widget.myEducation![index].startDate!.toDate())
-                                            : 'Desconocida'} / ${widget.myEducation![index].subtype == 'Responsabilidades familiares'? 'Desconocida'
-                                            : widget.myEducation![index].endDate != null
+                                        '${formatter.format(widget.myEducation![index].startDate.toDate())} / ${widget.myEducation![index].endDate != null
                                             ? formatter.format(widget.myEducation![index].endDate!.toDate())
                                             : 'Actualmente'}',
                                         style: textTheme.bodyText1?.copyWith(
@@ -1217,10 +1214,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               Row(
                                 children: [
                                   Text(
-                                    '${widget.mySecondaryEducation![index].startDate != null
-                                        ? formatter.format(widget.mySecondaryEducation![index].startDate!.toDate())
-                                        : 'Desconocida'} / ${widget.mySecondaryEducation![index].subtype == 'Responsabilidades familiares'? 'Desconocida'
-                                        : widget.mySecondaryEducation![index].endDate != null
+                                    '${formatter.format(widget.mySecondaryEducation![index].startDate.toDate())} / ${widget.mySecondaryEducation![index].endDate != null
                                         ? formatter.format(widget.mySecondaryEducation![index].endDate!.toDate())
                                         : 'Actualmente'}',
                                     style: textTheme.bodyText1?.copyWith(
@@ -1373,10 +1367,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                 Row(
                                   children: [
                                     Text(
-                                      '${widget.myExperiences![index].startDate != null
-                                          ? formatter.format(widget.myExperiences![index].startDate!.toDate())
-                                          : 'Desconocida'} / ${widget.myExperiences![index].subtype == 'Responsabilidades familiares'? 'Desconocida'
-                                          : widget.myExperiences![index].endDate != null
+                                      '${formatter.format(widget.myExperiences![index].startDate.toDate())} / ${widget.myExperiences![index].endDate != null
                                           ? formatter.format(widget.myExperiences![index].endDate!.toDate())
                                           : 'Actualmente'}',
                                       style: textTheme.bodyText1?.copyWith(
@@ -1529,10 +1520,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               Row(
                                 children: [
                                   Text(
-                                    '${widget.myPersonalExperiences![index].startDate != null
-                                        ? formatter.format(widget.myPersonalExperiences![index].startDate!.toDate())
-                                        : 'Desconocida'} / ${widget.myPersonalExperiences![index].subtype == 'Responsabilidades familiares'? 'Desconocida'
-                                        : widget.myPersonalExperiences![index].endDate != null
+                                    '${formatter.format(widget.myPersonalExperiences![index].startDate.toDate())} / ${widget.myPersonalExperiences![index].endDate != null
                                         ? formatter.format(widget.myPersonalExperiences![index].endDate!.toDate())
                                         : 'Actualmente'}',
                                     style: textTheme.bodyText1?.copyWith(

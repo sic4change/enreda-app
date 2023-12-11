@@ -14,7 +14,6 @@ import '../../../common_widgets/show_exception_alert_dialog.dart';
 import '../../../utils/adaptive.dart';
 import '../../../utils/responsive.dart';
 import '../../../values/values.dart';
-import '../../anallytics/analytics.dart';
 import '../models/certificationRequest.dart';
 
 enum Option { option1, option2 }
@@ -332,7 +331,6 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                     bool referenced = _selectedApprove == 0 ? true : false;
                     setState(() => isLoading = true);
                     await database.updateCertificationRequest(certificationRequest, certified, referenced);
-                    sendBasicAnalyticsEvent(context, "enreda_app_confirm_certification_request");
                     setState(() {
                       isLoading = false;
                       _buttonColor = AppColors.grey350;

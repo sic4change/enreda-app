@@ -27,7 +27,6 @@ import '../../../../common_widgets/show_exception_alert_dialog.dart';
 import '../../../../utils/adaptive.dart';
 import '../../../../utils/functions.dart';
 import '../../../../values/values.dart';
-import '../../../anallytics/analytics.dart';
 
 class ResourceDetailPageMobile extends StatefulWidget {
   const ResourceDetailPageMobile({Key? key, required this.resourceId})
@@ -77,6 +76,7 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
 
   Widget _buildContent() {
     final database = Provider.of<Database>(context, listen: false);
+
     return StreamBuilder<Resource>(
         stream: database.resourceStream(widget.resourceId),
         builder: (context, snapshotResource) {
@@ -85,7 +85,6 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
             resource = snapshotResource.data!;
             resource.setResourceTypeName();
             resource.setResourceCategoryName();
-            sendResourceAnalyticsEvent(context, "enreda_app_open_resource", resource.resourceTypeName!);
             return StreamBuilder(
                 stream: resource.organizerType == 'Organización'
                     ? database.organizationStream(resource.organizer)
@@ -358,21 +357,22 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextButton(
-          onPressed: () =>
-          auth.currentUser == null
-              ? showAlertNullUser(context)
-              : resource.participants.contains(userId)
-                  ? removeUserToResource(
-                      context: context, userId: userId, resource: resource)
-                  : resource.link == null &&
-                          resource.contactEmail == null &&
-                          resource.contactPhone == null
-                      ? addUserToResource(
-                          context: context, userId: userId, resource: resource)
-                      : resource.link != null
-                          ? launchURL(resource.link!)
-                          : showContactDialog(
-                              context: context, resource: resource),
+          onPressed: () {
+            if (auth.currentUser == null) {
+              showAlertNullUser(context);
+            } else if (resource.participants.contains(userId)) {
+              removeUserToResource(context: context, userId: userId, resource: resource);
+            } else if ((resource.link == null || resource.link!.isEmpty) &&
+                (resource.contactEmail == null || resource.contactEmail!.isEmpty) &&
+                (resource.contactPhone == null || resource.contactPhone!.isEmpty)) {
+              addUserToResource(context: context, userId: userId, resource: resource);
+              setGamificationFlag(context: context, flagName: UserEnreda.FLAG_JOIN_RESOURCE);
+            } else if (resource.link != null) {
+              launchURL(resource.link!);
+            } else {
+              showContactDialog(context: context, resource: resource);
+            }
+          },
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Text(

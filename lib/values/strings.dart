@@ -41,7 +41,7 @@ class StringConst {
   static const String SEARCH = "Busca por área";
   static const String SEARCH_SUBTITLE = "EnREDa te conecta con recursos educativos, actividades, empresas y pleabilidad y construir tu camino vital. Porque las oportunidades no se compran, se crean.";
   static const String PILLS_TITLE = "Píldoras formativas";
-  static const String PILLS_SUBTITLE = "EnREDa te conecta con recursos educativos, actividades, empresas y empleabilidad.";
+  static const String PILLS_SUBTITLE = "¡Hemos recopilado todo este contenido para ti!";
   static const String FUNDAULA_BUTTON = "Accede a la formación online que te acerca al mundo digital y al empleo desde enREDa";
 
   //Header Section
@@ -283,8 +283,8 @@ class StringConst {
   static const String NOT_ALLOWED = '¿Te gusta este recurso?';
   static const String REGISTER = 'Registrarse';
   static String RESOURCE_LINK(String resourceId) => 'https://enredawebapp.web.app/resources/$resourceId';
-  static String TRAINING_PILL_LINK(String trainingPillId) => 'https://enredawebapp.web.app/pills/$trainingPillId';
-  //static String TRAINING_PILL_LINK(String trainingPillId) => 'https://test-enreda.web.app/pills/$trainingPillId';
+  //static String TRAINING_PILL_LINK(String trainingPillId) => 'https://enredawebapp.web.app/pills/$trainingPillId';
+  static String TRAINING_PILL_LINK(String trainingPillId) => 'https://test-enreda.web.app/pills/$trainingPillId';
 
 
   //Resource modalities
@@ -461,8 +461,13 @@ class StringConst {
   static const String ABOUT_ME = "Un poco más sobre mí...";
   static const String PROFILE = "Carrera";
   static const String EDUCATIONAL_LEVEL = "Nivel educativo";
-  static const String TRAINING_PILL_CV = '¿No sabes por dónde empezar tu CV?';
 
   static const String LOREM_IMPSUM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque, tortor amet, adipiscing felis nullam. Aliquet commodo est pretium vitae hendrerit fames vitae. Orci, feugiat consectetur aliquet sodales mus sodales a urna.\n\n'
       'Rhoncus id volutpat, diam adipiscing risus, enim cursus ac. Amet nunc nec eu diam. Tincidunt at vulputate arcu dis justo. Ut egestas ac rhoncus, sapien.';
+  static const String GAMIFICATION_PHASE_COMPLETED = "¡Enhorabuena! ¡Has completado una Fase de la Gamificación!";
+
+  //Gamification
+  static const String BRONZE_STAR = 'Medalla de bronce';
+  static const String SILVER_STAR = 'Medalla de plata';
+  static const String GOLD_STAR = 'Medalla de oro';
 }

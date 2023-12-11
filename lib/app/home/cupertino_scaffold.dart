@@ -2,9 +2,9 @@ import 'package:enreda_app/app/home/account/account_page.dart';
 import 'package:enreda_app/app/home/assistant/assistant_page_mobile.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/tab_item.dart';
-import 'package:enreda_app/app/home/trainingPills/training_list_tile_mobile.dart';
 import 'package:enreda_app/common_widgets/background_mobile.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'resources/pages/resources_page.dart';
@@ -50,7 +50,13 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
       TabItem.chat: (_) => Stack(
             children: [
               BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
-              AssistantPageMobile(),
+              AssistantPageMobile(
+                onFinish: (gamificationFlagName) {
+                  if (gamificationFlagName.isNotEmpty){
+                    setGamificationFlag(context: context, flagName: gamificationFlagName);
+                  }
+                },
+              ),
             ],
           ),
       TabItem.account: (_) => Stack(
@@ -72,7 +78,7 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
               _buildItem(TabItem.chat),
               _buildItem(TabItem.account),
             ],
-            height: TrainingPillsListTileMobile.isFullScreen.value == true ? 0 : 70,
+            height: 70,
             onTap: (index) {
               CupertinoScaffold.controller.index = index;
               if(index == 0){

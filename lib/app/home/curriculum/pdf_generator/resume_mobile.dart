@@ -122,13 +122,12 @@ Future<Uint8List> generateResume(
                       title: experience.activityRole != null &&
                           experience.activity != null
                           ? '${experience.activityRole} - ${experience.activity}'
-                          : (experience.position == null || experience.position == "")
+                          : experience.position == ""
                           ? experience.activity
-                          : (experience.organization == null || experience.organization == "")
+                          : experience.organization == ""
                           ? experience.position
                           : '${experience.position} - ${experience.organization}',
-                      description:'${experience.location}, ${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : 'Desconocida'} - '
-                          '${experience.subtype == 'Responsabilidades familiares'? 'Desconocida': experience.endDate != null
+                      description:'${experience.location}, ${formatter.format(experience.startDate.toDate())} - ${experience.endDate != null
                           ? formatter.format(experience.endDate!.toDate())
                           : 'Actualmente'}',
                     ),
@@ -139,8 +138,7 @@ Future<Uint8List> generateResume(
                       title: education.activityRole == null
                           ? education.activity
                           : '${education.activityRole} - ${education.activity}',
-                      description:'${education.location}, ${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} - '
-                          '${education.subtype == 'Responsabilidades familiares'? 'Desconocida':education.endDate != null
+                      description:'${education.location}, ${formatter.format(education.startDate.toDate())} - ${education.endDate != null
                           ? formatter.format(education.endDate!.toDate())
                           : 'Actualmente'}',
                     ),

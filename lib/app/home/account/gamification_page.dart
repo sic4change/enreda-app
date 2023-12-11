@@ -49,8 +49,7 @@ class _GamificationState extends State<Gamification> {
             _firstName = userEnreda.firstName ?? '';
             _lastName = userEnreda.lastName ?? '';
             _gamificationFlags = userEnreda.gamificationFlags ?? {};
-            ///TO DO  / Ajustar al campo correcto del usuario que contenga el contador de recursos
-            _points = userEnreda.points ?? 0;
+            _points = userEnreda.resourcesAccessCount ?? 0;
             if (!_gamificationFlags.containsValue(false)){
               _allTasksDone = true;
             }

@@ -24,7 +24,6 @@ class Gamification extends StatefulWidget {
 }
 
 class _GamificationState extends State<Gamification> {
-  String _userId = '';
   String _firstName = '';
   String _lastName = '';
   int _points = 10;
@@ -32,6 +31,7 @@ class _GamificationState extends State<Gamification> {
   List<GamificationFlag> _gamificationValues = [];
   late TextTheme textTheme;
   bool _allTasksDone = false;
+  String userFullName = '';
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +45,9 @@ class _GamificationState extends State<Gamification> {
           if (!snapshot.hasData) return Container();
           if(snapshot.hasData){
             final userEnreda = snapshot.data![0];
-            _userId = userEnreda.userId ?? '';
             _firstName = userEnreda.firstName ?? '';
             _lastName = userEnreda.lastName ?? '';
+            userFullName = _firstName + ' ' + _lastName;
             _gamificationFlags = userEnreda.gamificationFlags ?? {};
             _points = userEnreda.resourcesAccessCount ?? 0;
             return StreamBuilder(
@@ -98,7 +98,7 @@ class _GamificationState extends State<Gamification> {
           ),
           SpaceH20(),
 
-          _allTasksDone ? _getCertificateButtonWeb() : Container(),
+          _allTasksDone ? _getCertificateButtonWeb(userFullName) : Container(),
 
           SpaceH20(),
 
@@ -132,7 +132,7 @@ class _GamificationState extends State<Gamification> {
           SpaceH12(),
           for(var item in _gamificationValues) _getStepTileMobile(item),
           SpaceH12(),
-          _allTasksDone ? _getCertificateButtonMobile() : Container(),
+          _allTasksDone ? _getCertificateButtonMobile(userFullName) : Container(),
         ],
       ),
     );
@@ -477,7 +477,7 @@ class _GamificationState extends State<Gamification> {
     );
   }
 
-  Widget _getCertificateButtonWeb(){
+  Widget _getCertificateButtonWeb(String userFullName){
     return Center(
       child: Column(
         children: [
@@ -496,7 +496,7 @@ class _GamificationState extends State<Gamification> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => GamificationCertificate()
+                        builder: (context) => GamificationCertificate(name: userFullName,)
                     )
                 );
               }
@@ -506,7 +506,7 @@ class _GamificationState extends State<Gamification> {
     );
   }
 
-  Widget _getCertificateButtonMobile(){
+  Widget _getCertificateButtonMobile(String userFullName){
     double width = MediaQuery.of(context).size.width;
     return Center(
       child: Container(
@@ -539,7 +539,7 @@ class _GamificationState extends State<Gamification> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => GamificationCertificate()
+                            builder: (context) => GamificationCertificate(name: userFullName)
                         )
                     );
                   }

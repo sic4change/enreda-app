@@ -10,7 +10,9 @@ import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 
 class GamificationCertificate extends StatefulWidget {
-  const GamificationCertificate({super.key});
+  const GamificationCertificate({super.key, required this.name});
+
+  final String name;
 
   @override
   State<GamificationCertificate> createState() => _GamificationCertificateState();
@@ -128,7 +130,7 @@ class _GamificationCertificateState extends State<GamificationCertificate> {
             ),
             pw.Text(
               ///TO DO
-              'Juan Lucena',
+              widget.name,
               textAlign: pw.TextAlign.center,
               style: pw.TextStyle(
                 fontWeight: pw.FontWeight.bold,

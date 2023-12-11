@@ -172,6 +172,9 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
               padding: EdgeInsets.zero,
               onPressed: () {
                 switch (widget.trainingPill.order){
+                  case 1:
+                    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_WHAT_IS_ENREDA);
+                    break;
                   case 2:
                     setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_TRAVEL_BEGINS);
                     break;

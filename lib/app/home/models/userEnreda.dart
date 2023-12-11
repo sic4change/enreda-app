@@ -33,7 +33,6 @@ class UserEnreda {
     this.languages = const [], // Deprecated
     this.languagesLevels = const [],
     this.aboutMe,
-    this.points,
     this.resourcesAccessCount,
     this.checkAgreeCV,
     this.gamificationFlags = const {},
@@ -149,7 +148,6 @@ class UserEnreda {
     }
 
     final String? aboutMe = data['aboutMe'];
-    final int points = data['points']?? 0;
     final int resourcesAccessCount = data['resourcesAccessCount']?? 0;
     final bool? checkAgreeCV = data['checkAgreeCV'];
 
@@ -188,7 +186,6 @@ class UserEnreda {
       languages: languages,
       languagesLevels: languagesLevels,
       aboutMe: aboutMe,
-      points: points,
       resourcesAccessCount: resourcesAccessCount,
       checkAgreeCV: checkAgreeCV,
       gamificationFlags: gamificationFlags,
@@ -222,7 +219,6 @@ class UserEnreda {
   final List<String> languages;
   final List<Language> languagesLevels;
   final String? aboutMe;
-  final int? points;
   final int? resourcesAccessCount;
   final bool? checkAgreeCV;
   final Map<String, bool> gamificationFlags;
@@ -253,7 +249,6 @@ class UserEnreda {
       'languagesLevels': languagesLevels.map((e) => e.toMap()).toList(),
       'aboutMe': aboutMe,
       'education': education?.toMap(),
-      'points': points,
       'resourcesAccessCount': resourcesAccessCount,
       'checkAgreeCV': checkAgreeCV,
       'gamificationFlags': gamificationFlags,
@@ -291,7 +286,6 @@ class UserEnreda {
     List<String>? languages,
     List<Language>? languagesLevels,
     String? aboutMe,
-    int? points,
     int? resourcesAccessCount,
     bool? checkAgreeCV,
     Map<String, bool>? gamificationFlags,
@@ -323,7 +317,6 @@ class UserEnreda {
       languages: languages ?? this.languages,
       languagesLevels: languagesLevels ?? this.languagesLevels,
       aboutMe: aboutMe ?? this.aboutMe,
-      points: points ?? this.points,
       resourcesAccessCount: resourcesAccessCount ?? this.resourcesAccessCount,
       checkAgreeCV: checkAgreeCV ?? this.checkAgreeCV,
       gamificationFlags: gamificationFlags ?? this.gamificationFlags,

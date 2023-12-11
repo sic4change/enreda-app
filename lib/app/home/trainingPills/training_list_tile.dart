@@ -250,6 +250,9 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
         child: InkWell(
           onTap: () async {
             switch (widget.trainingPill.order){
+              case 1:
+                setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_WHAT_IS_ENREDA);
+                break;
               case 2:
                 setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_TRAVEL_BEGINS);
                 break;

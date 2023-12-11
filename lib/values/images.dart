@@ -93,6 +93,7 @@ class ImagePath {
   static const String ICON_SHARE = '$imageDir/icon-share.png';
   static const String ICON_CLICK_FUNDAULA = '$imageDir/icon-click-fundaula.png';
   static const String ICON_INFO = '$imageDir/info_icon.png';
+  static const String ICON_GAMIFICATION = '$imageDir/icon-gami.png';
 
   //Resources Categories
   static const String BACKGROUND_1 = '$imageDir/background-empleo-2X.png';
@@ -115,5 +116,15 @@ class ImagePath {
   static const String PERSON_PILL2 = '$imageDir/person-pildoras-2.png';
   static const String PERSON_PILL3 = '$imageDir/person-pildoras-3.png';
   static const String PLACEHOLDER_VIDEO = '$imageDir/placeholder_video.png';
+
+  //Gamification
+  static const String WALL_STARS = '$imageDir/wall-stars.png';
+  static const String CERTIFICATE_ICON = '$imageDir/icon-gami-certificado.png';
+  static const String GARLAND = '$imageDir/gamification_certificate/garland.svg';
+  static const String MEDAIL = '$imageDir/gamification_certificate/medail.svg';
+  static const String SWIRLS = '$imageDir/gamification_certificate/swirls.svg';
+  static const String SWIRLS1 = '$imageDir/gamification_certificate/swirls1.svg';
+  static const String SWIRLS2 = '$imageDir/gamification_certificate/swirls2.svg';
+  static const String SWIRLS3 = '$imageDir/gamification_certificate/swirls3.svg';
 
 }

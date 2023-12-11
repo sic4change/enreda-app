@@ -3,6 +3,7 @@ import 'package:enreda_app/app/home/assistant/assistant_page_web.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
+import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/tab_item.dart';
 import 'package:enreda_app/app/home/web_home_scafold.dart';
 import 'package:enreda_app/common_widgets/background_mobile.dart';
@@ -10,6 +11,7 @@ import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
@@ -100,10 +102,13 @@ class _HomePageState extends State<HomePage> {
               height: 500.0,
               child: showChat
                   ? AssistantPageWeb(
-                      onClose: (showSuccessMessage) {
+                      onClose: (showSuccessMessage, gamificationFlagName) {
                         setState(() {
                           showChatNotifier.value = !showChatNotifier.value;
                         });
+                        if (gamificationFlagName.isNotEmpty){
+                          setGamificationFlag(context: context, flagName: gamificationFlagName);
+                        }
                       },
                     )
                   : Container(),

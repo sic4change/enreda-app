@@ -5,6 +5,7 @@ import 'package:enreda_app/app/home/tab_item.dart';
 import 'package:enreda_app/app/home/trainingPills/training_list_tile_mobile.dart';
 import 'package:enreda_app/common_widgets/background_mobile.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'resources/pages/resources_page.dart';
@@ -50,7 +51,13 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
       TabItem.chat: (_) => Stack(
             children: [
               BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
-              AssistantPageMobile(),
+              AssistantPageMobile(
+                onFinish: (gamificationFlagName) {
+                  if (gamificationFlagName.isNotEmpty){
+                    setGamificationFlag(context: context, flagName: gamificationFlagName);
+                  }
+                },
+              ),
             ],
           ),
       TabItem.account: (_) => Stack(

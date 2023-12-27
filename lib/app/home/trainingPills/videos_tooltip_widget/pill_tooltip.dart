@@ -8,16 +8,22 @@ import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CustomTooltip extends StatefulWidget {
+class PillTooltip extends StatefulWidget {
 
-  const CustomTooltip({Key? key})
-      : super(key: key);
+  const PillTooltip({
+    Key? key,
+    required this.title,
+    required this.pillId,
+    
+  }) : super(key: key);
+  
+  final String title, pillId;
 
   @override
-  _CustomTooltipState createState() => _CustomTooltipState();
+  _PillTooltipState createState() => _PillTooltipState();
 }
 
-class _CustomTooltipState extends State<CustomTooltip> {
+class _PillTooltipState extends State<PillTooltip> {
   late OverlayEntry _overlayEntry;
 
   @override
@@ -59,7 +65,7 @@ class _CustomTooltipState extends State<CustomTooltip> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: CustomTextTitle(
-                        title: StringConst.TRAINING_PILL_CV,
+                        title: widget.title,
                         color: AppColors.greenDark,
                       ),
                     ),
@@ -108,7 +114,7 @@ class _CustomTooltipState extends State<CustomTooltip> {
   Widget _buildTrainingTooltipVideo(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
     return StreamBuilder<TrainingPill>(
-        stream: database.trainingPillStreamById('4nggROI8bvWlOjFq45he'),
+        stream: database.trainingPillStreamById(widget.pillId),
         builder: (context, snapshot) {
           if(snapshot.hasData) {
             TrainingPill trainingPill = snapshot.data!;

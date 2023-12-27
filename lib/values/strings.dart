@@ -461,7 +461,6 @@ class StringConst {
   static const String ABOUT_ME = "Un poco más sobre mí...";
   static const String PROFILE = "Carrera";
   static const String EDUCATIONAL_LEVEL = "Nivel educativo";
-  static const String TRAINING_PILL_CV = '¿No sabes por dónde empezar tu CV?';
 
   static const String LOREM_IMPSUM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque, tortor amet, adipiscing felis nullam. Aliquet commodo est pretium vitae hendrerit fames vitae. Orci, feugiat consectetur aliquet sodales mus sodales a urna.\n\n'
       'Rhoncus id volutpat, diam adipiscing risus, enim cursus ac. Amet nunc nec eu diam. Tincidunt at vulputate arcu dis justo. Ut egestas ac rhoncus, sapien.';
@@ -471,4 +470,10 @@ class StringConst {
   static const String BRONZE_STAR = 'Medalla de bronce';
   static const String SILVER_STAR = 'Medalla de plata';
   static const String GOLD_STAR = 'Medalla de oro';
+
+  //Training Pills
+  static const String PILL_TRAVEL_BEGINS = 'Comienza el viaje';
+  static const String PILL_COMPETENCIES = '¿Qué son las competencias?';
+  static const String PILL_CV_COMPETENCIES = 'El CV por competencias';
+  static const String PILL_HOW_TO_DO_CV = '¿No sabes por dónde empezar tu CV?';
 }

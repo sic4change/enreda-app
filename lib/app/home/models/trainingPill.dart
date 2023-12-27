@@ -80,4 +80,13 @@ class TrainingPill {
     }
   }
 
+  static const String TRAVEL_BEGINS_ID = "4nggROI8bvWlOjFq45he";
+  static const String JOB_INTERVIEW_ID = "IM0OWIcMfiX63Ed6THsH";
+  static const String WHAT_ARE_COMPETENCIES_ID = "JeuiHzJMFb4p8W3CWanR";
+  static const String CV_COMPETENCIES_ID = "KVlxl5T38VxWR278UTw8";
+  static const String HOW_TO_DO_CV_ID = "R5Svduj5z1Wux0kcdQRd";
+  static const String WHAT_IS_ENREDA_ID = "RSZTAJ8gzW2ZV4JRAzz9";
+  static const String DONT_LOSE_MOTIVATION_ID = "U4s8A3Y5EUjiixYTc57s";
+  static const String SPANISH_WELFARE_SYSTEM_ID = "W0yXbW5i1CGvPZq3r9ce";
+
 }

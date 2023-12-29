@@ -116,10 +116,23 @@ class _PillTooltipState extends State<PillTooltip> {
     return InkWell(
       key: key,
       onTap: () {
-        if (_overlayEntry.mounted) {
-          _overlayEntry.remove();
+        if (Responsive.isMobile(context)) {
+          showDialog(context: context, builder: (dialogContext) =>
+              Dialog(
+                backgroundColor: Colors.transparent,
+                clipBehavior: Clip.hardEdge,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildTrainingTooltipVideo(context),
+                  ],
+                          ),));
         } else {
-          Overlay.of(context).insert(_overlayEntry);
+          if (_overlayEntry.mounted) {
+            _overlayEntry.remove();
+          } else {
+            Overlay.of(context).insert(_overlayEntry);
+          }
         }
       },
       child: Icon(Icons.info_outline, size: 24, color: AppColors.primaryColor,),

@@ -48,7 +48,7 @@ class _GamificationState extends State<Gamification> {
             _firstName = userEnreda.firstName ?? '';
             _lastName = userEnreda.lastName ?? '';
             userFullName = _firstName + ' ' + _lastName;
-            _gamificationFlags = userEnreda.gamificationFlags ?? {};
+            _gamificationFlags = userEnreda.gamificationFlags;
             _points = userEnreda.resourcesAccessCount ?? 0;
             return StreamBuilder(
               stream: database.gamificationFlagsStream(),
@@ -58,7 +58,7 @@ class _GamificationState extends State<Gamification> {
                   _gamificationValues = snapshot.data!;
                   _gamificationValues.forEach((element) {print(element.description);});
 
-                  if (_gamificationFlags.length == (_gamificationValues.length - 1)
+                  if (_gamificationFlags.length == (_gamificationValues.length - 2)
                       && !_gamificationFlags.containsValue(false)){
                     _allTasksDone = true;
                   }
@@ -343,7 +343,7 @@ class _GamificationState extends State<Gamification> {
   Widget _getStepTile(GamificationFlag item){
     bool completed = (_gamificationFlags[item.id]) ?? false;
 
-    if (item.id == UserEnreda.FLAG_SIGN_UP) {
+    if (item.id == UserEnreda.FLAG_SIGN_UP || item.id == UserEnreda.FLAG_PILL_WHAT_IS_ENREDA) {
       completed = true;
     }
 

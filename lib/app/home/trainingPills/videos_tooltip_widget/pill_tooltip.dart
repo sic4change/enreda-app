@@ -99,7 +99,7 @@ class _PillTooltipState extends State<PillTooltip> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         if (_overlayEntry.mounted) {
           _overlayEntry.remove();

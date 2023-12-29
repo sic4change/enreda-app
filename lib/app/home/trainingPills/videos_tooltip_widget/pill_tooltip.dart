@@ -26,18 +26,32 @@ class PillTooltip extends StatefulWidget {
 class _PillTooltipState extends State<PillTooltip> {
   late OverlayEntry _overlayEntry;
 
+  GlobalKey key = GlobalKey();
+
   @override
   void initState() {
     super.initState();
     _overlayEntry = OverlayEntry(builder: (context) {
+      RenderBox box = key.currentContext!.findRenderObject() as RenderBox;
+      Offset position = box.localToGlobal(Offset.zero);
+      double y = position.dy;
+      double x = position.dx;
+
+      if (x + 300 > MediaQuery.of(context).size.width) x -= 260;
+      if (y + 300 > MediaQuery.of(context).size.height) y -= 180;
+
       return Positioned(
         // Position the tooltip relative to the widget
-        top: Responsive.isMobile(context) ? 100
+        top: Responsive.isMobile(context)? (MediaQuery.of(context).size.height * 0.5) - 150
+          : y - 20,
+        /*top: Responsive.isMobile(context) ? 100
             : Responsive.isTablet(context) || Responsive.isDesktopS(context) ? 200
-                : MediaQuery.of(context).size.height * 0.32,
-        right: Responsive.isMobile(context) ? 20
+                : MediaQuery.of(context).size.height * 0.32,*/
+        left: Responsive.isMobile(context)? (MediaQuery.of(context).size.width * 0.5) - 150
+            : x - 20,
+        /*right: x - 20,Responsive.isMobile(context) ? 20
             : Responsive.isTablet(context) || Responsive.isDesktopS(context) ? 50
-                : MediaQuery.of(context).size.width * 0.25,
+                : MediaQuery.of(context).size.width * 0.25,*/
         child: Card(
           color: Colors.transparent,
           elevation: 0,
@@ -74,14 +88,14 @@ class _PillTooltipState extends State<PillTooltip> {
                 ),
               ),
               Positioned(
-                top: -7,
-                right: -7,
+                top: 10,
+                right: 10,
                 child: IconButton(
                   hoverColor: Colors.transparent,
                     onPressed: () {
                       _overlayEntry.remove();
                     },
-                    icon: Image.asset(ImagePath.ICON_INFO, width: 40, height: 40,)
+                    icon: Icon(Icons.close), iconSize: 20,
                 ),
               ),
             ],
@@ -100,6 +114,7 @@ class _PillTooltipState extends State<PillTooltip> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      key: key,
       onTap: () {
         if (_overlayEntry.mounted) {
           _overlayEntry.remove();

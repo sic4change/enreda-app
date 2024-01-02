@@ -117,14 +117,14 @@ class _PillTooltipState extends State<PillTooltip> {
       key: key,
       onTap: () {
         if (Responsive.isMobile(context)) {
-          showDialog(context: context, builder: (dialogContext) =>
+          showDialog(context: context, useRootNavigator: false, builder: (dialogContext) =>
               Dialog(
                 backgroundColor: Colors.transparent,
                 clipBehavior: Clip.hardEdge,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _buildTrainingTooltipVideo(context),
+                    _buildTrainingTooltipVideo(dialogContext),
                   ],
                           ),));
         } else {

@@ -12,8 +12,9 @@ import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/province.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
-import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/custom_tooltip.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/common_widgets/delete_button.dart';
 import 'package:enreda_app/common_widgets/edit_button.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
@@ -453,7 +454,10 @@ class MyCurriculumPage extends StatelessWidget {
                   ),
                 ],
               ),
-              CustomTooltip(),
+              PillTooltip(
+                title: StringConst.PILL_HOW_TO_DO_CV,
+                pillId: TrainingPill.HOW_TO_DO_CV_ID,
+              ),
               //SpaceH24(),
               //_buildMyCareer(context),
               SpaceH24(),
@@ -595,7 +599,10 @@ class MyCurriculumPage extends StatelessWidget {
               color: Constants.penBlue),
         ),
         SpaceH20(),
-        CustomTooltip(),
+        PillTooltip(
+            title: StringConst.PILL_HOW_TO_DO_CV,
+            pillId: TrainingPill.HOW_TO_DO_CV_ID,
+        ),
       ],
     );
   }
@@ -661,7 +668,7 @@ class MyCurriculumPage extends StatelessWidget {
                 onTap: () async {
                   if (isEditable) {
                     await database.setUserEnreda(user!.copyWith(aboutMe: textController.text));
-                    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_ABOUT_ME);
+                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_ABOUT_ME);
                   }
                   setState(() {
                     isEditable = !isEditable;
@@ -839,12 +846,22 @@ class MyCurriculumPage extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  child: Text(
-                    StringConst.COMPETENCIES.toUpperCase(),
-                    style: TextStyle(
-                        color: Constants.darkLilac,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        StringConst.COMPETENCIES.toUpperCase(),
+                        style: TextStyle(
+                            color: Constants.darkLilac,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18.0),
+                      ),
+                      SpaceW8(),
+                      PillTooltip(
+                        title: StringConst.PILL_CV_COMPETENCIES,
+                        pillId: TrainingPill.CV_COMPETENCIES_ID,
+                      ),
+                    ],
                   ),
                 ),
                 myCompetencies!.isNotEmpty
@@ -991,7 +1008,7 @@ class MyCurriculumPage extends StatelessWidget {
                   builder: (dialogContext) => AlertDialog(
                     content: FormationForm(
                       isMainEducation: true,
-                      onComingBack: () => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_FORMATION),
+                      onComingBack: () => setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_FORMATION),
                     ),
                   )
               );
@@ -1075,7 +1092,7 @@ class MyCurriculumPage extends StatelessWidget {
                   builder: (dialogContext) => AlertDialog(
                     content: FormationForm(
                       isMainEducation: false,
-                      onComingBack: () => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
+                      onComingBack: () => setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
                     ),
                   )
               );
@@ -1144,7 +1161,7 @@ class MyCurriculumPage extends StatelessWidget {
                   builder: (dialogContext) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: true,
-                      onComingBack: (_) => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PROFESSIONAL),
+                      onComingBack: (_) => setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PROFESSIONAL),
                     ),
                   )
               );
@@ -1213,7 +1230,7 @@ class MyCurriculumPage extends StatelessWidget {
                   builder: (dialogContext) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: false,
-                      onComingBack: (_) => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PERSONAL),
+                      onComingBack: (_) => setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PERSONAL),
                     ),
                   )
               );
@@ -1285,9 +1302,9 @@ class MyCurriculumPage extends StatelessWidget {
                       general: true,
                       onComingBack: (isProfessional) {
                         if (isProfessional) {
-                          setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PROFESSIONAL);
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PROFESSIONAL);
                         } else {
-                          setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_PERSONAL);
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PERSONAL);
                         }
                       },
                     ),
@@ -1597,7 +1614,7 @@ class MyCurriculumPage extends StatelessWidget {
           Navigator.of(context).pop();
        });
 
-    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CV_DATA_OF_INTEREST);
+    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_DATA_OF_INTEREST);
   }
 
   void _showReferencesDialog(BuildContext context, CertificationRequest certificationRequest) {

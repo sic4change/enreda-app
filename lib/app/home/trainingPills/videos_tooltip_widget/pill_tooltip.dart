@@ -8,30 +8,50 @@ import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CustomTooltip extends StatefulWidget {
+class PillTooltip extends StatefulWidget {
 
-  const CustomTooltip({Key? key})
-      : super(key: key);
+  const PillTooltip({
+    Key? key,
+    required this.title,
+    required this.pillId,
+    
+  }) : super(key: key);
+  
+  final String title, pillId;
 
   @override
-  _CustomTooltipState createState() => _CustomTooltipState();
+  _PillTooltipState createState() => _PillTooltipState();
 }
 
-class _CustomTooltipState extends State<CustomTooltip> {
+class _PillTooltipState extends State<PillTooltip> {
   late OverlayEntry _overlayEntry;
+
+  GlobalKey key = GlobalKey();
 
   @override
   void initState() {
     super.initState();
     _overlayEntry = OverlayEntry(builder: (context) {
+      RenderBox box = key.currentContext!.findRenderObject() as RenderBox;
+      Offset position = box.localToGlobal(Offset.zero);
+      double y = position.dy;
+      double x = position.dx;
+
+      if (x + 300 > MediaQuery.of(context).size.width) x -= 260;
+      if (y + 300 > MediaQuery.of(context).size.height) y -= 180;
+
       return Positioned(
         // Position the tooltip relative to the widget
-        top: Responsive.isMobile(context) ? 100
+        top: Responsive.isMobile(context)? (MediaQuery.of(context).size.height * 0.5) - 150
+          : y - 20,
+        /*top: Responsive.isMobile(context) ? 100
             : Responsive.isTablet(context) || Responsive.isDesktopS(context) ? 200
-                : MediaQuery.of(context).size.height * 0.32,
-        right: Responsive.isMobile(context) ? 20
+                : MediaQuery.of(context).size.height * 0.32,*/
+        left: Responsive.isMobile(context)? (MediaQuery.of(context).size.width * 0.5) - 150
+            : x - 20,
+        /*right: x - 20,Responsive.isMobile(context) ? 20
             : Responsive.isTablet(context) || Responsive.isDesktopS(context) ? 50
-                : MediaQuery.of(context).size.width * 0.25,
+                : MediaQuery.of(context).size.width * 0.25,*/
         child: Card(
           color: Colors.transparent,
           elevation: 0,
@@ -59,7 +79,7 @@ class _CustomTooltipState extends State<CustomTooltip> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: CustomTextTitle(
-                        title: StringConst.TRAINING_PILL_CV,
+                        title: widget.title,
                         color: AppColors.greenDark,
                       ),
                     ),
@@ -68,14 +88,14 @@ class _CustomTooltipState extends State<CustomTooltip> {
                 ),
               ),
               Positioned(
-                top: -7,
-                right: -7,
+                top: 10,
+                right: 10,
                 child: IconButton(
                   hoverColor: Colors.transparent,
                     onPressed: () {
                       _overlayEntry.remove();
                     },
-                    icon: Image.asset(ImagePath.ICON_INFO, width: 40, height: 40,)
+                    icon: Icon(Icons.close), iconSize: 20,
                 ),
               ),
             ],
@@ -93,12 +113,26 @@ class _CustomTooltipState extends State<CustomTooltip> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
+      key: key,
       onTap: () {
-        if (_overlayEntry.mounted) {
-          _overlayEntry.remove();
+        if (Responsive.isMobile(context)) {
+          showDialog(context: context, useRootNavigator: false, builder: (dialogContext) =>
+              Dialog(
+                backgroundColor: Colors.transparent,
+                clipBehavior: Clip.hardEdge,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildTrainingTooltipVideo(dialogContext),
+                  ],
+                          ),));
         } else {
-          Overlay.of(context).insert(_overlayEntry);
+          if (_overlayEntry.mounted) {
+            _overlayEntry.remove();
+          } else {
+            Overlay.of(context).insert(_overlayEntry);
+          }
         }
       },
       child: Icon(Icons.info_outline, size: 24, color: AppColors.primaryColor,),
@@ -108,7 +142,7 @@ class _CustomTooltipState extends State<CustomTooltip> {
   Widget _buildTrainingTooltipVideo(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
     return StreamBuilder<TrainingPill>(
-        stream: database.trainingPillStreamById('4nggROI8bvWlOjFq45he'),
+        stream: database.trainingPillStreamById(widget.pillId),
         builder: (context, snapshot) {
           if(snapshot.hasData) {
             TrainingPill trainingPill = snapshot.data!;

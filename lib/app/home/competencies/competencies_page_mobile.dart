@@ -1,14 +1,14 @@
-import 'package:enreda_app/app/home/assistant/assistant_page_web.dart';
 import 'package:enreda_app/app/home/competencies/competencies_item_builder.dart';
 import 'package:enreda_app/app/home/competencies/expandable_competency_tile.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:expandable/expandable.dart';
@@ -79,12 +79,22 @@ class CompetenciesPageMobile extends StatelessWidget {
           Container(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Text(
-                StringConst.COMPETENCIES.toUpperCase(),
-                style: textTheme.bodyText1?.copyWith(
-                    fontSize: 18.0,
-                    color: Constants.penBlue,
-                    fontWeight: FontWeight.w400),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    StringConst.COMPETENCIES.toUpperCase(),
+                    style: textTheme.bodyText1?.copyWith(
+                        fontSize: 18.0,
+                        color: Constants.penBlue,
+                        fontWeight: FontWeight.w400),
+                  ),
+                  SpaceW8(),
+                  PillTooltip(
+                    title: StringConst.PILL_COMPETENCIES,
+                    pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
+                  )
+                ],
               ),
             ),
           ),

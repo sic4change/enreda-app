@@ -55,7 +55,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
   void initState() {
     super.initState();
     _resetQuestions();
-    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_CHAT);
+    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CHAT);
   }
 
   @override

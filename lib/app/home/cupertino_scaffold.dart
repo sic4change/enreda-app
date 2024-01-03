@@ -54,7 +54,7 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
               AssistantPageMobile(
                 onFinish: (gamificationFlagName) {
                   if (gamificationFlagName.isNotEmpty){
-                    setGamificationFlag(context: context, flagName: gamificationFlagName);
+                    setGamificationFlag(context: context, flagId: gamificationFlagName);
                   }
                 },
               ),

@@ -52,16 +52,16 @@ String removeDiacritics(String str) {
 
 Future<void> setGamificationFlag({
   required BuildContext context,
-  required String flagName,
+  required String flagId,
 }) async {
   final database = Provider.of<Database>(context, listen: false);
   final auth = Provider.of<AuthBase>(context, listen: false);
 
   if (auth.currentUser != null) {
     final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-    if (!user.gamificationFlags.containsKey(flagName) ||
-        !user.gamificationFlags[flagName]!) {
-      user.gamificationFlags[flagName] = true;
+    if (!user.gamificationFlags.containsKey(flagId) ||
+        !user.gamificationFlags[flagId]!) {
+      user.gamificationFlags[flagId] = true;
       await database.setUserEnreda(user);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),

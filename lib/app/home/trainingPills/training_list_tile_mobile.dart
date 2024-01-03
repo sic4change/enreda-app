@@ -171,21 +171,21 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
             IconButton(
               padding: EdgeInsets.zero,
               onPressed: () {
-                switch (widget.trainingPill.order){
-                  case 1:
-                    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_WHAT_IS_ENREDA);
+                switch (widget.trainingPill.id){
+                  case TrainingPill.WHAT_IS_ENREDA_ID:
+                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_WHAT_IS_ENREDA);
                     break;
-                  case 2:
-                    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_TRAVEL_BEGINS);
+                  case TrainingPill.TRAVEL_BEGINS_ID:
+                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_TRAVEL_BEGINS);
                     break;
-                  case 3:
-                    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_COMPETENCIES);
+                  case TrainingPill.WHAT_ARE_COMPETENCIES_ID:
+                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
                     break;
-                  case 4:
-                    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_CV_COMPETENCIES);
+                  case TrainingPill.CV_COMPETENCIES_ID:
+                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_CV_COMPETENCIES);
                     break;
-                  case 5:
-                    setGamificationFlag(context: context, flagName: UserEnreda.FLAG_PILL_HOW_TO_DO_CV);
+                  case TrainingPill.HOW_TO_DO_CV_ID:
+                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_HOW_TO_DO_CV);
                     break;
                   default:
                     break;

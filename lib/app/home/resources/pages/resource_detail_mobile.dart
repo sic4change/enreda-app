@@ -367,7 +367,7 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
                 (resource.contactEmail == null || resource.contactEmail!.isEmpty) &&
                 (resource.contactPhone == null || resource.contactPhone!.isEmpty)) {
               addUserToResource(context: context, userId: userId, resource: resource);
-              setGamificationFlag(context: context, flagName: UserEnreda.FLAG_JOIN_RESOURCE);
+              setGamificationFlag(context: context, flagId: UserEnreda.FLAG_JOIN_RESOURCE);
             } else if (resource.link != null) {
               launchURL(resource.link!);
             } else {

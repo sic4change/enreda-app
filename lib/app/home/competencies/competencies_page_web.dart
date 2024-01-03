@@ -1,6 +1,8 @@
 import 'package:enreda_app/app/home/competencies/competencies_item_builder.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/competencies/expandable_competency_tile.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -277,13 +279,23 @@ class CompetenciesPageWeb extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 30, bottom: 30),
-              child: Text(
-                StringConst.COMPETENCIES.toUpperCase(),
-                style: textTheme.bodyText1?.copyWith(
-                  color: Constants.penBlue,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    StringConst.COMPETENCIES.toUpperCase(),
+                    style: textTheme.bodyText1?.copyWith(
+                      color: Constants.penBlue,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SpaceW8(),
+                  PillTooltip(
+                    title: StringConst.PILL_COMPETENCIES,
+                    pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
+                  )
+                ],
               ),
             ),
             CompetenciesItemBuilder<Competency>(

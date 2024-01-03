@@ -81,7 +81,7 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
                                             competency: competency,
                                             database: database,
                                             auth: auth,
-                                            onComingBack: () => setGamificationFlag(context: context, flagName: UserEnreda.FLAG_EVALUATE_COMPETENCY)
+                                            onComingBack: () => setGamificationFlag(context: context, flagId: UserEnreda.FLAG_EVALUATE_COMPETENCY)
                                         ),
                                       if (status ==
                                           StringConst.BADGE_VALIDATED ||

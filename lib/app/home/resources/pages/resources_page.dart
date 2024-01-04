@@ -633,16 +633,23 @@ class _ResourcesPageState extends State<ResourcesPage> {
       child: StreamBuilder<List<TrainingPill>>(
           stream: database.filteredTrainingPillStream(filterTrainingPill),
           builder: (context, snapshot) {
+            double? mainAxisExtentValue = Responsive.isMobile(context) ? 305 : Responsive.isDesktopS(context) ? 480 : 500;
+            bool showDescription = true;
+            if (snapshot.hasData && snapshot.data!.where((t) => t.description.isNotEmpty).length == 0) {
+              mainAxisExtentValue = Responsive.isMobile(context) ? 305 : Responsive.isDesktopS(context) ? 440 : 450;
+              showDescription = false;
+            }
             return ListItemBuilderGrid<TrainingPill>(
               snapshot: snapshot,
               maxCrossAxisExtentValue: 490,
-              mainAxisExtentValue: Responsive.isMobile(context) ? 305 : Responsive.isDesktopS(context) ? 480 : 500,
+              mainAxisExtentValue: mainAxisExtentValue,
               itemBuilder: (context, trainingPill) {
                 trainingPill.setTrainingPillCategoryName();
                 return Container(
                   key: Key('trainingPill-${trainingPill.id}'),
                   child: TrainingPillListTile(
                     trainingPill: trainingPill,
+                    showDescription: showDescription,
                     onTap: () => context.push(
                         '${StringConst.PATH_TRAINING_PILLS}/${trainingPill.id}'),
                   ),

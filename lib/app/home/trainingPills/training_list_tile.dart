@@ -17,9 +17,10 @@ import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import '../../../services/auth.dart';
 
 class TrainingPillListTile extends StatefulWidget {
-  const TrainingPillListTile({Key? key, required this.trainingPill, this.onTap})
+  const TrainingPillListTile({Key? key, required this.trainingPill, this.showDescription = true, this.onTap})
       : super(key: key);
   final TrainingPill trainingPill;
+  final bool showDescription;
   final VoidCallback? onTap;
 
   @override
@@ -114,7 +115,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                                   ),
                                 ),
                               ),
-                              Responsive.isMobile(context) ? Container() :
+                              Responsive.isMobile(context) || !widget.showDescription ? Container() :
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: sidePadding),
                                 child: Text(
@@ -135,6 +136,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                         ],
                       ),
                     ),
+                    if (widget.showDescription)
                     Spacer(),
                     Container(
                       child: Padding(

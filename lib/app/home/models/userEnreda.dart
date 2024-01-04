@@ -1,5 +1,4 @@
 import 'package:enreda_app/app/home/models/addressUser.dart';
-import 'package:enreda_app/app/home/models/education.dart';
 import 'package:enreda_app/app/home/models/interestsUserEnreda.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/profilepic.dart';
@@ -28,7 +27,7 @@ class UserEnreda {
     this.role,
     this.showChatWelcome,
     this.competencies = const {},
-    this.education,
+    this.educationId,
     this.dataOfInterest = const [],
     this.languages = const [], // Deprecated
     this.languagesLevels = const [],
@@ -101,11 +100,7 @@ class UserEnreda {
         city: city,
         postalCode: postalCode);
 
-    final Education education = new Education(
-      label: data['education']['label'],
-      value: data['education']['value'],
-      order: data['education']['order'],
-    );
+    final String educationId = data['educationId']?? "";
 
     final bool? showChatWelcome = data['showChatWelcome'];
 
@@ -181,7 +176,7 @@ class UserEnreda {
       certifications: certifications,
       showChatWelcome: showChatWelcome,
       competencies: competencies,
-      education: education,
+      educationId: educationId,
       dataOfInterest: dataOfInterest,
       languages: languages,
       languagesLevels: languagesLevels,
@@ -199,7 +194,7 @@ class UserEnreda {
   final String? userId;
   String? photo;
   final ProfilePic? profilePic;
-  final Education? education;
+  final String? educationId;
   final String? phone;
   final DateTime? birthday;
   final String? country;
@@ -248,10 +243,10 @@ class UserEnreda {
       'languages': languages,
       'languagesLevels': languagesLevels.map((e) => e.toMap()).toList(),
       'aboutMe': aboutMe,
-      'education': education?.toMap(),
       'resourcesAccessCount': resourcesAccessCount,
       'checkAgreeCV': checkAgreeCV,
       'gamificationFlags': gamificationFlags,
+      'educationId': educationId,
     };
   }
 
@@ -281,7 +276,7 @@ class UserEnreda {
     String? role,
     bool? showChatWelcome,
     Map<String, String>? competencies,
-    Education? education,
+    String? educationId,
     List<String>? dataOfInterest,
     List<String>? languages,
     List<Language>? languagesLevels,
@@ -312,7 +307,7 @@ class UserEnreda {
       role: role ?? this.role,
       showChatWelcome: showChatWelcome ?? this.showChatWelcome,
       competencies: competencies ?? this.competencies,
-      education: education ?? this.education,
+      educationId: educationId ?? this.educationId,
       dataOfInterest: dataOfInterest ?? this.dataOfInterest,
       languages: languages ?? this.languages,
       languagesLevels: languagesLevels ?? this.languagesLevels,

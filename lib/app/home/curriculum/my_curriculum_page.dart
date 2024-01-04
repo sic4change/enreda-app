@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/competencies/competency_tile.dart';
+import 'package:enreda_app/app/home/curriculum/add_educational_level.dart';
 import 'package:enreda_app/app/home/curriculum/experience_form_update.dart';
 import 'package:enreda_app/app/home/curriculum/experience_tile.dart';
 import 'package:enreda_app/app/home/curriculum/formation_form.dart';
@@ -9,6 +10,7 @@ import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/country.dart';
+import 'package:enreda_app/app/home/models/education.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/province.dart';
@@ -59,7 +61,7 @@ class MyCurriculumPage extends StatelessWidget {
 
   String myCustomPhone = "";
 
-  String myMaxEducation = "";
+  Education? myMaxEducation;
 
   List<Competency>? myCompetencies = [];
 
@@ -375,7 +377,7 @@ class MyCurriculumPage extends StatelessWidget {
                                       myReferences: myReferences!,
                                       myCustomReferences: myCustomReferences,
                                       mySelectedReferences: mySelectedReferences,
-                                      myMaxEducation: myMaxEducation,
+                                      myMaxEducation: myMaxEducation?.label??"",
                                     )),
                           );
                       },
@@ -575,7 +577,7 @@ class MyCurriculumPage extends StatelessWidget {
                               myReferences: myReferences!,
                               myCustomReferences: myCustomReferences,
                               mySelectedReferences: mySelectedReferences,
-                              myMaxEducation: myMaxEducation,
+                              myMaxEducation: myMaxEducation?.label??"",
                             )),
                   );
               },
@@ -609,15 +611,53 @@ class MyCurriculumPage extends StatelessWidget {
 
   Widget _buildMyCareer(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-    final textController = TextEditingController();
-    textController.text = user?.education?.label ?? "";
 
+    return StreamBuilder(
+        stream: database.educationStream(),
+        builder: (context, snapshotEducations) {
+          if (snapshotEducations.hasData) {
+            final educations = snapshotEducations.data!;
+
+            if (user!.educationId!.isNotEmpty) {
+              myMaxEducation = educations.firstWhere((e) => e.educationId == user!.educationId, orElse: () => Education(label: "", value: "", order: 0));
+              return CustomTextBody(text: myMaxEducation?.label??"");
+            } else {
+              return StreamBuilder(
+                  stream: database.myExperiencesStream(user?.userId ?? ''),
+                  builder: (context, snapshotExperiences) {
+                    if (snapshotEducations.hasData && snapshotExperiences.hasData) {
+                      final myEducationalExperiencies = snapshotExperiences.data!
+                          .where((experience) => experience.type == 'Formativa')
+                          .toList();
+                      if (myEducationalExperiencies.isNotEmpty) {
+                        final areEduactions = myEducationalExperiencies.any((exp) => exp.education != null && exp.education!.isNotEmpty);
+                        if (areEduactions) {
+                          final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
+                          myEducations.sort((a, b) => a.order.compareTo(b.order));
+                          myMaxEducation = myEducations.first;
+                        } else {
+                          myMaxEducation = Education(label: "", value: "", order: 0);
+                        }
+                        return CustomTextBody(text: myMaxEducation?.label??"");
+                      } else {
+                        return Container();
+                      }
+                    } else {
+                      return Container();
+                    }
+                  });
+            }
+          } else {
+            return Container();
+          }
+        });
     return StreamBuilder(
       stream: database.myExperiencesStream(user?.userId ?? ''),
       builder: (context, snapshotExperiences) {
         return StreamBuilder(
           stream: database.educationStream(),
           builder: (context, snapshotEducations) {
+
             if (snapshotEducations.hasData && snapshotExperiences.hasData) {
               final myEducationalExperiencies = snapshotExperiences.data!
                   .where((experience) => experience.type == 'Formativa')
@@ -628,12 +668,12 @@ class MyCurriculumPage extends StatelessWidget {
                 if (areEduactions) {
                   final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
                   myEducations.sort((a, b) => a.order.compareTo(b.order));
-                  myMaxEducation = myEducations.first.label;
+                  myMaxEducation = myEducations.first;
                 } else {
-                  myMaxEducation = user?.education?.label?? "";
+                  myMaxEducation = educations.firstWhere((e) => e.educationId == user!.educationId, orElse: () => Education(label: "", value: "", order: 0));
                 }
 
-                return CustomTextBody(text: myMaxEducation);
+                return CustomTextBody(text: myMaxEducation?.label??"");
               } else {
                 return Container();
               }
@@ -1020,16 +1060,19 @@ class MyCurriculumPage extends StatelessWidget {
           children: [
             CustomTextSubTitle(title: StringConst.EDUCATIONAL_LEVEL.toUpperCase()),
             SpaceW8(),
-            /*_addButton(() {
+            _addButton(() {
               showDialog(
+                  useRootNavigator: false,
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (context) => AlertDialog(
-                    content: AddEducationalLevel()
-                  )
-              );
-            },
-            ),*/
+                  builder: (context) => AddEducationalLevel(
+                    selectedEducation: myMaxEducation,
+                    onSaved: (selectedEducation) {
+                      database.setUserEnreda(user!.copyWith(educationId: selectedEducation?.educationId??""));
+                    },
+                  ),
+              );},
+            ),
           ],
         ),
         _buildMyCareer(context),

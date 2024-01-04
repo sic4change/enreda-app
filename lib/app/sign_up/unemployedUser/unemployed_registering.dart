@@ -233,12 +233,6 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
         timeSpentWeekly: timeSpentWeekly,
       );
 
-      final education = Education(
-          label: educationName,
-          value: educationValue!,
-          order: 0
-      );
-
       final interestsSet = Interests(
         interests: interests,
         specificInterests: specificInterests,
@@ -270,10 +264,11 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           birthday: _birthday,
           motivation: motivation,
           interests: interestsSet,
-          education: education,
+          educationId: selectedEducation?.educationId??"",
           address: address,
           role: 'Desempleado',
-          unemployedType: unemployedType
+          unemployedType: unemployedType,
+
       );
       try {
         final database = Provider.of<Database>(context, listen: false);

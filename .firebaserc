@@ -5,11 +5,11 @@
   "targets": {
     "enreda-d3b41": {
       "hosting": {
-        "enredatest": [
-          "test-enreda"
-        ],
         "enredapp": [
           "enredawebapp"
+        ],
+        "test-enreda": [
+          "test-enreda"
         ]
       }
     }

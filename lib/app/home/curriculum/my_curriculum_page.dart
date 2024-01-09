@@ -634,7 +634,11 @@ class MyCurriculumPage extends StatelessWidget {
                         if (areEduactions) {
                           final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
                           myEducations.sort((a, b) => a.order.compareTo(b.order));
-                          myMaxEducation = myEducations.first;
+                          if(myEducations.isNotEmpty){
+                            myMaxEducation = myEducations.first;
+                          } else {
+                            myMaxEducation = Education(label: "", value: "", order: 0);
+                          }
                         } else {
                           myMaxEducation = Education(label: "", value: "", order: 0);
                         }

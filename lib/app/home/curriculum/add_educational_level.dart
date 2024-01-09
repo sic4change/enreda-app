@@ -27,7 +27,11 @@ class _AddEducationalLevelState extends State<AddEducationalLevel> {
 
   @override
   void initState() {
-    selectedEducation = widget.selectedEducation;
+    if(widget.selectedEducation != null && widget.selectedEducation?.educationId != null){
+      selectedEducation = widget.selectedEducation;
+    } else{
+      selectedEducation = null;
+    }
     super.initState();
   }
 

@@ -89,7 +89,13 @@ class _FormationFormState extends State<FormationForm> {
                   .toList();
 
             if(widget.experience != null && widget.experience!.education != '' && _selectedEducation == null){
-              _selectedEducation = educationItems.firstWhere((element) => element.value!.label == widget.experience!.education).value;
+              educationItems.forEach((element) {
+                if(element.value!.label == widget.experience!.education){
+                  _selectedEducation = element.value;
+                } else{
+                  _selectedEducation = null;
+                }
+              });
             }
             }
 

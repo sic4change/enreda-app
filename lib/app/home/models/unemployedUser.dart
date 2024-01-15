@@ -24,6 +24,7 @@ class UnemployedUser {
     this.interests,
     this.educationId,
     this.unemployedType,
+    this.socialEntityId,
   });
 
   String? email;
@@ -45,6 +46,7 @@ class UnemployedUser {
   final Interests? interests;
   final String? educationId;
   final String? unemployedType;
+  final String? socialEntityId;
 
   factory UnemployedUser.fromMap(Map<String, dynamic> data, String documentId) {
 
@@ -89,6 +91,8 @@ class UnemployedUser {
         title: 'photo.jpg'
     );
 
+    final String? socialEntityId = data["socialEntityId"]??"";
+
     return UnemployedUser(
         email: data['email'],
         firstName: data['firstName'],
@@ -103,8 +107,8 @@ class UnemployedUser {
         motivation: motivation,
         interests: interestsUser,
         educationId: educationId,
-        unemployedType: data['unemployedType']
-
+        unemployedType: data['unemployedType'],
+        socialEntityId: data['socialEntityId'],
     );
   }
 
@@ -122,6 +126,7 @@ class UnemployedUser {
       'interests': interests?.toMap(),
       'educationId': educationId,
       'unemployedType': unemployedType,
+      'socialEntityId': socialEntityId,
     };
   }
 }

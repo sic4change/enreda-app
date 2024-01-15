@@ -55,4 +55,6 @@ class APIPath {
   static String tests() => 'tests';
   static String test(String testId) => 'tests/$testId';
   static String gamificationFlags() => 'gamificationFlags';
+  static String socialEntity(String socialEntityId) => 'socialEntities/$socialEntityId';
+  static String socialEntities() => 'socialEntities';
 }

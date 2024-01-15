@@ -24,6 +24,7 @@ import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/resourceCategory.dart';
 import 'package:enreda_app/app/home/models/scope.dart';
 import 'package:enreda_app/app/home/models/size.dart';
+import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/specificinterest.dart';
 import 'package:enreda_app/app/home/models/timeSearching.dart';
 import 'package:enreda_app/app/home/models/timeSpentWeekly.dart';
@@ -99,6 +100,7 @@ abstract class Database {
   Stream<List<TrainingPill>> filteredTrainingPillStream(FilterTrainingPill filter);
   Stream<TrainingPill> trainingPillStreamById(String id);
   Stream<List<GamificationFlag>> gamificationFlagsStream();
+  Stream<List<SocialEntity>> socialEntitiesStream();
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> addUserEnreda(UserEnreda userEnreda);
@@ -808,6 +810,14 @@ class FirestoreDatabase implements Database {
     queryBuilder: (query) => query.where('id', isNotEqualTo: null),
     builder: (data, documentId) => GamificationFlag.fromMap(data, documentId),
     sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+  );
+
+  @override
+  Stream<List<SocialEntity>> socialEntitiesStream() => _service.collectionStream(
+    path: APIPath.socialEntities(),
+    queryBuilder: (query) => query.where('trust', isEqualTo: true),
+    builder: (data, documentId) => SocialEntity.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
   );
 
 }

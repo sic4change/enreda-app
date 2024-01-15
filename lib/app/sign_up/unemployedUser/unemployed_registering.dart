@@ -13,6 +13,7 @@ import 'package:enreda_app/app/home/models/interest.dart';
 import 'package:enreda_app/app/home/models/interests.dart';
 import 'package:enreda_app/app/home/models/motivation.dart';
 import 'package:enreda_app/app/home/models/province.dart';
+import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/specificinterest.dart';
 import 'package:enreda_app/app/home/models/timeSearching.dart';
 import 'package:enreda_app/app/home/models/timeSpentWeekly.dart';
@@ -29,6 +30,7 @@ import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_e
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_gender.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_interests.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_province.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_social_entity.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_specificInterests.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_timeSearching.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_timeSpentWeekly.dart';
@@ -103,6 +105,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   TimeSpentWeekly? selectedTimeSpentWeekly;
   Education? selectedEducation;
   Gender? selectedGender;
+  SocialEntity? selectedSocialEntity;
   late String countryName;
   late String provinceName;
   late String cityName;
@@ -268,7 +271,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           address: address,
           role: 'Desempleado',
           unemployedType: unemployedType,
-
+          socialEntityId: selectedSocialEntity?.socialEntityId??"",
       );
       try {
         final database = Provider.of<Database>(context, listen: false);
@@ -512,6 +515,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                 childLeft: streamBuilderForCity(context, selectedCountry, selectedProvince, selectedCity, _buildCityStreamBuilder_setState),
                 childRight: customTextFormFieldName(context, _postalCode!, StringConst.FORM_POSTAL_CODE, StringConst.POSTAL_CODE_ERROR, _postalCode_setState),
               ),
+              CustomPadding(child: streamBuilderForSocialEntity(context, selectedSocialEntity, _buildSocialEntityStreamBuilder_setState)),
             ]),
       );
   }
@@ -764,6 +768,12 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     setState(() {
       this.selectedGender = gender;
       genderName = gender != null ? gender.name : "";
+    });
+  }
+
+  void _buildSocialEntityStreamBuilder_setState(SocialEntity? socialEntity) {
+    setState(() {
+      this.selectedSocialEntity = socialEntity;
     });
   }
 

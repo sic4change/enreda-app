@@ -6,6 +6,7 @@ import 'package:enreda_app/app/home/models/certificate.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
+import 'package:enreda_app/app/home/models/competencyCategory.dart';
 import 'package:enreda_app/app/home/models/contact.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/dedication.dart';
@@ -91,6 +92,8 @@ abstract class Database {
   Stream<List<Experience>> myExperiencesStream(String userId);
   Stream<List<Competency>> competenciesStream();
   Stream<Competency> competencyStream(String id);
+  Stream<List<CompetencyCategory>> competenciesCategoriesStream();
+  Stream<CompetencyCategory> competenciesCategoryStream(String id);
   Stream<Activity> activityStream(String id);
   Stream<List<ChatQuestion>> chatQuestionsStream(String userId);
   Stream<CertificationRequest> certificationRequestStream(String certificationRequestId);
@@ -778,6 +781,21 @@ class FirestoreDatabase implements Database {
       _service.documentStream<Competency>(
         path: APIPath.competency(id),
         builder: (data, documentId) => Competency.fromMap(data, documentId),
+      );
+
+  @override
+  Stream<List<CompetencyCategory>> competenciesCategoriesStream() => _service.collectionStream(
+    path: APIPath.competenciesCategories(),
+    builder: (data, documentId) => CompetencyCategory.fromMap(data, documentId),
+    queryBuilder: (query) => query,
+    sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+  );
+
+  @override
+  Stream<CompetencyCategory> competenciesCategoryStream(String id) =>
+      _service.documentStream<CompetencyCategory>(
+        path: APIPath.competenciesCategory(id),
+        builder: (data, documentId) => CompetencyCategory.fromMap(data, documentId),
       );
 
   @override

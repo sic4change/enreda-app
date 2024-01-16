@@ -2,16 +2,13 @@ import 'package:enreda_app/app/home/competencies/competencies_item_builder.dart'
 import 'package:enreda_app/app/home/competencies/expandable_competency_tile.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
-import 'package:enreda_app/app/home/models/competencyCategory.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
-import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:expandable/expandable.dart';
@@ -21,8 +18,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class CompetenciesPageMobile extends StatelessWidget {
-  const CompetenciesPageMobile({Key? key, required this.showChatNotifier})
+class CompetenciesSubcategoriesPageMobile extends StatelessWidget {
+  const CompetenciesSubcategoriesPageMobile({Key? key, required this.showChatNotifier})
       : super(key: key);
   final ValueNotifier<bool> showChatNotifier;
 
@@ -36,8 +33,8 @@ class CompetenciesPageMobile extends StatelessWidget {
       child: StreamBuilder<User?>(
           stream: Provider.of<AuthBase>(context).authStateChanges(),
           builder: (context, snapshot) {
-            return StreamBuilder<List<CompetencyCategory>>(
-                stream: database.competenciesCategoriesStream(),
+            return StreamBuilder<List<Competency>>(
+                stream: database.competenciesStream(),
                 builder: (context, snapshot) {
                   return SingleChildScrollView(
                     padding: const EdgeInsets.all(4.0),
@@ -49,8 +46,7 @@ class CompetenciesPageMobile extends StatelessWidget {
                         SpaceH20(),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
-                          child: snapshot.hasData? _buildCompetenciesCategories(context, snapshot):
-                          Center(child: CircularProgressIndicator(),),
+                          child: _buildCompetenciesContainer(snapshot),
                         ),
                       ],
                     ),
@@ -276,43 +272,15 @@ class CompetenciesPageMobile extends StatelessWidget {
     );
   }
 
-  Widget _buildCompetenciesCategories(BuildContext context, AsyncSnapshot<List<CompetencyCategory>> snapshot) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Wrap(
-        runSpacing: 20.0,
-        spacing: 20.0,
-        children: snapshot.data!.map((c) =>
-            InkWell(
-              onTap: () {
-
-              },
-              child: RoundedContainer(
-                width: (MediaQuery.of(context).size.width/2) - 40,
-                height: Responsive.isMobile(context)? 220.0: 180.0,
-                shadowColor: Colors.black.withOpacity(0.4),
-                child: Column(
-                  children: [
-                    Image.asset(
-                      c.order == 1? ImagePath.COMPETENCIES_CATEGORIES_1:
-                      c.order == 2? ImagePath.COMPETENCIES_CATEGORIES_2:
-                      c.order == 3? ImagePath.COMPETENCIES_CATEGORIES_3:
-                      ImagePath.COMPETENCIES_CATEGORIES_1,
-                      width: 100.0,
-                    ),
-                    SpaceH20(),
-                    Text(
-                      c.name.toUpperCase(),
-                      style: textTheme.titleSmall,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ).toList(),
-      ),
+  Widget _buildCompetenciesContainer(AsyncSnapshot<List<Competency>> snapshot) {
+    return Center(
+        child: CompetenciesItemBuilder<Competency>(
+          user: null,
+          snapshot: snapshot,
+          itemBuilder: (context, competency) {
+            return ExpandableCompetencyTile(competency: competency);
+          },
+        ),
     );
   }
 

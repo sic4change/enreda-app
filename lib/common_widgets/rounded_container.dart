@@ -1,32 +1,42 @@
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 
 class RoundedContainer extends StatelessWidget {
-  const RoundedContainer(
-      {Key? key,
-      required this.child,
-      this.height,
-      this.margin,
-      this.padding =
-          const EdgeInsets.only(left: 20.0, top: 0.0, right: 8.0, bottom: 0.0)})
-      : super(key: key);
+  const RoundedContainer({
+    Key? key,
+    required this.child,
+    this.height,
+    this.width,
+    this.margin,
+    this.padding = const EdgeInsets.all(Borders.kDefaultPaddingDouble),
+    this.shadowColor,
+  }) : super(key: key);
+
   final Widget child;
   final EdgeInsets padding;
   final EdgeInsets? margin;
-  final double? height;
+  final double? height, width;
+  final Color? shadowColor;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: height,
-      margin: margin,
+      width: width,
+      padding: padding,
       decoration: BoxDecoration(
-          color: Constants.lightTurquoise,
-          borderRadius: BorderRadius.all(Radius.circular(20))),
-      child: Padding(
-        padding: padding,
-        child: child,
+        boxShadow: [
+          BoxShadow(
+              color: shadowColor ?? Colors.black.withOpacity(0.15),
+              offset: Offset(0, 1), //(x,y)
+              blurRadius: 4.0,
+              spreadRadius: 1.0),
+        ],
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        color: Constants.white,
       ),
-    );
+      child: child,
+      );
   }
 }

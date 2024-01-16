@@ -127,4 +127,8 @@ class ImagePath {
   static const String SWIRLS2 = '$imageDir/gamification_certificate/swirls2.svg';
   static const String SWIRLS3 = '$imageDir/gamification_certificate/swirls3.svg';
 
+  //Competencies Categories
+  static const String COMPETENCIES_CATEGORIES_1 = '$imageDir/competencies-categories-1.png';
+  static const String COMPETENCIES_CATEGORIES_2 = '$imageDir/competencies-categories-2.png';
+  static const String COMPETENCIES_CATEGORIES_3 = '$imageDir/competencies-categories-3.png';
 }

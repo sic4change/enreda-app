@@ -7,6 +7,7 @@ import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
+import 'package:enreda_app/app/home/models/competencySubCategory.dart';
 import 'package:enreda_app/app/home/models/contact.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/dedication.dart';
@@ -91,9 +92,11 @@ abstract class Database {
   Stream<List<Choice>> choicesStream(String path, String? typeId, String? subtypeId);
   Stream<List<Experience>> myExperiencesStream(String userId);
   Stream<List<Competency>> competenciesStream();
+  Stream<List<Competency>> competenciesByCategoryStream(String categoryId);
+  Stream<List<Competency>> competenciesBySubCategoryStream(String categoryId, String subCategoryId);
   Stream<Competency> competencyStream(String id);
   Stream<List<CompetencyCategory>> competenciesCategoriesStream();
-  Stream<CompetencyCategory> competenciesCategoryStream(String id);
+  Stream<List<CompetencySubCategory>> competenciesSubCategoriesByCategoryStream(String competencyCategoryId);
   Stream<Activity> activityStream(String id);
   Stream<List<ChatQuestion>> chatQuestionsStream(String userId);
   Stream<CertificationRequest> certificationRequestStream(String certificationRequestId);
@@ -776,6 +779,23 @@ class FirestoreDatabase implements Database {
         sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
       );
 */
+
+  @override
+  Stream<List<Competency>> competenciesByCategoryStream(String categoryId) => _service.collectionStream(
+    path: APIPath.competencies(),
+    builder: (data, documentId) => Competency.fromMap(data, documentId),
+    queryBuilder: (query) => query.where('competencyCategoryId', isEqualTo: categoryId),
+    sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
+  );
+
+  @override
+  Stream<List<Competency>> competenciesBySubCategoryStream(String categoryId, String subCategoryId) => _service.collectionStream(
+    path: APIPath.competencies(),
+    builder: (data, documentId) => Competency.fromMap(data, documentId),
+    queryBuilder: (query) => query.where('competencyCategoryId', isEqualTo: categoryId).where('competencySubCategoryId', isEqualTo: subCategoryId),
+    sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
+  );
+
   @override
   Stream<Competency> competencyStream(String id) =>
       _service.documentStream<Competency>(
@@ -792,11 +812,12 @@ class FirestoreDatabase implements Database {
   );
 
   @override
-  Stream<CompetencyCategory> competenciesCategoryStream(String id) =>
-      _service.documentStream<CompetencyCategory>(
-        path: APIPath.competenciesCategory(id),
-        builder: (data, documentId) => CompetencyCategory.fromMap(data, documentId),
-      );
+  Stream<List<CompetencySubCategory>> competenciesSubCategoriesByCategoryStream(String competencyCategoryId) => _service.collectionStream(
+    path: APIPath.competenciesSubCategories(),
+    builder: (data, documentId) => CompetencySubCategory.fromMap(data, documentId),
+    queryBuilder: (query) => query.where('competencyCategoryId', isEqualTo: competencyCategoryId),
+    sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+  );
 
   @override
   Stream<Activity> activityStream(String id) =>

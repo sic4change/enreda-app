@@ -49,7 +49,7 @@ class CompetenciesItemBuilder<T> extends StatelessWidget {
 
     final padding = Responsive.isDesktop(context)? 12.0: 0.0;
     return Align(
-      alignment: Alignment.topCenter,
+      alignment: Alignment.topLeft,
       child: Padding(
               padding: EdgeInsets.symmetric(horizontal: padding),
               child: Wrap(

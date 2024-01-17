@@ -10,7 +10,7 @@ class CompetencyCategory {
 
   factory CompetencyCategory.fromMap(Map<String, dynamic> data, String documentId) {
     return CompetencyCategory(
-      id: data['id']??"",
+      id: data['competencyCategoryId']??"",
       name: data["name"]??"",
       order: data['order']??0,
     );
@@ -24,7 +24,7 @@ class CompetencyCategory {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      'competencyCategoryId': id,
       'name': name,
       'order':order,
     };

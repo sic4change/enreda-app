@@ -1,4 +1,5 @@
 import 'package:enreda_app/app/home/competencies/competencies_item_builder.dart';
+import 'package:enreda_app/app/home/competencies/competencies_subcategories_page_mobile.dart';
 import 'package:enreda_app/app/home/competencies/expandable_competency_tile.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
@@ -21,10 +22,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class CompetenciesPageMobile extends StatelessWidget {
+class CompetenciesPageMobile extends StatefulWidget {
   const CompetenciesPageMobile({Key? key, required this.showChatNotifier})
       : super(key: key);
   final ValueNotifier<bool> showChatNotifier;
+
+  @override
+  State<CompetenciesPageMobile> createState() => _CompetenciesPageMobileState();
+}
+
+class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
+  Widget bodyWidget = Container();
+  bool showingSubCategoriesPage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +48,8 @@ class CompetenciesPageMobile extends StatelessWidget {
             return StreamBuilder<List<CompetencyCategory>>(
                 stream: database.competenciesCategoriesStream(),
                 builder: (context, snapshot) {
+                  if (snapshot.hasData && !showingSubCategoriesPage)
+                    bodyWidget = _buildCompetenciesCategories(context, snapshot);
                   return SingleChildScrollView(
                     padding: const EdgeInsets.all(4.0),
                     child: Column(
@@ -49,8 +60,7 @@ class CompetenciesPageMobile extends StatelessWidget {
                         SpaceH20(),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
-                          child: snapshot.hasData? _buildCompetenciesCategories(context, snapshot):
-                          Center(child: CircularProgressIndicator(),),
+                          child: snapshot.hasData? bodyWidget: Center(child: CircularProgressIndicator(),),
                         ),
                       ],
                     ),
@@ -286,9 +296,13 @@ class CompetenciesPageMobile extends StatelessWidget {
         spacing: 20.0,
         children: snapshot.data!.map((c) =>
             InkWell(
-              onTap: () {
-
-              },
+              onTap: () => setState(() {
+                showingSubCategoriesPage = true;
+                bodyWidget = CompetenciesSubcategoriesPageMobile(
+                  showChatNotifier: widget.showChatNotifier,
+                  competencyCategory: c,
+                );
+              }),
               child: RoundedContainer(
                 width: (MediaQuery.of(context).size.width/2) - 40,
                 height: Responsive.isMobile(context)? 220.0: 180.0,
@@ -305,7 +319,9 @@ class CompetenciesPageMobile extends StatelessWidget {
                     SpaceH20(),
                     Text(
                       c.name.toUpperCase(),
-                      style: textTheme.titleSmall,
+                      style: textTheme.titleSmall?.copyWith(
+                        fontSize: 16.0
+                      ),
                     ),
                   ],
                 ),

@@ -1,4 +1,6 @@
 import 'package:enreda_app/app/home/competencies/competencies_item_builder.dart';
+import 'package:enreda_app/app/home/competencies/competencies_item_builder_horizontal.dart';
+import 'package:enreda_app/app/home/competencies/expanded_competency_tile.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/competencies/expandable_competency_tile.dart';
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
@@ -23,10 +25,12 @@ class CompetenciesSubcategoriesPageMobile extends StatelessWidget {
     Key? key,
     required this.showChatNotifier,
     required this.competencyCategory,
+    this.onBackPressed,
   })
       : super(key: key);
   final ValueNotifier<bool> showChatNotifier;
   final CompetencyCategory competencyCategory;
+  final VoidCallback? onBackPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +42,21 @@ class CompetenciesSubcategoriesPageMobile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            competencyCategory.name.toUpperCase(),
-            style: textTheme.titleMedium,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: onBackPressed,
+                child: Icon(Icons.arrow_back, color: AppColors.primaryColor,),
+              ),
+              SpaceW8(),
+              Expanded(
+                child: Text(
+                  competencyCategory.name.toUpperCase(),
+                  style: textTheme.titleMedium,
+                ),
+              ),
+            ],
           ),
           StreamBuilder<User?>(
               stream: Provider.of<AuthBase>(context).authStateChanges(),
@@ -55,23 +71,64 @@ class CompetenciesSubcategoriesPageMobile extends StatelessWidget {
                                 stream: database.competenciesBySubCategoryStream(competencyCategory.id!, subCategory.competencySubCategoryId!),
                                 builder: (context, snapshotCompetencies) {
                                   if (snapshotCompetencies.hasData) {
+                                    final controller = ScrollController();
+                                    var scrollJump = MediaQuery.of(context).size.width * 0.96;
                                     return Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         SpaceH40(),
-                                        Text(
-                                          subCategory.name.toUpperCase(),
-                                          style: textTheme.bodyLarge?.copyWith(
-                                              fontSize: 20.0
-                                          ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                subCategory.name.toUpperCase(),
+                                                style: textTheme.bodyLarge?.copyWith(
+                                                    fontSize: 20.0
+                                                ),
+                                              ),
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                if (controller.position.pixels >=
+                                                    controller.position.minScrollExtent)
+                                                  controller.animateTo(
+                                                      controller.position.pixels - scrollJump,
+                                                      duration: Duration(milliseconds: 500),
+                                                      curve: Curves.ease);
+                                              },
+                                              child: Image.asset(
+                                                ImagePath.ARROW_BACK,
+                                                width: 24.0,
+                                              ),
+                                            ),
+                                            SpaceW12(),
+                                            InkWell(
+                                              onTap: () {
+                                                if (controller.position.pixels <=
+                                                    controller.position.maxScrollExtent)
+                                                  controller.animateTo(
+                                                      controller.position.pixels + scrollJump,
+                                                      duration: Duration(milliseconds: 500),
+                                                      curve: Curves.ease);
+                                              },
+                                              child: Image.asset(
+                                                ImagePath.ARROW_FORWARD,
+                                                width: 24.0,
+                                              ),
+                                            ),
+                                            SpaceW4(),
+                                          ],
                                         ),
                                         SpaceH40(),
-                                        CompetenciesItemBuilder<Competency>(
-                                          user: null,
-                                          snapshot: snapshotCompetencies,
-                                          itemBuilder: (context, competency) {
-                                            return ExpandableCompetencyTile(competency: competency);
-                                          },
+                                        Container(
+                                          height: 420.0,
+                                          child: CompetenciesItemBuilderHorizontal<Competency>(
+                                            scrollController: controller,
+                                            snapshot: snapshotCompetencies,
+                                            itemBuilder: (context, competency) {
+                                              return ExpandedCompetencyTile(competency: competency);
+                                            },
+                                          ),
                                         ),
                                       ],
                                     );

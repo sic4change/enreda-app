@@ -88,6 +88,8 @@ class ImagePath {
   static const String ICON_FAV_BLUE = '$imageDir/icon-fav-blue.png';
   static const String ARROW_DOWN = '$imageDir/arrow_down.png';
   static const String ARROW_UP = '$imageDir/arrow_up.png';
+  static const String ARROW_BACK = '$imageDir/arrow_back.png';
+  static const String ARROW_FORWARD = '$imageDir/arrow_forward.png';
   static const String DOWNLOAD = '$imageDir/icon-download.png';
   static const String LOGOUT = '$imageDir/icon-logout.png';
   static const String ICON_SHARE = '$imageDir/icon-share.png';

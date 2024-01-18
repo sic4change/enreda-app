@@ -322,6 +322,9 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                     bodyWidget = CompetenciesSubcategoriesPageWeb(
                       showChatNotifier: widget.showChatNotifier,
                       competencyCategory: c,
+                      onBackPressed: () => setState(() {
+                        bodyWidget = _competenciesCategoriesWidget(context, competenciesCategories);
+                      }),
                     );
                   }),
                   child: RoundedContainer(

@@ -8,8 +8,8 @@ class EmptyContent extends StatelessWidget {
     this.title = 'Nada por ahora',
     this.message = 'Sin elementos que mostrar aún'
   }) : super(key: key);
-  final String title;
-  final String message;
+  final String? title;
+  final String? message;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class EmptyContent extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              title,
+              title!,
               style: TextStyle(
                   fontSize: fontSize,
                   fontWeight: FontWeight.bold,
@@ -30,7 +30,7 @@ class EmptyContent extends StatelessWidget {
               ),
             ),
             Text(
-              message,
+              message!,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: fontSize,

@@ -301,11 +301,14 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                 bodyWidget = CompetenciesSubcategoriesPageMobile(
                   showChatNotifier: widget.showChatNotifier,
                   competencyCategory: c,
+                  onBackPressed: () => setState(() {
+                    bodyWidget = _buildCompetenciesCategories(context, snapshot);
+                  }),
                 );
               }),
               child: RoundedContainer(
                 width: (MediaQuery.of(context).size.width/2) - 40,
-                height: Responsive.isMobile(context)? 220.0: 180.0,
+                height: 180.0,
                 shadowColor: Colors.black.withOpacity(0.4),
                 child: Column(
                   children: [
@@ -320,7 +323,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                     Text(
                       c.name.toUpperCase(),
                       style: textTheme.titleSmall?.copyWith(
-                        fontSize: 16.0
+                        fontSize: 13.0
                       ),
                     ),
                   ],

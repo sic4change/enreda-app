@@ -95,6 +95,7 @@ class ImagePath {
   static const String ICON_SHARE = '$imageDir/icon-share.png';
   static const String ICON_CLICK_FUNDAULA = '$imageDir/icon-click-fundaula.png';
   static const String ICON_INFO = '$imageDir/info_icon.png';
+  static const String ICON_INFO_2 = '$imageDir/info_icon_2.png';
   static const String ICON_GAMIFICATION = '$imageDir/icon-gami.png';
 
   //Resources Categories

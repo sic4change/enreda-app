@@ -135,7 +135,7 @@ class _PillTooltipState extends State<PillTooltip> {
           }
         }
       },
-      child: Icon(Icons.info_outline, size: 24, color: AppColors.primaryColor,),
+      child: Image.asset(ImagePath.ICON_INFO_2, height: 24, width: 24,) ,// Icon(Icons.info_outline, size: 24, color: AppColors.primaryColor,),
     );
   }
 

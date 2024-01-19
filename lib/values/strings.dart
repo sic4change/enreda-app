@@ -477,4 +477,7 @@ class StringConst {
   static const String PILL_COMPETENCIES = '¿Qué son las competencias?';
   static const String PILL_CV_COMPETENCIES = 'El CV por competencias';
   static const String PILL_HOW_TO_DO_CV = '¿No sabes por dónde empezar tu CV?';
+
+  static const String SOMETHING_WRONG = 'Algo fue mal';
+  static const String CANNOT_LOAD_DATA = 'No se pudo cargar los datos';
 }

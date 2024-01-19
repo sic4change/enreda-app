@@ -107,6 +107,8 @@ flutter:
     - images/icon-chat.png
     - images/arrow_down.png
     - images/arrow_up.png
+    - images/arrow_back.png
+    - images/arrow_forward.png
     - images/icon-resources-blue.png
     - images/icon-resources-gray.png
     - images/icon-cv.png
@@ -169,6 +171,9 @@ flutter:
     - images/gamification_certificate/swirls1.svg
     - images/gamification_certificate/swirls2.svg
     - images/gamification_certificate/swirls3.svg
+    - images/competencies-categories-1.png
+    - images/competencies-categories-2.png
+    - images/competencies-categories-3.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

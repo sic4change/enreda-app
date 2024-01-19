@@ -1,4 +1,4 @@
-import 'package:enreda_app/common_widgets/rounded_container.dart';
+import 'package:enreda_app/common_widgets/rounded_container_filter.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
@@ -81,7 +81,7 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
       child: Row(
         children: [
           Expanded(
-            child: RoundedContainer(
+            child: RoundedContainerFilter(
               height: Responsive.isMobile(context) ? 40 : 45,
               padding: Responsive.isMobile(context) ? EdgeInsets.all(0) : EdgeInsets.all(8),
               margin: EdgeInsets.only(left: 5, right: 5),

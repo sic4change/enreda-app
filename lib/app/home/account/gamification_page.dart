@@ -58,7 +58,7 @@ class _GamificationState extends State<Gamification> {
                   _gamificationValues = snapshot.data!;
                   _gamificationValues.forEach((element) {print(element.description);});
 
-                  if (_gamificationFlags.length == (_gamificationValues.length - 2)
+                  if (_gamificationFlags.length == (_gamificationValues.length - 3)
                       && !_gamificationFlags.containsValue(false)){
                     _allTasksDone = true;
                   }
@@ -343,7 +343,10 @@ class _GamificationState extends State<Gamification> {
   Widget _getStepTile(GamificationFlag item){
     bool completed = (_gamificationFlags[item.id]) ?? false;
 
-    if (item.id == UserEnreda.FLAG_SIGN_UP || item.id == UserEnreda.FLAG_PILL_WHAT_IS_ENREDA) {
+    if (item.id == UserEnreda.FLAG_SIGN_UP ||
+        item.id == UserEnreda.FLAG_PILL_WHAT_IS_ENREDA ||
+        item.id == UserEnreda.FLAG_PILL_TRAVEL_BEGINS
+    ) {
       completed = true;
     }
 

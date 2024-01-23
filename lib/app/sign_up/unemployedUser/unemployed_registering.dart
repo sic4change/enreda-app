@@ -17,8 +17,10 @@ import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/specificinterest.dart';
 import 'package:enreda_app/app/home/models/timeSearching.dart';
 import 'package:enreda_app/app/home/models/timeSpentWeekly.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/unemployedUser.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_page.dart';
 import 'package:enreda_app/app/sign_up/unemployedUser/unemployed_revision_form.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/checkbox_form.dart';
@@ -39,6 +41,7 @@ import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/flex_row_column.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_exception_alert_dialog.dart';
+import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/common_widgets/text_form_field.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
@@ -981,76 +984,88 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           body: Stack(
             children: [
               Center(
-                child: Stack(
-                  children: [
-                    Container(
-                      height: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.height * 0.70,
-                      width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width * 0.70,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(Borders.kDefaultPaddingDouble / 2),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 2,
-                            blurRadius: 2,
-                            offset: Offset(0, 2), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: Stack(
-                        children: [
-                          Stepper(
-                            type: Responsive.isMobile(context) ? StepperType.vertical : StepperType.horizontal,
-                            steps: getSteps(),
-                            currentStep: currentStep,
-                            onStepContinue: onStepContinue,
-                            onStepTapped: (step) => goToStep(step),
-                            onStepCancel: onStepCancel,
-                            controlsBuilder: (context, _) {
-                              return Container(
-                                height: Borders.kDefaultPaddingDouble * 2,
-                                margin: EdgeInsets.only(top: Borders.kDefaultPaddingDouble * 2),
-                                padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble / 2),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    if(currentStep !=0)
-                                      EnredaButton(
-                                        buttonTitle: StringConst.FORM_BACK,
-                                        width: contactBtnWidth,
-                                        onPressed: onStepCancel,
-                                      ),
-                                    SizedBox(width: Borders.kDefaultPaddingDouble),
-                                    isLoading ? Center(child: CircularProgressIndicator(color: AppColors.primary300,)) :
-                                    EnredaButton(
-                                      buttonTitle: isLastStep ? StringConst.FORM_CONFIRM : StringConst.FORM_NEXT,
-                                      width: contactBtnWidth,
-                                      buttonColor: AppColors.primaryColor,
-                                      titleColor: AppColors.white,
-                                      onPressed: onStepContinue,
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                          Responsive.isTablet(context) || Responsive.isMobile(context) ?
-                          Positioned(
-                            top: screenHeight * 0.45,
-                            left: -10,
-                            child: Container(
-                              height: 300 * 0.50,
-                              child: ClipRRect(
-                                child: Image.asset(ImagePath.CHICA_LATERAL),
+                child:
+                    Column(
+                      children: [
+                        SizedBox(
+                          width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width * 0.70,
+                          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: Responsive.isMobile(context) || Responsive.isTablet(context)? 30.0: 0.0),
+                              child: PillTooltip(title: StringConst.PILL_TRAVEL_BEGINS, pillId: TrainingPill.TRAVEL_BEGINS_ID),
+                            )
+                          ],),
+                        ),
+                        SpaceH20(),
+                        Container(
+                          height: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.height * 0.70,
+                          width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width * 0.70,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(Borders.kDefaultPaddingDouble / 2),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 2,
+                                blurRadius: 2,
+                                offset: Offset(0, 2), // changes position of shadow
                               ),
-                            ),
-                          ) : Container(),
-                        ],
-                      ),
+                            ],
+                          ),
+                          child: Stack(
+                            children: [
+                              Stepper(
+                                type: Responsive.isMobile(context) ? StepperType.vertical : StepperType.horizontal,
+                                steps: getSteps(),
+                                currentStep: currentStep,
+                                onStepContinue: onStepContinue,
+                                onStepTapped: (step) => goToStep(step),
+                                onStepCancel: onStepCancel,
+                                controlsBuilder: (context, _) {
+                                  return Container(
+                                    height: Borders.kDefaultPaddingDouble * 2,
+                                    margin: EdgeInsets.only(top: Borders.kDefaultPaddingDouble * 2),
+                                    padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble / 2),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        if(currentStep !=0)
+                                          EnredaButton(
+                                            buttonTitle: StringConst.FORM_BACK,
+                                            width: contactBtnWidth,
+                                            onPressed: onStepCancel,
+                                          ),
+                                        SizedBox(width: Borders.kDefaultPaddingDouble),
+                                        isLoading ? Center(child: CircularProgressIndicator(color: AppColors.primary300,)) :
+                                        EnredaButton(
+                                          buttonTitle: isLastStep ? StringConst.FORM_CONFIRM : StringConst.FORM_NEXT,
+                                          width: contactBtnWidth,
+                                          buttonColor: AppColors.primaryColor,
+                                          titleColor: AppColors.white,
+                                          onPressed: onStepContinue,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                              Responsive.isTablet(context) || Responsive.isMobile(context) ?
+                              Positioned(
+                                top: screenHeight * 0.45,
+                                left: -10,
+                                child: Container(
+                                  height: 300 * 0.50,
+                                  child: ClipRRect(
+                                    child: Image.asset(ImagePath.CHICA_LATERAL),
+                                  ),
+                                ),
+                              ) : Container(),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+
               ),
               Responsive.isTablet(context) || Responsive.isMobile(context) ? Container() :
               Positioned(

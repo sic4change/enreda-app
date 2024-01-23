@@ -53,12 +53,14 @@ class _TrainingTooltipVideoState extends State<TrainingTooltipVideo> {
                       _initializeVideo(idYoutubeVideo);
 
                       switch (widget.trainingPill.id){
+                        /*
                         case TrainingPill.WHAT_IS_ENREDA_ID:
                           setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_WHAT_IS_ENREDA);
                           break;
                         case TrainingPill.TRAVEL_BEGINS_ID:
                           setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_TRAVEL_BEGINS);
                           break;
+                        */
                         case TrainingPill.WHAT_ARE_COMPETENCIES_ID:
                           setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
                           break;

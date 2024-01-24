@@ -1,10 +1,14 @@
 import 'package:chips_choice/chips_choice.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
+import 'package:enreda_app/app/home/curriculum/tooltip_video/training_tooltip_video.dart';
 import 'package:enreda_app/app/home/models/chatQuestion.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/question.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/chat_pill_video.dart';
 import 'package:enreda_app/common_widgets/custom_chip.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
+import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
@@ -25,6 +29,7 @@ class MessageTile extends StatefulWidget {
     required this.currentChoicesNotifier,
     required this.sourceAutoCompleteNotifier,
     this.showSportOptions,
+    required this.onNext,
   });
 
   final Question question;
@@ -34,6 +39,7 @@ class MessageTile extends StatefulWidget {
   static String? experienceTypeId, experienceSubtypeId;
   static List<String> recommendedActivities = [];
   ValueNotifier<bool>? showSportOptions;
+  final VoidCallback onNext;
 
   @override
   State<MessageTile> createState() => _MessageTileState();
@@ -58,13 +64,40 @@ class _MessageTileState extends State<MessageTile> {
     return Container(
       child: Column(
         children: [
-          _buildQuestion(
-            child: Text(
-                widget.question.text.replaceAll(StringConst.USERNAME_PATTERN,
-                    auth.currentUser!.displayName!),
-                textAlign: TextAlign.start,
-                style: chatRoomQuestionStyle()),
-          ),
+          if (widget.question.type == StringConst.VIDEO_QUESTION)
+            _buildQuestion(
+                child: StreamBuilder<TrainingPill>(
+                    stream: database.trainingPillStreamById(TrainingPill.WHAT_ARE_COMPETENCIES_ID),
+                    builder: (context, snapshot) {
+                      if(snapshot.hasData) {
+                        TrainingPill trainingPill = snapshot.data!;
+                        trainingPill.setTrainingPillCategoryName();
+                        return Container(
+                          key: Key('trainingPill-${trainingPill.id}'),
+                          child: Column(
+                            children: [
+                              Text(
+                                  widget.question.text.replaceAll(StringConst.USERNAME_PATTERN,
+                                      auth.currentUser!.displayName!),
+                                  textAlign: TextAlign.start,
+                                  style: chatRoomQuestionStyle()),
+                              SpaceH12(),
+                              ChatPillVideo(trainingPill: trainingPill, onNext: widget.onNext,),
+                            ],
+                          ),
+                        );
+                      } else
+                        return Container();
+                    })
+            ),
+          if (widget.question.type != StringConst.VIDEO_QUESTION)
+            _buildQuestion(
+              child: Text(
+                  widget.question.text.replaceAll(StringConst.USERNAME_PATTERN,
+                      auth.currentUser!.displayName!),
+                  textAlign: TextAlign.start,
+                  style: chatRoomQuestionStyle()),
+            ),
           if (widget.question.link != null)
             _buildQuestion(
               child: InkWell(

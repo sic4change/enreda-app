@@ -21,6 +21,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import '../../anallytics/analytics.dart';
 import 'message_tile.dart';
 
@@ -56,6 +57,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
     super.initState();
     _resetQuestions();
     setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CHAT);
+    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
   }
 
   @override
@@ -77,57 +79,67 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return SafeArea(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Constants.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15.0),
-                      topRight: Radius.circular(15.0)),
-                ),
-                clipBehavior: Clip.hardEdge,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Container(
-                      height: 60,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [
-                              Constants.penLightBlue,
-                              Constants.penBlue,
-                            ],
-                            begin: const FractionalOffset(0.0, 0.0),
-                            end: const FractionalOffset(0.5, 0.0),
-                            stops: [0.0, 1.0],
-                            tileMode: TileMode.clamp),
+            //TODO: Esto lo activamos si queremos que se refresque todo el chat cuando cambien de pestaña y vuelvan
+            return /* VisibilityDetector(
+              key: Key('visibility_detector_key'),
+              onVisibilityChanged: (visibilityInfo) {
+                var visiblePercentage = visibilityInfo.visibleFraction * 100;
+                if (visiblePercentage > 50) {
+                  _resetQuestions();
+                }
+              },
+              child:*/ SafeArea(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Constants.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15.0),
+                        topRight: Radius.circular(15.0)),
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Container(
+                        height: 60,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [
+                                Constants.penLightBlue,
+                                Constants.penBlue,
+                              ],
+                              begin: const FractionalOffset(0.0, 0.0),
+                              end: const FractionalOffset(0.5, 0.0),
+                              stops: [0.0, 1.0],
+                              tileMode: TileMode.clamp),
+                        ),
+                        child: Row(
+                          children: [
+                            SpaceW20(),
+                            Image.asset(ImagePath.LOGO_MDPI,
+                                color: Constants.white, width: 30),
+                            SpaceW20(),
+                            Text(
+                              'Redas Chat',
+                              style: TextStyle(
+                                  color: Constants.white,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          SpaceW20(),
-                          Image.asset(ImagePath.LOGO_MDPI,
-                              color: Constants.white, width: 30),
-                          SpaceW20(),
-                          Text(
-                            'Redas Chat',
-                            style: TextStyle(
-                                color: Constants.white,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ],
+                      Expanded(child: _buildChat(context)),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30.0),
+                        child: _buildIsWritingAnimation(),
                       ),
-                    ),
-                    Expanded(child: _buildChat(context)),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30.0),
-                      child: _buildIsWritingAnimation(),
-                    ),
-                    _buildWriteMessageContainer(database),
-                  ],
+                      _buildWriteMessageContainer(database),
+                    ],
+                  ),
                 ),
-              ),
+              //),
             );
           } else {
             return Center(
@@ -167,6 +179,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                             chatQuestion: chatQuestion,
                             currentChoicesNotifier: currentChoicesNotifier,
                             sourceAutoCompleteNotifier: sourceAutoCompleteNotifier,
+                            onNext: () => _showNextChatQuestion(question, [], database),
                           );
                         } else {
                           return Container();
@@ -189,8 +202,8 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
         builder: (context, isWriting, child) {
           return isWriting
               ? Container(
-                  height: 40.0,
-                  width: 40.0,
+                  height: 20.0,
+                  width: 20.0,
                   child: LoadingIndicator(
                     indicatorType: Indicator.ballPulse /*Indicator.pacman*/,
                     colors: [
@@ -203,7 +216,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                 )
               : Container(
                   width: 0.0,
-                  height: 40.0,
+                  height: 20.0,
                 );
         });
   }
@@ -399,7 +412,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
 
       case StringConst.TEXT_QUESTION:
       case StringConst.DATE_QUESTION:
-      case StringConst.NONE_QUESTION:
+      case StringConst.NONE_QUESTION || StringConst.VIDEO_QUESTION:
         // TODO: Check if question.order + 1 is valid in every case
         nextQuestion = questions
             .firstWhere((element) => element.order == question.order + 1);
@@ -411,7 +424,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
 
     database.updateChatQuestion(nextChatQuestion.copyWith(show: true));
 
-    if (nextQuestion.order == 9) {
+    if (nextQuestion.order == 6) {
       final userEnreda =
           await database.userStream(auth.currentUser!.email).first;
       if (userEnreda.isNotEmpty) {
@@ -444,7 +457,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
     var timestamp = Timestamp.now();
     questions.forEach((question) {
       bool showQuestion = false;
-      if (question.order == 1 || question.order == 2)
+      if (question.order == 1 || question.order == 2 || question.order == 3)
         showQuestion = true;
 
       final chatQuestion = chatQuestions.firstWhere(
@@ -472,7 +485,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
 
     Question _currentQuestion = questions.firstWhere(
         (question) => question.id == _currentChatQuestion.questionId);
-    if (_currentQuestion.order == 1 || _currentQuestion.order == 2) return;
+    if (_currentQuestion.order == 1 || _currentQuestion.order == 2 || _currentQuestion.order == 3) return;
 
     await database
         .updateChatQuestion(_currentChatQuestion.copyWith(show: false));

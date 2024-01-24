@@ -74,6 +74,7 @@ dependencies:
   easy_autocomplete: ^1.6.0
   youtube_player_iframe: ^4.0.4
   smooth_star_rating_null_safety: ^1.0.4+2
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:

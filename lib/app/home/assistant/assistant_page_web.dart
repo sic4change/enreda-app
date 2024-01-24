@@ -59,6 +59,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     super.initState();
     _resetQuestions();
     setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CHAT);
+    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
   }
 
   @override
@@ -188,6 +189,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                             currentChoicesNotifier: currentChoicesNotifier,
                             sourceAutoCompleteNotifier: sourceAutoCompleteNotifier,
                             showSportOptions: showSportOptions,
+                            onNext: () => _showNextChatQuestion(question, [], database),
                           );
                         } else {
                           return Container();
@@ -210,8 +212,8 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
         builder: (context, isWriting, child) {
           return isWriting
               ? Container(
-                  height: 40.0,
-                  width: 40.0,
+                  height: 20.0,
+                  width: 20.0,
                   child: LoadingIndicator(
                     indicatorType: Indicator.ballPulse /*Indicator.pacman*/,
                     colors: [
@@ -224,7 +226,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                 )
               : Container(
                   width: 0.0,
-                  height: 40.0,
+                  height: 20.0,
                 );
         });
   }
@@ -519,7 +521,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
 
       case StringConst.TEXT_QUESTION:
       case StringConst.DATE_QUESTION:
-      case StringConst.NONE_QUESTION:
+      case StringConst.NONE_QUESTION || StringConst.VIDEO_QUESTION:
         // TODO: Check if question.order + 1 is valid in every case
         nextQuestion = questions
             .firstWhere((element) => element.order == question.order + 1);
@@ -531,7 +533,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
 
     database.updateChatQuestion(nextChatQuestion.copyWith(show: true));
 
-    if (nextQuestion.order == 9) {
+    if (nextQuestion.order == 6) {
       final userEnreda =
           await database.userStream(auth.currentUser!.email).first;
       if (userEnreda.isNotEmpty) {
@@ -567,7 +569,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     var timestamp = Timestamp.now();
     questions.forEach((question) {
       bool showQuestion = false;
-      if (question.order == 1 || question.order == 2)
+      if (question.order == 1 || question.order == 2 /*|| question.order == 3*/)
         showQuestion = true;
 
       final chatQuestion = chatQuestions.firstWhere(
@@ -595,7 +597,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
 
     Question _currentQuestion = questions.firstWhere(
         (question) => question.id == _currentChatQuestion.questionId);
-    if (_currentQuestion.order == 1 || _currentQuestion.order == 2) return;
+    if (_currentQuestion.order == 1 || _currentQuestion.order == 2 || _currentQuestion.order == 3) return;
 
     await database
         .updateChatQuestion(_currentChatQuestion.copyWith(show: false));

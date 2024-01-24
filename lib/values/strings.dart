@@ -417,6 +417,7 @@ class StringConst {
   static const String MULTICHOICE_QUESTION = 'multichoice';
   static const String TEXT_QUESTION = 'text';
   static const String DATE_QUESTION = 'date';
+  static const String VIDEO_QUESTION = 'video';
   static const String TAG_EXPERIENCE = 'experience';
   static const String BADGE_EMPTY = 'empty';
   static const String BADGE_IDENTIFIED = 'identified';

@@ -62,13 +62,13 @@ class CompetenciesSubcategoriesPageWeb extends StatelessWidget {
                 stream: Provider.of<AuthBase>(context).authStateChanges(),
                 builder: (context, snapshot) {
                   return StreamBuilder<List<CompetencySubCategory>>(
-                      stream: database.competenciesSubCategoriesByCategoryStream(competencyCategory.id!),
+                      stream: database.competenciesSubCategoriesByCategoryStream(competencyCategory.competencyCategoryId),
                       builder: (context, snapshotSubCategories) {
                         if (snapshotSubCategories.hasData) {
                           return SingleChildScrollView(
                             child: Column(
                               children: snapshotSubCategories.data!.map((subCategory) => StreamBuilder<List<Competency>>(
-                                  stream: database.competenciesBySubCategoryStream(competencyCategory.id!, subCategory.competencySubCategoryId!),
+                                  stream: database.competenciesBySubCategoryStream(competencyCategory.competencyCategoryId, subCategory.competencySubCategoryId),
                                   builder: (context, snapshotCompetencies) {
                                     if (snapshotCompetencies.hasData) {
                                       final controller = ScrollController();

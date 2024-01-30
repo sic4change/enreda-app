@@ -1,32 +1,48 @@
-import 'package:enreda_app/values/strings.dart';
-import 'package:flutter/material.dart';
-
 class CompetencyCategory {
-  CompetencyCategory({
-    this.id,
-    required this.name,
-    required this.order
-  });
+  CompetencyCategory({required this.name, required this.competencyCategoryId, required this.order, required this.competencySubCategories});
 
-  factory CompetencyCategory.fromMap(Map<String, dynamic> data, String documentId) {
+  factory CompetencyCategory.fromMap(Map<String, dynamic>? data, String documentId) {
+    final String name = data?['name'];
+    final String competencyCategoryId = data?['competencyCategoryId'];
+    final int order = data?['order'];
+    List<String> competencySubCategories = [];
+    try {
+      data?['competencySubCategories'].forEach((competencySubCategory) {competencySubCategories.add(competencySubCategory.toString());});
+    } catch (e) {
+    }
+
+
     return CompetencyCategory(
-      id: data['competencyCategoryId']??"",
-      name: data["name"]??"",
-      order: data['order']??0,
+      name: name,
+      competencyCategoryId: competencyCategoryId,
+      order: order,
+      competencySubCategories: competencySubCategories
     );
   }
 
-  final String? id;
   final String name;
+  final String competencyCategoryId;
   final int order;
-
-  final ValueNotifier<bool> selected = ValueNotifier<bool>(false);
+  final List<String> competencySubCategories;
 
   Map<String, dynamic> toMap() {
     return {
-      'competencyCategoryId': id,
       'name': name,
-      'order':order,
+      'competencyCategoryId' : competencyCategoryId,
+      'order' : order,
+      'competencySubCategories' : competencySubCategories
     };
   }
+
+  @override
+  bool operator == (Object other){
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is CompetencyCategory &&
+            other.competencyCategoryId == competencyCategoryId);
+  }
+
+  @override
+  int get hashCode => super.hashCode;
+
 }

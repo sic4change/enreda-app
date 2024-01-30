@@ -6,6 +6,7 @@ import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/organization.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
+import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/build_share_button.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
@@ -90,34 +91,29 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
     return StreamBuilder<Resource>(
         stream: database.resourceStream(widget.resourceId),
         builder: (context, snapshotResource) {
-          if (snapshotResource.hasData &&
-              snapshotResource.connectionState == ConnectionState.active) {
+          if (snapshotResource.hasData) {
             resource = snapshotResource.data!;
             resource.setResourceTypeName();
             resource.setResourceCategoryName();
             sendResourceAnalyticsEvent(context, "enreda_app_open_resource", resource.resourceTypeName!);
             return StreamBuilder(
-                stream: resource.organizerType == 'Organización'
-                    ? database.organizationStream(resource.organizer)
+                stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
+                resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
                     : database.mentorStream(resource.organizer),
                 builder: (context, snapshotOrganizer) {
-                  if (snapshotOrganizer.hasData &&
-                      snapshotOrganizer.connectionState ==
-                          ConnectionState.active) {
+                  if (snapshotOrganizer.hasData) {
                     if (resource.organizerType == 'Organización') {
-                      final organization =
-                          snapshotOrganizer.data as Organization;
-                      resource.organizerName =
-                          organization == null ? '' : organization.name;
-                      resource.organizerImage =
-                          organization == null ? '' : organization.photo;
+                      final organization = snapshotOrganizer.data as Organization;
+                      resource.organizerName = organization.name;
+                      resource.organizerImage = organization.photo;
+                    } else if (resource.organizerType == 'Entidad Social') {
+                      final organization = snapshotOrganizer.data as SocialEntity;
+                      resource.organizerName = organization.name;
+                      resource.organizerImage = organization.photo;
                     } else {
                       final mentor = snapshotOrganizer.data as UserEnreda;
-                      resource.organizerName = mentor == null
-                          ? ''
-                          : '${mentor.firstName} ${mentor.lastName} ';
-                      resource.organizerImage =
-                          mentor == null ? '' : mentor.photo;
+                      resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
+                      resource.organizerImage = mentor.photo;
                     }
                   }
                   return StreamBuilder<Country>(
@@ -235,11 +231,9 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
         ),
         SpaceH12(),
         Text(
-          resource.promotor != null
-              ? resource.promotor != ""
+          resource.promotor?.isNotEmpty == true
               ? resource.promotor!
-              : resource.organizerName!
-              : resource.organizerName!,
+              : resource.organizerName ?? '',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: textTheme.bodyMedium?.copyWith(

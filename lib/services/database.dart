@@ -58,6 +58,7 @@ abstract class Database {
   Stream<List<Certificate>> myCertificatesStream(String userId);
   Stream<List<Organization>> organizationsStream();
   Stream<Organization> organizationStream(String organizationId);
+  Stream<SocialEntity> socialEntityStream(String socialEntityId);
   Stream<UserEnreda> mentorStream(String mentorId);
   Stream<List<Country>> countriesStream();
   Stream<List<Country>> countryFormatedStream();
@@ -319,6 +320,13 @@ class FirestoreDatabase implements Database {
       _service.documentStream<Organization>(
         path: APIPath.organization(organizationId),
         builder: (data, documentId) => Organization.fromMap(data, documentId),
+      );
+
+  @override
+  Stream<SocialEntity> socialEntityStream(String? socialEntityId) =>
+      _service.documentStream<SocialEntity>(
+        path: APIPath.socialEntity(socialEntityId!),
+        builder: (data, documentId) => SocialEntity.fromMap(data, documentId),
       );
 
   Stream<UserEnreda> mentorStream(String mentorId) =>

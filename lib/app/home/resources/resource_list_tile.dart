@@ -116,10 +116,9 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        widget.resource.promotor != null
+                                        widget.resource.promotor?.isNotEmpty == true
                                             ? widget.resource.promotor!
-                                            : widget.resource.organizerName ??
-                                                '',
+                                            : widget.resource.organizerName ?? '',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: textTheme.bodySmall?.copyWith(

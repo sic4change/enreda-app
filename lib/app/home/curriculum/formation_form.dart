@@ -1,14 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
-import 'package:enreda_app/app/home/curriculum/stream_builder_professionsActivities.dart';
-import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/education.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
-import 'package:enreda_app/common_widgets/show_competencies.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
-import 'package:enreda_app/services/api_path.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
@@ -20,16 +16,22 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common_widgets/flex_row_column.dart';
+import '../../anallytics/analytics.dart';
 import '../../sign_up/validating_form_controls/stream_builder_education.dart';
 import '../models/activity.dart';
 
 class FormationForm extends StatefulWidget {
-  const FormationForm({Key? key, this.experience, required this.isMainEducation})
+  const FormationForm({
+    Key? key,
+    this.experience,
+    required this.isMainEducation,
+    this.onComingBack,
+  })
       : super(key: key);
 
   final Experience? experience;
   final bool isMainEducation;
-
+  final VoidCallback? onComingBack;
 
   @override
   State<FormationForm> createState() => _FormationFormState();
@@ -87,7 +89,13 @@ class _FormationFormState extends State<FormationForm> {
                   .toList();
 
             if(widget.experience != null && widget.experience!.education != '' && _selectedEducation == null){
-              _selectedEducation = educationItems.firstWhere((element) => element.value!.label == widget.experience!.education).value;
+              educationItems.forEach((element) {
+                if(element.value!.label == widget.experience!.education){
+                  _selectedEducation = element.value;
+                } else{
+                  _selectedEducation = null;
+                }
+              });
             }
             }
 
@@ -345,23 +353,16 @@ class _FormationFormState extends State<FormationForm> {
 
       );
 
+      sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
       await database.addExperience(experience);
-      //_updateCompetenciesPoints(_type);
-      //_updateCompetenciesPoints(_subtype);
-      //_updateCompetenciesPoints(_activity);
-      //_updateCompetenciesPoints(_role);
-      //_updateCompetenciesPoints(_level);
-      //_updateListCompetenciesPoints(selectedProfessionActivities);
-      // TODO: Update competencies of other fields (in assistant_page too)
-      /*
-      await showCompetencies(context, userCompetencies: userCompetencies,
-          onDismiss: (dialogContext) async {
-        Navigator.of(context).pop(); */
-        Navigator.of(context).pop();
-        await showAlertDialog(context,
+      Navigator.of(context).pop();
+      await showAlertDialog(context,
             title: 'Información guardada',
             content: 'La información ha sido guardada en tu CV correctamente',
             defaultActionText: 'Ok');
+      if (widget.onComingBack != null) {
+        widget.onComingBack!();
+      }
     } else {
       final experience = Experience(
           id: widget.experience!.id,
@@ -386,6 +387,7 @@ class _FormationFormState extends State<FormationForm> {
           extraData: _extraDataController.text,
       );
 
+      sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
       await database.updateExperience(experience);
       Navigator.of(context).pop();
       await showAlertDialog(context,
@@ -394,33 +396,4 @@ class _FormationFormState extends State<FormationForm> {
           defaultActionText: 'Ok');
     }
   }
-
-  /*void _updateCompetenciesPoints(Choice? choice) {
-    if (choice != null && choice.competencies.isNotEmpty) {
-      choice.competencies.keys.forEach((competencyId) {
-        userCompetencies.update(
-            competencyId, (value) => value + choice.competencies[competencyId]!,
-            ifAbsent: () => choice.competencies[competencyId]!);
-      });
-    }
-  }*/
-
-  /*void _updateListCompetenciesPointsActivity(Activity? activity) {
-    if (activity != null && activity.competencies.isNotEmpty) {
-      activity.competencies.keys.forEach((competencyId) {
-        userCompetencies.update(
-            competencyId, (value) => value + activity.competencies[competencyId]!,
-            ifAbsent: () => activity.competencies[competencyId]!);
-      });
-    }
-  }
-
-  void _updateListCompetenciesPoints(Set<Activity>? choices) {
-    if (choices != null && choices.isNotEmpty)
-      for (var itemChoice in choices) {
-        _updateListCompetenciesPointsActivity(itemChoice);
-      }
-  }
-*/
-
 }

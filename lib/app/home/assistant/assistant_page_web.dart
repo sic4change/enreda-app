@@ -7,23 +7,26 @@ import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/question.dart';
 import 'package:enreda_app/app/home/assistant/list_item_builder.dart';
+import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_competencies.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
+import '../../anallytics/analytics.dart';
 import 'message_tile.dart';
 
 class AssistantPageWeb extends StatefulWidget {
   const AssistantPageWeb({Key? key, required this.onClose}) : super(key: key);
-  final void Function(bool showSuccessMessage) onClose;
+  final void Function(bool showSuccessMessage, String gamificationFlagName) onClose;
 
   @override
   _AssistantPageWebState createState() => _AssistantPageWebState();
@@ -55,6 +58,8 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
   void initState() {
     super.initState();
     _resetQuestions();
+    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CHAT);
+    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
   }
 
   @override
@@ -73,7 +78,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-
+    sendBasicAnalyticsEvent(context, "enreda_app_open_chat");
     return StreamBuilder<User?>(
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
@@ -126,7 +131,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                             child: Container(),
                           ),
                           IconButton(
-                              onPressed: () => widget.onClose(false),
+                              onPressed: () => widget.onClose(false, ""),
                               icon: Icon(
                                 Icons.close,
                                 color: Constants.white,
@@ -184,6 +189,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                             currentChoicesNotifier: currentChoicesNotifier,
                             sourceAutoCompleteNotifier: sourceAutoCompleteNotifier,
                             showSportOptions: showSportOptions,
+                            onNext: () => _showNextChatQuestion(question, [], database),
                           );
                         } else {
                           return Container();
@@ -206,8 +212,8 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
         builder: (context, isWriting, child) {
           return isWriting
               ? Container(
-                  height: 40.0,
-                  width: 40.0,
+                  height: 20.0,
+                  width: 20.0,
                   child: LoadingIndicator(
                     indicatorType: Indicator.ballPulse /*Indicator.pacman*/,
                     colors: [
@@ -220,7 +226,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                 )
               : Container(
                   width: 0.0,
-                  height: 40.0,
+                  height: 20.0,
                 );
         });
   }
@@ -515,7 +521,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
 
       case StringConst.TEXT_QUESTION:
       case StringConst.DATE_QUESTION:
-      case StringConst.NONE_QUESTION:
+      case StringConst.NONE_QUESTION || StringConst.VIDEO_QUESTION:
         // TODO: Check if question.order + 1 is valid in every case
         nextQuestion = questions
             .firstWhere((element) => element.order == question.order + 1);
@@ -527,7 +533,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
 
     database.updateChatQuestion(nextChatQuestion.copyWith(show: true));
 
-    if (nextQuestion.order == 9) {
+    if (nextQuestion.order == 6) {
       final userEnreda =
           await database.userStream(auth.currentUser!.email).first;
       if (userEnreda.isNotEmpty) {
@@ -563,7 +569,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     var timestamp = Timestamp.now();
     questions.forEach((question) {
       bool showQuestion = false;
-      if (question.order == 1 || question.order == 2)
+      if (question.order == 1 || question.order == 2 /*|| question.order == 3*/)
         showQuestion = true;
 
       final chatQuestion = chatQuestions.firstWhere(
@@ -591,7 +597,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
 
     Question _currentQuestion = questions.firstWhere(
         (question) => question.id == _currentChatQuestion.questionId);
-    if (_currentQuestion.order == 1 || _currentQuestion.order == 2) return;
+    if (_currentQuestion.order == 1 || _currentQuestion.order == 2 || _currentQuestion.order == 3) return;
 
     await database
         .updateChatQuestion(_currentChatQuestion.copyWith(show: false));
@@ -654,12 +660,12 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     List<String> professionActivities = [];
     String? peopleAffected;
     String? organization;
-    late Timestamp startDate;
+    Timestamp? startDate;
     Timestamp? endDate;
-    late String location;
-    late String workType;
-    late String experienceContext;
-    late String experienceContextPlace;
+    String location = "";
+    String workType = "";
+    String experienceContext = "";
+    String experienceContextPlace = "";
 
     chatQuestions =
         await database.chatQuestionsStream(auth.currentUser!.uid).first;
@@ -718,6 +724,8 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
       }
     });
 
+    sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
+
     await database.addExperience(Experience(
         userId: auth.currentUser!.uid,
         type: type,
@@ -738,7 +746,27 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     showCompetencies(context, userCompetencies: userCompetencies,
         onDismiss: (dialogContext) {
       Navigator.of(dialogContext).pop();
-      widget.onClose(true);
+
+      String gamificationFlagName = "";
+
+      switch (type) {
+        case 'Formativa':
+          gamificationFlagName = UserEnreda.FLAG_CV_FORMATION;
+          break;
+        case 'Complementaria':
+          gamificationFlagName = UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION;
+          break;
+        case 'Personal':
+          gamificationFlagName = UserEnreda.FLAG_CV_PERSONAL;
+          break;
+        case 'Profesional':
+          gamificationFlagName = UserEnreda.FLAG_CV_PROFESSIONAL;
+          break;
+        default:
+          break;
+      }
+
+      widget.onClose(true, gamificationFlagName);
     });
   }
 }

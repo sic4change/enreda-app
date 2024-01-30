@@ -32,6 +32,7 @@ dependencies:
   provider: ^6.1.1
   cloud_firestore: ^4.13.1
   firebase_storage: ^11.5.1
+  firebase_analytics: ^10.7.2
   intl: ^0.18.1
   url_launcher: ^6.2.1
   chips_choice: 3.0.1
@@ -73,6 +74,7 @@ dependencies:
   easy_autocomplete: ^1.6.0
   youtube_player_iframe: ^4.0.4
   smooth_star_rating_null_safety: ^1.0.4+2
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:
@@ -106,6 +108,8 @@ flutter:
     - images/icon-chat.png
     - images/arrow_down.png
     - images/arrow_up.png
+    - images/arrow_back.png
+    - images/arrow_forward.png
     - images/icon-resources-blue.png
     - images/icon-resources-gray.png
     - images/icon-cv.png
@@ -162,6 +166,16 @@ flutter:
     - images/fundaula-logo.png
     - images/placeholder_video.png
     - images/info_icon.png
+    - images/info_icon_2.png
+    - images/gamification_certificate/medail.svg
+    - images/gamification_certificate/garland.svg
+    - images/gamification_certificate/swirls.svg
+    - images/gamification_certificate/swirls1.svg
+    - images/gamification_certificate/swirls2.svg
+    - images/gamification_certificate/swirls3.svg
+    - images/competencies-categories-1.png
+    - images/competencies-categories-2.png
+    - images/competencies-categories-3.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

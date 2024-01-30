@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,22 +7,28 @@ import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/question.dart';
 import 'package:enreda_app/app/home/assistant/list_item_builder.dart';
+import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_competencies.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import '../../anallytics/analytics.dart';
 import 'message_tile.dart';
 
 class AssistantPageMobile extends StatefulWidget {
-  const AssistantPageMobile({Key? key}) : super(key: key);
+  const AssistantPageMobile({Key? key, required this.onFinish}) : super(key: key);
+
+  final void Function(String gamificationFlagName) onFinish;
 
   @override
   _AssistantPageMobileState createState() => _AssistantPageMobileState();
@@ -51,6 +56,8 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
   void initState() {
     super.initState();
     _resetQuestions();
+    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CHAT);
+    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
   }
 
   @override
@@ -67,62 +74,72 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-
+    sendBasicAnalyticsEvent(context, "enreda_app_open_chat");
     return StreamBuilder<User?>(
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return SafeArea(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Constants.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15.0),
-                      topRight: Radius.circular(15.0)),
-                ),
-                clipBehavior: Clip.hardEdge,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Container(
-                      height: 60,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [
-                              Constants.penLightBlue,
-                              Constants.penBlue,
-                            ],
-                            begin: const FractionalOffset(0.0, 0.0),
-                            end: const FractionalOffset(0.5, 0.0),
-                            stops: [0.0, 1.0],
-                            tileMode: TileMode.clamp),
+            //TODO: Esto lo activamos si queremos que se refresque todo el chat cuando cambien de pestaña y vuelvan
+            return /* VisibilityDetector(
+              key: Key('visibility_detector_key'),
+              onVisibilityChanged: (visibilityInfo) {
+                var visiblePercentage = visibilityInfo.visibleFraction * 100;
+                if (visiblePercentage > 50) {
+                  _resetQuestions();
+                }
+              },
+              child:*/ SafeArea(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Constants.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15.0),
+                        topRight: Radius.circular(15.0)),
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Container(
+                        height: 60,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [
+                                Constants.penLightBlue,
+                                Constants.penBlue,
+                              ],
+                              begin: const FractionalOffset(0.0, 0.0),
+                              end: const FractionalOffset(0.5, 0.0),
+                              stops: [0.0, 1.0],
+                              tileMode: TileMode.clamp),
+                        ),
+                        child: Row(
+                          children: [
+                            SpaceW20(),
+                            Image.asset(ImagePath.LOGO_MDPI,
+                                color: Constants.white, width: 30),
+                            SpaceW20(),
+                            Text(
+                              'Redas Chat',
+                              style: TextStyle(
+                                  color: Constants.white,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          SpaceW20(),
-                          Image.asset(ImagePath.LOGO_MDPI,
-                              color: Constants.white, width: 30),
-                          SpaceW20(),
-                          Text(
-                            'Redas Chat',
-                            style: TextStyle(
-                                color: Constants.white,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ],
+                      Expanded(child: _buildChat(context)),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30.0),
+                        child: _buildIsWritingAnimation(),
                       ),
-                    ),
-                    Expanded(child: _buildChat(context)),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30.0),
-                      child: _buildIsWritingAnimation(),
-                    ),
-                    _buildWriteMessageContainer(database),
-                  ],
+                      _buildWriteMessageContainer(database),
+                    ],
+                  ),
                 ),
-              ),
+              //),
             );
           } else {
             return Center(
@@ -162,6 +179,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                             chatQuestion: chatQuestion,
                             currentChoicesNotifier: currentChoicesNotifier,
                             sourceAutoCompleteNotifier: sourceAutoCompleteNotifier,
+                            onNext: () => _showNextChatQuestion(question, [], database),
                           );
                         } else {
                           return Container();
@@ -184,8 +202,8 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
         builder: (context, isWriting, child) {
           return isWriting
               ? Container(
-                  height: 40.0,
-                  width: 40.0,
+                  height: 20.0,
+                  width: 20.0,
                   child: LoadingIndicator(
                     indicatorType: Indicator.ballPulse /*Indicator.pacman*/,
                     colors: [
@@ -198,7 +216,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                 )
               : Container(
                   width: 0.0,
-                  height: 40.0,
+                  height: 20.0,
                 );
         });
   }
@@ -394,7 +412,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
 
       case StringConst.TEXT_QUESTION:
       case StringConst.DATE_QUESTION:
-      case StringConst.NONE_QUESTION:
+      case StringConst.NONE_QUESTION || StringConst.VIDEO_QUESTION:
         // TODO: Check if question.order + 1 is valid in every case
         nextQuestion = questions
             .firstWhere((element) => element.order == question.order + 1);
@@ -406,7 +424,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
 
     database.updateChatQuestion(nextChatQuestion.copyWith(show: true));
 
-    if (nextQuestion.order == 9) {
+    if (nextQuestion.order == 6) {
       final userEnreda =
           await database.userStream(auth.currentUser!.email).first;
       if (userEnreda.isNotEmpty) {
@@ -439,7 +457,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
     var timestamp = Timestamp.now();
     questions.forEach((question) {
       bool showQuestion = false;
-      if (question.order == 1 || question.order == 2)
+      if (question.order == 1 || question.order == 2 || question.order == 3)
         showQuestion = true;
 
       final chatQuestion = chatQuestions.firstWhere(
@@ -467,7 +485,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
 
     Question _currentQuestion = questions.firstWhere(
         (question) => question.id == _currentChatQuestion.questionId);
-    if (_currentQuestion.order == 1 || _currentQuestion.order == 2) return;
+    if (_currentQuestion.order == 1 || _currentQuestion.order == 2 || _currentQuestion.order == 3) return;
 
     await database
         .updateChatQuestion(_currentChatQuestion.copyWith(show: false));
@@ -520,12 +538,12 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
     List<String> professionActivities = [];
     String? peopleAffected;
     String? organization;
-    late Timestamp startDate;
+    Timestamp? startDate;
     Timestamp? endDate;
-    late String location;
-    late String workType;
-    late String experienceContext;
-    late String experienceContextPlace;
+    String location = "";
+    String workType = "";
+    String experienceContext = "";
+    String experienceContextPlace = "";
 
     chatQuestions =
         await database.chatQuestionsStream(auth.currentUser!.uid).first;
@@ -584,6 +602,8 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
       }
     });
 
+    sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
+
     await database.addExperience(Experience(
         userId: auth.currentUser!.uid,
         type: type,
@@ -601,6 +621,8 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
         context: experienceContext,
         contextPlace: experienceContextPlace));
 
+    sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
+
     //_resetQuestions();
     showCompetencies(context, userCompetencies: userCompetencies,
         onDismiss: (dialogContext) {
@@ -609,6 +631,24 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(StringConst.EXPERIENCE_ADDED),
       ));
+      // show Gamification snackbar
+      switch (type) {
+        case 'Formativa':
+          widget.onFinish(UserEnreda.FLAG_CV_FORMATION);
+          break;
+        case 'Complementaria':
+          widget.onFinish(UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION);
+          break;
+        case 'Personal':
+          widget.onFinish(UserEnreda.FLAG_CV_PERSONAL);
+          break;
+        case 'Profesional':
+          widget.onFinish(UserEnreda.FLAG_CV_PROFESSIONAL);
+          break;
+        default:
+          widget.onFinish("");
+          break;
+      }
     });
   }
 }

@@ -1,3 +1,5 @@
+import 'package:enreda_app/app/home/models/trainingPill.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_form_change_notifier.dart';
 import 'package:enreda_app/app/sign_in/access/sections/background_web.dart';
 import 'package:enreda_app/utils/const.dart';
@@ -64,6 +66,11 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                                       height: Sizes.HEIGHT_32,
                                     ),
                                   ),
+                                  Expanded(child: Container()),
+                                  PillTooltip(
+                                    title: StringConst.TAG_ENREDA,
+                                    pillId: TrainingPill.WHAT_IS_ENREDA_ID,
+                                  )
                                 ],
                               ),
                             ),

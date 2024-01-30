@@ -6,6 +6,7 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -79,7 +80,9 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
                                         ValidateCompetencyButton(
                                             competency: competency,
                                             database: database,
-                                            auth: auth),
+                                            auth: auth,
+                                            onComingBack: () => setGamificationFlag(context: context, flagId: UserEnreda.FLAG_EVALUATE_COMPETENCY)
+                                        ),
                                       if (status ==
                                           StringConst.BADGE_VALIDATED ||
                                           status == StringConst.BADGE_CERTIFIED)

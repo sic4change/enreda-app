@@ -1,10 +1,13 @@
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enreda_app/app/home/models/ability.dart';
 import 'package:enreda_app/app/home/models/certificate.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
+import 'package:enreda_app/app/home/models/competencyCategory.dart';
+import 'package:enreda_app/app/home/models/competencySubCategory.dart';
 import 'package:enreda_app/app/home/models/contact.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/dedication.dart';
@@ -23,6 +26,7 @@ import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/resourceCategory.dart';
 import 'package:enreda_app/app/home/models/scope.dart';
 import 'package:enreda_app/app/home/models/size.dart';
+import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/specificinterest.dart';
 import 'package:enreda_app/app/home/models/timeSearching.dart';
 import 'package:enreda_app/app/home/models/timeSpentWeekly.dart';
@@ -39,6 +43,7 @@ import '../app/home/models/certificationRequest.dart';
 import '../app/home/models/resourcePicture.dart';
 import '../app/home/models/activity.dart';
 import '../app/home/models/question.dart';
+import '../app/home/models/gamificationFlags.dart';
 import 'package:async/async.dart' show StreamGroup;
 
 abstract class Database {
@@ -87,7 +92,11 @@ abstract class Database {
   Stream<List<Choice>> choicesStream(String path, String? typeId, String? subtypeId);
   Stream<List<Experience>> myExperiencesStream(String userId);
   Stream<List<Competency>> competenciesStream();
+  Stream<List<Competency>> competenciesByCategoryStream(String categoryId);
+  Stream<List<Competency>> competenciesBySubCategoryStream(String categoryId, String subCategoryId);
   Stream<Competency> competencyStream(String id);
+  Stream<List<CompetencyCategory>> competenciesCategoriesStream();
+  Stream<List<CompetencySubCategory>> competenciesSubCategoriesByCategoryStream(String competencyCategoryId);
   Stream<Activity> activityStream(String id);
   Stream<List<ChatQuestion>> chatQuestionsStream(String userId);
   Stream<CertificationRequest> certificationRequestStream(String certificationRequestId);
@@ -96,6 +105,8 @@ abstract class Database {
   Stream<List<TrainingPill>> trainingPillStream();
   Stream<List<TrainingPill>> filteredTrainingPillStream(FilterTrainingPill filter);
   Stream<TrainingPill> trainingPillStreamById(String id);
+  Stream<List<GamificationFlag>> gamificationFlagsStream();
+  Stream<List<SocialEntity>> socialEntitiesStream();
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> addUserEnreda(UserEnreda userEnreda);
@@ -727,7 +738,8 @@ class FirestoreDatabase implements Database {
         queryBuilder: (query) =>
             query.where('userId', isEqualTo: userId),
         builder: (data, documentId) => Experience.fromMap(data, documentId),
-        sort: (lhs, rhs) => rhs.startDate.compareTo(lhs.startDate),
+        sort: (lhs, rhs) => (rhs.startDate?? Timestamp.fromMicrosecondsSinceEpoch(0))
+            .compareTo(lhs.startDate?? Timestamp.fromMicrosecondsSinceEpoch(0)),
       );
 
   @override
@@ -767,12 +779,45 @@ class FirestoreDatabase implements Database {
         sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
       );
 */
+
+  @override
+  Stream<List<Competency>> competenciesByCategoryStream(String categoryId) => _service.collectionStream(
+    path: APIPath.competencies(),
+    builder: (data, documentId) => Competency.fromMap(data, documentId),
+    queryBuilder: (query) => query.where('competencyCategoryId', isEqualTo: categoryId),
+    sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
+  );
+
+  @override
+  Stream<List<Competency>> competenciesBySubCategoryStream(String categoryId, String subCategoryId) => _service.collectionStream(
+    path: APIPath.competencies(),
+    builder: (data, documentId) => Competency.fromMap(data, documentId),
+    queryBuilder: (query) => query.where('competencyCategoryId', isEqualTo: categoryId).where('competencySubCategoryId', isEqualTo: subCategoryId),
+    sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
+  );
+
   @override
   Stream<Competency> competencyStream(String id) =>
       _service.documentStream<Competency>(
         path: APIPath.competency(id),
         builder: (data, documentId) => Competency.fromMap(data, documentId),
       );
+
+  @override
+  Stream<List<CompetencyCategory>> competenciesCategoriesStream() => _service.collectionStream(
+    path: APIPath.competenciesCategories(),
+    builder: (data, documentId) => CompetencyCategory.fromMap(data, documentId),
+    queryBuilder: (query) => query,
+    sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+  );
+
+  @override
+  Stream<List<CompetencySubCategory>> competenciesSubCategoriesByCategoryStream(String competencyCategoryId) => _service.collectionStream(
+    path: APIPath.competenciesSubCategories(),
+    builder: (data, documentId) => CompetencySubCategory.fromMap(data, documentId),
+    queryBuilder: (query) => query.where('competencyCategoryId', isEqualTo: competencyCategoryId),
+    sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+  );
 
   @override
   Stream<Activity> activityStream(String id) =>
@@ -797,6 +842,22 @@ class FirestoreDatabase implements Database {
       queryBuilder: (query) => query.where('id', isEqualTo: activityId),
     );
   }
+
+  @override
+  Stream<List<GamificationFlag>> gamificationFlagsStream() => _service.collectionStream(
+    path: APIPath.gamificationFlags(),
+    queryBuilder: (query) => query.where('id', isNotEqualTo: null),
+    builder: (data, documentId) => GamificationFlag.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+  );
+
+  @override
+  Stream<List<SocialEntity>> socialEntitiesStream() => _service.collectionStream(
+    path: APIPath.socialEntities(),
+    queryBuilder: (query) => query.where('trust', isEqualTo: true),
+    builder: (data, documentId) => SocialEntity.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
+  );
 
 }
 

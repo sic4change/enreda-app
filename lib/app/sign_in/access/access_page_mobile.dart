@@ -1,3 +1,5 @@
+import 'package:enreda_app/app/home/models/trainingPill.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_form_change_notifier.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/values.dart';
@@ -23,6 +25,19 @@ class _AccessPageMobileState extends State<AccessPageMobile> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50.0),
+              child: Row(
+                children: [
+                  Expanded(child: Container()),
+                  PillTooltip(
+                    title: StringConst.TAG_ENREDA,
+                    pillId: TrainingPill.WHAT_IS_ENREDA_ID,
+                  ),
+                ],
+              ),
+            ),
+            SpaceH30(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(

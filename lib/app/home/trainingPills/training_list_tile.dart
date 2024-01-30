@@ -1,10 +1,12 @@
 import 'package:enreda_app/app/home/models/trainingPill.dart';
+import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/app/home/trainingPills/build_share_training_pill.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/training_pills_actions.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/foundation.dart';
@@ -15,9 +17,10 @@ import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import '../../../services/auth.dart';
 
 class TrainingPillListTile extends StatefulWidget {
-  const TrainingPillListTile({Key? key, required this.trainingPill, this.onTap})
+  const TrainingPillListTile({Key? key, required this.trainingPill, this.showDescription = true, this.onTap})
       : super(key: key);
   final TrainingPill trainingPill;
+  final bool showDescription;
   final VoidCallback? onTap;
 
   @override
@@ -112,7 +115,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                                   ),
                                 ),
                               ),
-                              Responsive.isMobile(context) ? Container() :
+                              Responsive.isMobile(context) || !widget.showDescription ? Container() :
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: sidePadding),
                                 child: Text(
@@ -133,6 +136,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                         ],
                       ),
                     ),
+                    if (widget.showDescription)
                     Spacer(),
                     Container(
                       child: Padding(
@@ -247,6 +251,28 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
         aspectRatio: 16 / 9,
         child: InkWell(
           onTap: () async {
+            switch (widget.trainingPill.id){
+              /*
+              case TrainingPill.WHAT_IS_ENREDA_ID:
+                setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_WHAT_IS_ENREDA);
+                break;
+              case TrainingPill.TRAVEL_BEGINS_ID:
+                setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_TRAVEL_BEGINS);
+                break;
+              */
+              case TrainingPill.WHAT_ARE_COMPETENCIES_ID:
+                setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
+                break;
+              case TrainingPill.CV_COMPETENCIES_ID:
+                setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_CV_COMPETENCIES);
+                break;
+              case TrainingPill.HOW_TO_DO_CV_ID:
+                setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_HOW_TO_DO_CV);
+                break;
+              default:
+                break;
+            }
+
             setState(() {
               setState(() {
                 _isVideoVisible = !_isVideoVisible;

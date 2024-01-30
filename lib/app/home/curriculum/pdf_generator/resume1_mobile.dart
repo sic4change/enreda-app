@@ -219,14 +219,17 @@ Future<Uint8List> generateResume1(
                             title: experience.activityRole != null &&
                                     experience.activity != null
                                 ? '${experience.activityRole} - ${experience.activity}'
-                                : experience.position == ""
+                                : (experience.position == null || experience.position == "")
                                     ? experience.activity
-                                    : experience.organization == ""
+                                    : (experience.organization == null || experience.organization == "")
                                         ? experience.position
                                         : '${experience.position} - ${experience.organization}',
                             showDescription1: idSelectedDateExperience!.contains(experience.id),
                             description1:
-                                '${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
+                                ' ${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : 'Desconocida'} / '
+                                    '${experience.subtype == 'Responsabilidades familiares'? 'Desconocida'
+                                    :experience.endDate != null ? formatter.format(experience.endDate!.toDate())
+                                    :'Actualmente'}',
                             description2: '${experience.location}',
                           ),
                         pw.SizedBox(height: 5),
@@ -237,14 +240,15 @@ Future<Uint8List> generateResume1(
                             title: experience.activityRole != null &&
                                 experience.activity != null
                                 ? '${experience.activityRole} - ${experience.activity}'
-                                : experience.position == ""
+                                : (experience.position == null || experience.position == "")
                                 ? experience.activity
-                                : experience.organization == ""
+                                : (experience.organization == null || experience.organization == "")
                                 ? experience.position
                                 : '${experience.position} - ${experience.organization}',
                             showDescription1: idSelectedDatePersonalExperience!.contains(experience.id),
                             description1:
-                            '${formatter.format(experience.startDate.toDate())} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
+                            '${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : 'Desconocida'} / '
+                                '${experience.subtype == 'Responsabilidades familiares'? 'Desconocida': experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
                             description2: '${experience.location}',
                           ),
                         pw.SizedBox(height: 5),
@@ -256,7 +260,8 @@ Future<Uint8List> generateResume1(
                                 ? education.nameFormation
                                 : education.activity,
                             showDescription1: idSelectedDateEducation!.contains(education.id),
-                            description1:'${formatter.format(education.startDate.toDate())} / ${education.endDate != null
+                            description1:'${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} / '
+                                '${education.subtype == 'Responsabilidades familiares'? 'Desconocida': education.endDate != null
                                 ? formatter.format(education.endDate!.toDate())
                                 : 'Actualmente'}',
                             description2: '${education.location}',
@@ -270,7 +275,8 @@ Future<Uint8List> generateResume1(
                                 ? education.nameFormation
                                 : education.activity,
                             showDescription1: idSelectedDateSecondaryEducation!.contains(education.id),
-                            description1:'${formatter.format(education.startDate.toDate())} / ${education.endDate != null
+                            description1:'${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} / '
+                                '${education.subtype == 'Responsabilidades familiares'? 'Desconocida':education.endDate != null
                                 ? formatter.format(education.endDate!.toDate())
                                 : 'Actualmente'}',
                             description2: '${education.location}',

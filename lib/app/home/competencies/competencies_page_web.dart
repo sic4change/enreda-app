@@ -1,11 +1,18 @@
 import 'package:enreda_app/app/home/competencies/competencies_item_builder.dart';
+import 'package:enreda_app/app/home/competencies/competencies_subcategories_page_web.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/competencies/expandable_competency_tile.dart';
+import 'package:enreda_app/app/home/models/competencyCategory.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
+import 'package:enreda_app/common_widgets/rounded_container.dart';
+import 'package:enreda_app/common_widgets/rounded_container_filter.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,14 +21,23 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class CompetenciesPageWeb extends StatelessWidget {
+class CompetenciesPageWeb extends StatefulWidget {
   const CompetenciesPageWeb({Key? key, required this.showChatNotifier})
       : super(key: key);
   final ValueNotifier<bool> showChatNotifier;
 
   @override
+  State<CompetenciesPageWeb> createState() => _CompetenciesPageWebState();
+}
+
+class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
+  Widget bodyWidget = Container();
+  bool showingSubCategoriesPage = false;
+
+  @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
+    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       padding: EdgeInsets.only(
@@ -29,9 +45,11 @@ class CompetenciesPageWeb extends StatelessWidget {
       child: StreamBuilder<User?>(
           stream: Provider.of<AuthBase>(context).authStateChanges(),
           builder: (context, snapshot) {
-            return StreamBuilder<List<Competency>>(
-                stream: database.competenciesStream(),
+            return StreamBuilder<List<CompetencyCategory>>(
+                stream: database.competenciesCategoriesStream(),
                 builder: (context, snapshot) {
+                  if (snapshot.hasData && !showingSubCategoriesPage)
+                    bodyWidget = _competenciesCategoriesWidget(context, snapshot.data!);
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -41,7 +59,40 @@ class CompetenciesPageWeb extends StatelessWidget {
                         flex: 5,
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
-                          child: _buildCompetenciesContainer(context, snapshot),
+                          child: RoundedContainer(
+                              child: SingleChildScrollView(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 30),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              StringConst.COMPETENCIES.toUpperCase(),
+                                              style: textTheme.bodyText1?.copyWith(
+                                                color: Constants.penBlue,
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SpaceW8(),
+                                            PillTooltip(
+                                              title: StringConst.PILL_COMPETENCIES,
+                                              pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      if (snapshot.hasData)
+                                        bodyWidget,
+                                      if (!snapshot.hasData)
+                                        Center(child: CircularProgressIndicator(),),
+                                    ],
+                                  )
+                              )
+                          ),
                         ),
                       ),
                     ],
@@ -62,20 +113,9 @@ class CompetenciesPageWeb extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
+            RoundedContainer(
               padding: EdgeInsets.only(
                   left: 44.0, top: 44.0, right: 44.0, bottom: 0.0),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      offset: Offset(0, 1), //(x,y)
-                      blurRadius: 4.0,
-                      spreadRadius: 1.0),
-                ],
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                color: Constants.white,
-              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -194,7 +234,7 @@ class CompetenciesPageWeb extends StatelessWidget {
       child: TextButton(
         onPressed: () => auth.isNullUser
             ? _showAlertNullUser(context)
-            : showChatNotifier.value = !showChatNotifier.value,
+            : widget.showChatNotifier.value = !widget.showChatNotifier.value,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Row(
@@ -254,51 +294,6 @@ class CompetenciesPageWeb extends StatelessWidget {
     );
   }
 
-  Widget _buildCompetenciesContainer(
-      BuildContext context, AsyncSnapshot<List<Competency>> snapshot) {
-    TextTheme textTheme = Theme.of(context).textTheme;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 24.0),
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              offset: Offset(0, 1), //(x,y)
-              blurRadius: 4.0,
-              spreadRadius: 1.0),
-        ],
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-        color: Constants.white,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 30, bottom: 30),
-              child: Text(
-                StringConst.COMPETENCIES.toUpperCase(),
-                style: textTheme.bodyText1?.copyWith(
-                  color: Constants.penBlue,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            CompetenciesItemBuilder<Competency>(
-              user: null,
-              snapshot: snapshot,
-              itemBuilder: (context, competency) {
-                return ExpandableCompetencyTile(competency: competency);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   _showAlertNullUser(BuildContext context) async {
     final didRequestSignOut = await showAlertDialog(context,
         title: 'Aún no has iniciado sesión',
@@ -309,5 +304,63 @@ class CompetenciesPageWeb extends StatelessWidget {
     if (didRequestSignOut == true) {
       context.push(StringConst.PATH_LOGIN);
     }
+  }
+
+  Widget _competenciesCategoriesWidget(BuildContext context, List<CompetencyCategory> competenciesCategories) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: competenciesCategories.map((c) =>
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                InkWell(
+                  onTap: () => setState(() {
+                    showingSubCategoriesPage = true;
+                    bodyWidget = CompetenciesSubcategoriesPageWeb(
+                      showChatNotifier: widget.showChatNotifier,
+                      competencyCategory: c,
+                      onBackPressed: () => setState(() {
+                        bodyWidget = _competenciesCategoriesWidget(context, competenciesCategories);
+                      }),
+                    );
+                  }),
+                  child: RoundedContainer(
+                    shadowColor: Colors.black.withOpacity(0.4),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: Responsive.isDesktopS(context)? 7: 5,
+                          child: Text(
+                            c.name.toUpperCase(),
+                            style: textTheme.titleLarge?.copyWith(
+                              fontSize: Responsive.isDesktopS(context)? 16.0: 20.0,
+                            ),
+                          ),
+                        ),
+                        SpaceW8(),
+                        Expanded(
+                          flex: Responsive.isDesktopS(context)? 3: 5,
+                          child: Image.asset(
+                            c.order == 1? ImagePath.COMPETENCIES_CATEGORIES_1:
+                            c.order == 2? ImagePath.COMPETENCIES_CATEGORIES_2:
+                            c.order == 3? ImagePath.COMPETENCIES_CATEGORIES_3:
+                            ImagePath.COMPETENCIES_CATEGORIES_1,
+                            height: 150,
+                            width: 150,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SpaceH20(),
+              ],
+            )
+        ).toList(),
+      ),
+    );
   }
 }

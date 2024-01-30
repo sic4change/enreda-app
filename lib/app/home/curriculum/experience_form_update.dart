@@ -20,15 +20,23 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common_widgets/flex_row_column.dart';
+import '../../anallytics/analytics.dart';
 import '../models/activity.dart';
 
 class ExperienceFormUpdate extends StatefulWidget {
-  const ExperienceFormUpdate({Key? key, this.experience, required this.isProfesional, this.general})
+  const ExperienceFormUpdate({
+    Key? key,
+    this.experience,
+    required this.isProfesional,
+    this.general,
+    this.onComingBack,
+  })
       : super(key: key);
 
   final Experience? experience;
   final bool isProfesional; //if false -> personal exprience
   final bool? general;
+  final void Function(bool isProfesional)? onComingBack;
 
   @override
   State<ExperienceFormUpdate> createState() => _ExperienceFormUpdateState();
@@ -801,6 +809,8 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           otherProfessionActivityString: _otherText,
       );
 
+      sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
+
       await database.addExperience(experience);
       _updateCompetenciesPoints(_type);
       _updateCompetenciesPoints(_subtype);
@@ -817,6 +827,9 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
             title: 'Información guardada',
             content: 'La información ha sido guardada en tu CV correctamente',
             defaultActionText: 'Ok');
+        if (widget.onComingBack != null) {
+          widget.onComingBack!(_isProfesional);
+        }
       });
     } else {
       final experience = Experience(
@@ -840,6 +853,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           otherProfessionActivityString: _otherText,
       );
 
+      sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
       await database.updateExperience(experience);
       Navigator.of(context).pop();
       await showAlertDialog(context,

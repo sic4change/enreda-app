@@ -5,9 +5,11 @@ import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/curriculum/my_curriculum_page.dart';
 import 'package:enreda_app/app/home/account/personal_data_page.dart';
 import 'package:enreda_app/app/home/models/contact.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/pages/favorite_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/app/sign_in/access/access_page.dart';
 import 'package:enreda_app/app/sign_in/sign_out_admin.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
@@ -241,47 +243,27 @@ class _AccountPageState extends State<AccountPage> {
         borderRadius: BorderRadius.all(Radius.circular(15.0)),
         color: Colors.white,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: Stack(
         children: [
-          InkWell(
-            mouseCursor: MaterialStateMouseCursor.clickable,
-            onTap: () => !kIsWeb
-                ? _displayPickImageDialog()
-                : _onImageButtonPressed(ImageSource.gallery),
-            child: Container(
-              width: 120,
-              height: 120,
-              color: Colors.white,
-              child: Stack(
-                children: [
-                  Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(120),
-                      ),
-                      child:
-                      !kIsWeb ?
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(60)),
-                        child:
-                        Center(
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              InkWell(
+                mouseCursor: MaterialStateMouseCursor.clickable,
+                onTap: () => !kIsWeb? _displayPickImageDialog(): _onImageButtonPressed(ImageSource.gallery),
+                child: Container(
+                  width: 120,
+                  height: 120,
+                  color: Colors.white,
+                  child: Stack(
+                    children: [
+                      Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(120),
+                          ),
                           child:
-                          _photo == "" ?
-                          Container(
-                            color:  Colors.transparent,
-                            height: 120,
-                            width: 120,
-                            child: Image.asset(ImagePath.USER_DEFAULT),
-                          ):
-                          CachedNetworkImage(
-                              width: 120,
-                              height: 120,
-                              fit: BoxFit.cover,
-                              alignment: Alignment.center,
-                              imageUrl: _photo),
-                        ),
-                      ):
-                      ClipRRect(
+                          !kIsWeb ?
+                          ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(60)),
                             child:
                             Center(
@@ -293,110 +275,139 @@ class _AccountPageState extends State<AccountPage> {
                                 width: 120,
                                 child: Image.asset(ImagePath.USER_DEFAULT),
                               ):
-                              FadeInImage.assetNetwork(
-                                placeholder: ImagePath.USER_DEFAULT,
-                                width: 120,
-                                height: 120,
-                                fit: BoxFit.cover,
-                                image: _photo,
-                              ),
+                              CachedNetworkImage(
+                                  width: 120,
+                                  height: 120,
+                                  fit: BoxFit.cover,
+                                  alignment: Alignment.center,
+                                  imageUrl: _photo),
                             ),
+                          ):
+                          ClipRRect(
+                                borderRadius: BorderRadius.all(Radius.circular(60)),
+                                child:
+                                Center(
+                                  child:
+                                  _photo == "" ?
+                                  Container(
+                                    color:  Colors.transparent,
+                                    height: 120,
+                                    width: 120,
+                                    child: Image.asset(ImagePath.USER_DEFAULT),
+                                  ):
+                                  FadeInImage.assetNetwork(
+                                    placeholder: ImagePath.USER_DEFAULT,
+                                    width: 120,
+                                    height: 120,
+                                    fit: BoxFit.cover,
+                                    image: _photo,
+                                  ),
+                                ),
+                              ),
+                      ),
+                      Positioned(
+                        left: 6,
+                        top: 6,
+                        child: Container(
+                          padding: const EdgeInsets.all(2.0),
+                          decoration: BoxDecoration(
+                            color: Constants.white,
+                            shape: BoxShape.circle,
+                            border:
+                                Border.all(color: Constants.penBlue, width: 1.0),
                           ),
-                  ),
-                  Positioned(
-                    left: 6,
-                    top: 6,
-                    child: Container(
-                      padding: const EdgeInsets.all(2.0),
-                      decoration: BoxDecoration(
-                        color: Constants.white,
-                        shape: BoxShape.circle,
-                        border:
-                            Border.all(color: Constants.penBlue, width: 1.0),
+                          child: Icon(
+                            Icons.mode_edit_outlined,
+                            size: 22,
+                            color: Constants.penBlue,
+                          ),
+                        ),
                       ),
-                      child: Icon(
-                        Icons.mode_edit_outlined,
-                        size: 22,
-                        color: Constants.penBlue,
-                      ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
+              SpaceH8(),
+              if (userEnreda?.firstName != null)
+                Text(
+                  '${userEnreda!.firstName} ${userEnreda.lastName}',
+                  style: textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold, color: Constants.chatDarkGray),
+                ),
+              SpaceH48(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  StringConst.MY_PROFILE.toUpperCase(),
+                  style: textTheme.bodyLarge?.copyWith(color: Constants.penBlue),
+                ),
+              ),
+              Divider(),
+              _buildMyProfileRow(
+                text: StringConst.MY_CV,
+                imagePath: ImagePath.ICON_CV,
+                onTap: () => setState(() {
+                  _currentPage = MyCurriculumPage();
+                  _currentPageTitle = StringConst.MY_CV.toUpperCase();
+                  _selectedPageName = StringConst.MY_CV;
+                }),
+              ),
+              _buildMyProfileRow(
+                text: StringConst.PERSONAL_DATA,
+                imagePath: ImagePath.ICON_PROFILE_BLUE,
+                onTap: () => setState(() {
+                  _currentPage = PersonalData();
+                  _currentPageTitle = StringConst.PERSONAL_DATA.toUpperCase();
+                  _selectedPageName = StringConst.PERSONAL_DATA;
+                }),
+              ),
+              _buildMyProfileRow(
+                text: StringConst.MY_COMPETENCIES,
+                imagePath: ImagePath.ICON_COMPETENCIES,
+                onTap: () => setState(() {
+                  _currentPage = MyCompetenciesPage();
+                  _currentPageTitle = StringConst.MY_COMPETENCIES.toUpperCase();
+                  _selectedPageName = StringConst.MY_COMPETENCIES;
+                }),
+              ),
+              _buildMyProfileRow(
+                text: StringConst.MY_RESOURCES,
+                imagePath: ImagePath.ICON_RESOURCES_BLUE,
+                onTap: () => setState(() {
+                  _currentPage = MyResourcesPage();
+                  _currentPageTitle = StringConst.MY_RESOURCES.toUpperCase();
+                  _selectedPageName = StringConst.MY_RESOURCES;
+                }),
+              ),
+              _buildMyProfileRow(
+                text: StringConst.FAVORITES,
+                imagePath: ImagePath.ICON_FAV_BLUE,
+                onTap: () => setState(() {
+                  _currentPage = FavoriteResourcesPage();
+                  _currentPageTitle = StringConst.FAVORITES.toUpperCase();
+                  _selectedPageName = StringConst.FAVORITES;
+                }),
+              ),
+              _buildMyProfileRow(
+                text: 'Gamificación',
+                imagePath: ImagePath.ICON_GAMIFICATION,
+                onTap: () => setState(() {
+                  _currentPage = Gamification();
+                  _currentPageTitle = 'Gamificación'.toUpperCase();
+                  _selectedPageName = 'Gamificación';
+                }),
+              ),
+
+            ],
+          ),
+          Positioned(
+            right: 12,
+            top: 0,
+            child: PillTooltip(
+              title: StringConst.PILL_TRAVEL_BEGINS,
+              pillId: TrainingPill.TRAVEL_BEGINS_ID,
             ),
           ),
-          SpaceH8(),
-          if (userEnreda?.firstName != null)
-            Text(
-              '${userEnreda!.firstName} ${userEnreda.lastName}',
-              style: textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold, color: Constants.chatDarkGray),
-            ),
-          SpaceH48(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              StringConst.MY_PROFILE.toUpperCase(),
-              style: textTheme.bodyLarge?.copyWith(color: Constants.penBlue),
-            ),
-          ),
-          Divider(),
-          _buildMyProfileRow(
-            text: StringConst.MY_CV,
-            imagePath: ImagePath.ICON_CV,
-            onTap: () => setState(() {
-              _currentPage = MyCurriculumPage();
-              _currentPageTitle = StringConst.MY_CV.toUpperCase();
-              _selectedPageName = StringConst.MY_CV;
-            }),
-          ),
-          _buildMyProfileRow(
-            text: StringConst.PERSONAL_DATA,
-            imagePath: ImagePath.ICON_PROFILE_BLUE,
-            onTap: () => setState(() {
-              _currentPage = PersonalData();
-              _currentPageTitle = StringConst.PERSONAL_DATA.toUpperCase();
-              _selectedPageName = StringConst.PERSONAL_DATA;
-            }),
-          ),
-          _buildMyProfileRow(
-            text: StringConst.MY_COMPETENCIES,
-            imagePath: ImagePath.ICON_COMPETENCIES,
-            onTap: () => setState(() {
-              _currentPage = MyCompetenciesPage();
-              _currentPageTitle = StringConst.MY_COMPETENCIES.toUpperCase();
-              _selectedPageName = StringConst.MY_COMPETENCIES;
-            }),
-          ),
-          _buildMyProfileRow(
-            text: StringConst.MY_RESOURCES,
-            imagePath: ImagePath.ICON_RESOURCES_BLUE,
-            onTap: () => setState(() {
-              _currentPage = MyResourcesPage();
-              _currentPageTitle = StringConst.MY_RESOURCES.toUpperCase();
-              _selectedPageName = StringConst.MY_RESOURCES;
-            }),
-          ),
-          _buildMyProfileRow(
-            text: StringConst.FAVORITES,
-            imagePath: ImagePath.ICON_FAV_BLUE,
-            onTap: () => setState(() {
-              _currentPage = FavoriteResourcesPage();
-              _currentPageTitle = StringConst.FAVORITES.toUpperCase();
-              _selectedPageName = StringConst.FAVORITES;
-            }),
-          ),
-          /*
-          _buildMyProfileRow(
-            text: 'Gamificación',
-            imagePath: ImagePath.ICON_FAV_BLUE,
-            onTap: () => setState(() {
-              _currentPage = Gamification();
-              _currentPageTitle = 'Gamificación'.toUpperCase();
-              _selectedPageName = 'Gamificación';
-            }),
-          ),
-          */
         ],
       ),
     );
@@ -564,8 +575,8 @@ class _AccountPageState extends State<AccountPage> {
       if (pickedFile != null) {
         setState(() async {
           final database = Provider.of<Database>(context, listen: false);
-          await database.uploadUserAvatar(
-              _userId, await pickedFile.readAsBytes());
+          await database.uploadUserAvatar(_userId, await pickedFile.readAsBytes());
+          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PHOTO);
         });
       }
     } catch (e) {

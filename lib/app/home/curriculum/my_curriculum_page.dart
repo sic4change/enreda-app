@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/competencies/competency_tile.dart';
+import 'package:enreda_app/app/home/curriculum/add_educational_level.dart';
 import 'package:enreda_app/app/home/curriculum/experience_form_update.dart';
 import 'package:enreda_app/app/home/curriculum/experience_tile.dart';
 import 'package:enreda_app/app/home/curriculum/formation_form.dart';
@@ -9,11 +10,13 @@ import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/country.dart';
+import 'package:enreda_app/app/home/models/education.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/province.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
-import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/custom_tooltip.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/common_widgets/delete_button.dart';
 import 'package:enreda_app/common_widgets/edit_button.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
@@ -22,6 +25,7 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
@@ -32,6 +36,7 @@ import '../../../common_widgets/custom_text.dart';
 import '../../../common_widgets/precached_avatar.dart';
 import '../../../utils/my_scroll_behaviour.dart';
 import '../../../values/values.dart';
+import '../../anallytics/analytics.dart';
 
 class MyCurriculumPage extends StatelessWidget {
   UserEnreda? user;
@@ -56,7 +61,7 @@ class MyCurriculumPage extends StatelessWidget {
 
   String myCustomPhone = "";
 
-  String myMaxEducation = "";
+  Education? myMaxEducation;
 
   List<Competency>? myCompetencies = [];
 
@@ -372,7 +377,7 @@ class MyCurriculumPage extends StatelessWidget {
                                       myReferences: myReferences!,
                                       myCustomReferences: myCustomReferences,
                                       mySelectedReferences: mySelectedReferences,
-                                      myMaxEducation: myMaxEducation,
+                                      myMaxEducation: myMaxEducation?.label??"",
                                     )),
                           );
                       },
@@ -451,7 +456,10 @@ class MyCurriculumPage extends StatelessWidget {
                   ),
                 ],
               ),
-              CustomTooltip(),
+              PillTooltip(
+                title: StringConst.PILL_HOW_TO_DO_CV,
+                pillId: TrainingPill.HOW_TO_DO_CV_ID,
+              ),
               //SpaceH24(),
               //_buildMyCareer(context),
               SpaceH24(),
@@ -569,7 +577,7 @@ class MyCurriculumPage extends StatelessWidget {
                               myReferences: myReferences!,
                               myCustomReferences: myCustomReferences,
                               mySelectedReferences: mySelectedReferences,
-                              myMaxEducation: myMaxEducation,
+                              myMaxEducation: myMaxEducation?.label??"",
                             )),
                   );
               },
@@ -593,22 +601,67 @@ class MyCurriculumPage extends StatelessWidget {
               color: Constants.penBlue),
         ),
         SpaceH20(),
-        CustomTooltip(),
+        PillTooltip(
+            title: StringConst.PILL_HOW_TO_DO_CV,
+            pillId: TrainingPill.HOW_TO_DO_CV_ID,
+        ),
       ],
     );
   }
 
   Widget _buildMyCareer(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-    final textController = TextEditingController();
-    textController.text = user?.education?.label ?? "";
 
+    return StreamBuilder(
+        stream: database.educationStream(),
+        builder: (context, snapshotEducations) {
+          if (snapshotEducations.hasData) {
+            final educations = snapshotEducations.data!;
+
+            if (user!.educationId!.isNotEmpty) {
+              myMaxEducation = educations.firstWhere((e) => e.educationId == user!.educationId, orElse: () => Education(label: "", value: "", order: 0));
+              return CustomTextBody(text: myMaxEducation?.label??"");
+            } else {
+              return StreamBuilder(
+                  stream: database.myExperiencesStream(user?.userId ?? ''),
+                  builder: (context, snapshotExperiences) {
+                    if (snapshotEducations.hasData && snapshotExperiences.hasData) {
+                      final myEducationalExperiencies = snapshotExperiences.data!
+                          .where((experience) => experience.type == 'Formativa')
+                          .toList();
+                      if (myEducationalExperiencies.isNotEmpty) {
+                        final areEduactions = myEducationalExperiencies.any((exp) => exp.education != null && exp.education!.isNotEmpty);
+                        if (areEduactions) {
+                          final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
+                          myEducations.sort((a, b) => a.order.compareTo(b.order));
+                          if(myEducations.isNotEmpty){
+                            myMaxEducation = myEducations.first;
+                          } else {
+                            myMaxEducation = Education(label: "", value: "", order: 0);
+                          }
+                        } else {
+                          myMaxEducation = Education(label: "", value: "", order: 0);
+                        }
+                        return CustomTextBody(text: myMaxEducation?.label??"");
+                      } else {
+                        return Container();
+                      }
+                    } else {
+                      return Container();
+                    }
+                  });
+            }
+          } else {
+            return Container();
+          }
+        });
     return StreamBuilder(
       stream: database.myExperiencesStream(user?.userId ?? ''),
       builder: (context, snapshotExperiences) {
         return StreamBuilder(
           stream: database.educationStream(),
           builder: (context, snapshotEducations) {
+
             if (snapshotEducations.hasData && snapshotExperiences.hasData) {
               final myEducationalExperiencies = snapshotExperiences.data!
                   .where((experience) => experience.type == 'Formativa')
@@ -619,12 +672,12 @@ class MyCurriculumPage extends StatelessWidget {
                 if (areEduactions) {
                   final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
                   myEducations.sort((a, b) => a.order.compareTo(b.order));
-                  myMaxEducation = myEducations.first.label;
+                  myMaxEducation = myEducations.first;
                 } else {
-                  myMaxEducation = user?.education?.label?? "";
+                  myMaxEducation = educations.firstWhere((e) => e.educationId == user!.educationId, orElse: () => Education(label: "", value: "", order: 0));
                 }
 
-                return CustomTextBody(text: myMaxEducation);
+                return CustomTextBody(text: myMaxEducation?.label??"");
               } else {
                 return Container();
               }
@@ -656,10 +709,11 @@ class MyCurriculumPage extends StatelessWidget {
                 CustomTextTitle(title: StringConst.ABOUT_ME.toUpperCase()),
               ),
               InkWell(
-                onTap: () {
-                  if (isEditable)
-                    database.setUserEnreda(
-                        user!.copyWith(aboutMe: textController.text));
+                onTap: () async {
+                  if (isEditable) {
+                    await database.setUserEnreda(user!.copyWith(aboutMe: textController.text));
+                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_ABOUT_ME);
+                  }
                   setState(() {
                     isEditable = !isEditable;
                     if (isEditable) focusNode.requestFocus();
@@ -836,12 +890,22 @@ class MyCurriculumPage extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  child: Text(
-                    StringConst.COMPETENCIES.toUpperCase(),
-                    style: TextStyle(
-                        color: Constants.darkLilac,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        StringConst.COMPETENCIES.toUpperCase(),
+                        style: TextStyle(
+                            color: Constants.darkLilac,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18.0),
+                      ),
+                      SpaceW8(),
+                      PillTooltip(
+                        title: StringConst.PILL_CV_COMPETENCIES,
+                        pillId: TrainingPill.CV_COMPETENCIES_ID,
+                      ),
+                    ],
                   ),
                 ),
                 myCompetencies!.isNotEmpty
@@ -971,6 +1035,7 @@ class MyCurriculumPage extends StatelessWidget {
 
   Widget _buildMyEducation(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
+    final auth = Provider.of<AuthBase>(context, listen: false);
 
     bool dismissible = true;
     return Column(
@@ -984,9 +1049,10 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (dialogContext) => AlertDialog(
                     content: FormationForm(
                       isMainEducation: true,
+                      onComingBack: () => setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_FORMATION),
                     ),
                   )
               );
@@ -998,16 +1064,19 @@ class MyCurriculumPage extends StatelessWidget {
           children: [
             CustomTextSubTitle(title: StringConst.EDUCATIONAL_LEVEL.toUpperCase()),
             SpaceW8(),
-            /*_addButton(() {
+            _addButton(() {
               showDialog(
+                  useRootNavigator: false,
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (context) => AlertDialog(
-                    content: AddEducationalLevel()
-                  )
-              );
-            },
-            ),*/
+                  builder: (context) => AddEducationalLevel(
+                    selectedEducation: myMaxEducation,
+                    onSaved: (selectedEducation) {
+                      database.setUserEnreda(user!.copyWith(educationId: selectedEducation?.educationId??""));
+                    },
+                  ),
+              );},
+            ),
           ],
         ),
         _buildMyCareer(context),
@@ -1067,9 +1136,10 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (dialogContext) => AlertDialog(
                     content: FormationForm(
                       isMainEducation: false,
+                      onComingBack: () => setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION),
                     ),
                   )
               );
@@ -1135,9 +1205,10 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (dialogContext) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: true,
+                      onComingBack: (_) => setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PROFESSIONAL),
                     ),
                   )
               );
@@ -1203,9 +1274,10 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (dialogContext) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: false,
+                      onComingBack: (_) => setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PERSONAL),
                     ),
                   )
               );
@@ -1271,10 +1343,17 @@ class MyCurriculumPage extends StatelessWidget {
               showDialog(
                   barrierDismissible: dismissible,
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (dialogContext) => AlertDialog(
                     content: ExperienceFormUpdate(
                       isProfesional: false,
                       general: true,
+                      onComingBack: (isProfessional) {
+                        if (isProfessional) {
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PROFESSIONAL);
+                        } else {
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PERSONAL);
+                        }
+                      },
                     ),
                   )
               );
@@ -1536,14 +1615,15 @@ class MyCurriculumPage extends StatelessWidget {
     );
   }
 
-  void _showDataOfInterestDialog(BuildContext context, String currentText) {
+  Future<void> _showDataOfInterestDialog(BuildContext context, String currentText) async {
     final database = Provider.of<Database>(context, listen: false);
+    final auth = Provider.of<AuthBase>(context, listen: false);
     final controller = TextEditingController();
     final textTheme = Theme.of(context).textTheme;
     if (currentText.isNotEmpty) {
       controller.text = currentText;
     }
-    showCustomDialog(context,
+    await showCustomDialog(context,
         content: Card(
           elevation: 0,
           color: Colors.white,
@@ -1573,13 +1653,15 @@ class MyCurriculumPage extends StatelessWidget {
         ),
         defaultActionText: StringConst.FORM_ACCEPT,
         onDefaultActionPressed: (context) {
-      if (currentText.isNotEmpty) {
-        user!.dataOfInterest.remove(currentText);
-      }
-      user!.dataOfInterest.add(controller.text);
-      database.setUserEnreda(user!);
-      Navigator.of(context).pop();
-    });
+          if (currentText.isNotEmpty) {
+            user!.dataOfInterest.remove(currentText);
+          }
+          user!.dataOfInterest.add(controller.text);
+          database.setUserEnreda(user!);
+          Navigator.of(context).pop();
+       });
+
+    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_DATA_OF_INTEREST);
   }
 
   void _showReferencesDialog(BuildContext context, CertificationRequest certificationRequest) {
@@ -1662,16 +1744,19 @@ class MyCurriculumPage extends StatelessWidget {
             final index = myReferences?.indexWhere((element) => element.certifierName == certificationRequest.certifierName);
             if (index! >= 0) myReferences?[index].certifierName = (controllerName.text);
             database.setCertificationRequest(myReferences![index]);
+            sendBasicAnalyticsEvent(context, "enreda_app_set_certification_request");
           }
           if (certificationRequest.certifierPosition.isNotEmpty) {
             final index = myReferences?.indexWhere((element) => element.certifierPosition == certificationRequest.certifierPosition);
             if (index! >= 0) myReferences?[index].certifierPosition = (controllerPosition.text);
             database.setCertificationRequest(myReferences![index]);
+            sendBasicAnalyticsEvent(context, "enreda_app_set_certification_request");
           }
           if (certificationRequest.certifierCompany.isNotEmpty) {
             final index = myReferences?.indexWhere((element) => element.certifierCompany == certificationRequest.certifierCompany);
             if (index! >= 0) myReferences?[index].certifierCompany = (controllerCompany.text);
             database.setCertificationRequest(myReferences![index]);
+            sendBasicAnalyticsEvent(context, "enreda_app_set_certification_request");
           }
           Navigator.of(context).pop();
         });

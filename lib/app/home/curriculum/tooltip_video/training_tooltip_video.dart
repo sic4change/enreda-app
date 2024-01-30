@@ -1,9 +1,11 @@
 import 'package:enreda_app/app/home/models/trainingPill.dart';
+import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/meta_data_section.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/play_pause_button.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/video_position_seeker.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/video_thumbnail_area.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
@@ -49,6 +51,28 @@ class _TrainingTooltipVideoState extends State<TrainingTooltipVideo> {
                     setState(() {
                       _isVideoVisible = !_isVideoVisible;
                       _initializeVideo(idYoutubeVideo);
+
+                      switch (widget.trainingPill.id){
+                        /*
+                        case TrainingPill.WHAT_IS_ENREDA_ID:
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_WHAT_IS_ENREDA);
+                          break;
+                        case TrainingPill.TRAVEL_BEGINS_ID:
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_TRAVEL_BEGINS);
+                          break;
+                        */
+                        case TrainingPill.WHAT_ARE_COMPETENCIES_ID:
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
+                          break;
+                        case TrainingPill.CV_COMPETENCIES_ID:
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_CV_COMPETENCIES);
+                          break;
+                        case TrainingPill.HOW_TO_DO_CV_ID:
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_HOW_TO_DO_CV);
+                          break;
+                        default:
+                          break;
+                      }
                     });
                   },
                   icon: const Icon(

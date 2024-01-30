@@ -1,8 +1,12 @@
-import 'package:enreda_app/app/home/assistant/assistant_page_web.dart';
 import 'package:enreda_app/app/home/competencies/competencies_item_builder.dart';
+import 'package:enreda_app/app/home/competencies/competencies_subcategories_page_mobile.dart';
 import 'package:enreda_app/app/home/competencies/expandable_competency_tile.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
+import 'package:enreda_app/app/home/models/competencyCategory.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
+import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
@@ -18,10 +22,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class CompetenciesPageMobile extends StatelessWidget {
+class CompetenciesPageMobile extends StatefulWidget {
   const CompetenciesPageMobile({Key? key, required this.showChatNotifier})
       : super(key: key);
   final ValueNotifier<bool> showChatNotifier;
+
+  @override
+  State<CompetenciesPageMobile> createState() => _CompetenciesPageMobileState();
+}
+
+class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
+  Widget bodyWidget = Container();
+  bool showingSubCategoriesPage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +45,11 @@ class CompetenciesPageMobile extends StatelessWidget {
       child: StreamBuilder<User?>(
           stream: Provider.of<AuthBase>(context).authStateChanges(),
           builder: (context, snapshot) {
-            return StreamBuilder<List<Competency>>(
-                stream: database.competenciesStream(),
+            return StreamBuilder<List<CompetencyCategory>>(
+                stream: database.competenciesCategoriesStream(),
                 builder: (context, snapshot) {
+                  if (snapshot.hasData && !showingSubCategoriesPage)
+                    bodyWidget = _buildCompetenciesCategories(context, snapshot);
                   return SingleChildScrollView(
                     padding: const EdgeInsets.all(4.0),
                     child: Column(
@@ -46,7 +60,7 @@ class CompetenciesPageMobile extends StatelessWidget {
                         SpaceH20(),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
-                          child: _buildCompetenciesContainer(snapshot),
+                          child: snapshot.hasData? bodyWidget: Center(child: CircularProgressIndicator(),),
                         ),
                       ],
                     ),
@@ -79,12 +93,22 @@ class CompetenciesPageMobile extends StatelessWidget {
           Container(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Text(
-                StringConst.COMPETENCIES.toUpperCase(),
-                style: textTheme.bodyText1?.copyWith(
-                    fontSize: 18.0,
-                    color: Constants.penBlue,
-                    fontWeight: FontWeight.w400),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    StringConst.COMPETENCIES.toUpperCase(),
+                    style: textTheme.bodyText1?.copyWith(
+                        fontSize: 18.0,
+                        color: Constants.penBlue,
+                        fontWeight: FontWeight.w400),
+                  ),
+                  SpaceW8(),
+                  PillTooltip(
+                    title: StringConst.PILL_COMPETENCIES,
+                    pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
+                  )
+                ],
               ),
             ),
           ),
@@ -262,15 +286,52 @@ class CompetenciesPageMobile extends StatelessWidget {
     );
   }
 
-  Widget _buildCompetenciesContainer(AsyncSnapshot<List<Competency>> snapshot) {
-    return Center(
-        child: CompetenciesItemBuilder<Competency>(
-          user: null,
-          snapshot: snapshot,
-          itemBuilder: (context, competency) {
-            return ExpandableCompetencyTile(competency: competency);
-          },
-        ),
+  Widget _buildCompetenciesCategories(BuildContext context, AsyncSnapshot<List<CompetencyCategory>> snapshot) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Wrap(
+        runSpacing: 20.0,
+        spacing: 20.0,
+        children: snapshot.data!.map((c) =>
+            InkWell(
+              onTap: () => setState(() {
+                showingSubCategoriesPage = true;
+                bodyWidget = CompetenciesSubcategoriesPageMobile(
+                  showChatNotifier: widget.showChatNotifier,
+                  competencyCategory: c,
+                  onBackPressed: () => setState(() {
+                    bodyWidget = _buildCompetenciesCategories(context, snapshot);
+                  }),
+                );
+              }),
+              child: RoundedContainer(
+                width: (MediaQuery.of(context).size.width/2) - 40,
+                height: 180.0,
+                shadowColor: Colors.black.withOpacity(0.4),
+                child: Column(
+                  children: [
+                    Image.asset(
+                      c.order == 1? ImagePath.COMPETENCIES_CATEGORIES_1:
+                      c.order == 2? ImagePath.COMPETENCIES_CATEGORIES_2:
+                      c.order == 3? ImagePath.COMPETENCIES_CATEGORIES_3:
+                      ImagePath.COMPETENCIES_CATEGORIES_1,
+                      width: 100.0,
+                    ),
+                    SpaceH20(),
+                    Text(
+                      c.name.toUpperCase(),
+                      style: textTheme.titleSmall?.copyWith(
+                        fontSize: 13.0
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ).toList(),
+      ),
     );
   }
 

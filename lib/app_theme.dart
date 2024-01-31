@@ -30,6 +30,7 @@ class AppTheme {
     return ThemeData(
       dialogTheme: DialogTheme().copyWith(surfaceTintColor: Colors.white,),
       primarySwatch: white,
+      useMaterial3: true,
       textTheme: _textTheme,
       iconTheme: IconThemeData(color: AppColors.white),
       canvasColor: colorScheme.background,

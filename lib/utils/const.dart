@@ -51,6 +51,7 @@ class Constants {
   static const Color penLightBlue = Color(0xFF5776D1);
   static const Color penBlue = Color(0xFF002185);
   static const Color chatLightBlue = Color(0xFFE3EAFF);
+  static const Color chatBlue = Color(0xFFA9BDEE);
   static const Color chatDarkBlue = Color(0xFF5876D2);
   static const Color chatDarkGray = Color(0xFF44494B);
   static const Color chatLightGray = Color(0xFFF1F3F4);

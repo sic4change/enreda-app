@@ -95,7 +95,7 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
             resource = snapshotResource.data!;
             resource.setResourceTypeName();
             resource.setResourceCategoryName();
-            sendResourceAnalyticsEvent(context, "enreda_app_open_resource", resource.resourceTypeName!);
+            sendResourceAnalyticsEvent(context, "enreda_app_open_resource", resource.resourceCategoryName!);
             return StreamBuilder(
                 stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
                 resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
@@ -276,7 +276,7 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomTextTitle(title: StringConst.RESOURCE_TYPE.toUpperCase()),
-                  CustomTextBody(text: '${resource.resourceTypeName}'),
+                  CustomTextBody(text: '${resource.resourceCategoryName}'),
                   SpaceH8(),
                   CustomTextTitle(title: StringConst.LOCATION.toUpperCase()),
                   Column(

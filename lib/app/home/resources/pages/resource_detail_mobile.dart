@@ -85,7 +85,7 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
             resource = snapshotResource.data!;
             resource.setResourceTypeName();
             resource.setResourceCategoryName();
-            sendResourceAnalyticsEvent(context, "enreda_app_open_resource", resource.resourceTypeName!);
+            sendResourceAnalyticsEvent(context, "enreda_app_open_resource", resource.resourceCategoryName!);
             return StreamBuilder(
                 stream: resource.organizerType == 'Organización'
                     ? database.organizationStream(resource.organizer) :
@@ -289,7 +289,7 @@ class _ResourceDetailPageMobileState extends State<ResourceDetailPageMobile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomTextTitle(title: StringConst.RESOURCE_TYPE.toUpperCase()),
-                  CustomTextBody(text: '${resource.resourceTypeName}'),
+                  CustomTextBody(text: '${resource.resourceCategoryName}'),
                   SpaceH16(),
                   CustomTextTitle(title: StringConst.LOCATION.toUpperCase()),
                   Column(

@@ -44,12 +44,43 @@ class _ChatPillVideoState extends State<ChatPillVideo> {
     return !_isVideoVisible /*&& !_hasContinued*/? Row(
       children: [
         Expanded(
+          child: EnredaButton(
+              height: 30.0,
+              buttonTitle: "Ver vídeo",
+              buttonColor: Constants.chatDarkBlue,
+              titleStyle: textTheme.titleSmall?.copyWith(
+                  color: Colors.white
+              ),
+              onPressed: () {
+                setState(() {
+                  _isVideoVisible = !_isVideoVisible;
+                  _initializeVideo(idYoutubeVideo);
+
+                  switch (widget.trainingPill.id){
+                    case TrainingPill.WHAT_ARE_COMPETENCIES_ID:
+                      setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
+                      break;
+                    case TrainingPill.CV_COMPETENCIES_ID:
+                      setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_CV_COMPETENCIES);
+                      break;
+                    case TrainingPill.HOW_TO_DO_CV_ID:
+                      setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_HOW_TO_DO_CV);
+                      break;
+                    default:
+                      break;
+                  }
+                });
+              }
+          ),
+        ),
+        SpaceW12(),
+        Expanded(
           child: !Responsive.isMobile(context) && !Responsive.isTablet(context) && !_hasContinued? EnredaButton(
               height: 30.0,
               buttonTitle: "Omitir",
-              buttonColor: Constants.chatDarkBlue,
+              buttonColor:  Constants.chatBlue,
               titleStyle: textTheme.titleSmall?.copyWith(
-                color: Colors.white
+                  color: Colors.white
               ),
               onPressed: () {
                 setState(() {
@@ -57,38 +88,7 @@ class _ChatPillVideoState extends State<ChatPillVideo> {
                   _hasContinued = !_hasContinued;
                 });
               }
-              ): Container(),
-        ),
-        SpaceW12(),
-        Expanded(
-          child: EnredaButton(
-            height: 30.0,
-            buttonTitle: "Ver vídeo",
-            buttonColor: Constants.chatDarkBlue,
-              titleStyle: textTheme.titleSmall?.copyWith(
-                  color: Colors.white
-              ),
-            onPressed: () {
-              setState(() {
-                _isVideoVisible = !_isVideoVisible;
-                _initializeVideo(idYoutubeVideo);
-
-                switch (widget.trainingPill.id){
-                  case TrainingPill.WHAT_ARE_COMPETENCIES_ID:
-                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
-                    break;
-                  case TrainingPill.CV_COMPETENCIES_ID:
-                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_CV_COMPETENCIES);
-                    break;
-                  case TrainingPill.HOW_TO_DO_CV_ID:
-                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_HOW_TO_DO_CV);
-                    break;
-                  default:
-                    break;
-                }
-              });
-            }
-          ),
+          ): Container(),
         ),
       ],
     ): _isVideoVisible? Column(

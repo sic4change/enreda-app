@@ -26,7 +26,7 @@ class Gamification extends StatefulWidget {
 class _GamificationState extends State<Gamification> {
   String _firstName = '';
   String _lastName = '';
-  int _points = 10;
+  int _points = 0;
   Map<String,bool> _gamificationFlags = {};
   List<GamificationFlag> _gamificationValues = [];
   late TextTheme textTheme;
@@ -49,7 +49,17 @@ class _GamificationState extends State<Gamification> {
             _lastName = userEnreda.lastName ?? '';
             userFullName = _firstName + ' ' + _lastName;
             _gamificationFlags = userEnreda.gamificationFlags;
-            _points = userEnreda.resourcesAccessCount ?? 0;
+            //_points = userEnreda.resourcesAccessCount ?? 0;
+            int auxPoints = 0;
+            _gamificationFlags.forEach((key, value) {
+              if(value == true){
+                auxPoints++;
+                print(auxPoints);
+              }
+              _points = auxPoints + 3;
+              print(_gamificationFlags);
+              print('Puntos finales: $_points');
+            });
             return StreamBuilder(
               stream: database.gamificationFlagsStream(),
               builder: (context, snapshot){
@@ -170,8 +180,8 @@ class _GamificationState extends State<Gamification> {
         if(_points <= 10){
           completedStars = 0;
         }
-        else if(_points >= 15){
-          completedStars = 5;
+        else if(_points >= 16){
+          completedStars = 6;
         }
         else{
           completedStars = _points - 10;
@@ -195,7 +205,7 @@ class _GamificationState extends State<Gamification> {
               height: 60,
               width: 60,
               decoration: ShapeDecoration(
-                color: completedStars == 5 ? colorStar : Colors.transparent,
+                color: (order == 'ORO' ? completedStars == 6 : completedStars == 5) ? colorStar : Colors.transparent,
                 shape: StarBorder(
                   pointRounding: 0.2,
                   valleyRounding: 0.1,

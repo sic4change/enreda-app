@@ -173,7 +173,25 @@ class _AccountPageState extends State<AccountPage> {
                                   children: [
                                     Padding(
                                       padding: EdgeInsets.all(Constants.mainPadding),
-                                      child: Text(
+                                      child: _currentPageTitle == StringConst.MY_COMPETENCIES.toUpperCase() ?
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            _currentPageTitle,
+                                            style: textTheme.bodyText1?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: Constants.penBlue,
+                                                fontSize: 16.0),
+                                          ),
+                                          SpaceW8(),
+                                          PillTooltip(
+                                            title: StringConst.PILL_COMPETENCIES,
+                                            pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
+                                          )
+                                        ],
+                                      )
+                                      : Text(
                                         _currentPageTitle,
                                         style: textTheme.bodyText1?.copyWith(
                                             fontWeight: FontWeight.bold,
@@ -211,7 +229,26 @@ class _AccountPageState extends State<AccountPage> {
                 ? Container()
                 : Padding(
                     padding: EdgeInsets.all(Constants.mainPadding),
-                    child: Text(
+                    child: _currentPageTitle == StringConst.MY_COMPETENCIES.toUpperCase() ?
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          _currentPageTitle,
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Constants.penBlue,
+                              fontSize: 16.0),
+                        ),
+                        SpaceW8(),
+                        PillTooltip(
+                          title: StringConst.PILL_COMPETENCIES,
+                          pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
+                        )
+                      ],
+                    )
+                    : Text(
                       _currentPageTitle,
                       textAlign: TextAlign.center,
                       style: textTheme.bodyLarge?.copyWith(

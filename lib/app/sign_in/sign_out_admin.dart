@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 Future<void> adminSignOut(BuildContext context) async {
+  String targetWeb = "";
+
   WidgetsBinding.instance.addPostFrameCallback((_) async {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
@@ -31,7 +33,7 @@ Future<void> adminSignOut(BuildContext context) async {
                     height: 30,
                   ),
                   SpaceH20(),
-                  Text(StringConst.ARE_YOU_ADMIN,
+                  Text(StringConst.ARENT_YOU_PARTICIPANT,
                       style: textTheme.bodyText1?.copyWith(
                         color: AppColors.greyDark,
                         height: 1.5,
@@ -48,8 +50,24 @@ Future<void> adminSignOut(BuildContext context) async {
               padding: const EdgeInsets.all(20.0),
               child: Center(
                 child: EnredaButton(
-                  buttonTitle: StringConst.GO_ADMIN_WEB,
+                  width: 250.0,
+                  buttonTitle: StringConst.GO_ORGANIZATION_WEB,
                   onPressed: () {
+                    targetWeb = StringConst.WEB_COMPANIES_URL_ACCESS;
+                    auth.signOut();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 20.0),
+              child: Center(
+                child: EnredaButton(
+                  width: 250.0,
+                  buttonTitle: StringConst.GO_SOCIAL_ENTITY_WEB,
+                  onPressed: () {
+                    targetWeb = StringConst.WEB_SOCIAL_ENTITIES_URL_ACCESS;
                     auth.signOut();
                     Navigator.of(context).pop();
                   },
@@ -62,8 +80,7 @@ Future<void> adminSignOut(BuildContext context) async {
     ).then((exit) {
       if (exit == null) {
         auth.signOut();
-        //launchURL(StringConst.WEB_COMPANIES_URL_ACCESS);
-        launchURL(StringConst.WEB_ADMIN_ACCESS);
+        launchURL(targetWeb);
       }
     });
   });

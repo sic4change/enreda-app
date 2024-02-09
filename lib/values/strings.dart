@@ -225,6 +225,7 @@ class StringConst {
   static const String WEB_APP_URL = 'https://enredawebapp.web.app/';
   static const String NEW_WEB_ENREDA_URL = 'https://www.enredas.org/';
   static const String WEB_COMPANIES_URL_ACCESS = 'https://enreda-empresas.web.app/';
+  static const String WEB_SOCIAL_ENTITIES_URL_ACCESS = 'https://enredadentidadsocial.web.app/';
   static const String WEB_ADMIN_ACCESS = 'https://enreda-d3b41.web.app/';
   static const String WEB_FUNDAULA_ACCESS = 'https://fundaula-lp.cclearning.accenture.com/?p=12510';
 
@@ -253,8 +254,10 @@ class StringConst {
   static const String LOOKING_FOR_JOB = '¿Buscas empleo o recursos?';
   static const String BETTER_FROM_APPS = 'enREDa es mejor desde nuestras Apps';
   static const String ACCESS_FROM_BROWSER = 'Acceder desde el navegador';
-  static const String ARE_YOU_ADMIN = '¿Eres organización, mentor o administrador?';
+  static const String ARENT_YOU_PARTICIPANT = '¿No eres usuario participante?';
   static const String GO_ADMIN_WEB = 'Ir a la web de administración';
+  static const String GO_SOCIAL_ENTITY_WEB = 'Ir a la web de entidad social';
+  static const String GO_ORGANIZATION_WEB = 'Ir a la web de empresas';
 
   //Packages Names
   static const String ANDROID_PACKAGE_NAME = 'org.sic4change.enreda_app';

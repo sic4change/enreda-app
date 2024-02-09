@@ -1,10 +1,12 @@
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_change_model.dart';
+import 'package:enreda_app/app/sign_in/sign_out_admin.dart';
 import 'package:enreda_app/app/sign_up/unemployedUser/unemployed_registering.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_exception_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
+import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -251,17 +253,24 @@ class _EmailSignInFormChangeNotifierState
   }
 
   Future<void> _submit() async {
-    try {
-      await model.submit();
-      CupertinoScaffold.controller.index = 3;
-      GoRouter.of(context).go(StringConst.PATH_HOME);
-      //context.canPop() ? context.pop() : context.go(StringConst.PATH_HOME);
-    } on FirebaseAuthException catch (e) {
-      showExceptionAlertDialog(
-        context,
-        title: 'Error',
-        exception: e,
-      );
+    final database = Provider.of<Database>(context, listen: false);
+    final userEnreda = await database.userStream(_emailController.text).first;
+    if (userEnreda.isNotEmpty && userEnreda.first.role != "Desempleado") {
+      adminSignOut(context);
+    }
+    else {
+      try {
+        await model.submit();
+        CupertinoScaffold.controller.index = 3;
+        GoRouter.of(context).go(StringConst.PATH_HOME);
+        //context.canPop() ? context.pop() : context.go(StringConst.PATH_HOME);
+      } on FirebaseAuthException catch (e) {
+        showExceptionAlertDialog(
+          context,
+          title: 'Error',
+          exception: e,
+        );
+      }
     }
   }
 

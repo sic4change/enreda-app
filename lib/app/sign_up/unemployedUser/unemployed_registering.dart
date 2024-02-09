@@ -274,7 +274,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           address: address,
           role: 'Desempleado',
           unemployedType: unemployedType,
-          socialEntityId: selectedSocialEntity?.socialEntityId??"",
+          assignedEntityId: selectedSocialEntity?.socialEntityId??"",
       );
       try {
         final database = Provider.of<Database>(context, listen: false);

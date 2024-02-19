@@ -26,7 +26,7 @@ Widget streamBuilderDropdownDedication (BuildContext context, Dedication? select
 
         return DropdownButtonFormField<Dedication>(
           hint: Text(StringConst.FORM_DEDICATION, maxLines: 2, overflow: TextOverflow.ellipsis),
-          isDense: false,
+          isDense: true,
           isExpanded: true,
           value: selectedDedication,
           items: dedicationItems,

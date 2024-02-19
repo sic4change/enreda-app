@@ -31,12 +31,16 @@ import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_d
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_education.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_gender.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_interests.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_nation.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_province.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_social_entity.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_specificInterests.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_timeSearching.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_timeSpentWeekly.dart';
+import 'package:enreda_app/common_widgets/custom_date_picker_title.dart';
 import 'package:enreda_app/common_widgets/custom_padding.dart';
+import 'package:enreda_app/common_widgets/custom_phone_form_field_title.dart';
+import 'package:enreda_app/common_widgets/custom_text_form_field_title.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/flex_row_column.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
@@ -82,6 +86,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   String? _province;
   String? _city;
   String? _postalCode;
+  String? _nationality;
 
   int? isRegistered;
   int usersIds = 0;
@@ -109,7 +114,8 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   Education? selectedEducation;
   Gender? selectedGender;
   SocialEntity? selectedSocialEntity;
-  late String countryName;
+  String? selectedNationality;
+  late String countryName, nationalityName;
   late String provinceName;
   late String cityName;
   String phoneCode = '+34';
@@ -133,6 +139,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   String? timeSpentWeeklyId;
   String? educationValue;
   String? unemployedType;
+  String? futureLearning;
 
   TextEditingController textEditingControllerDateInput = TextEditingController();
   TextEditingController textEditingControllerAbilities = TextEditingController();
@@ -140,6 +147,13 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   TextEditingController textEditingControllerSpecificInterests = TextEditingController();
 
   int sum = 0;
+
+  List<DropdownMenuItem<String>> _futureLearningOptions = ['No me interesa nada', 'Formación', 'Prácticas', 'Ocio', 'Voluntariado', 'Empleo'].map<DropdownMenuItem<String>>((String value){
+    return DropdownMenuItem<String>(
+      value: value,
+      child: Text(value),
+    );
+  }).toList();
 
   @override
   void initState() {
@@ -166,6 +180,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     interestsNames = "";
     specificInterestsNames = "";
     unemployedType = "";
+    nationalityName = '';
   }
 
   bool _validateAndSaveForm() {
@@ -222,26 +237,11 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           value: dedicationValue!
       );
 
-      final TimeSearching? timeSearching = new TimeSearching(
-        label: timeSearchingName,
-        value: timeSearchingValue!,
-      );
-
-      final TimeSpentWeekly? timeSpentWeekly = new TimeSpentWeekly(
-          label: timeSpentWeeklyName,
-          value: timeSearchingValue!
-      );
-
-      final motivation = Motivation(
-        abilities: abilities,
-        dedication: dedication,
-        timeSearching: timeSearching,
-        timeSpentWeekly: timeSpentWeekly,
-      );
-
       final interestsSet = Interests(
         interests: interests,
         specificInterests: specificInterests,
+        surePurpose: selectedDedication,
+        continueLearning: futureLearning,
       );
 
       if(sum >= 0 && sum <= 3)
@@ -268,13 +268,13 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           phone: _phone,
           gender: genderName,
           birthday: _birthday,
-          motivation: motivation,
           interests: interestsSet,
           educationId: selectedEducation?.educationId??"",
           address: address,
           role: 'Desempleado',
           unemployedType: unemployedType,
           assignedEntityId: selectedSocialEntity?.socialEntityId??"",
+          nationality: selectedNationality,
       );
       try {
         final database = Provider.of<Database>(context, listen: false);
@@ -321,204 +321,131 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget> [
               CustomFlexRowColumn(
-                childLeft: customTextFormFieldName(context, _firstName!, StringConst.FORM_NAME, StringConst.NAME_ERROR, _name_setState),
-                childRight: customTextFormFieldName(context, _lastName!, StringConst.FORM_LASTNAME, StringConst.FORM_LASTNAME_ERROR, _surname_setState),
+                contentPadding: EdgeInsets.all(0.0),
+                separatorSize: Sizes.kDefaultPaddingDouble,
+                childLeft: CustomTextFormFieldTitle(
+                    labelText: StringConst.FORM_NAME,
+                    initialValue: _firstName!,
+                    validator: (value) =>
+                    value!.isNotEmpty ? null : StringConst.NAME_ERROR,
+                    onSaved: _name_setState
+                ),
+                childRight: CustomTextFormFieldTitle(
+                    labelText: StringConst.FORM_LASTNAME,
+                    initialValue: _lastName!,
+                    validator: (value) =>
+                    value!.isNotEmpty ? null : StringConst.FORM_LASTNAME_ERROR,
+                    onSaved: _surname_setState
+                ),
               ),
+              SpaceH20(),
               Flex(
                 direction: Responsive.isMobile(context) ? Axis.vertical : Axis.horizontal,
                 children: [
                   Expanded(
                     flex: Responsive.isMobile(context) ? 0 : 1,
-                    child: Padding(
-                      padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: StringConst.FORM_PHONE,
-                          prefixIcon:CountryCodePicker(
-                            onChanged: _onCountryChange,
-                            initialSelection: 'ES',
-                            countryFilter: ['ES', 'PE', 'GT'],
-                            showFlagDialog: true,
-                          ),
-                          focusColor: Constants.turquoise,
-                          labelStyle: textTheme.button?.copyWith(
-                            height: 1.5,
-                            color: AppColors.greyDark,
-                            fontWeight: FontWeight.w400,
-                            fontSize: fontSize,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                            borderSide: BorderSide(
-                              color: AppColors.greyUltraLight,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                            borderSide: BorderSide(
-                              color: AppColors.greyUltraLight,
-                              width: 1.0,
-                            ),
-                          ),
-                        ),
-                        initialValue: _phone,
-                        validator: (value) =>
-                        value!.isNotEmpty ? null : StringConst.PHONE_ERROR,
-                        onSaved: (value) => this._phone = phoneCode +' '+ value!,
-                        textCapitalization: TextCapitalization.sentences,
-                        keyboardType: TextInputType.phone,
-                        style: textTheme.button?.copyWith(
-                          height: 1.5,
-                          color: AppColors.greyDark,
-                          fontWeight: FontWeight.w400,
-                          fontSize: fontSize,
-                        ),
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                        ],
-                      ),
+                    child: CustomDatePickerTitle(
+                      labelText: StringConst.FORM_BIRTHDAY,
+                      onChanged: (value){//pickedDate output format => 2021-03-10 00:00:00.000
+                        _formattedBirthdayDate = DateFormat('dd-MM-yyyy').format(value!);
+                        print(_formattedBirthdayDate); //formatted date output using intl package =>  2021-03-16
+                        setState(() {
+                          textEditingControllerDateInput.text = _formattedBirthdayDate; //set output date to TextField value.
+                          _birthday = value;
+                        });
+                      },
+                      validator: (value) => value != null ? null : StringConst.FORM_BIRTHDAY_ERROR,
                     ),
                   ),
+                  if (Responsive.isMobile(context))
+                    SpaceH20(),
+                  if (!Responsive.isMobile(context))
+                    SpaceW20(),
                   Expanded(
-                      flex: Responsive.isMobile(context) ? 0 : 1,
-                      child: Padding(
-                        padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
-                        child: TextFormField(
-                          controller: textEditingControllerDateInput, //editing controller of this TextField
-                          validator: (value) => value!.isNotEmpty ? null : StringConst.FORM_BIRTHDAY_ERROR,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.calendar_today), //icon of text field
-                            labelText: StringConst.FORM_BIRTHDAY, //label text of field
-                            labelStyle: textTheme.button?.copyWith(
-                              height: 1.5,
-                              color: AppColors.greyDark,
-                              fontWeight: FontWeight.w400,
-                              fontSize: fontSize,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                color: AppColors.greyUltraLight,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              borderSide: BorderSide(
-                                color: AppColors.greyUltraLight,
-                                width: 1.0,
-                              ),
-                            ),
-                          ),
-                          readOnly: true,  //set it true, so that user will not able to edit text
-                          style: textTheme.button?.copyWith(
-                            height: 1.5,
-                            color: AppColors.greyDark,
-                            fontWeight: FontWeight.w400,
-                            fontSize: fontSize,
-                          ),
-                          onTap: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate: new DateTime(DateTime.now().year - 16, DateTime.now().month, DateTime.now().day),
-                                firstDate: new DateTime(DateTime.now().year - 100, DateTime.now().month, DateTime.now().day),
-                                lastDate: new DateTime(DateTime.now().year - 16, DateTime.now().month, DateTime.now().day),
-                                initialEntryMode: DatePickerEntryMode.calendarOnly,
-                            );
-                            if(pickedDate != null ){
-                              print(pickedDate);  //pickedDate output format => 2021-03-10 00:00:00.000
-                              _formattedBirthdayDate = DateFormat('dd-MM-yyyy').format(pickedDate);
-                              print(_formattedBirthdayDate); //formatted date output using intl package =>  2021-03-16
-                              setState(() {
-                                textEditingControllerDateInput.text = _formattedBirthdayDate; //set output date to TextField value.
-                                _birthday = pickedDate;
-                              });
-                            }
-                          },
-                        ),
-                      )
+                    flex: Responsive.isMobile(context) ? 0 : 1,
+                    child: streamBuilder_Dropdown_Genders(context, selectedGender, _buildGenderStreamBuilder_setState),
                   ),
                 ],
               ),
+              SpaceH20(),
+              streamBuilderForNation(context, selectedNationality, _buildNationalityStreamBuilder_setState, StringConst.FORM_CURRENT_NATIONALITY),
+              SpaceH20(),
               Flex(
                 direction: Responsive.isMobile(context) ? Axis.vertical : Axis.horizontal,
                 children: [
                   Expanded(
                     flex: Responsive.isMobile(context) ? 0 : 1,
-                    child: Padding(
-                      padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
-                      child: StreamBuilder <List<UserEnreda>>(
-                          stream:
-                          // Empty stream (no call to firestore) if email not valid
-                          !EmailValidator.validate(writtenEmail)
-                              ? Stream<List<UserEnreda>>.empty()
-                              : database.checkIfUserEmailRegistered(writtenEmail),
-                          builder:  (context, snapshotUsers) {
-
-                            var usersListLength = snapshotUsers.data != null ? snapshotUsers.data?.length : 0;
-                            isRegistered = usersListLength! > 0 ? 1 : 0;
-
-                            final validationMessage = (value) => EmailValidator.validate(value!)
-                                ? (isRegistered == 0 ? null : StringConst.EMAIL_REGISTERED)
-                                : StringConst.EMAIL_ERROR;
-
-                            return
-                              TextFormField(
-                                decoration: InputDecoration(
-                                  labelText: StringConst.FORM_EMAIL,
-                                  labelStyle: textTheme.button?.copyWith(
-                                    height: 1.5,
-                                    color: AppColors.greyDark,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: fontSize,
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    borderSide: BorderSide(
-                                      color: AppColors.greyUltraLight,
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    borderSide: BorderSide(
-                                      color: AppColors.greyUltraLight,
-                                      width: 1.0,
-                                    ),
-                                  ),
-                                ),
-                                initialValue: _email,
-                                validator: validationMessage,
-                                onSaved: (value) => _email = value,
-                                keyboardType: TextInputType.emailAddress,
-                                onChanged: (value) => setState(() => this.writtenEmail = value),
-                                style: textTheme.button?.copyWith(
-                                  height: 1.5,
-                                  color: AppColors.greyDark,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: fontSize,
-                                ),
-                              );
-                          }
-                      ),
+                    child: CustomPhoneFormFieldTitle(
+                      labelText: StringConst.FORM_PHONE,
+                      phoneCode: phoneCode,
+                      onCountryChange: _onCountryChange,
+                      initialValue: _phone,
+                      validator: (value) =>
+                      value!.isNotEmpty ? null : StringConst.PHONE_ERROR,
+                      onSaved: (value) => this._phone = phoneCode +' '+ value!,
+                      fontSize: 15,
                     ),
                   ),
+                  if (Responsive.isMobile(context))
+                    SpaceH20(),
+                  if (!Responsive.isMobile(context))
+                    SpaceW20(),
                   Expanded(
                     flex: Responsive.isMobile(context) ? 0 : 1,
-                    child: Padding(
-                        padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
-                        child: streamBuilder_Dropdown_Genders(context, selectedGender, _buildGenderStreamBuilder_setState)
+                    child: StreamBuilder <List<UserEnreda>>(
+                        stream:
+                        // Empty stream (no call to firestore) if email not valid
+                        !EmailValidator.validate(writtenEmail)
+                            ? Stream<List<UserEnreda>>.empty()
+                            : database.checkIfUserEmailRegistered(writtenEmail),
+                        builder:  (context, snapshotUsers) {
+
+                          var usersListLength = snapshotUsers.data != null ? snapshotUsers.data?.length : 0;
+                          isRegistered = usersListLength! > 0 ? 1 : 0;
+
+                          final validationMessage = (value) => EmailValidator.validate(value!)
+                              ? (isRegistered == 0 ? null : StringConst.EMAIL_REGISTERED)
+                              : StringConst.EMAIL_ERROR;
+
+                          return CustomTextFormFieldTitle(
+                            labelText: StringConst.FORM_EMAIL,
+                            initialValue: _email,
+                            validator: validationMessage,
+                            onSaved: (value) => _email = value,
+                            keyboardType: TextInputType.emailAddress,
+                            onChanged: (value) => setState(() => this.writtenEmail = value),
+                          );
+                        }
                     ),
                   ),
                 ],
               ),
+              SpaceH20(),
               CustomFlexRowColumn(
-                childLeft: streamBuilderForCountry(context, selectedCountry, _buildCountryStreamBuilder_setState),
+                contentPadding: EdgeInsets.all(0.0),
+                separatorSize: Sizes.kDefaultPaddingDouble,
+                childLeft: streamBuilderForCountry(context, selectedCountry, _buildCountryStreamBuilder_setState, StringConst.FORM_CURRENT_COUNTRY),
                 childRight: streamBuilderForProvince(context, selectedCountry, selectedProvince, _buildProvinceStreamBuilder_setState),
               ),
+              SpaceH20(),
               CustomFlexRowColumn(
+                contentPadding: EdgeInsets.all(0.0),
+                separatorSize: Sizes.kDefaultPaddingDouble,
                 childLeft: streamBuilderForCity(context, selectedCountry, selectedProvince, selectedCity, _buildCityStreamBuilder_setState),
-                childRight: customTextFormFieldName(context, _postalCode!, StringConst.FORM_POSTAL_CODE, StringConst.POSTAL_CODE_ERROR, _postalCode_setState),
+                //childLeft: Container(),
+                childRight: CustomTextFormFieldTitle(
+                    labelText: StringConst.FORM_POSTAL_CODE,
+                    initialValue: _postalCode!,
+                    /*validator: (value) =>
+                      value!.isNotEmpty ? null : StringConst.POSTAL_CODE_ERROR,*/
+                    onSaved: _postalCode_setState
+                ),
               ),
-              CustomPadding(child: streamBuilderForSocialEntity(context, selectedSocialEntity, _buildSocialEntityStreamBuilder_setState)),
+              SpaceH20(),
+              streamBuilderDropdownEducation(context, selectedEducation, _buildEducationStreamBuilder_setState),
+              SpaceH20(),
+              streamBuilderForSocialEntity(context, selectedSocialEntity, _buildSocialEntityStreamBuilder_setState),
+
             ]),
       );
   }
@@ -588,84 +515,139 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget> [
+              CustomPadding(child: Container(
+                  height: 60,
+                  child: streamBuilderDropdownDedication(context, selectedDedication, _buildDedicationStreamBuilder_setState))),
               Padding(
-                padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
-                child: TextFormField(
-                  controller: textEditingControllerInterests,
-                  decoration: InputDecoration(
-                    hintText: StringConst.FORM_INTERESTS_QUESTION,
-                    hintMaxLines: 2,
-                    labelStyle: textTheme.bodyText1?.copyWith(
-                      color: AppColors.greyDark,
+                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
+                child: Container(
+                  height: 60,
+                  child: TextFormField(
+                    controller: textEditingControllerInterests,
+                    decoration: InputDecoration(
+                      hintText: StringConst.FORM_INTERESTS_QUESTION,
+                      hintMaxLines: 2,
+                      labelStyle: textTheme.bodyText1?.copyWith(
+                        color: AppColors.greyDark,
+                        height: 1.5,
+                        fontWeight: FontWeight.w400,
+                        fontSize: fontSize,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: AppColors.greyUltraLight,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: AppColors.greyUltraLight,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    onTap: () => {_showMultiSelectInterests(context) },
+                    validator: (value) => value!.isNotEmpty ?
+                    null : StringConst.FORM_MOTIVATION_ERROR,
+                    onSaved: (value) => value = _interestId,
+                    maxLines: 2,
+                    readOnly: true,
+                    style: textTheme.button?.copyWith(
                       height: 1.5,
+                      color: AppColors.greyDark,
                       fontWeight: FontWeight.w400,
                       fontSize: fontSize,
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: AppColors.greyUltraLight,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: AppColors.greyUltraLight,
-                        width: 1.0,
-                      ),
-                    ),
-                  ),
-                  onTap: () => {_showMultiSelectInterests(context) },
-                  validator: (value) => value!.isNotEmpty ?
-                  null : StringConst.FORM_MOTIVATION_ERROR,
-                  onSaved: (value) => value = _interestId,
-                  maxLines: 2,
-                  readOnly: true,
-                  style: textTheme.button?.copyWith(
-                    height: 1.5,
-                    color: AppColors.greyDark,
-                    fontWeight: FontWeight.w400,
-                    fontSize: fontSize,
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
-                child: TextFormField(
-                  controller: textEditingControllerSpecificInterests,
-                  decoration: InputDecoration(
-                    labelText: StringConst.FORM_SPECIFIC_INTERESTS,
-                    labelStyle: textTheme.button?.copyWith(
-                      color: AppColors.greyDark,
+                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
+                child: Container(
+                  height: 60,
+                  child: TextFormField(
+                    controller: textEditingControllerSpecificInterests,
+                    decoration: InputDecoration(
+                      labelText: StringConst.FORM_SPECIFIC_INTERESTS,
+                      labelStyle: textTheme.button?.copyWith(
+                        color: AppColors.greyDark,
+                        height: 1.5,
+                        fontWeight: FontWeight.w400,
+                        fontSize: fontSize,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: AppColors.greyUltraLight,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: AppColors.greyUltraLight,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    onTap: () => {_showMultiSelectSpecificInterests(context) },
+                    validator: (value) => value!.isNotEmpty ?
+                    null : StringConst.FORM_MOTIVATION_ERROR,
+                    onSaved: (value) => value = _interestId,
+                    maxLines: 2,
+                    readOnly: true,
+                    style: textTheme.button?.copyWith(
                       height: 1.5,
+                      color: AppColors.greyDark,
                       fontWeight: FontWeight.w400,
                       fontSize: fontSize,
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: AppColors.greyUltraLight,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: AppColors.greyUltraLight,
-                        width: 1.0,
-                      ),
-                    ),
                   ),
-                  onTap: () => {_showMultiSelectSpecificInterests(context) },
-                  validator: (value) => value!.isNotEmpty ?
-                  null : StringConst.FORM_MOTIVATION_ERROR,
-                  onSaved: (value) => value = _interestId,
-                  maxLines: 2,
-                  readOnly: true,
-                  style: textTheme.button?.copyWith(
-                    height: 1.5,
-                    color: AppColors.greyDark,
-                    fontWeight: FontWeight.w400,
-                    fontSize: fontSize,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
+                child: Container(
+                  height: 60,
+                  child: DropdownButtonFormField<String>(
+                    hint: Text('¿Qué te gustaría seguir aprendiendo?', maxLines: 2, overflow: TextOverflow.ellipsis),
+                    isDense: true,
+                    isExpanded: true,
+                    value: futureLearning,
+                    items: _futureLearningOptions,
+                    validator: (value) => futureLearning != null ? null : StringConst.FORM_MOTIVATION_ERROR,
+                    onChanged: (value) => setState(() {
+                      futureLearning = value;
+                    }), //functionToWriteBackThings(value),
+                    iconDisabledColor: AppColors.greyDark,
+                    iconEnabledColor: AppColors.primaryColor,
+                    decoration: InputDecoration(
+                      labelStyle: textTheme.button?.copyWith(
+                        height: 1.5,
+                        color: AppColors.greyDark,
+                        fontWeight: FontWeight.w400,
+                        fontSize: fontSize,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: AppColors.greyUltraLight,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: AppColors.greyUltraLight,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    style: textTheme.button?.copyWith(
+                      height: 1.5,
+                      color: AppColors.greyDark,
+                      fontWeight: FontWeight.w400,
+                      fontSize: fontSize,
+                    ),
                   ),
                 ),
               ),
@@ -681,15 +663,13 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           _firstName!,
           _lastName!,
           _email!,
+          _phone!,
+          nationalityName,
           genderName,
           countryName,
           provinceName,
           cityName,
           _postalCode!,
-          abilitesNames,
-          dedicationName,
-          timeSearchingName,
-          timeSpentWeeklyName,
           educationName,
           specificInterestsNames,
           interestsNames,
@@ -792,6 +772,14 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     setState(() => this._postalCode = val!);
   }
 
+  void _buildNationalityStreamBuilder_setState(String? country) {
+    setState(() {
+      this.selectedNationality = country;
+      nationalityName = country != null ? country : "";
+    });
+    _nationality = country;
+  }
+
   void _showMultiSelectAbilities(BuildContext context) async {
     final selectedValues = await showDialog<Set<Ability>>(
       context: context,
@@ -887,17 +875,11 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     Step(
       isActive: currentStep >= 1,
       state: currentStep > 1 ? StepState.complete : StepState.disabled,
-      title: Text(StringConst.FORM_MOTIVATION.toUpperCase()),
-      content: _buildFormMotivations(context),
-    ),
-    Step(
-      isActive: currentStep >= 2,
-      state: currentStep > 2 ? StepState.complete : StepState.disabled,
       title: Text(StringConst.FORM_INTERESTS.toUpperCase()),
       content: _buildFormInterests(context),
     ),
     Step(
-      isActive: currentStep >= 3,
+      isActive: currentStep >= 2,
       title: Text(StringConst.FORM_REVISION.toUpperCase()),
       content: _revisionForm(context),
     ),
@@ -909,23 +891,14 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     if (currentStep == 0 && !_validateAndSaveForm())
       return;
 
-    if (currentStep == 1 && !_validateAndSaveMotivationForm())
+    if (currentStep == 1 && !_validateAndSaveInterestsForm())
       return;
 
-    if (currentStep == 2 && !_validateAndSaveInterestsForm())
-      return;
 
     // If not last step, advance and return
-    final isLastStep = currentStep == getSteps().length-1;
+    final isLastStep = currentStep == getSteps().length - 1;
     if (!isLastStep) {
-      setState(() => {
-        if(currentStep == 1 && sum >= 0 && sum <= 6 ) {
-          this.currentStep += 2
-        }
-        else {
-          this.currentStep += 1
-        }
-      });
+      setState(() => this.currentStep += 1);
       return;
     }
     _submit();

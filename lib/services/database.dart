@@ -130,6 +130,7 @@ abstract class Database {
   Future<void> addCertificationRequest(CertificationRequest certificationRequest);
   Future<void> updateCertificationRequest(CertificationRequest certificationRequest, bool certified, bool referenced );
   Future<void> setTrainingPill(TrainingPill trainingPill);
+  Stream<List<String>> nationsSpanishStream();
 }
 
 class FirestoreDatabase implements Database {
@@ -865,6 +866,14 @@ class FirestoreDatabase implements Database {
     queryBuilder: (query) => query.where('trust', isEqualTo: true),
     builder: (data, documentId) => SocialEntity.fromMap(data, documentId),
     sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
+  );
+
+  @override
+  Stream<List<String>> nationsSpanishStream() => _service.collectionStream(
+    path: APIPath.nations(),
+    queryBuilder: (query) => query.where('name', isNotEqualTo: null),
+    builder: (data, documentId) => data['translations']['es'].toString(),
+    sort: (lhs, rhs) => lhs.compareTo(rhs),
   );
 
 }

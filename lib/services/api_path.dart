@@ -61,4 +61,5 @@ class APIPath {
   static String competenciesCategories() => 'competenciesCategories';
   static String competenciesSubCategory(String competencySubCategoryId) => 'competenciesSubCategories/$competencySubCategoryId';
   static String competenciesSubCategories() => 'competenciesSubCategories';
+  static String nations() => 'nations';
 }

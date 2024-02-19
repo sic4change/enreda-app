@@ -1,12 +1,20 @@
 import 'package:enreda_app/utils/responsive.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
-import '../../../values/values.dart';
 
 class CustomFlexRowColumn extends StatelessWidget {
 
-  CustomFlexRowColumn({ required this.childLeft, required this.childRight  });
+  const CustomFlexRowColumn({
+    super.key,
+    required this.childLeft,
+    required this.childRight,
+    this.contentPadding = const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
+    this.separatorSize = 0.0,
+  });
   final Widget childLeft;
   final Widget childRight;
+  final EdgeInsets contentPadding;
+  final double separatorSize;
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +24,18 @@ class CustomFlexRowColumn extends StatelessWidget {
         Expanded(
           flex: Responsive.isMobile(context) || Responsive.isTablet(context) ? 0 : 1,
           child: Padding(
-              padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
+              padding: contentPadding,
               child: childLeft
           ),
         ),
+        if (Responsive.isMobile(context) || Responsive.isTablet(context))
+          SizedBox(height: separatorSize,),
+        if (!Responsive.isMobile(context) && !Responsive.isTablet(context))
+          SizedBox(width: separatorSize,),
         Expanded(
           flex: Responsive.isMobile(context) || Responsive.isTablet(context) ? 0 : 1,
           child: Padding(
-              padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
+              padding: contentPadding,
               child: childRight
           ),
         ),

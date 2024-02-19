@@ -355,6 +355,9 @@ class StringConst {
   static const String FORM_PHONE_CERTIFIER = "Teléfono";
   static const String FORM_POSITION_CERTIFIER = "Cargo";
   static const String FORM_SOCIAL_ENTITY = "¿Vienes de mano de una Entidad Social?";
+  static const String FORM_CURRENT_COUNTRY = "País actual";
+  static const String FORM_CURRENT_NATIONALITY = "Nacionalidad";
+  static const String FORM_EDUCATION_REV_CREATE = "Nivel educativo";
 
   static const String FORM_GENERAL_INFO = "Información general";
   static const String FORM_MOTIVATION = "Motivaciones";

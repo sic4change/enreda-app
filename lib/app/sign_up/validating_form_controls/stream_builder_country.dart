@@ -6,7 +6,7 @@ import '../../../../../../services/database.dart';
 import '../../../utils/adaptive.dart';
 import '../../../values/values.dart';
 
-Widget streamBuilderForCountry (BuildContext context, Country? selectedCountry,  functionToWriteBackThings ) {
+Widget streamBuilderForCountry (BuildContext context, Country? selectedCountry,  functionToWriteBackThings, String title ) {
   final database = Provider.of<Database>(context, listen: false);
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
@@ -24,42 +24,60 @@ Widget streamBuilderForCountry (BuildContext context, Country? selectedCountry, 
               .toList();
         }
 
-        return DropdownButtonFormField<Country>(
-          hint: Text(StringConst.FORM_COUNTRY),
-          isExpanded: true,
-          value: selectedCountry,
-          items: countryItems,
-          validator: (value) => selectedCountry != null ? null : StringConst.COUNTRY_ERROR,
-          onChanged: (value) => functionToWriteBackThings(value),
-          iconDisabledColor: AppColors.greyDark,
-          iconEnabledColor: AppColors.primaryColor,
-          decoration: InputDecoration(
-            labelStyle: textTheme.button?.copyWith(
-              height: 1.5,
-              color: AppColors.greyDark,
-              fontWeight: FontWeight.w400,
-              fontSize: fontSize,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5.0),
-              borderSide: BorderSide(
-                color: AppColors.greyUltraLight,
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  title,
+                  style: textTheme.button?.copyWith(
+                    height: 1.5,
+                    color: AppColors.greyDark,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                  ),
+                ),
               ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5.0),
-              borderSide: BorderSide(
-                color: AppColors.greyUltraLight,
-                width: 1.0,
+              Container(
+                height: 50,
+                child: DropdownButtonFormField(
+                  value: selectedCountry,
+                  items: countryItems,
+                  onChanged: (value) => functionToWriteBackThings(value),
+                  validator: (value) => selectedCountry != null ? null : StringConst.COUNTRY_ERROR,
+                  decoration: InputDecoration(
+                    errorStyle: TextStyle(height: 0.01),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: AppColors.greyUltraLight,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: AppColors.greyUltraLight,
+                        width: 1.0,
+                      ),
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: AppColors.greyUltraLight,
+                        width: 1.0,
+                      ),
+                    ),
+                  ),
+                  style: textTheme.button?.copyWith(
+                    height: 1.4,
+                    color: AppColors.greyDark,
+                    fontWeight: FontWeight.w400,
+                    fontSize: fontSize,
+                  ),
+                ),
               ),
-            ),
-          ),
-          style: textTheme.button?.copyWith(
-            height: 1.5,
-            fontWeight: FontWeight.w400,
-            color: AppColors.greyDark,
-            fontSize: fontSize,
-          ),
+            ]
         );
       });
 }

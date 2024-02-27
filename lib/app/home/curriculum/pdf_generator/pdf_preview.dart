@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:enreda_app/app/home/curriculum/pdf_generator/cv_page.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
@@ -160,16 +161,18 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.primary100,
         foregroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: AppColors.turquoiseBlue,),
         title: const Text('Mi Currículum'),
         titleTextStyle: textTheme.bodyLarge?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: AppColors.turquoiseBlue,
             fontSize: 22.0),
         bottom: TabBar(
           controller: _tabController,
           tabs: examples.map<Tab>((e) => Tab(text: e.name)).toList(),
-          labelColor: Colors.white,
+          labelColor: AppColors.bluePetrol,
           labelStyle: TextStyle(fontSize: 20),
           isScrollable: true,
         ),
@@ -203,6 +206,7 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
         ),
         actions: actions,
         canDebug: false,
+        initialPageFormat: PdfPageFormat.a4,
         onPrinted: _showPrintedToast,
         onShared: _showSharedToast,
         canChangeOrientation: false,

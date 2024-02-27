@@ -224,7 +224,7 @@ Future<Uint8List> generateResume2(
                     padding: const pw.EdgeInsets.only(left: 50, right: 30),
                     child: pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: pw.MainAxisAlignment.start,
                       children: <pw.Widget>[
                         pw.Text('${user?.firstName} ${user?.lastName}',
                             textScaleFactor: 3,
@@ -243,34 +243,29 @@ Future<Uint8List> generateResume2(
                         myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_PROFESIONAL_EXPERIENCES, color: lilac) : pw.Container(),
                         for (var experience in myExperiences!)
                           _Block(
-                            title: experience.activityRole != null &&
-                                experience.activity != null
-                                ? '${experience.activityRole} - ${experience.activity}'
-                                : (experience.position == null || experience.position == "")
-                                ? experience.activity
-                                : (experience.organization == null || experience.organization == "")
-                                ? experience.position
-                                : '${experience.position} - ${experience.organization}',
+                            title: (experience.activity != null) ? experience.activity : '',
+                            organization: experience.organization != "" && experience.organization != null && experience.position != "" && experience.position != null ? '${experience.position} - ${experience.organization}'
+                                : experience.organization != null || experience.organization != "" ? experience.organization :  experience.position != null && experience.position != "" ? experience.position : "",
                             showDescriptionDate: idSelectedDateExperience!.contains(experience.id),
                             descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : 'Desconocida'} / '
                                 '${experience.subtype == 'Responsabilidades familiares'? 'Desconocida':experience.endDate != null
                                 ? formatter.format(experience.endDate!.toDate())
                                 : 'Actualmente'}',
                             descriptionPlace: '${experience.location}',
+                            descriptionActivities: experience.professionActivitiesText!.split(' / ').map((item) => '• $item').join('\n'),
                           ),
                         pw.SizedBox(height: 5),
 
                         myPersonalExperiences != null && myPersonalExperiences.isNotEmpty ? _Category(title: StringConst.MY_PERSONAL_EXPERIENCES, color: lilac) : pw.Container(),
                         for (var experience in myPersonalExperiences!)
                           _Block(
-                            title: experience.activityRole != null &&
-                                experience.activity != null
-                                ? '${experience.activityRole} - ${experience.activity}'
-                                : (experience.position == null || experience.position == "")
-                                ? experience.activity
-                                : (experience.organization == null || experience.organization == "")
-                                ? experience.position
-                                : '${experience.position} - ${experience.organization}',
+                            title: experience.activityRole != null && experience.activity != null && experience.subtype != null
+                                ? '${experience.subtype} - ${experience.activityRole} - ${experience.activity}'
+                                : experience.activityRole != null && experience.activity != null ? '${experience.activityRole} - ${experience.activity}' :
+                            experience.activity != null ? experience.subtype != null ? '${experience.subtype} - ${experience.activity}' :
+                            experience.activity : '',
+                            organization: experience.organization != "" && experience.organization != null && experience.position != "" && experience.position != null ? '${experience.position} - ${experience.organization}'
+                                : experience.organization != null || experience.organization != "" ? experience.organization :  experience.position != null && experience.position != "" ? experience.position : "",
                             showDescriptionDate: idSelectedDatePersonalExperience!.contains(experience.id),
                             descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : 'Desconocida'} / '
                                 '${experience.subtype == 'Responsabilidades familiares'? 'Desconocida': experience.endDate != null
@@ -383,15 +378,19 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format, bool myPhoto, profileIma
 class _Block extends pw.StatelessWidget {
   _Block({
     this.title,
+    this.organization,
     this.descriptionDate,
     this.descriptionPlace,
     this.showDescriptionDate,
+    this.descriptionActivities,
   });
 
   final String? title;
+  final String? organization;
   final String? descriptionDate;
   final String? descriptionPlace;
   final bool? showDescriptionDate;
+  final String? descriptionActivities;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -412,6 +411,20 @@ class _Block extends pw.StatelessWidget {
                           color: grey)),
                 ) : pw.Container()
               ]),
+          organization != null ? pw.Row(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: <pw.Widget>[
+                pw.Expanded(
+                  child: pw.Text(
+                      organization!,
+                      textScaleFactor: 0.8,
+                      style: pw.Theme.of(context)
+                          .defaultTextStyle
+                          .copyWith(
+                          fontWeight: pw.FontWeight.bold,
+                          color: grey)),
+                )
+              ]) : pw.Container(),
           pw.Container(
             child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -439,6 +452,26 @@ class _Block extends pw.StatelessWidget {
                           color: grey)),
                 ]),
           ),
+          descriptionActivities != null ? pw.Container(
+            child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: <pw.Widget>[
+                  pw.Text('Actividades realizadas:',
+                      textScaleFactor: 0.8,
+                      style: pw.Theme.of(context)
+                          .defaultTextStyle
+                          .copyWith(
+                          fontWeight: pw.FontWeight.bold,
+                          color: grey)),
+                  pw.Text(descriptionActivities!,
+                      textScaleFactor: 0.8,
+                      style: pw.Theme.of(context)
+                          .defaultTextStyle
+                          .copyWith(
+                          fontWeight: pw.FontWeight.normal,
+                          color: grey)),
+                ]),
+          ) : pw.Container(),
           pw.SizedBox(height: 8),
         ]);
   }

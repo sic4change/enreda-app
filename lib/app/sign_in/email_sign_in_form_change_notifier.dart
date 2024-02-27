@@ -11,6 +11,7 @@ import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -43,7 +44,7 @@ class _EmailSignInFormChangeNotifierState
   final TextEditingController _passwordController = TextEditingController();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
-
+  bool _obscureText = true;
   EmailSignInChangeModel get model => widget.model;
 
   @override
@@ -53,6 +54,12 @@ class _EmailSignInFormChangeNotifierState
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     super.dispose();
+  }
+
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
   }
 
   List<Widget> _buildChildren(BuildContext context) {
@@ -163,6 +170,15 @@ class _EmailSignInFormChangeNotifierState
         labelText: 'Contraseña',
         errorText: model.passwordErrorText,
         enabled: model.isLoading == false,
+        suffixIcon: Padding(
+          padding: const EdgeInsets.only(right: 10.0),
+          child: InkWell(
+            onTap: _toggle,
+            child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                child: FaIcon(_obscureText ? FontAwesomeIcons.eye : FontAwesomeIcons.eyeSlash, size: 20, color: AppColors.turquoiseBlue,)),
+          ),
+        ),
         focusColor: AppColors.primaryColor,
         labelStyle: textTheme.button?.copyWith(
           height: 1.5,
@@ -183,7 +199,7 @@ class _EmailSignInFormChangeNotifierState
         ),
         floatingLabelStyle: TextStyle(color: Constants.turquoise),
       ),
-      obscureText: true,
+      obscureText: _obscureText,
       textInputAction: TextInputAction.done,
       onChanged: model.updatePassword,
       onEditingComplete: _submit,

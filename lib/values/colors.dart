@@ -3,6 +3,7 @@ part of values;
 class AppColors {
   static const Color primaryColor = Color(0xFF00CCCC);
   //Shades of primary color
+  static const Color primary100 = Color(0xFFA7E4E1);
   static const Color primary200 = Color(0xFF00CCCC);
   static const Color primary300 = Color(0xFF00CCCC);
   static const Color secondaryColor = Color(0xfffcfcff);
@@ -38,6 +39,8 @@ class AppColors {
   static const Color blueLight = Color(0xFF5876D2);
   static const Color blueDark = Color(0xFF002185);
   static const Color blueAlt = Color(0xFF5F7ED9);
+  static const Color bluePetrol = Color(0xFF054D5E);
+  static const Color turquoiseBlue = Color(0xFF054D5E);
 
   //Yellow
   static const Color yellow = Color(0xFFFDE934);

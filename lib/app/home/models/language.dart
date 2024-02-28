@@ -32,4 +32,9 @@ class Language {
       'writingLevel': writingLevel,
     };
   }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => super.hashCode;
+
 }

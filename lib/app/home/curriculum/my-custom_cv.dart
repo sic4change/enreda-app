@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/curriculum/pdf_generator/pdf_preview.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
+import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/utils/adaptive.dart';
@@ -83,7 +84,7 @@ class MyCvModelsPage extends StatefulWidget {
   List<int> mySelectedCompetencies;
   List<String> myCustomDataOfInterest;
   List<int> mySelectedDataOfInterest;
-  List<String> myCustomLanguages;
+  List<Language> myCustomLanguages;
   List<int> mySelectedLanguages;
   final List<CertificationRequest>? myReferences;
   List<CertificationRequest> myCustomReferences;
@@ -1692,7 +1693,8 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
 
   Widget _buildMyLanguages(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final myLanguages = widget.user?.languages ?? [];
+    //final myLanguages = widget.user?.languages ?? [];
+    final myLanguagesLevels = widget.user?.languagesLevels ?? [];
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1704,36 +1706,36 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             borderRadius: BorderRadius.circular(30.0),
             color: Constants.white,
           ),
-          child: myLanguages.isNotEmpty ?
+          child: myLanguagesLevels.isNotEmpty ?
           ListView.builder(
             shrinkWrap: true,
-            itemCount: myLanguages.length,
+            itemCount: myLanguagesLevels.length,
             itemBuilder: (context, index) {
               return Container(
                   child: ListTile(
                     selected: index == _selectedLanguagesIndex,
                     onTap: (){
-                      print('selected item: ${myLanguages[index]}');
-                      bool exists = widget.myCustomLanguages.any((element) => element == myLanguages[index]);
+                      print('selected item: ${myLanguagesLevels[index].name}');
+                      bool exists = widget.myCustomLanguages.any((element) => element == myLanguagesLevels[index]);
                       setState(() {
                         _selectedLanguagesIndex = index;
                         if (exists == true){
-                          widget.myCustomLanguages.remove(myLanguages[index]);
+                          widget.myCustomLanguages.remove(myLanguagesLevels[index]);
                           widget.mySelectedLanguages.remove(_selectedLanguagesIndex);
                         } else {
-                          widget.myCustomLanguages.add(myLanguages[index]);
+                          widget.myCustomLanguages.add(myLanguagesLevels[index]);
                           widget.mySelectedLanguages.add(_selectedLanguagesIndex!);
                         }
                         print(widget.myCustomLanguages);
                         print(widget.mySelectedLanguages);
-                        print(myLanguages);
+                        print(myLanguagesLevels);
                       });
                     },
                     title: Row(
                       children: [
                         Expanded(
                           child: Text(
-                              myLanguages[index],
+                              myLanguagesLevels[index].name,
                               style: textTheme.bodyText1
                                   ?.copyWith(
                                   fontSize: 14.0,

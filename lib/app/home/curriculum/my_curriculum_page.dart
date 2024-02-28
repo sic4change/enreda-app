@@ -105,7 +105,7 @@ class MyCurriculumPage extends StatelessWidget {
 
   List<int> mySelectedDataOfInterest = [];
 
-  List<String> myCustomLanguages = [];
+  List<Language> myCustomLanguages = [];
 
   List<int> mySelectedLanguages = [];
 
@@ -163,7 +163,7 @@ class MyCurriculumPage extends StatelessWidget {
                         mySelectedDataOfInterest = List.generate(myCustomDataOfInterest.length, (i) => i);
 
                         final myLanguages = user?.languagesLevels ?? [];
-                        myCustomLanguages = myLanguages.map((element) => element.name).toList();
+                        myCustomLanguages = myLanguages.map((element) => element).toList();
                         mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
 
                       return Responsive.isDesktop(context)

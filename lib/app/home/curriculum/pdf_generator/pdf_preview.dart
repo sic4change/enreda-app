@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:enreda_app/app/home/curriculum/pdf_generator/cv_page.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
+import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/foundation.dart';
@@ -55,7 +56,7 @@ class MyCv extends StatefulWidget {
   final List<String>? idSelectedDateExperience;
   final List<String>? idSelectedDatePersonalExperience;
   final List<String> competenciesNames;
-  final List<String> languagesNames;
+  final List<Language> languagesNames;
   final String? aboutMe;
   final List<String> myDataOfInterest;
   final String myCustomEmail;

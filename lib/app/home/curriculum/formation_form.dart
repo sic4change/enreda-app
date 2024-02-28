@@ -40,6 +40,7 @@ class FormationForm extends StatefulWidget {
 class _FormationFormState extends State<FormationForm> {
   late String _type;
   final _nameFormationController = TextEditingController();
+  final _organizationController = TextEditingController();
   //EducationLevel
   Education? _selectedEducation;
   String? _institution;
@@ -60,6 +61,7 @@ class _FormationFormState extends State<FormationForm> {
     }
     if (_experience != null) {
       _nameFormationController.text = _experience.nameFormation ?? '';
+      _organizationController.text = _experience.organization ?? '';
       _institution = _experience.institution ?? '';
       _startDate = _experience.startDate;
       _endDate = _experience.endDate;
@@ -106,9 +108,7 @@ class _FormationFormState extends State<FormationForm> {
   }
 
   Form _buildForm(BuildContext context, StateSetter setState) {
-    final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 15, 16, md: 15);
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
@@ -174,6 +174,23 @@ class _FormationFormState extends State<FormationForm> {
                 validator: (value) {
                   if (value == null || value.isEmpty)
                     return 'Selecciona un valor';
+                  return null;
+                },
+              ),
+            ),
+
+            formFieldCustom(
+              TextFormField(
+                controller: _organizationController,
+                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                    label: Text(
+                      'Nombre institución educativa',
+                      style: textTheme.bodyText2,
+                    )),
+                validator: (value) {
+                  if (value == null || value.isEmpty)
+                    return 'El nombre de la institución educativa es obligatorio';
                   return null;
                 },
               ),
@@ -338,7 +355,7 @@ class _FormationFormState extends State<FormationForm> {
           activityLevel: '',
           startDate: _startDate!,
           endDate: _endDate,
-          organization: '',
+          organization: _organizationController.text,
           location: _locationController.text,
           workType: '',
           context: '',
@@ -374,7 +391,7 @@ class _FormationFormState extends State<FormationForm> {
           activityLevel: '',
           startDate: _startDate!,
           endDate: _endDate,
-          organization: '',
+          organization: _organizationController.text,
           location: _locationController.text,
           workType: '',
           context: '',

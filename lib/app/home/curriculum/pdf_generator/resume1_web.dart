@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:enreda_app/app/home/curriculum/pdf_generator/data.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/models/language.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
@@ -19,6 +20,8 @@ const PdfColor lightLilac = PdfColor.fromInt(0xFFF4F5FB);
 const PdfColor altLilac = PdfColor.fromInt(0xF798AB7);
 const PdfColor blue = PdfColor.fromInt(0xFF002185);
 const PdfColor grey = PdfColor.fromInt(0xFF535A5F);
+const PdfColor greyLight = PdfColor.fromInt(0xFFC6C6C6);
+
 const leftWidth = 200.0;
 const rightWidth = 300.0;
 
@@ -38,7 +41,7 @@ Future<Uint8List> generateResume1(
     List<String>? idSelectedDateExperience,
     List<String>? idSelectedDatePersonalExperience,
     List<String>? competenciesNames,
-    List<String>? languagesNames,
+    List<Language>? languagesNames,
     String? aboutMe,
     List<String>? myDataOfInterest,
     String myCustomEmail,
@@ -67,7 +70,7 @@ Future<Uint8List> generateResume1(
   final pageTheme = await _myPageTheme(format);
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
   List<String>? dataOfInterest = myDataOfInterest;
-  List<String>? languages = languagesNames;
+  List<Language>? languages = languagesNames;
 
 
   doc.addPage(
@@ -153,7 +156,9 @@ Future<Uint8List> generateResume1(
                             languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES) : pw.Container(),
                             for (var data in languages!)
                               _BlockSimpleList(
-                                title: data,
+                                title: data.name,
+                                dotsSpeaking: data.speakingLevel,
+                                dotsWriting: data.writingLevel,
                               ),
                             pw.SizedBox(height: 5),
                             myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST) : pw.Container(),
@@ -255,9 +260,10 @@ Future<Uint8List> generateResume1(
                         myEducation!.isNotEmpty ? _Category(title: StringConst.EDUCATION) : pw.Container(),
                         for (var education in myEducation)
                           _Block(
-                            title: education.activity == null || education.activity == ''
-                                ? education.nameFormation
-                                : education.activity,
+                            title: education.institution != null && education.nameFormation != null && education.nameFormation != ''
+                                ? '${education.institution} - ${education.nameFormation}'
+                                : education.institution == null ? education.nameFormation : education.institution,
+                            organization: education.organization != "" && education.organization != null ? education.organization : '',
                             showDescription1: idSelectedDateEducation!.contains(education.id),
                             description1:'${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} / '
                                 '${education.subtype == 'Responsabilidades familiares'? 'Desconocida': education.endDate != null
@@ -593,9 +599,13 @@ class _BlockSimple extends pw.StatelessWidget {
 class _BlockSimpleList extends pw.StatelessWidget {
   _BlockSimpleList({
     this.title,
+    this.dotsSpeaking,
+    this.dotsWriting,
   });
 
   final String? title;
+  late int? dotsSpeaking;
+  late int? dotsWriting;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -622,12 +632,76 @@ class _BlockSimpleList extends pw.StatelessWidget {
                       style: pw.Theme.of(context)
                           .defaultTextStyle
                           .copyWith(fontWeight: pw.FontWeight.normal)),
-                ) : pw.Container()
+                ) : pw.Container(),
               ]),
-          pw.SizedBox(height: 8),
+          dotsSpeaking != null && dotsWriting != null ? pw.Container() : pw.SizedBox(height: 8),
+          dotsSpeaking != null && dotsWriting != null ?
+          pw.Column(
+              children: [
+                pw.Row(
+                    crossAxisAlignment: pw.CrossAxisAlignment.center,
+                    children: [
+                      pw.SizedBox(width: 10),
+                      pw.Text('Oral:  ', textScaleFactor: 0.8, style: pw.Theme.of(context).defaultTextStyle.copyWith(fontWeight: pw.FontWeight.normal)),
+                      _Dots(dotsNumber: dotsSpeaking),
+                      pw.SizedBox(width: 10),
+                      pw.Text('Escrito:  ', textScaleFactor: 0.8, style: pw.Theme.of(context).defaultTextStyle.copyWith(fontWeight: pw.FontWeight.normal)),
+                      _Dots(dotsNumber: dotsWriting
+                      ),
+                    ]
+                )
+              ]
+          ) : pw.Container()
         ]);
   }
 }
+
+
+class _Dots extends pw.StatelessWidget {
+  _Dots({
+    this.dotsNumber,
+  });
+
+  final int? dotsNumber;
+
+  @override
+  pw.Widget build(pw.Context context) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.center,
+      mainAxisAlignment: pw.MainAxisAlignment.center,
+      children: [
+        buildDotRow(),
+        pw.SizedBox(height: 8),
+      ],
+    );
+  }
+
+  pw.Widget buildDotRow() {
+    List<pw.Widget> dots = [];
+    for (int i = 0; i < 3; i++) {
+      PdfColor color = i < (dotsNumber ?? 0) ? lilac : greyLight;
+      dots.add(buildDot(color));
+    }
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.center,
+      mainAxisAlignment: pw.MainAxisAlignment.center,
+      children: dots,
+    );
+  }
+
+  pw.Widget buildDot(PdfColor color) {
+    return pw.Container(
+      width: 6,
+      height: 6,
+      margin: const pw.EdgeInsets.only(top: 10, left: 2, right: 5),
+      decoration: pw.BoxDecoration(
+        color: color,
+        shape: pw.BoxShape.circle,
+      ),
+    );
+  }
+}
+
 
 class _BlockIcon extends pw.StatelessWidget {
   _BlockIcon({

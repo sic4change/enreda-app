@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:enreda_app/app/home/curriculum/pdf_generator/data.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
+import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show NetworkAssetBundle, rootBundle;
@@ -23,6 +24,7 @@ const PdfColor grey = PdfColor.fromInt(0xFF535A5F);
 const PdfColor greyDark = PdfColor.fromInt(0xFF44494B);
 const PdfColor black = PdfColor.fromInt(0xF44494B);
 const PdfColor white = PdfColor.fromInt(0xFFFFFFFF);
+const PdfColor greyLight = PdfColor.fromInt(0xFFADADAD);
 const leftWidth = 200.0;
 const rightWidth = 350.0;
 
@@ -42,7 +44,7 @@ Future<Uint8List> generateResume2(
     List<String>? idSelectedDateExperience,
     List<String>? idSelectedDatePersonalExperience,
     List<String>? competenciesNames,
-    List<String>? languagesNames,
+    List<Language>? languagesNames,
     String? aboutMe,
     List<String>? myDataOfInterest,
     String myCustomEmail,
@@ -72,7 +74,7 @@ Future<Uint8List> generateResume2(
   final pageTheme = await _myPageTheme(format1, myPhoto, profileImage);
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
   List<String>? dataOfInterest = myDataOfInterest;
-  List<String>? languages = languagesNames;
+  List<Language>? languages = languagesNames;
 
   doc.addPage(
     pw.MultiPage(
@@ -169,18 +171,23 @@ Future<Uint8List> generateResume2(
                               for (var data in competenciesNames!)
                                 _BlockSimpleList(
                                   title: data.toUpperCase(),
+                                  color: white,
                                 ),
                               pw.SizedBox(height: 5),
                               myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST, color: white) : pw.Container(),
                               for (var data in dataOfInterest!)
                                 _BlockSimpleList(
                                   title: data,
+                                  color: white,
                                 ),
                               pw.SizedBox(height: 5),
                               languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES, color: white) : pw.Container(),
                               for (var data in languages!)
                                 _BlockSimpleList(
-                                  title: data,
+                                  title: data.name,
+                                  color: white,
+                                  dotsSpeaking: data.speakingLevel,
+                                  dotsWriting: data.writingLevel,
                                 ),
                               pw.SizedBox(height: 5),
                               myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.REFERENCES, color: white) : pw.Container(),
@@ -289,9 +296,10 @@ Future<Uint8List> generateResume2(
                         mySecondaryEducation!.isNotEmpty ? _Category(title: StringConst.SECONDARY_EDUCATION, color: lilac) : pw.Container(),
                         for (var education in mySecondaryEducation)
                           _Block(
-                            title: education.activity == null || education.activity == ''
-                                ? education.nameFormation
-                                : education.activity,
+                            title: education.institution != null && education.nameFormation != null && education.nameFormation != ''
+                                ? '${education.institution} - ${education.nameFormation}'
+                                : education.institution == null ? education.nameFormation : education.institution,
+                            organization: education.organization != "" && education.organization != null ? education.organization : '',
                             showDescriptionDate: idSelectedDateSecondaryEducation!.contains(education.id),
                             descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} / '
                                 '${education.subtype == 'Responsabilidades familiares'? 'Desconocida':education.endDate != null
@@ -621,9 +629,15 @@ class _BlockSimple extends pw.StatelessWidget {
 class _BlockSimpleList extends pw.StatelessWidget {
   _BlockSimpleList({
     this.title,
+    this.color,
+    this.dotsSpeaking,
+    this.dotsWriting,
   });
 
   final String? title;
+  final PdfColor? color;
+  late int? dotsSpeaking;
+  late int? dotsWriting;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -638,7 +652,7 @@ class _BlockSimpleList extends pw.StatelessWidget {
                   height: 3,
                   margin: const pw.EdgeInsets.only(top: 5.5, left: 2, right: 5),
                   decoration: const pw.BoxDecoration(
-                    color: white,
+                    color: PdfColors.white,
                     shape: pw.BoxShape.circle,
                   ),
                 ),
@@ -649,11 +663,73 @@ class _BlockSimpleList extends pw.StatelessWidget {
                       textScaleFactor: 0.8,
                       style: pw.Theme.of(context)
                           .defaultTextStyle
-                          .copyWith(fontWeight: pw.FontWeight.normal, color: white)),
-                ) : pw.Container()
+                          .copyWith(fontWeight: pw.FontWeight.normal, color: color)),
+                ) : pw.Container(),
               ]),
-          pw.SizedBox(height: 5),
+          dotsSpeaking != null && dotsWriting != null ? pw.Container() : pw.SizedBox(height: 8),
+          dotsSpeaking != null && dotsWriting != null ?
+          pw.Column(
+              children: [
+                pw.Row(
+                    crossAxisAlignment: pw.CrossAxisAlignment.center,
+                    children: [
+                      pw.SizedBox(width: 10),
+                      pw.Text('Oral:  ', textScaleFactor: 0.8, style: pw.Theme.of(context).defaultTextStyle.copyWith(fontWeight: pw.FontWeight.normal, color: PdfColors.white)),
+                      _Dots(dotsNumber: dotsSpeaking),
+                      pw.SizedBox(width: 10),
+                      pw.Text('Escrito:  ', textScaleFactor: 0.8, style: pw.Theme.of(context).defaultTextStyle.copyWith(fontWeight: pw.FontWeight.normal, color: PdfColors.white)),
+                      _Dots(dotsNumber: dotsWriting
+                      ),
+                    ]
+                )
+              ]
+          ) : pw.Container()
         ]);
+  }
+}
+
+class _Dots extends pw.StatelessWidget {
+  _Dots({
+    this.dotsNumber,
+  });
+
+  final int? dotsNumber;
+
+  @override
+  pw.Widget build(pw.Context context) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.center,
+      mainAxisAlignment: pw.MainAxisAlignment.center,
+      children: [
+        buildDotRow(),
+        pw.SizedBox(height: 8),
+      ],
+    );
+  }
+
+  pw.Widget buildDotRow() {
+    List<pw.Widget> dots = [];
+    for (int i = 0; i < 3; i++) {
+      PdfColor color = i < (dotsNumber ?? 0) ? PdfColors.white : greyLight;
+      dots.add(buildDot(color));
+    }
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.center,
+      mainAxisAlignment: pw.MainAxisAlignment.center,
+      children: dots,
+    );
+  }
+
+  pw.Widget buildDot(PdfColor color) {
+    return pw.Container(
+      width: 6,
+      height: 6,
+      margin: const pw.EdgeInsets.only(top: 10, left: 2, right: 5),
+      decoration: pw.BoxDecoration(
+        color: color,
+        shape: pw.BoxShape.circle,
+      ),
+    );
   }
 }
 

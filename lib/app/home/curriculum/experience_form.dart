@@ -628,14 +628,10 @@ class _ExperienceFormState extends State<ExperienceForm> {
   }
 
   void getValuesFromKeyProfessionActivities (selectedValues) {
-    var concatenate = StringBuffer();
-    List<String> activitiesIds = [];
-    selectedValues.forEach((item){
-      concatenate.write(item.name +' / ');
-      activitiesIds.add(item.id);
-    });
+    var concatenatedNames = selectedValues.map((item) => item.name).join(' / ');
+    List<String> activitiesIds = selectedValues.map((item) => item.id).toList();
     setState(() {
-      this._textEditingControllerProfessionsActivities.text = concatenate.toString();
+      this._textEditingControllerProfessionsActivities.text = concatenatedNames.toString();
       this.professionActivities = activitiesIds;
       this.selectedProfessionActivities = selectedValues;
     });

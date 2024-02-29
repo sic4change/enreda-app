@@ -1021,7 +1021,7 @@ class MyCurriculumPage extends StatelessWidget {
             }),
         Expanded(
           child: Text(
-            'Según la Ley de Protección de datos, autorizo a la empresa al uso y tratamiento de mis datos con fines exclusivamente de selección de personal y bolsas de empleo.',
+            StringConst.PERSONAL_DATA_LAW,
             maxLines: 5,
             softWrap: true,
             style: textTheme.bodyLarge?.copyWith(

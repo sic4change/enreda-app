@@ -259,7 +259,11 @@ Future<Uint8List> generateResume2(
                                 ? formatter.format(experience.endDate!.toDate())
                                 : 'Actualmente'}',
                             descriptionPlace: '${experience.location}',
-                            descriptionActivities: experience.professionActivitiesText!.split(' / ').map((item) => '• $item').join('\n'),
+                            descriptionActivities: experience.professionActivitiesText!
+                                .split(' / ')
+                                .where((item) => item.isNotEmpty) // Filter out empty items.
+                                .map((item) => '• $item')         // Prefix each item with a bullet point.
+                                .join('\n'),
                           ),
                         pw.SizedBox(height: 5),
 

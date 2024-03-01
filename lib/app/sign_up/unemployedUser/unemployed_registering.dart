@@ -962,10 +962,13 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                       children: [
                         SizedBox(
                           width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width * 0.70,
+                          height: 34,
                           child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                             Padding(
                               padding: EdgeInsets.only(right: Responsive.isMobile(context) || Responsive.isTablet(context)? 30.0: 0.0),
-                              child: PillTooltip(title: StringConst.PILL_TRAVEL_BEGINS, pillId: TrainingPill.TRAVEL_BEGINS_ID),
+                              child: Container(
+                                  width: 34,
+                                  child: PillTooltip(title: StringConst.PILL_TRAVEL_BEGINS, pillId: TrainingPill.TRAVEL_BEGINS_ID)),
                             )
                           ],),
                         ),

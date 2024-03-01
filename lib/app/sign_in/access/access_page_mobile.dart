@@ -25,16 +25,22 @@ class _AccessPageMobileState extends State<AccessPageMobile> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50.0),
-              child: Row(
-                children: [
-                  Expanded(child: Container()),
-                  PillTooltip(
-                    title: StringConst.TAG_ENREDA,
-                    pillId: TrainingPill.WHAT_IS_ENREDA_ID,
-                  ),
-                ],
+            Container(
+              height: 50,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                child: Row(
+                  children: [
+                    Expanded(child: Container()),
+                    Container(
+                      width: 34,
+                      child: PillTooltip(
+                        title: StringConst.TAG_ENREDA,
+                        pillId: TrainingPill.WHAT_IS_ENREDA_ID,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             SpaceH30(),

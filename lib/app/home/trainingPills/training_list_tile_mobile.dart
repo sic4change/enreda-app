@@ -67,7 +67,10 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
               if(_isVideoVisible) YoutubePlayerControllerProvider(
                 controller: _controller,
                 child: Container(
-                  color: Colors.black.withOpacity(0.8),
+                  decoration: BoxDecoration(
+                    color: AppColors.bluePetrol,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                   child: Column(
                     children: [
                       Stack(

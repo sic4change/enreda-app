@@ -19,7 +19,6 @@ Widget videoThumbnailArea(String idYoutubeVideo) {
                 ),
                 fit: BoxFit.cover,
               ),
-              borderRadius: BorderRadius.circular(5),
             ),
           ),
         ],

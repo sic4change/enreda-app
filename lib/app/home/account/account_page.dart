@@ -236,23 +236,29 @@ class _AccountPageState extends State<AccountPage> {
                 : Padding(
                     padding: EdgeInsets.all(Constants.mainPadding),
                     child: _currentPageTitle == StringConst.MY_COMPETENCIES.toUpperCase() ?
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          _currentPageTitle,
-                          textAlign: TextAlign.center,
-                          style: textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Constants.penBlue,
-                              fontSize: 16.0),
-                        ),
-                        SpaceW8(),
-                        PillTooltip(
-                          title: StringConst.PILL_COMPETENCIES,
-                          pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
-                        )
-                      ],
+                    Container(
+                      height: 34,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _currentPageTitle,
+                            textAlign: TextAlign.center,
+                            style: textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Constants.penBlue,
+                                fontSize: 16.0),
+                          ),
+                          SpaceW8(),
+                          Container(
+                            width: 34,
+                            child: PillTooltip(
+                              title: StringConst.PILL_COMPETENCIES,
+                              pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
+                            ),
+                          )
+                        ],
+                      ),
                     )
                     : Text(
                       _currentPageTitle,

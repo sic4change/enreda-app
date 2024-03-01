@@ -55,23 +55,29 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                         padding: EdgeInsets.all(Constants.mainPadding),
                         child: Column(
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                children: [
-                                  InkWell(
-                                    onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
-                                    child: Image.asset(
-                                      ImagePath.LOGO,
-                                      height: Sizes.HEIGHT_32,
+                            Container(
+                              height: 50,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
+                                      child: Image.asset(
+                                        ImagePath.LOGO,
+                                        height: Sizes.HEIGHT_32,
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(child: Container()),
-                                  PillTooltip(
-                                    title: StringConst.TAG_ENREDA,
-                                    pillId: TrainingPill.WHAT_IS_ENREDA_ID,
-                                  )
-                                ],
+                                    Expanded(child: Container()),
+                                    Container(
+                                      width: 34,
+                                      child: PillTooltip(
+                                        title: StringConst.TAG_ENREDA,
+                                        pillId: TrainingPill.WHAT_IS_ENREDA_ID,
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                             Divider(),

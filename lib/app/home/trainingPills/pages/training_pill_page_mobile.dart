@@ -92,7 +92,7 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
           decoration: BoxDecoration(
               border: Border.all(color: AppColors.greyBorder, width: 1),
               borderRadius: BorderRadius.all(Radius.circular(15)),
-              color: Constants.white,
+              color: AppColors.bluePetrol,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.greyBorder,
@@ -127,7 +127,7 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
                                   textAlign: TextAlign.left,
                                   maxLines: 1,
                                   style: textTheme.titleSmall?.copyWith(
-                                    color: Constants.lilac,
+                                    color: Constants.white,
                                     height: 1.5,
                                     fontWeight: FontWeight.normal,
                                     fontSize: isBigScreen ? 18 : 15,
@@ -148,7 +148,7 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
                                     letterSpacing: 1,
                                     fontSize: fontSize,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.blueDark,
+                                    color: AppColors.white,
                                   ),
                                 ),
                               ),
@@ -160,7 +160,7 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
                                   textAlign: TextAlign.left,
                                   maxLines: 2,
                                   style: textTheme.bodySmall?.copyWith(
-                                    color: AppColors.greyTxtAlt,
+                                    color: AppColors.white,
                                     height: 1.5,
                                     fontWeight: FontWeight.normal,
                                     fontSize: fontSize,
@@ -184,13 +184,13 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
                           children: [
                             Spacer(),
                             buildShareTrainingPill(
-                                context, trainingPill, Constants.grey),
+                                context, trainingPill, Constants.white),
                             SpaceW4(),
                             auth.currentUser == null
                                 ? IconButton(
                               icon: FaIcon(FontAwesomeIcons.heart),
                               tooltip: 'Me gusta',
-                              color: Constants.darkGray,
+                              color: Constants.white,
                               iconSize: 20,
                               onPressed: () => showAlertNullUser(context),
                             )
@@ -211,7 +211,7 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
                                 : IconButton(
                               icon: FaIcon(FontAwesomeIcons.heart),
                               tooltip: 'Me gusta',
-                              color: Constants.darkGray,
+                              color: Constants.white,
                               onPressed: () {
                                 addUserToLikeTrainingPill(
                                     context: context,
@@ -272,7 +272,7 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
               Center(
                 child: Icon(
                   Icons.play_circle_rounded,
-                  color: AppColors.black100.withOpacity(0.7),
+                  color: AppColors.bluePetrol.withOpacity(0.5),
                   size: 70,
                 ),
               ),

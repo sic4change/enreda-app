@@ -79,12 +79,12 @@ Widget buildShareTrainingPill(BuildContext context, TrainingPill trainingPill, C
             children: [
               Icon(
                 Icons.share,
-                color: Constants.grey,
+                color: AppColors.bluePetrol,
               ),
               SpaceW16(),
               Text('Compartir',
                 style: textTheme.bodyText1?.copyWith(
-                  color: Constants.grey,
+                  color: AppColors.bluePetrol,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
                   fontSize: fontSize,
@@ -97,7 +97,7 @@ Widget buildShareTrainingPill(BuildContext context, TrainingPill trainingPill, C
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset(ImagePath.ICON_SHARE, height: Responsive.isMobile(context) ? 15 : 20),
+        Image.asset(ImagePath.ICON_SHARE, height: Responsive.isMobile(context) ? 15 : 20, color: color,),
         Responsive.isMobile(context) ? SizedBox(width: 0) : SizedBox(width: 10),
       ],
     ),

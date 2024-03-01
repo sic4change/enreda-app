@@ -1,6 +1,7 @@
 import 'package:enreda_app/app/home/curriculum/tooltip_video/training_tooltip_video.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
+import 'package:enreda_app/common_widgets/on_hover_effect.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
@@ -59,18 +60,9 @@ class _PillTooltipState extends State<PillTooltip> {
             children: [
               Container(
                 margin: const EdgeInsets.all(10.0),
-                padding: const EdgeInsets.all(13.0),
+                padding: const EdgeInsets.only(top: 13.0, bottom: 30),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0.5, 0.5],
-                    colors: [
-                      AppColors.yellowDark,
-                      AppColors.white,
-                    ],
-                  ),
+                  color: AppColors.bluePetrol,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 width: 300,
@@ -80,7 +72,7 @@ class _PillTooltipState extends State<PillTooltip> {
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: CustomTextTitle(
                         title: widget.title,
-                        color: AppColors.greenDark,
+                        color: AppColors.white,
                       ),
                     ),
                     _buildTrainingTooltipVideo(context),
@@ -113,30 +105,33 @@ class _PillTooltipState extends State<PillTooltip> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      key: key,
-      onTap: () {
-        if (Responsive.isMobile(context)) {
-          showDialog(context: context, useRootNavigator: false, builder: (dialogContext) =>
-              Dialog(
-                backgroundColor: Colors.transparent,
-                clipBehavior: Clip.hardEdge,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildTrainingTooltipVideo(dialogContext),
-                  ],
-                          ),));
-        } else {
-          if (_overlayEntry.mounted) {
-            _overlayEntry.remove();
+    return OnHoverEffect( builder: (isHovered){
+      final double iconSize = isHovered ? 34 : 24 ;
+      return InkWell(
+        key: key,
+        onTap: () {
+          if (Responsive.isMobile(context)) {
+            showDialog(context: context, useRootNavigator: false, builder: (dialogContext) =>
+                Dialog(
+                  backgroundColor: Colors.transparent,
+                  clipBehavior: Clip.hardEdge,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildTrainingTooltipVideo(dialogContext),
+                    ],
+                  ),));
           } else {
-            Overlay.of(context).insert(_overlayEntry);
+            if (_overlayEntry.mounted) {
+              _overlayEntry.remove();
+            } else {
+              Overlay.of(context).insert(_overlayEntry);
+            }
           }
-        }
-      },
-      child: Image.asset(ImagePath.ICON_INFO_2, height: 24, width: 24,) ,// Icon(Icons.info_outline, size: 24, color: AppColors.primaryColor,),
-    );
+        },
+        child: Image.asset(ImagePath.ICON_INFO_2, height: iconSize, width: iconSize,) ,// Icon(Icons.info_outline, size: 24, color: AppColors.primaryColor,),
+      );
+    });
   }
 
   Widget _buildTrainingTooltipVideo(BuildContext context) {

@@ -16,7 +16,7 @@ class CompetencyTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var containerWidth = Responsive.isMobile(context) || Responsive.isTablet(context) ? 135.0: 220.0;
-    var containerHeight = Responsive.isMobile(context) || Responsive.isTablet(context) ? 160.0: 250.0;
+    var containerHeight = Responsive.isMobile(context) || Responsive.isTablet(context) ? 160.0: 260.0;
     var imageWidth = Responsive.isMobile(context) || Responsive.isTablet(context) ? 120.0: 180.0;
     var textContainerHeight = Responsive.isMobile(context) || Responsive.isTablet(context) ? 40.0: 50.0;
     var fontSize = Responsive.isMobile(context) || Responsive.isTablet(context) ? 11.0: 16.0;

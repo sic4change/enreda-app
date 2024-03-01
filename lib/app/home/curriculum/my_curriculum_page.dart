@@ -456,9 +456,12 @@ class MyCurriculumPage extends StatelessWidget {
                   ),
                 ],
               ),
-              PillTooltip(
-                title: StringConst.PILL_HOW_TO_DO_CV,
-                pillId: TrainingPill.HOW_TO_DO_CV_ID,
+              Container(
+                height: 34,
+                child: PillTooltip(
+                  title: StringConst.PILL_HOW_TO_DO_CV,
+                  pillId: TrainingPill.HOW_TO_DO_CV_ID,
+                ),
               ),
               //SpaceH24(),
               //_buildMyCareer(context),
@@ -601,9 +604,12 @@ class MyCurriculumPage extends StatelessWidget {
               color: Constants.penBlue),
         ),
         SpaceH20(),
-        PillTooltip(
-            title: StringConst.PILL_HOW_TO_DO_CV,
-            pillId: TrainingPill.HOW_TO_DO_CV_ID,
+        Container(
+          height: 34,
+          child: PillTooltip(
+              title: StringConst.PILL_HOW_TO_DO_CV,
+              pillId: TrainingPill.HOW_TO_DO_CV_ID,
+          ),
         ),
       ],
     );
@@ -890,22 +896,28 @@ class MyCurriculumPage extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        StringConst.COMPETENCIES.toUpperCase(),
-                        style: TextStyle(
-                            color: Constants.darkLilac,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18.0),
-                      ),
-                      SpaceW8(),
-                      PillTooltip(
-                        title: StringConst.PILL_CV_COMPETENCIES,
-                        pillId: TrainingPill.CV_COMPETENCIES_ID,
-                      ),
-                    ],
+                  child: Container(
+                    height: 34,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          StringConst.COMPETENCIES.toUpperCase(),
+                          style: TextStyle(
+                              color: Constants.darkLilac,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18.0),
+                        ),
+                        SpaceW12(),
+                        Container(
+                          width: 34.0,
+                          child: PillTooltip(
+                            title: StringConst.PILL_CV_COMPETENCIES,
+                            pillId: TrainingPill.CV_COMPETENCIES_ID,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 myCompetencies!.isNotEmpty
@@ -930,8 +942,7 @@ class MyCurriculumPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: Container(
-                        height: 180.0,
-                        color: Colors.white,
+                        height: 185.0,
                         child: ScrollConfiguration(
                           behavior: MyCustomScrollBehavior(),
                           child: ListView(

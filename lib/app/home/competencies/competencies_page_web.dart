@@ -1,12 +1,8 @@
-import 'package:enreda_app/app/home/competencies/competencies_item_builder.dart';
 import 'package:enreda_app/app/home/competencies/competencies_subcategories_page_web.dart';
-import 'package:enreda_app/app/home/models/competency.dart';
-import 'package:enreda_app/app/home/competencies/expandable_competency_tile.dart';
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
-import 'package:enreda_app/common_widgets/rounded_container_filter.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -16,7 +12,6 @@ import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -66,23 +61,29 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 30),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              StringConst.COMPETENCIES.toUpperCase(),
-                                              style: textTheme.bodyText1?.copyWith(
-                                                color: Constants.penBlue,
-                                                fontSize: 18.0,
-                                                fontWeight: FontWeight.bold,
+                                        child: Container(
+                                          height: 34,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                StringConst.COMPETENCIES.toUpperCase(),
+                                                style: textTheme.bodyText1?.copyWith(
+                                                  color: Constants.penBlue,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                            ),
-                                            SpaceW8(),
-                                            PillTooltip(
-                                              title: StringConst.PILL_COMPETENCIES,
-                                              pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
-                                            )
-                                          ],
+                                              SpaceW8(),
+                                              Container(
+                                                width: 34,
+                                                child: PillTooltip(
+                                                  title: StringConst.PILL_COMPETENCIES,
+                                                  pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
                                       if (snapshot.hasData)

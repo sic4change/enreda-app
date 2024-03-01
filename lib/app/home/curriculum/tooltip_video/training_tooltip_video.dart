@@ -6,6 +6,7 @@ import 'package:enreda_app/app/home/trainingPills/pages/video_position_seeker.da
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/video_thumbnail_area.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/functions.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
@@ -75,9 +76,9 @@ class _TrainingTooltipVideoState extends State<TrainingTooltipVideo> {
                       }
                     });
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.play_circle_fill_outlined,
-                    color: Colors.white, size: 60,),),
+                    color: AppColors.bluePetrol.withOpacity(0.5), size: 60,),),
               )
             ]
         ),
@@ -85,8 +86,7 @@ class _TrainingTooltipVideoState extends State<TrainingTooltipVideo> {
           controller: _controller,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.8),
-              borderRadius: BorderRadius.circular(10.0),
+              color: AppColors.bluePetrol,
             ),
             child: Column(
               children: [

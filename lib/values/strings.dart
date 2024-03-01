@@ -461,6 +461,7 @@ class StringConst {
   static const String NO_EDUCATION = 'Todavía no has añadido ninguna formación. ¡Chatea con nuestro asistente para añadir una!';
   static const String NO_EXPERIENCE = 'Todavía no has añadido ninguna experiencia. ¡Chatea con nuestro asistente para añadir una!';
   static const String NO_REFERENCES = 'Todavía no cuentas con ninguna referencia personal. ¡Certifica tus competencias!';
+  static const String PERSONAL_DATA_LAW = 'Según la Ley Orgánica 15/1999 de Protección de Datos Personales, autorizo a la empresa al uso y tratamiento de mis datos con fines exclusivamente de selección de personal y bolsas de empleo.';
 
   // Profile
   static const String MY_PROFILE = 'Mi perfil';

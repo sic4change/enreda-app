@@ -11,7 +11,7 @@ import 'package:enreda_app/app/home/models/education.dart';
 import 'package:enreda_app/app/home/models/gender.dart';
 import 'package:enreda_app/app/home/models/interest.dart';
 import 'package:enreda_app/app/home/models/interests.dart';
-import 'package:enreda_app/app/home/models/motivation.dart';
+import 'package:enreda_app/app/home/models/keepLearningOptions.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/specificinterest.dart';
@@ -31,6 +31,7 @@ import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_d
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_education.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_gender.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_interests.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_keepLearning.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_nation.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_province.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_social_entity.dart';
@@ -46,13 +47,10 @@ import 'package:enreda_app/common_widgets/flex_row_column.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_exception_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
-import 'package:enreda_app/common_widgets/text_form_field.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../services/database.dart';
@@ -87,6 +85,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   String? _city;
   String? _postalCode;
   String? _nationality;
+  String? _belongOrganization;
 
   int? isRegistered;
   int usersIds = 0;
@@ -99,8 +98,10 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   List abilities = [];
   List<String> interests = [];
   List<String> specificInterests = [];
+  List<String> keepLearningOptions = [];
   Set<Ability> selectedAbilities = {};
   Set<Interest> selectedInterests = {};
+  Set<KeepLearningOption> selectedKeepLearningOptions = {};
   Set<SpecificInterest> selectedSpecificInterests = {};
 
   String writtenEmail = '';
@@ -129,6 +130,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   late String genderName;
   late String interestsNames;
   late String specificInterestsNames;
+  late String keepLearningOptionsNames;
   String? _abilityId;
   String? _interestId;
   int? dedicationValue;
@@ -140,11 +142,13 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   String? educationValue;
   String? unemployedType;
   String? futureLearning;
+  String? _keepLearningOptionId;
 
   TextEditingController textEditingControllerDateInput = TextEditingController();
   TextEditingController textEditingControllerAbilities = TextEditingController();
   TextEditingController textEditingControllerInterests = TextEditingController();
   TextEditingController textEditingControllerSpecificInterests = TextEditingController();
+  TextEditingController textEditingControllerKeepLearningOptions = TextEditingController();
 
   int sum = 0;
 
@@ -181,6 +185,9 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     specificInterestsNames = "";
     unemployedType = "";
     nationalityName = '';
+    keepLearningOptionsNames = '';
+    _belongOrganization = "";
+
   }
 
   bool _validateAndSaveForm() {
@@ -241,7 +248,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
         interests: interests,
         specificInterests: specificInterests,
         surePurpose: selectedDedication,
-        continueLearning: futureLearning,
+        continueLearning: keepLearningOptions,
       );
 
       if(sum >= 0 && sum <= 3)
@@ -273,8 +280,9 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           address: address,
           role: 'Desempleado',
           unemployedType: unemployedType,
-          assignedEntityId: selectedSocialEntity?.socialEntityId??"",
           nationality: selectedNationality,
+          assignedEntityId: selectedSocialEntity!.socialEntityId ?? null,
+
       );
       try {
         final database = Provider.of<Database>(context, listen: false);
@@ -312,8 +320,6 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
 
   Widget _buildForm(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-    TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 14, 16, md: 15);
     return
       Form(
         key: _formKey,
@@ -609,22 +615,14 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                 padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
                 child: Container(
                   height: 60,
-                  child: DropdownButtonFormField<String>(
-                    hint: Text('¿Qué te gustaría seguir aprendiendo?', maxLines: 2, overflow: TextOverflow.ellipsis),
-                    isDense: true,
-                    isExpanded: true,
-                    value: futureLearning,
-                    items: _futureLearningOptions,
-                    validator: (value) => futureLearning != null ? null : StringConst.FORM_MOTIVATION_ERROR,
-                    onChanged: (value) => setState(() {
-                      futureLearning = value;
-                    }), //functionToWriteBackThings(value),
-                    iconDisabledColor: AppColors.greyDark,
-                    iconEnabledColor: AppColors.primaryColor,
+                  child: TextFormField(
+                    controller: textEditingControllerKeepLearningOptions,
                     decoration: InputDecoration(
-                      labelStyle: textTheme.button?.copyWith(
-                        height: 1.5,
+                      hintText: '¿Qué te gustaría seguir aprendiendo?',
+                      hintMaxLines: 2,
+                      labelStyle: textTheme.bodyText1?.copyWith(
                         color: AppColors.greyDark,
+                        height: 1.5,
                         fontWeight: FontWeight.w400,
                         fontSize: fontSize,
                       ),
@@ -642,6 +640,12 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                         ),
                       ),
                     ),
+                    onTap: () => {_showMultiSelectKeepLearningOptions(context) },
+                    validator: (value) => value!.isNotEmpty ?
+                    null : StringConst.FORM_MOTIVATION_ERROR,
+                    onSaved: (value) => value = _keepLearningOptionId,
+                    maxLines: 2,
+                    readOnly: true,
                     style: textTheme.button?.copyWith(
                       height: 1.5,
                       color: AppColors.greyDark,
@@ -658,7 +662,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   Widget _revisionForm(BuildContext context) {
     return Column(
       children: [
-        UnemployedRevisionForm(
+        unemployedRevisionForm(
           context,
           _firstName!,
           _lastName!,
@@ -673,6 +677,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           educationName,
           specificInterestsNames,
           interestsNames,
+          keepLearningOptionsNames,
         ),
         checkboxForm(context, _checkFieldKey, _isChecked, functionSetState)
       ],
@@ -862,6 +867,34 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     });
     print(interestsNames);
     print(specificInterestsIds);
+  }
+
+  void _showMultiSelectKeepLearningOptions(BuildContext context) async {
+    final selectedOptions = await showDialog<Set<KeepLearningOption>>(
+      context: context,
+      builder: (BuildContext context) {
+        return streamBuilderDropdownKeepLearningOptions(context, selectedKeepLearningOptions);
+      },
+    );
+    print(selectedOptions);
+    getValuesFromKeyKeepLearningOptions(selectedOptions);
+  }
+
+  void getValuesFromKeyKeepLearningOptions (selectedOptions) {
+    var concatenate = StringBuffer();
+    List<String> keepLearningIds = [];
+    selectedOptions.forEach((item){
+      concatenate.write(item.title +' / ');
+      keepLearningIds.add(item.keepLearningOptionId);
+    });
+    setState(() {
+      this.keepLearningOptionsNames = concatenate.toString();
+      this.textEditingControllerKeepLearningOptions.text = concatenate.toString();
+      this.keepLearningOptions = keepLearningIds;
+      this.selectedKeepLearningOptions = selectedOptions;
+    });
+    print(keepLearningOptionsNames);
+    print(keepLearningIds);
   }
 
 

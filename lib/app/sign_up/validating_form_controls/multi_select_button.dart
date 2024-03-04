@@ -51,8 +51,15 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
 
   @override
   Widget build(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    double fontSize = responsiveSize(context, 14, 16, md: 15);
     return AlertDialog(
-      title: Text(StringConst.FORM_SELECT),
+      title: Text(StringConst.FORM_SELECT, style: textTheme.bodySmall?.copyWith(
+        height: 1.5,
+        fontWeight: FontWeight.w700,
+        color: AppColors.black400,
+        fontSize: fontSize,
+      ),),
       contentPadding: EdgeInsets.only(top: 12.0),
       content: SingleChildScrollView(
         child: ListTileTheme(
@@ -64,6 +71,7 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
       ),
       actions: <Widget>[
         ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryColor),
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Text(StringConst.FORM_ACCEPT, style: TextStyle(

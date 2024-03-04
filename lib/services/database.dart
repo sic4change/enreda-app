@@ -17,6 +17,7 @@ import 'package:enreda_app/app/home/models/filterResource.dart';
 import 'package:enreda_app/app/home/models/filterTrainingPills.dart';
 import 'package:enreda_app/app/home/models/gender.dart';
 import 'package:enreda_app/app/home/models/interest.dart';
+import 'package:enreda_app/app/home/models/keepLearningOptions.dart';
 import 'package:enreda_app/app/home/models/mentorUser.dart';
 import 'package:enreda_app/app/home/models/nature.dart';
 import 'package:enreda_app/app/home/models/organization.dart';
@@ -37,7 +38,6 @@ import 'package:enreda_app/app/home/models/chatQuestion.dart';
 import 'package:enreda_app/common_widgets/remove_diacritics.dart';
 import 'package:enreda_app/services/api_path.dart';
 import 'package:enreda_app/services/firestore_service.dart';
-import 'package:enreda_app/values/strings.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../app/home/models/certificationRequest.dart';
 import '../app/home/models/resourcePicture.dart';
@@ -108,6 +108,7 @@ abstract class Database {
   Stream<TrainingPill> trainingPillStreamById(String id);
   Stream<List<GamificationFlag>> gamificationFlagsStream();
   Stream<List<SocialEntity>> socialEntitiesStream();
+  Stream<List<KeepLearningOption>> keepLearningOptionsStream();
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> addUserEnreda(UserEnreda userEnreda);
@@ -663,6 +664,15 @@ class FirestoreDatabase implements Database {
         builder: (data, documentId) => ChatQuestion.fromMap(data, documentId),
         sort: (lhs, rhs) => rhs.date.compareTo(lhs.date),
       );
+
+  @override
+  Stream<List<KeepLearningOption>> keepLearningOptionsStream() => _service.collectionStream(
+    path: APIPath.keepLearningOptions(),
+    queryBuilder: (query) => query.where('keepLearningOptionId', isNotEqualTo: null),
+    builder: (data, documentId) => KeepLearningOption.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+  );
+
 
   @override
   Future<void> addChatQuestion(ChatQuestion chatQuestion) => _service.addData(

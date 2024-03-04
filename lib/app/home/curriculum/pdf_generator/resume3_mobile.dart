@@ -73,7 +73,7 @@ Future<Uint8List> generateResume3(
       bottom: 2.0 * PdfPageFormat.cm);
 
   final pageTheme = await _myPageTheme(format1, myPhoto, profileImage);
-  final DateFormat formatter = DateFormat('yyyy-MM-dd');
+  final DateFormat formatter = DateFormat('yyyy');
   List<String>? dataOfInterest = myDataOfInterest;
   List<Language>? languages = languagesNames;
 
@@ -299,9 +299,10 @@ Future<Uint8List> generateResume3(
                         mySecondaryEducation!.isNotEmpty ? _Category(title: StringConst.SECONDARY_EDUCATION, color: green) : pw.Container(),
                         for (var education in mySecondaryEducation)
                           _Block(
-                            title: education.activity == null || education.activity == ''
-                                ? education.nameFormation
-                                : education.activity,
+                            title: education.institution != null && education.nameFormation != null && education.nameFormation != ''
+                                ? '${education.institution} - ${education.nameFormation}'
+                                : education.institution == null ? education.nameFormation : education.institution,
+                            organization: education.organization != "" && education.organization != null ? education.organization : '',
                             showDescriptionDate: idSelectedDateSecondaryEducation!.contains(education.id),
                             descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} / '
                                 '${education.subtype == 'Responsabilidades familiares'? 'Desconocida':education.endDate != null

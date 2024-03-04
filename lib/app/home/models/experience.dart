@@ -137,4 +137,19 @@ class Experience {
       otherProfessionActivityString: otherProfessionActivityString,
     );
   }
+
+  @override
+  bool operator ==(Object other){
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is Experience &&
+            other.id == id  &&
+            other.type == type);
+  }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => super.hashCode;
+
+
 }

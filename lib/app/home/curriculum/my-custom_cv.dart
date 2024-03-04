@@ -982,7 +982,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
 
   Widget _buildMyEducation(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final DateFormat formatter = DateFormat('yyyy');
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1144,7 +1144,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
 
   Widget _buildMySecondaryEducation(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final DateFormat formatter = DateFormat('yyyy');
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1304,7 +1304,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
 
   Widget _buildMyExperiences(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final DateFormat formatter = DateFormat('yyyy');
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1460,7 +1460,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
 
   Widget _buildMyPersonalExperiences(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final DateFormat formatter = DateFormat('yyyy');
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

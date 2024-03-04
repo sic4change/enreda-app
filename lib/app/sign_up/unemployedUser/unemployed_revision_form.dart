@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../../../values/values.dart';
 import '../../../utils/adaptive.dart';
 
-Widget UnemployedRevisionForm(
+Widget unemployedRevisionForm(
     BuildContext context,
     String _firstName,
     String _lastName,
@@ -19,6 +19,7 @@ Widget UnemployedRevisionForm(
     String educationName,
     String specificInterestsNames,
     String interestsNames,
+    String keepLearningOptionsNames,
     ){
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
@@ -49,6 +50,8 @@ Widget UnemployedRevisionForm(
       (interestsNames != '') ? CustomExpandedRow(title: StringConst.FORM_INTERESTS, text: interestsNames) : Container(),
       (specificInterestsNames != '') ? SizedBox(height: Sizes.kDefaultPaddingDouble) : Container(),
       (specificInterestsNames != '') ? CustomExpandedRow(title: StringConst.FORM_SPECIFIC_INTERESTS, text: specificInterestsNames) : Container(),
+      (keepLearningOptionsNames != '') ? SizedBox(height: Sizes.kDefaultPaddingDouble) : Container(),
+      (keepLearningOptionsNames != '') ? CustomExpandedRow(title: StringConst.FORM_GOALS, text: keepLearningOptionsNames) : Container(),
       SizedBox(height: Sizes.kDefaultPaddingDouble),
       Text(StringConst.FORM_ACCEPTANCE,
         style: textTheme.button?.copyWith(

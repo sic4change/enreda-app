@@ -12,7 +12,7 @@ class CustomExpandedRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 14, 18, md: 15);
+    double fontSize = responsiveSize(context, 13, 15, md: 14);
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

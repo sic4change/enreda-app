@@ -5,7 +5,7 @@ class Interests {
   final List<String>? interests;
   final List<String>? specificInterests;
   final Dedication? surePurpose;
-  final String? continueLearning;
+  final List<String>? continueLearning;
 
   factory Interests.fromMap(Map<String, dynamic> data, String documentId) {
 

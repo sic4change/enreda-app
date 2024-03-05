@@ -15,6 +15,7 @@ import 'package:enreda_app/app/home/resources/pages/list_item_builder_vertical.d
 import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
 import 'package:enreda_app/app/home/trainingPills/training_list_tile_mobile.dart';
 import 'package:enreda_app/app/home/trainingPills/training_list_tile.dart';
+import 'package:enreda_app/app/sign_in/sign_out_admin.dart';
 import 'package:enreda_app/common_widgets/custom_person_pill_image.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -846,7 +847,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     Future.delayed(Duration.zero, () {
                       _signOut(context);
                       if (!isAlertBoxOpened) {
-                        _showDialogNotValidUser(context);
+                        adminSignOut(context);
+                        //_showDialogNotValidUser(context);
                       }
                     });
                   }

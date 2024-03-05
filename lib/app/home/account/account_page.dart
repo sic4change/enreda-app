@@ -76,6 +76,13 @@ class _AccountPageState extends State<AccountPage> {
                 if (snapshot.hasData) {
                   UserEnreda _userEnreda;
                   _userEnreda = snapshot.data!;
+                  if (_userEnreda.role != 'Desempleado') {
+                    Future.delayed(Duration.zero, () {
+                      _signOut(context);
+                      adminSignOut(context);
+                    });
+                    return Container();
+                  }
                   _photo = (_userEnreda.profilePic?.src == null || _userEnreda.profilePic?.src == ""
                       ? "" : _userEnreda.profilePic?.src)!;
                   _userId = _userEnreda.userId ?? '';
@@ -84,20 +91,7 @@ class _AccountPageState extends State<AccountPage> {
                       : _buildMobileLayout(_userEnreda, context);
                 }
                 else {
-                  if (!snapshot.hasData && snapshot.connectionState == ConnectionState.active)
-                    if (!widget._errorNotValidUser) {
-                      widget._errorNotValidUser = true;
-                      Future.delayed(Duration.zero, () {
-                        _signOut(context);
-                        if (!isAlertboxOpened) {
-                          _showDialogNotValidUser(context);
-                        }
-                      });
-                    }
-                  return Container(
-                    width: 0.0,
-                    height: 0.0,
-                  );
+                  return Container();
                 }
               },
             );

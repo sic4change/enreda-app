@@ -248,10 +248,8 @@ Future<Uint8List> generateResume3(
                             organization: experience.organization != "" && experience.organization != null && experience.position != "" && experience.position != null ? '${experience.position} - ${experience.organization}'
                                 : experience.organization != null || experience.organization != "" ? experience.organization :  experience.position != null && experience.position != "" ? experience.position : "",
                             showDescriptionDate: idSelectedDateExperience!.contains(experience.id),
-                            descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : 'Desconocida'} / '
-                                '${experience.subtype == 'Responsabilidades familiares'? 'Desconocida':experience.endDate != null
-                                ? formatter.format(experience.endDate!.toDate())
-                                : 'Actualmente'}',
+                            descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate())
+                                : '-'} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
                             descriptionPlace: '${experience.location}',
                             descriptionActivities: experience.professionActivitiesText!
                                 .split(' / ')
@@ -264,18 +262,17 @@ Future<Uint8List> generateResume3(
                         myPersonalExperiences != null && myPersonalExperiences.isNotEmpty ? _Category(title: StringConst.MY_PERSONAL_EXPERIENCES, color: green) : pw.Container(),
                         for (var experience in myPersonalExperiences!)
                           _Block(
-                            title: experience.activityRole != null && experience.activity != null && experience.subtype != null
+                            title: experience.subtype == 'Responsabilidades familiares' || experience.subtype == "Compromiso social" ? experience.subtype :
+                            experience.activityRole != null && experience.activity != null && experience.subtype != null
                                 ? '${experience.subtype} - ${experience.activityRole} - ${experience.activity}'
                                 : experience.activityRole != null && experience.activity != null ? '${experience.activityRole} - ${experience.activity}' :
-                            experience.activity != null ? experience.subtype != null ? '${experience.subtype} - ${experience.activity}' :
-                            experience.activity : '',
+                            experience.activity != null && experience.subtype != null ? '${experience.subtype} - ${experience.activity}' :
+                            experience.activity != null ? experience.activity : '',
                             organization: experience.organization != "" && experience.organization != null && experience.position != "" && experience.position != null ? '${experience.position} - ${experience.organization}'
                                 : experience.organization != null || experience.organization != "" ? experience.organization :  experience.position != null && experience.position != "" ? experience.position : "",
                             showDescriptionDate: idSelectedDatePersonalExperience!.contains(experience.id),
-                            descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : 'Desconocida'} / '
-                                '${experience.subtype == 'Responsabilidades familiares'? 'Desconocida':experience.endDate != null
-                                ? formatter.format(experience.endDate!.toDate())
-                                : 'Actualmente'}',
+                            descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate())
+                                : '-'} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
                             descriptionPlace: '${experience.location}',
                           ),
                         pw.SizedBox(height: 5),
@@ -288,10 +285,8 @@ Future<Uint8List> generateResume3(
                                 : education.institution == null ? education.nameFormation : education.institution,
                             organization: education.organization != "" && education.organization != null ? education.organization : '',
                             showDescriptionDate: idSelectedDateEducation!.contains(education.id),
-                            descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} / '
-                                '${education.subtype == 'Responsabilidades familiares'? 'Desconocida':education.endDate != null
-                                ? formatter.format(education.endDate!.toDate())
-                                : 'Actualmente'}',
+                            descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate())
+                                : '-'} / ${education.endDate != null ? formatter.format(education.endDate!.toDate()) : 'Actualmente'}',
                             descriptionPlace: '${education.location}',
                           ),
                         pw.SizedBox(height: 5),
@@ -304,10 +299,8 @@ Future<Uint8List> generateResume3(
                                 : education.institution == null ? education.nameFormation : education.institution,
                             organization: education.organization != "" && education.organization != null ? education.organization : '',
                             showDescriptionDate: idSelectedDateSecondaryEducation!.contains(education.id),
-                            descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} / '
-                                '${education.subtype == 'Responsabilidades familiares'? 'Desconocida':education.endDate != null
-                                ? formatter.format(education.endDate!.toDate())
-                                : 'Actualmente'}',
+                            descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate())
+                                : '-'} / ${education.endDate != null ? formatter.format(education.endDate!.toDate()) : 'Actualmente'}',
                             descriptionPlace: '${education.location}',
                           ),
 

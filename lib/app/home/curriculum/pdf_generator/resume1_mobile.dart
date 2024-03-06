@@ -223,13 +223,11 @@ Future<Uint8List> generateResume1(
                             title: (experience.activity != null) ? experience.activity : '',
                             organization: experience.organization != "" && experience.organization != null && experience.position != "" && experience.position != null ? '${experience.position} - ${experience.organization}'
                                 : experience.organization != null || experience.organization != "" ? experience.organization :  experience.position != null && experience.position != "" ? experience.position : "",
-                            showDescription1: idSelectedDateExperience!.contains(experience.id),
-                            description1:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : 'Desconocida'} / '
-                                '${experience.subtype == 'Responsabilidades familiares'? 'Desconocida': experience.endDate != null
-                                ? formatter.format(experience.endDate!.toDate())
-                                : 'Actualmente'}',
-                            description2: '${experience.location}',
-                            description3: experience.professionActivitiesText!
+                            showDescriptionDate: idSelectedDateExperience!.contains(experience.id),
+                            descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate())
+                                : '-'} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
+                            descriptionPlace: '${experience.location}',
+                            descriptionActivities: experience.professionActivitiesText!
                                 .split(' / ')
                                 .where((item) => item.isNotEmpty) // Filter out empty items.
                                 .map((item) => '• $item')         // Prefix each item with a bullet point.
@@ -240,19 +238,18 @@ Future<Uint8List> generateResume1(
                         myPersonalExperiences != null && myPersonalExperiences.isNotEmpty ? _Category(title: StringConst.MY_PERSONAL_EXPERIENCES) : pw.Container(),
                         for (var experience in myPersonalExperiences!)
                           _Block(
-                            title: experience.activityRole != null && experience.activity != null && experience.subtype != null
+                            title: experience.subtype == 'Responsabilidades familiares' || experience.subtype == "Compromiso social" ? experience.subtype :
+                            experience.activityRole != null && experience.activity != null && experience.subtype != null
                                 ? '${experience.subtype} - ${experience.activityRole} - ${experience.activity}'
                                 : experience.activityRole != null && experience.activity != null ? '${experience.activityRole} - ${experience.activity}' :
-                            experience.activity != null ? experience.subtype != null ? '${experience.subtype} - ${experience.activity}' :
-                            experience.activity : '',
+                            experience.activity != null && experience.subtype != null ? '${experience.subtype} - ${experience.activity}' :
+                            experience.activity != null ? experience.activity : '',
                             organization: experience.organization != "" && experience.organization != null && experience.position != "" && experience.position != null ? '${experience.position} - ${experience.organization}'
                                 : experience.organization != null || experience.organization != "" ? experience.organization :  experience.position != null && experience.position != "" ? experience.position : "",
-                            showDescription1: idSelectedDatePersonalExperience!.contains(experience.id),
-                            description1:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : 'Desconocida'} / '
-                                '${experience.subtype == 'Responsabilidades familiares'? 'Desconocida': experience.endDate != null
-                                ? formatter.format(experience.endDate!.toDate())
-                                : 'Actualmente'}',
-                            description2: '${experience.location}',
+                            showDescriptionDate: idSelectedDatePersonalExperience!.contains(experience.id),
+                            descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate())
+                                : '-'} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
+                            descriptionPlace: '${experience.location}',
                           ),
                         pw.SizedBox(height: 5),
 
@@ -263,12 +260,10 @@ Future<Uint8List> generateResume1(
                                 ? '${education.institution} - ${education.nameFormation}'
                                 : education.institution == null ? education.nameFormation : education.institution,
                             organization: education.organization != "" && education.organization != null ? education.organization : '',
-                            showDescription1: idSelectedDateEducation!.contains(education.id),
-                            description1:'${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} / '
-                                '${education.subtype == 'Responsabilidades familiares'? 'Desconocida': education.endDate != null
-                                ? formatter.format(education.endDate!.toDate())
-                                : 'Actualmente'}',
-                            description2: '${education.location}',
+                            showDescriptionDate: idSelectedDateEducation!.contains(education.id),
+                            descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate())
+                                : '-'} / ${education.endDate != null ? formatter.format(education.endDate!.toDate()) : 'Actualmente'}',
+                            descriptionPlace: '${education.location}',
                           ),
                         pw.SizedBox(height: 5),
 
@@ -279,12 +274,10 @@ Future<Uint8List> generateResume1(
                                 ? '${education.institution} - ${education.nameFormation}'
                                 : education.institution == null ? education.nameFormation : education.institution,
                             organization: education.organization != "" && education.organization != null ? education.organization : '',
-                            showDescription1: idSelectedDateSecondaryEducation!.contains(education.id),
-                            description1:'${education.startDate != null ? formatter.format(education.startDate!.toDate()) : 'Desconocida'} / '
-                                '${education.subtype == 'Responsabilidades familiares'? 'Desconocida':education.endDate != null
-                                ? formatter.format(education.endDate!.toDate())
-                                : 'Actualmente'}',
-                            description2: '${education.location}',
+                            showDescriptionDate: idSelectedDateSecondaryEducation!.contains(education.id),
+                            descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate())
+                                : '-'} / ${education.endDate != null ? formatter.format(education.endDate!.toDate()) : 'Actualmente'}',
+                            descriptionPlace: '${education.location}',
                           ),
                       ],
                     ),
@@ -353,18 +346,18 @@ class _Block extends pw.StatelessWidget {
   _Block({
     this.title,
     this.organization,
-    this.description1,
-    this.description2,
-    this.showDescription1,
-    this.description3,
+    this.descriptionDate,
+    this.descriptionPlace,
+    this.showDescriptionDate,
+    this.descriptionActivities,
   });
 
   final String? title;
   final String? organization;
-  final String? description1;
-  final String? description2;
-  final bool? showDescription1;
-  final String? description3;
+  final String? descriptionDate;
+  final String? descriptionPlace;
+  final bool? showDescriptionDate;
+  final String? descriptionActivities;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -399,11 +392,11 @@ class _Block extends pw.StatelessWidget {
                           color: grey)),
                 )
               ]) : pw.Container(),
-          description1 != null && (showDescription1 ?? true) ? pw.Container(
+          descriptionDate != null && (showDescriptionDate ?? true) ? pw.Container(
             child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: <pw.Widget>[
-                  pw.Text(description1!,
+                  pw.Text(descriptionDate!,
                       textScaleFactor: 0.8,
                       style: pw.Theme.of(context)
                           .defaultTextStyle
@@ -412,11 +405,11 @@ class _Block extends pw.StatelessWidget {
                           color: grey)),
                 ]),
           ) : pw.Container(),
-          description2 != null ? pw.Container(
+          descriptionPlace != null ? pw.Container(
             child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: <pw.Widget>[
-                  pw.Text(description2!,
+                  pw.Text(descriptionPlace!,
                       textScaleFactor: 0.8,
                       style: pw.Theme.of(context)
                           .defaultTextStyle
@@ -425,7 +418,7 @@ class _Block extends pw.StatelessWidget {
                           color: grey)),
                 ]),
           ) : pw.Container(),
-          description3 != null ? pw.Container(
+          descriptionActivities != null ? pw.Container(
             child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: <pw.Widget>[
@@ -436,7 +429,7 @@ class _Block extends pw.StatelessWidget {
                           .copyWith(
                           fontWeight: pw.FontWeight.bold,
                           color: grey)),
-                  pw.Text(description3!,
+                  pw.Text(descriptionActivities!,
                       textScaleFactor: 0.8,
                       style: pw.Theme.of(context)
                           .defaultTextStyle

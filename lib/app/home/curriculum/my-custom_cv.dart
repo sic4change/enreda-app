@@ -154,7 +154,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           title: Text(
             'Personalizar mi CV',
             textAlign: TextAlign.left,
-            style: textTheme.bodyText1?.copyWith(
+            style: textTheme.bodySmall?.copyWith(
               color: Constants.white,
               height: 1.5,
               letterSpacing: 0.3,
@@ -745,7 +745,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                     Expanded(
                       child: Text(
                         widget.user?.email ?? '',
-                        style: textTheme.bodyText1?.copyWith(
+                        style: textTheme.bodySmall?.copyWith(
                             fontSize: Responsive.isDesktop(context) ? 14 : 14.0,
                             color: Constants.darkGray),
                       ),
@@ -782,7 +782,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                     Expanded(
                       child: Text(
                         widget.user?.phone ?? '',
-                        style: textTheme.bodyText1?.copyWith(
+                        style: textTheme.bodySmall?.copyWith(
                             fontSize: Responsive.isDesktop(context) ? 14 : 14.0,
                             color: Constants.darkGray),
                       ),
@@ -946,7 +946,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               Expanded(
                                 child: Text(
                                     widget.competenciesNames[index],
-                                    style: textTheme.bodyText1
+                                    style: textTheme.bodySmall
                                         ?.copyWith(
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.w500,
@@ -971,7 +971,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 child: Center(
                     child: Text(
                       'Aquí aparecerán las competencias evaluadas a través de los microtests',
-                      style: textTheme.bodyText1,
+                      style: textTheme.bodySmall,
                     )),
               ),
         ),
@@ -1015,54 +1015,28 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
-                                  if (widget.myEducation![index].activity != null && widget.myEducation![index].activityRole != null && widget.myEducation![index].activity != '')
-                                    RichText(
-                                      text: TextSpan(
-                                          text: '${widget.myEducation![index].activityRole!.toUpperCase()} -',
-                                          style: textTheme.bodyText1?.copyWith(
-                                            fontSize: 14.0,
-                                          ),
-                                          children: [
-                                            TextSpan(
-                                              text: ' ${widget.myEducation![index].activity!.toUpperCase()}',
-                                              style: textTheme.bodyText1?.copyWith(
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            )
-                                          ]),
-                                    ),
-                                  if (widget.myEducation![index].nameFormation != null )
-                                    Text('${widget.myEducation![index].nameFormation!}',
-                                        style: textTheme.bodyText1
-                                            ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
-                                  if (widget.myEducation![index].activity != null && widget.myEducation![index].activityRole == null)
-                                    Text('${widget.myEducation![index].activity!}',
-                                        style: textTheme.bodyText1
-                                            ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
-                                  if (widget.myEducation![index].activity != null) SpaceH8(),
+                                  Text(widget.myEducation![index].institution != null && widget.myEducation![index].nameFormation != null && widget.myEducation![index].nameFormation != "" ?
+                                  '${widget.myEducation![index].institution} - ${widget.myEducation![index].nameFormation}' :
+                                  widget.myEducation![index].institution == null && widget.myEducation![index].nameFormation != null ?
+                                  '${widget.myEducation![index].nameFormation}' : widget.myEducation![index].nameFormation == null && widget.myEducation![index].institution != null ?
+                                  '${widget.myEducation![index].institution}' : '',
+                                      style: textTheme.bodySmall?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
                                   if (widget.myEducation![index].organization != null && widget.myEducation![index].organization != "") Column(
                                     children: [
                                       Text(
                                         widget.myEducation![index].organization!,
-                                        style: textTheme.bodyText1?.copyWith(
+                                        style: textTheme.bodySmall?.copyWith(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14.0,
                                         ),
                                       ),
-                                      SpaceH8()
                                     ],
                                   ),
                                   Row(
                                     children: [
-                                      Text(
-                                        '${widget.myEducation![index].startDate != null
-                                            ? formatter.format(widget.myEducation![index].startDate!.toDate())
-                                            : 'Desconocida'} / ${widget.myEducation![index].subtype == 'Responsabilidades familiares'? 'Desconocida'
-                                            : widget.myEducation![index].endDate != null
-                                            ? formatter.format(widget.myEducation![index].endDate!.toDate())
-                                            : 'Actualmente'}',
-                                        style: textTheme.bodyText1?.copyWith(
+                                      Text('${widget.myEducation![index].startDate != null ? formatter.format(widget.myEducation![index].startDate!.toDate())
+                                          : '-'} / ${widget.myEducation![index].endDate != null ? formatter.format(widget.myEducation![index].endDate!.toDate()) : 'Actualmente' }',
+                                        style: textTheme.bodySmall?.copyWith(
                                           fontSize: 14.0,
                                         ),
                                       ),
@@ -1092,10 +1066,9 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                       ),
                                     ],
                                   ),
-                                  SpaceH8(),
                                   Text(
                                     widget.myEducation![index].location,
-                                    style: textTheme.bodyText1?.copyWith(
+                                    style: textTheme.bodySmall?.copyWith(
                                       fontSize: 14.0,
                                     ),
                                   ),
@@ -1177,54 +1150,28 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              if (widget.mySecondaryEducation![index].activity != null && widget.mySecondaryEducation![index].activityRole != null && widget.mySecondaryEducation![index].activity != '')
-                                RichText(
-                                  text: TextSpan(
-                                      text: '${widget.mySecondaryEducation![index].activityRole!.toUpperCase()} -',
-                                      style: textTheme.bodyText1?.copyWith(
-                                        fontSize: 14.0,
-                                      ),
-                                      children: [
-                                        TextSpan(
-                                          text: ' ${widget.mySecondaryEducation![index].activity!.toUpperCase()}',
-                                          style: textTheme.bodyText1?.copyWith(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        )
-                                      ]),
-                                ),
-                              if (widget.mySecondaryEducation![index].nameFormation != null )
-                                Text('${widget.mySecondaryEducation![index].nameFormation!}',
-                                    style: textTheme.bodyText1
-                                        ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
-                              if (widget.mySecondaryEducation![index].activity != null && widget.mySecondaryEducation![index].activityRole == null)
-                                Text('${widget.mySecondaryEducation![index].activity!}',
-                                    style: textTheme.bodyText1
-                                        ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
-                              if (widget.mySecondaryEducation![index].activity != null) SpaceH8(),
+                              Text(widget.mySecondaryEducation![index].institution != null && widget.mySecondaryEducation![index].nameFormation != null && widget.mySecondaryEducation![index].nameFormation != "" ?
+                              '${widget.mySecondaryEducation![index].institution} - ${widget.mySecondaryEducation![index].nameFormation}' :
+                              widget.mySecondaryEducation![index].institution == null && widget.mySecondaryEducation![index].nameFormation != null ?
+                              '${widget.mySecondaryEducation![index].nameFormation}' : widget.mySecondaryEducation![index].nameFormation == null && widget.mySecondaryEducation![index].institution != null ?
+                              '${widget.mySecondaryEducation![index].institution}' : '',
+                                  style: textTheme.bodySmall?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
                               if (widget.mySecondaryEducation![index].organization != null && widget.mySecondaryEducation![index].organization != "") Column(
                                 children: [
                                   Text(
                                     widget.mySecondaryEducation![index].organization!,
-                                    style: textTheme.bodyText1?.copyWith(
+                                    style: textTheme.bodySmall?.copyWith(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14.0,
                                     ),
                                   ),
-                                  SpaceH8()
                                 ],
                               ),
                               Row(
                                 children: [
-                                  Text(
-                                    '${widget.mySecondaryEducation![index].startDate != null
-                                        ? formatter.format(widget.mySecondaryEducation![index].startDate!.toDate())
-                                        : 'Desconocida'} / ${widget.mySecondaryEducation![index].subtype == 'Responsabilidades familiares'? 'Desconocida'
-                                        : widget.mySecondaryEducation![index].endDate != null
-                                        ? formatter.format(widget.mySecondaryEducation![index].endDate!.toDate())
-                                        : 'Actualmente'}',
-                                    style: textTheme.bodyText1?.copyWith(
+                                  Text('${widget.mySecondaryEducation![index].startDate != null ? formatter.format(widget.mySecondaryEducation![index].startDate!.toDate())
+                                      : '-'} / ${widget.mySecondaryEducation![index].endDate != null ? formatter.format(widget.mySecondaryEducation![index].endDate!.toDate()) : 'Actualmente' }',
+                                    style: textTheme.bodySmall?.copyWith(
                                       fontSize: 14.0,
                                     ),
                                   ),
@@ -1252,10 +1199,9 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                   ),
                                 ],
                               ),
-                              SpaceH8(),
                               Text(
                                 widget.mySecondaryEducation![index].location,
-                                style: textTheme.bodyText1?.copyWith(
+                                style: textTheme.bodySmall?.copyWith(
                                   fontSize: 14.0,
                                 ),
                               ),
@@ -1337,50 +1283,26 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
-                                if (widget.myExperiences![index].activity != null && widget.myExperiences![index].activityRole != null)
-                                  RichText(
-                                    text: TextSpan(
-                                        text: '${widget.myExperiences![index].activityRole!.toUpperCase()} -',
-                                        style: textTheme.bodyText1?.copyWith(
-                                          fontSize: 14.0,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: ' ${widget.myExperiences![index].activity!.toUpperCase()}',
-                                            style: textTheme.bodyText1?.copyWith(
-                                              fontSize: 14.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          )
-                                        ]),
-                                  ),
-                                if (widget.myExperiences![index].activity != null && widget.myExperiences![index].activityRole == null)
-                                  Text( widget.myExperiences![index].position == null || widget.myExperiences![index].position == "" ? '${widget.myExperiences![index].activity!}' : '${widget.myExperiences![index].position}',
-                                      style: textTheme.bodyText1
-                                          ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
-                                if (widget.myExperiences![index].position != null || widget.myExperiences![index].activity != null) SpaceH8(),
-                                if (widget.myExperiences![index].organization != null && widget.myExperiences![index].organization != "") Column(
-                                  children: [
-                                    Text(
-                                      widget.myExperiences![index].organization!,
-                                      style: textTheme.bodyText1?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14.0,
-                                      ),
+                                if (widget.myExperiences![index].activity != null)
+                                  Text(
+                                    '${widget.myExperiences![index].activity!}',
+                                    style: textTheme.bodySmall?.copyWith(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    SpaceH8()
-                                  ],
-                                ),
+                                  ),
+                                Text(widget.myExperiences![index].organization != null && widget.myExperiences![index].organization != "" &&
+                                    widget.myExperiences![index].position != null && widget.myExperiences![index].position != "" ?
+                                    '${widget.myExperiences![index].position} - ${widget.myExperiences![index].organization}' :
+                                      widget.myExperiences![index].organization != null && widget.myExperiences![index].organization != "" ?
+                                      '${widget.myExperiences![index].organization}' : widget.myExperiences![index].position != null && widget.myExperiences![index].position != "" ?
+                                      '${widget.myExperiences![index].position}' : '',
+                                      style: textTheme.bodySmall?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
                                 Row(
                                   children: [
-                                    Text(
-                                      '${widget.myExperiences![index].startDate != null
-                                          ? formatter.format(widget.myExperiences![index].startDate!.toDate())
-                                          : 'Desconocida'} / ${widget.myExperiences![index].subtype == 'Responsabilidades familiares'? 'Desconocida'
-                                          : widget.myExperiences![index].endDate != null
-                                          ? formatter.format(widget.myExperiences![index].endDate!.toDate())
-                                          : 'Actualmente'}',
-                                      style: textTheme.bodyText1?.copyWith(
+                                    Text('${widget.myExperiences![index].startDate != null ? formatter.format(widget.myExperiences![index].startDate!.toDate())
+                                        : '-'} / ${widget.myExperiences![index].endDate != null ? formatter.format(widget.myExperiences![index].endDate!.toDate()) : 'Actualmente' }',
+                                      style: textTheme.bodySmall?.copyWith(
                                         fontSize: 14.0,
                                       ),
                                     ),
@@ -1408,10 +1330,9 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                     ),
                                   ],
                                 ),
-                                SpaceH8(),
                                 Text(
                                   widget.myExperiences![index].location,
-                                  style: textTheme.bodyText1?.copyWith(
+                                  style: textTheme.bodySmall?.copyWith(
                                     fontSize: 14.0,
                                   ),
                                 ),
@@ -1493,50 +1414,24 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              if (widget.myPersonalExperiences![index].activity != null && widget.myPersonalExperiences![index].activityRole != null)
-                                RichText(
-                                  text: TextSpan(
-                                      text: '${widget.myPersonalExperiences![index].activityRole!.toUpperCase()} -',
-                                      style: textTheme.bodyText1?.copyWith(
-                                        fontSize: 14.0,
-                                      ),
-                                      children: [
-                                        TextSpan(
-                                          text: ' ${widget.myPersonalExperiences![index].activity!.toUpperCase()}',
-                                          style: textTheme.bodyText1?.copyWith(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        )
-                                      ]),
-                                ),
-                              if (widget.myPersonalExperiences![index].activity != null && widget.myPersonalExperiences![index].activityRole == null)
-                                Text( widget.myPersonalExperiences![index].position == null || widget.myPersonalExperiences![index].position == "" ? '${widget.myPersonalExperiences![index].activity!}' : '${widget.myPersonalExperiences![index].position}',
-                                    style: textTheme.bodyText1
-                                        ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
-                              if (widget.myPersonalExperiences![index].position != null || widget.myPersonalExperiences![index].activity != null) SpaceH8(),
-                              if (widget.myPersonalExperiences![index].organization != null && widget.myPersonalExperiences![index].organization != "") Column(
-                                children: [
-                                  Text(
-                                    widget.myPersonalExperiences![index].organization!,
-                                    style: textTheme.bodyText1?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14.0,
-                                    ),
-                                  ),
-                                  SpaceH8()
-                                ],
-                              ),
+                              Text(widget.myPersonalExperiences![index].subtype == 'Responsabilidades familiares' || widget.myPersonalExperiences![index].subtype == 'Compromiso social' ? '${widget.myPersonalExperiences![index].subtype}' :
+                                  widget.myPersonalExperiences![index].subtype != null && widget.myPersonalExperiences![index].activityRole != null && widget.myPersonalExperiences![index].activity != null ?
+                              '${widget.myPersonalExperiences![index].subtype} - ${widget.myPersonalExperiences![index].activityRole} - ${widget.myPersonalExperiences![index].activity}' :
+                                  widget.myPersonalExperiences![index].activityRole != null && widget.myPersonalExperiences![index].activity != null ?
+                              '${widget.myPersonalExperiences![index].activityRole} - ${widget.myPersonalExperiences![index].activity}' : widget.myPersonalExperiences![index].activity != null && widget.myPersonalExperiences![index].subtype != null ?
+                              '${widget.myPersonalExperiences![index].activity} - ${widget.myPersonalExperiences![index].subtype}' : widget.myPersonalExperiences![index].activity != null ? '${widget.myPersonalExperiences![index].activity}' : '',
+                                  style: textTheme.bodySmall?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
+                              Text( widget.myPersonalExperiences![index].organization != null && widget.myPersonalExperiences![index].organization != ''
+                                   && widget.myPersonalExperiences![index].position != null && widget.myPersonalExperiences![index].position != '' ?
+                                  '${widget.myPersonalExperiences![index].organization!} - ${widget.myPersonalExperiences![index].position}' :
+                                   widget.myPersonalExperiences![index].organization != null && widget.myPersonalExperiences![index].organization != '' ?
+                                   '${widget.myPersonalExperiences![index].organization!}' : widget.myPersonalExperiences![index].position != null && widget.myPersonalExperiences![index].position != '' ?
+                                   '${widget.myPersonalExperiences![index].position}' : '', style: textTheme.bodySmall?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
                               Row(
                                 children: [
-                                  Text(
-                                    '${widget.myPersonalExperiences![index].startDate != null
-                                        ? formatter.format(widget.myPersonalExperiences![index].startDate!.toDate())
-                                        : 'Desconocida'} / ${widget.myPersonalExperiences![index].subtype == 'Responsabilidades familiares'? 'Desconocida'
-                                        : widget.myPersonalExperiences![index].endDate != null
-                                        ? formatter.format(widget.myPersonalExperiences![index].endDate!.toDate())
-                                        : 'Actualmente'}',
-                                    style: textTheme.bodyText1?.copyWith(
+                                  Text('${widget.myPersonalExperiences![index].startDate != null ? formatter.format(widget.myPersonalExperiences![index].startDate!.toDate())
+                                      : '-'} / ${widget.myPersonalExperiences![index].endDate != null ? formatter.format(widget.myPersonalExperiences![index].endDate!.toDate()) : 'Actualmente' }',
+                                    style: textTheme.bodySmall?.copyWith(
                                       fontSize: 14.0,
                                     ),
                                   ),
@@ -1564,10 +1459,9 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                   ),
                                 ],
                               ),
-                              SpaceH8(),
                               Text(
                                 widget.myPersonalExperiences![index].location,
-                                style: textTheme.bodyText1?.copyWith(
+                                style: textTheme.bodySmall?.copyWith(
                                   fontSize: 14.0,
                                 ),
                               ),
@@ -1658,7 +1552,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                         Expanded(
                           child: Text(
                               myDataOfInterest[index],
-                              style: textTheme.bodyText1
+                              style: textTheme.bodySmall
                                   ?.copyWith(
                                   fontSize: 14.0,
                                   fontWeight: FontWeight.w500,
@@ -1682,7 +1576,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             child: Center(
                 child: Text(
                   'Aquí aparecerá la información de interés',
-                  style: textTheme.bodyText1,
+                  style: textTheme.bodySmall,
                 )),
           ),
         ),
@@ -1736,7 +1630,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                         Expanded(
                           child: Text(
                               myLanguagesLevels[index].name,
-                              style: textTheme.bodyText1
+                              style: textTheme.bodySmall
                                   ?.copyWith(
                                   fontSize: 14.0,
                                   fontWeight: FontWeight.w500,
@@ -1760,7 +1654,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             child: Center(
                 child: Text(
                   'Aquí aparecerán mis idiomas',
-                  style: textTheme.bodyText1,
+                  style: textTheme.bodySmall,
                 )),
           ),
         ),
@@ -1818,13 +1712,13 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               RichText(
                                 text: TextSpan(
                                     text: '${widget.myReferences![index].certifierPosition.toUpperCase()} -',
-                                    style: textTheme.bodyText1?.copyWith(
+                                    style: textTheme.bodySmall?.copyWith(
                                       fontSize: 14.0,
                                     ),
                                     children: [
                                       TextSpan(
                                         text: ' ${widget.myReferences![index].certifierCompany.toUpperCase()}',
-                                        style: textTheme.bodyText1?.copyWith(
+                                        style: textTheme.bodySmall?.copyWith(
                                           fontSize: 14.0,
                                           fontWeight: FontWeight.bold,
                                         ),

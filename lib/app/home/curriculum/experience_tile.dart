@@ -25,12 +25,8 @@ class ExperienceTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final DateFormat formatter = DateFormat('yyyy');
     bool dismissible = true;
-    String startDate = experience.startDate != null
-        ? formatter.format(experience.startDate!.toDate())
-        : 'Desconocida';
-    String endDate = experience.subtype == 'Responsabilidades familiares'? 'Desconocida': experience.endDate != null
-        ? formatter.format(experience.endDate!.toDate())
-        : 'Actualmente';
+    String startDate = experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : '-';
+    String endDate = experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente';
 
     return InkWell(
       onTap: onTap,
@@ -44,14 +40,14 @@ class ExperienceTile extends StatelessWidget {
             if (experience.activity != null && experience.activityRole != null && experience.type != 'Formativa' && experience.type != 'Complementaria')
               RichText(
                 text: TextSpan(
-                    text: '${experience.activityRole!.toUpperCase()} -',
-                    style: textTheme.bodyText1?.copyWith(
+                    text: '${experience.activityRole} -',
+                    style: textTheme.bodySmall?.copyWith(
                       fontSize: 14.0,
                     ),
                     children: [
                       TextSpan(
-                        text: ' ${experience.activity!.toUpperCase()}',
-                        style: textTheme.bodyText1?.copyWith(
+                        text: ' ${experience.activity}',
+                        style: textTheme.bodySmall?.copyWith(
                           fontSize: 14.0,
                           fontWeight: FontWeight.bold,
                         ),
@@ -63,30 +59,37 @@ class ExperienceTile extends StatelessWidget {
             if((experience.type == 'Formativa' || experience.type == 'Complementaria') && experience.institution != '' && experience.nameFormation != '')
               RichText(
                 text: TextSpan(
-                    text: '${experience.institution!.toUpperCase()} -',
-                    style: textTheme.bodyText1?.copyWith(
+                    text: '${experience.institution} -',
+                    style: textTheme.bodySmall?.copyWith(
                       fontSize: 14.0,
                     ),
                     children: [
                       TextSpan(
-                        text: ' ${experience.nameFormation!.toUpperCase()}',
-                        style: textTheme.bodyText1?.copyWith(
+                        text: ' ${experience.nameFormation}',
+                        style: textTheme.bodySmall?.copyWith(
                           fontSize: 14.0,
                           fontWeight: FontWeight.bold,
                         ),
                       )
                     ]),
               ),
+            if(experience.subtype == 'Responsabilidades familiares' || experience.subtype == 'Compromiso social')
+              Text(
+                '${experience.subtype}',
+                style: textTheme.bodySmall?.copyWith(
+                  fontSize: 14.0,
+                ),
+              ),
             if (experience.activity != null && experience.activityRole == null)
               Text( experience.position == null || experience.position == "" ? '${experience.activity}' : '${experience.position}',
-                  style: textTheme.bodyText1
+                  style: textTheme.bodySmall
                       ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
             if (experience.position != null || experience.activity != null) SpaceH8(),
             if (experience.organization != null && experience.organization != "") Column(
               children: [
                 Text(
                   experience.organization!,
-                  style: textTheme.bodyText1?.copyWith(
+                  style: textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 14.0,
                   ),
@@ -96,7 +99,7 @@ class ExperienceTile extends StatelessWidget {
             ),
             Text(
               '$startDate / $endDate',
-              style: textTheme.bodyText1?.copyWith(
+              style: textTheme.bodySmall?.copyWith(
                 fontSize: 14.0,
               ),
             ),
@@ -107,7 +110,7 @@ class ExperienceTile extends StatelessWidget {
                 children: [
                   Text(
                     experience.extraData!,
-                    style: textTheme.bodyText1?.copyWith(
+                    style: textTheme.bodySmall?.copyWith(
                       fontSize: 14.0,
                     ),
                     maxLines: 1,
@@ -119,7 +122,7 @@ class ExperienceTile extends StatelessWidget {
 
             Text(
               experience.location,
-              style: textTheme.bodyText1?.copyWith(
+              style: textTheme.bodySmall?.copyWith(
                 fontSize: 14.0,
               ),
             ),
@@ -169,7 +172,7 @@ class ExperienceTile extends StatelessWidget {
             onTap: () {
               showCustomDialog(context,
                   content: Text(
-                      '¿Quieres eliminar esta ${experience.type == 'Formativa' ? 'formación' : 'experiencia'}?', style: textTheme.bodyText1,),
+                      '¿Quieres eliminar esta ${experience.type == 'Formativa' ? 'formación' : 'experiencia'}?', style: textTheme.bodySmall,),
                   defaultActionText: 'Eliminar',
                   cancelActionText: 'Cancelar',
                   onDefaultActionPressed: (dialogContext) {
@@ -177,7 +180,7 @@ class ExperienceTile extends StatelessWidget {
                     database.deleteExperience(experience);
                     showCustomDialog(dialogContext,
                         content: Text(
-                            'La ${experience.type == 'Formativa' ? 'formación' : 'experiencia'} ha sido eliminada de tu CV', style: textTheme.bodyText1,),
+                            'La ${experience.type == 'Formativa' ? 'formación' : 'experiencia'} ha sido eliminada de tu CV', style: textTheme.bodySmall,),
                         defaultActionText: 'Ok',
                         onDefaultActionPressed: (dialog2Context) {
                       Navigator.of(dialog2Context).pop();

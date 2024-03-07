@@ -713,7 +713,12 @@ class FirestoreDatabase implements Database {
           return query;
         },
         builder: (data, documentId) => Choice.fromMap(data, documentId),
-        sort: (lhs, rhs) => rhs.name.compareTo(lhs.name),
+        sort: (lhs, rhs) {
+          if (lhs.order != null && rhs.order != null) {
+            return lhs.order!.compareTo(rhs.order!);
+          }
+          return lhs.name.compareTo(rhs.name);
+        },
       );
 
   @override

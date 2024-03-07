@@ -80,6 +80,13 @@ class ExperienceTile extends StatelessWidget {
                   fontSize: 14.0,
                 ),
               ),
+          if(experience.subtype == 'Otro')
+            Text(
+              '${experience.position}',
+              style: textTheme.bodySmall?.copyWith(
+                fontSize: 14.0,
+              ),
+            ),
             if (experience.activity != null && experience.activityRole == null)
               Text( experience.position == null || experience.position == "" ? '${experience.activity}' : '${experience.position}',
                   style: textTheme.bodySmall

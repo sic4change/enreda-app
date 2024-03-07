@@ -80,7 +80,7 @@ class CustomText extends StatelessWidget {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(
       title,
-      style: textTheme.bodyText1?.copyWith(
+      style: textTheme.bodySmall?.copyWith(
         color: AppColors.greyAlt,
         height: 1.5,
         fontSize: fontSize,
@@ -102,7 +102,7 @@ class CustomTextBold extends StatelessWidget {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(
       title,
-      style: textTheme.bodyText1?.copyWith(
+      style: textTheme.bodySmall?.copyWith(
         color: AppColors.greyAlt,
         height: 1.5,
         fontSize: fontSize,
@@ -125,7 +125,7 @@ class CustomTextSmall extends StatelessWidget {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(
       text,
-      style: textTheme.bodyText1?.copyWith(
+      style: textTheme.bodySmall?.copyWith(
         color: AppColors.greyAlt,
         height: 1.5,
         fontSize: fontSize,
@@ -144,7 +144,7 @@ class CustomTextChip extends StatelessWidget {
     double fontSize = responsiveSize(context, 14, 18, md: 15);
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(text,
-      style: textTheme.bodyText1?.copyWith(
+      style: textTheme.bodySmall?.copyWith(
         color: color,
         height: 1.5,
         fontWeight: FontWeight.w800,

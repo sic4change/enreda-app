@@ -131,7 +131,7 @@ class AppTheme {
     ),
     bodySmall: GoogleFonts.inter(
       fontSize: Sizes.TEXT_SIZE_12,
-      color: AppColors.primaryText2,
+      color: AppColors.greyAlt,
       fontWeight: _regular,
       fontStyle: FontStyle.normal,
     ),

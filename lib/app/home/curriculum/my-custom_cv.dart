@@ -148,7 +148,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 20, 22, md: 22);
-
     return Scaffold(
         appBar: AppBar(
           title: Text(

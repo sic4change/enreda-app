@@ -339,46 +339,46 @@ class MyCurriculumPage extends StatelessWidget {
                           );
                           return;
                         }
-                        if (await _hasEnoughExperiences(context))
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    MyCvModelsPage(
-                                      user: user!,
-                                      city: city!,
-                                      province: province!,
-                                      country: country!,
-                                      myCustomAboutMe: myCustomAboutMe,
-                                      myCustomEmail: myCustomEmail,
-                                      myCustomPhone: myCustomPhone,
-                                      myExperiences: myExperiences!,
-                                      myCustomExperiences: myCustomExperiences,
-                                      mySelectedExperiences: mySelectedExperiences,
-                                      myPersonalExperiences: myPersonalExperiences,
-                                      myPersonalSelectedExperiences: myPersonalSelectedExperiences,
-                                      myPersonalCustomExperiences: myPersonalCustomExperiences,
-                                      myEducation: myEducation!,
-                                      myCustomEducation: myCustomEducation,
-                                      mySelectedEducation: mySelectedEducation,
-                                      mySecondaryEducation: mySecondaryEducation,
-                                      mySecondaryCustomEducation: mySecondaryCustomEducation,
-                                      mySecondarySelectedEducation: mySecondarySelectedEducation,
-                                      competenciesNames: competenciesNames,
-                                      myCustomCompetencies: myCustomCompetencies,
-                                      mySelectedCompetencies: mySelectedCompetencies,
-                                      myCustomDataOfInterest: myCustomDataOfInterest,
-                                      mySelectedDataOfInterest: mySelectedDataOfInterest,
-                                      myCustomLanguages: myCustomLanguages,
-                                      mySelectedLanguages: mySelectedLanguages,
-                                      myCustomCity: myCustomCity,
-                                      myCustomProvince: myCustomProvince,
-                                      myCustomCountry: myCustomCountry,
-                                      myReferences: myReferences!,
-                                      myCustomReferences: myCustomReferences,
-                                      mySelectedReferences: mySelectedReferences,
-                                      myMaxEducation: myMaxEducation?.label??"",
-                                    )),
+
+                        _hasEnoughExperiences(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute( builder: (context) =>
+                              MyCvModelsPage(
+                                user: user!,
+                                city: city!,
+                                province: province!,
+                                country: country!,
+                                myCustomAboutMe: myCustomAboutMe,
+                                myCustomEmail: myCustomEmail,
+                                myCustomPhone: myCustomPhone,
+                                myExperiences: myExperiences!,
+                                myCustomExperiences: myCustomExperiences,
+                                mySelectedExperiences: mySelectedExperiences,
+                                myPersonalExperiences: myPersonalExperiences,
+                                myPersonalSelectedExperiences: myPersonalSelectedExperiences,
+                                myPersonalCustomExperiences: myPersonalCustomExperiences,
+                                myEducation: myEducation!,
+                                myCustomEducation: myCustomEducation,
+                                mySelectedEducation: mySelectedEducation,
+                                mySecondaryEducation: mySecondaryEducation,
+                                mySecondaryCustomEducation: mySecondaryCustomEducation,
+                                mySecondarySelectedEducation: mySecondarySelectedEducation,
+                                competenciesNames: competenciesNames,
+                                myCustomCompetencies: myCustomCompetencies,
+                                mySelectedCompetencies: mySelectedCompetencies,
+                                myCustomDataOfInterest: myCustomDataOfInterest,
+                                mySelectedDataOfInterest: mySelectedDataOfInterest,
+                                myCustomLanguages: myCustomLanguages,
+                                mySelectedLanguages: mySelectedLanguages,
+                                myCustomCity: myCustomCity,
+                                myCustomProvince: myCustomProvince,
+                                myCustomCountry: myCustomCountry,
+                                myReferences: myReferences!,
+                                myCustomReferences: myCustomReferences,
+                                mySelectedReferences: mySelectedReferences,
+                                myMaxEducation: myMaxEducation?.label??"",
+                              )),
                           );
                       },
                       child: Image.asset(
@@ -542,47 +542,46 @@ class MyCurriculumPage extends StatelessWidget {
                   );
                   return;
                 }
-                if (await _hasEnoughExperiences(context))
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            MyCvModelsPage(
-                              user: user!,
-                              city: city!,
-                              province: province!,
-                              country: country!,
-                              myCustomAboutMe: myCustomAboutMe,
-                              myCustomEmail: myCustomEmail,
-                              myCustomPhone: myCustomPhone,
-                              myExperiences: myExperiences!,
-                              myCustomExperiences: myCustomExperiences,
-                              mySelectedExperiences: mySelectedExperiences,
-                              myPersonalExperiences: myPersonalExperiences,
-                              myPersonalSelectedExperiences: myPersonalSelectedExperiences,
-                              myPersonalCustomExperiences: myPersonalCustomExperiences,
-                              myEducation: myEducation!,
-                              myCustomEducation: myCustomEducation,
-                              mySelectedEducation: mySelectedEducation,
-                              mySecondaryEducation: mySecondaryEducation,
-                              mySecondaryCustomEducation: mySecondaryCustomEducation,
-                              mySecondarySelectedEducation: mySecondarySelectedEducation,
-                              competenciesNames: competenciesNames,
-                              myCustomCompetencies: myCustomCompetencies,
-                              mySelectedCompetencies: mySelectedCompetencies,
-                              myCustomDataOfInterest: myCustomDataOfInterest,
-                              mySelectedDataOfInterest: mySelectedDataOfInterest,
-                              myCustomLanguages: myCustomLanguages,
-                              mySelectedLanguages: mySelectedLanguages,
-                              myCustomCity: myCustomCity,
-                              myCustomProvince: myCustomProvince,
-                              myCustomCountry: myCustomCountry,
-                              myReferences: myReferences!,
-                              myCustomReferences: myCustomReferences,
-                              mySelectedReferences: mySelectedReferences,
-                              myMaxEducation: myMaxEducation?.label??"",
-                            )),
-                  );
+                await _hasEnoughExperiences(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute( builder: (context) =>
+                      MyCvModelsPage(
+                        user: user!,
+                        city: city!,
+                        province: province!,
+                        country: country!,
+                        myCustomAboutMe: myCustomAboutMe,
+                        myCustomEmail: myCustomEmail,
+                        myCustomPhone: myCustomPhone,
+                        myExperiences: myExperiences!,
+                        myCustomExperiences: myCustomExperiences,
+                        mySelectedExperiences: mySelectedExperiences,
+                        myPersonalExperiences: myPersonalExperiences,
+                        myPersonalSelectedExperiences: myPersonalSelectedExperiences,
+                        myPersonalCustomExperiences: myPersonalCustomExperiences,
+                        myEducation: myEducation!,
+                        myCustomEducation: myCustomEducation,
+                        mySelectedEducation: mySelectedEducation,
+                        mySecondaryEducation: mySecondaryEducation,
+                        mySecondaryCustomEducation: mySecondaryCustomEducation,
+                        mySecondarySelectedEducation: mySecondarySelectedEducation,
+                        competenciesNames: competenciesNames,
+                        myCustomCompetencies: myCustomCompetencies,
+                        mySelectedCompetencies: mySelectedCompetencies,
+                        myCustomDataOfInterest: myCustomDataOfInterest,
+                        mySelectedDataOfInterest: mySelectedDataOfInterest,
+                        myCustomLanguages: myCustomLanguages,
+                        mySelectedLanguages: mySelectedLanguages,
+                        myCustomCity: myCustomCity,
+                        myCustomProvince: myCustomProvince,
+                        myCustomCountry: myCustomCountry,
+                        myReferences: myReferences!,
+                        myCustomReferences: myCustomReferences,
+                        mySelectedReferences: mySelectedReferences,
+                        myMaxEducation: myMaxEducation?.label??"",
+                      )),
+                );
               },
               child: Image.asset(
                 ImagePath.DOWNLOAD,
@@ -1930,15 +1929,12 @@ class MyCurriculumPage extends StatelessWidget {
     );
   }
 
-  Future<bool> _hasEnoughExperiences(BuildContext context) async {
+  Future<void> _hasEnoughExperiences(BuildContext context) async {
     if (myCompetencies!.length < 3 || myExperiences!.length < 2) {
-      showCustomDialog(context,
-          content: CustomTextBody(text: StringConst.ADD_MORE_EXPERIENCES),
+      await showCustomDialog(context,
+          content: CustomTextBody(text: StringConst.ADD_MORE_EXPERIENCES_SUGGESTION),
           defaultActionText: StringConst.OK,
-          onDefaultActionPressed: (context) => Navigator.of(context).pop(true));
-      return false;
-    } else {
-      return true;
+          onDefaultActionPressed: (dialogContext) => Navigator.of(dialogContext).pop(true));
     }
   }
 

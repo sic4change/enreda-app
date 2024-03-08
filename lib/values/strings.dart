@@ -441,7 +441,8 @@ class StringConst {
   static const String REPEATED_LANGUAGE_ERROR = "Ya has añadido este idioma";
   static const String NEW_CAREER = 'Introduce una nueva carrera:';
   static const String NEW_REFERENCE = 'Introduce nuevos datos:';
-  static const String ADD_MORE_EXPERIENCES = 'Añade 2 experiencias y evalúa o certifica 3 competencias para descargar tu CV ';
+  static const String ADD_MORE_EXPERIENCES = 'Añade 2 experiencias profesionales y evalúa o certifica 3 competencias para descargar tu CV ';
+  static const String ADD_MORE_EXPERIENCES_SUGGESTION = 'Te recomendamos añadir al menos 2 experiencias profesionales y evalúar o certificar 3 competencias para que tu CV quede más enriquecido';
   static const String EXPERIENCE_ADDED = '¡Hemos terminado! Esta experiencia ha sido añadida a tu perfil';
   static const List<String> EXPERIENCE_WORK_TYPES = ['Solo/a', 'En equipo', 'Ambos'];
   static const List<String> EXPERIENCE_CONTEXT = [

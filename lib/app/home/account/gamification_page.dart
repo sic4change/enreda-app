@@ -56,7 +56,7 @@ class _GamificationState extends State<Gamification> {
                 auxPoints++;
                 print(auxPoints);
               }
-              _points = auxPoints + 3;
+              _points = auxPoints + 2;
               print(_gamificationFlags);
               print('Puntos finales: $_points');
             });
@@ -68,7 +68,7 @@ class _GamificationState extends State<Gamification> {
                   _gamificationValues = snapshot.data!;
                   _gamificationValues.forEach((element) {print(element.description);});
 
-                  if (_gamificationFlags.length == (_gamificationValues.length - 3)
+                  if (_gamificationFlags.length == (_gamificationValues.length - 2)
                       && !_gamificationFlags.containsValue(false)){
                     _allTasksDone = true;
                   }
@@ -180,7 +180,7 @@ class _GamificationState extends State<Gamification> {
         if(_points <= 10){
           completedStars = 0;
         }
-        else if(_points >= 16){
+        else if(_points >= 15){
           completedStars = 6;
         }
         else{
@@ -354,8 +354,8 @@ class _GamificationState extends State<Gamification> {
     bool completed = (_gamificationFlags[item.id]) ?? false;
 
     if (item.id == UserEnreda.FLAG_SIGN_UP ||
-        item.id == UserEnreda.FLAG_PILL_WHAT_IS_ENREDA ||
-        item.id == UserEnreda.FLAG_PILL_TRAVEL_BEGINS
+        item.id == UserEnreda.FLAG_PILL_WHAT_IS_ENREDA /*||
+        item.id == UserEnreda.FLAG_PILL_TRAVEL_BEGINS*/
     ) {
       completed = true;
     }

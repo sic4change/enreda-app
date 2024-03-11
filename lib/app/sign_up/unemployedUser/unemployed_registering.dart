@@ -282,7 +282,9 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           unemployedType: unemployedType,
           nationality: selectedNationality,
           assignedEntityId: selectedSocialEntity!.socialEntityId ?? null,
-
+          gamificationFlags: {
+            UserEnreda.FLAG_SIGN_UP: true,
+          },
       );
       try {
         final database = Provider.of<Database>(context, listen: false);

@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/account/gamification_certificate.dart';
-import 'package:enreda_app/app/home/curriculum/pdf_generator/resume1_mobile.dart';
+import 'package:enreda_app/app/home/curriculum/tooltip_video/training_tooltip_video.dart';
 import 'package:enreda_app/app/home/models/gamificationFlags.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
-import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
@@ -49,15 +49,15 @@ class _GamificationState extends State<Gamification> {
             _lastName = userEnreda.lastName ?? '';
             userFullName = _firstName + ' ' + _lastName;
             _gamificationFlags = userEnreda.gamificationFlags;
-            //_points = userEnreda.resourcesAccessCount ?? 0;
+            _points = 0;
             _gamificationFlags.forEach((key, value) {
               if(value == true){
                 _points++;
                 print(_points);
               }
-              print(_gamificationFlags);
-              print('Puntos finales: $_points');
             });
+            print(_gamificationFlags);
+            print('Puntos finales: $_points');
             return StreamBuilder(
               stream: database.gamificationFlagsStream(),
               builder: (context, snapshot){
@@ -350,67 +350,83 @@ class _GamificationState extends State<Gamification> {
 
   Widget _getStepTile(GamificationFlag item){
     bool completed = (_gamificationFlags[item.id]) ?? false;
+    String pillId = item.id == UserEnreda.FLAG_PILL_WHAT_IS_ENREDA? TrainingPill.WHAT_IS_ENREDA_ID:
+    item.id == UserEnreda.FLAG_PILL_COMPETENCIES? TrainingPill.WHAT_ARE_COMPETENCIES_ID:
+    item.id == UserEnreda.FLAG_PILL_HOW_TO_DO_CV? TrainingPill.HOW_TO_DO_CV_ID:
+    item.id == UserEnreda.FLAG_PILL_CV_COMPETENCIES? TrainingPill.CV_COMPETENCIES_ID: "";
 
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Container(
-        width: 140,
-        height: 140,
-        decoration: BoxDecoration(
-          gradient: completed ? LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-            colors: [
-              AppColors.yellowDark,
-              AppColors.yellowLight,
-            ]
-          )
-          :
-          LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-            colors: [
-              AppColors.greyMissing,
-              AppColors.greyMissingLight,
-            ]
-          ),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 7),
-              child:
-                !kIsWeb ? CachedNetworkImage(
-                  width: 40,
-                  progressIndicatorBuilder:
-                      (context, url, downloadProgress) => Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                  ),
-                  alignment: Alignment.center,
-                  imageUrl: completed ? item.iconEnabled : item.iconDisabled)
-                  : PrecacheCompetencyCard(
-              imageUrl: completed ? item.iconEnabled : item.iconDisabled,
-              imageWidth: 40,
+    return InkWell(
+      onTap: pillId.isNotEmpty? () => showDialog(context: context, useRootNavigator: false, builder: (dialogContext) =>
+          Dialog(
+            backgroundColor: Colors.transparent,
+            clipBehavior: Clip.hardEdge,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildTrainingTooltipVideo(dialogContext, pillId),
+              ],
+            ),)): null,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Container(
+            width: 140,
+            height: 140,
+            decoration: BoxDecoration(
+              gradient: completed ? LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    AppColors.yellowDark,
+                    AppColors.yellowLight,
+                  ]
               )
+                  :
+              LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    AppColors.greyMissing,
+                    AppColors.greyMissingLight,
+                  ]
+              ),
+              borderRadius: BorderRadius.circular(15),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
-              child: Text(
-                textAlign: TextAlign.center,
-                item.description,
-                style: TextStyle(
-                    fontSize: 13.0,
-                    fontWeight: completed ? FontWeight.w500 : FontWeight.w400,
-                    color: AppColors.greenDark,
+            child: Column(
+              children: [
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 7),
+                    child:
+                    !kIsWeb ? CachedNetworkImage(
+                        width: 40,
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) => Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        imageUrl: completed ? item.iconEnabled : item.iconDisabled)
+                        : PrecacheCompetencyCard(
+                      imageUrl: completed ? item.iconEnabled : item.iconDisabled,
+                      imageWidth: 40,
+                    )
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    item.description,
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      fontWeight: completed ? FontWeight.w500 : FontWeight.w400,
+                      color: AppColors.greenDark,
                     ),
                   ),
                 )
-          ],
-        )
+              ],
+            )
+        ),
       ),
     );
   }
@@ -418,66 +434,83 @@ class _GamificationState extends State<Gamification> {
   Widget _getStepTileMobile(GamificationFlag item){
     double width = MediaQuery.of(context).size.width;
     bool completed = (_gamificationFlags[item.id]) ?? false;
-    return Column(
-      children: [
-        Divider(
-          color: AppColors.starsBackgroundColor,
-        ),
-        Container(
-          height: 50,
-          width: width*0.95,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(23.5),
-            gradient: completed ? LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [
-                AppColors.yellowDark,
-                AppColors.yellowLight,
-              ]
-            )
-          : LinearGradient(colors: [Colors.transparent, Colors.transparent]),
+    String pillId = item.id == UserEnreda.FLAG_PILL_WHAT_IS_ENREDA? TrainingPill.WHAT_IS_ENREDA_ID:
+      item.id == UserEnreda.FLAG_PILL_COMPETENCIES? TrainingPill.WHAT_ARE_COMPETENCIES_ID:
+      item.id == UserEnreda.FLAG_PILL_HOW_TO_DO_CV? TrainingPill.HOW_TO_DO_CV_ID:
+      item.id == UserEnreda.FLAG_PILL_CV_COMPETENCIES? TrainingPill.CV_COMPETENCIES_ID: "";
+
+    return InkWell(
+      onTap: pillId.isNotEmpty? () => showDialog(context: context, useRootNavigator: false, builder: (dialogContext) =>
+          Dialog(
+            backgroundColor: Colors.transparent,
+            clipBehavior: Clip.hardEdge,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildTrainingTooltipVideo(dialogContext, pillId),
+              ],
+            ),)): null,
+      child: Column(
+        children: [
+          Divider(
+            color: AppColors.starsBackgroundColor,
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 30, right: 12),
-                child: !kIsWeb ? CachedNetworkImage(
-                    width: 32,
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => Container(
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
+          Container(
+              height: 50,
+              width: width*0.95,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(23.5),
+                gradient: completed ? LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      AppColors.yellowDark,
+                      AppColors.yellowLight,
+                    ]
+                )
+                    : LinearGradient(colors: [Colors.transparent, Colors.transparent]),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.only(left: 30, right: 12),
+                      child: !kIsWeb ? CachedNetworkImage(
+                          width: 32,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          imageUrl: completed ? item.iconEnabled : item.iconDisabled)
+                          : PrecacheCompetencyCard(
+                        imageUrl: completed ? item.iconEnabled : item.iconDisabled,
+                        imageWidth: 40,
+                      )
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, right: 4),
+                      child: Text(
+                        item.description,
+                        softWrap: true,
+                        maxLines: 3,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: completed ? FontWeight.w300 : FontWeight.w500,
+                          color: AppColors.greenDark,
+                        ),
                       ),
                     ),
-                    alignment: Alignment.center,
-                    imageUrl: completed ? item.iconEnabled : item.iconDisabled)
-                    : PrecacheCompetencyCard(
-                  imageUrl: completed ? item.iconEnabled : item.iconDisabled,
-                  imageWidth: 40,
-                )
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 2, right: 4),
-                  child: Text(
-                    item.description,
-                    softWrap: true,
-                    maxLines: 3,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: completed ? FontWeight.w300 : FontWeight.w500,
-                      color: AppColors.greenDark,
-                    ),
-                  ),
-                ),
+                  )
+                ],
               )
-            ],
-          )
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -605,4 +638,23 @@ class _GamificationState extends State<Gamification> {
     );
   }
 
+  Widget _buildTrainingTooltipVideo(BuildContext context, String pillId) {
+    final database = Provider.of<Database>(context, listen: false);
+    return StreamBuilder<TrainingPill>(
+        stream: database.trainingPillStreamById(pillId),
+        builder: (context, snapshot) {
+          if(snapshot.hasData) {
+            TrainingPill trainingPill = snapshot.data!;
+            trainingPill.setTrainingPillCategoryName();
+            return Container(
+              key: Key('trainingPill-${trainingPill.id}'),
+              child: TrainingTooltipVideo(
+                trainingPill: trainingPill,
+                maxi: true,
+              ),
+            );
+          } else
+            return Container();
+        });
+  }
 }

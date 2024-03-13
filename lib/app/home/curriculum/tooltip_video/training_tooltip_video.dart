@@ -6,14 +6,20 @@ import 'package:enreda_app/app/home/trainingPills/pages/video_position_seeker.da
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/video_thumbnail_area.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/functions.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class TrainingTooltipVideo extends StatefulWidget {
-  const TrainingTooltipVideo({Key? key, required this.trainingPill})
+  const TrainingTooltipVideo({
+    Key? key,
+    required this.trainingPill,
+    this.maxi = false,
+  })
       : super(key: key);
   final TrainingPill trainingPill;
+  final bool maxi;
 
   @override
   State<TrainingTooltipVideo> createState() => _TrainingTooltipVideoState();
@@ -40,12 +46,12 @@ class _TrainingTooltipVideoState extends State<TrainingTooltipVideo> {
         if (!_isVideoVisible) Stack(
             children: [
               Container(
-                  width: 300,
+                  width: widget.maxi? 600: 300,
                   child: videoThumbnailArea(idYoutubeVideo)),
               Positioned(
                 left: 20,
                 right: 20,
-                bottom: 60,
+                bottom: widget.maxi? 140: 60,
                 child: IconButton(
                   padding: EdgeInsets.zero,
                   onPressed: () {
@@ -96,7 +102,7 @@ class _TrainingTooltipVideoState extends State<TrainingTooltipVideo> {
                         padding: EdgeInsets.only(top: 40.0, bottom: 20.0),
                         width: MediaQuery.of(context).size.width,
                         child: AspectRatio(
-                            aspectRatio: 16 / 9,
+                            aspectRatio: Responsive.isDesktopL(context)? 16 / 6 : 16 / 9,
                             child: playVideoArea())),
                     Positioned(
                       top: 0,
@@ -154,7 +160,7 @@ class _TrainingTooltipVideoState extends State<TrainingTooltipVideo> {
           controller: _controller,
           child: YoutubePlayer(
             controller: _controller,
-            aspectRatio: 16 / 9,
+            aspectRatio: Responsive.isDesktopL(context)? 16 / 6 : 16 / 9,
             enableFullScreenOnVerticalDrag: true,
           )),
     );

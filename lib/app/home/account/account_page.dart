@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/account/gamification_page.dart';
 import 'package:enreda_app/app/home/competencies/my_competencies_page.dart';
@@ -24,6 +26,7 @@ import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../../utils/functions.dart';
@@ -291,82 +294,87 @@ class _AccountPageState extends State<AccountPage> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              InkWell(
-                mouseCursor: MaterialStateMouseCursor.clickable,
-                onTap: () => !kIsWeb? _displayPickImageDialog(): _onImageButtonPressed(ImageSource.gallery),
-                child: Container(
-                  width: 120,
-                  height: 120,
-                  color: Colors.white,
-                  child: Stack(
-                    children: [
-                      Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(120),
-                          ),
-                          child:
-                          !kIsWeb ?
-                          ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(60)),
-                            child:
-                            Center(
-                              child:
-                              _photo == "" ?
-                              Container(
-                                color:  Colors.transparent,
-                                height: 120,
-                                width: 120,
-                                child: Image.asset(ImagePath.USER_DEFAULT),
-                              ):
-                              CachedNetworkImage(
-                                  width: 120,
-                                  height: 120,
-                                  fit: BoxFit.cover,
-                                  alignment: Alignment.center,
-                                  imageUrl: _photo),
+              Theme(
+                data: ThemeData(
+                  iconTheme: IconThemeData(color: AppColors.white),
+                ),
+                child: InkWell(
+                  mouseCursor: MaterialStateMouseCursor.clickable,
+                  onTap: () => !kIsWeb? _displayPickImageDialog(): _onImageButtonPressed(ImageSource.gallery),
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    color: Colors.white,
+                    child: Stack(
+                      children: [
+                        Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(120),
                             ),
-                          ):
-                          ClipRRect(
-                                borderRadius: BorderRadius.all(Radius.circular(60)),
+                            child:
+                            !kIsWeb ?
+                            ClipRRect(
+                              borderRadius: BorderRadius.all(Radius.circular(60)),
+                              child:
+                              Center(
                                 child:
-                                Center(
-                                  child:
-                                  _photo == "" ?
-                                  Container(
-                                    color:  Colors.transparent,
-                                    height: 120,
-                                    width: 120,
-                                    child: Image.asset(ImagePath.USER_DEFAULT),
-                                  ):
-                                  FadeInImage.assetNetwork(
-                                    placeholder: ImagePath.USER_DEFAULT,
+                                _photo == "" ?
+                                Container(
+                                  color:  Colors.transparent,
+                                  height: 120,
+                                  width: 120,
+                                  child: Image.asset(ImagePath.USER_DEFAULT),
+                                ):
+                                CachedNetworkImage(
                                     width: 120,
                                     height: 120,
                                     fit: BoxFit.cover,
-                                    image: _photo,
+                                    alignment: Alignment.center,
+                                    imageUrl: _photo),
+                              ),
+                            ):
+                            ClipRRect(
+                                  borderRadius: BorderRadius.all(Radius.circular(60)),
+                                  child:
+                                  Center(
+                                    child:
+                                    _photo == "" ?
+                                    Container(
+                                      color:  Colors.transparent,
+                                      height: 120,
+                                      width: 120,
+                                      child: Image.asset(ImagePath.USER_DEFAULT),
+                                    ):
+                                    FadeInImage.assetNetwork(
+                                      placeholder: ImagePath.USER_DEFAULT,
+                                      width: 120,
+                                      height: 120,
+                                      fit: BoxFit.cover,
+                                      image: _photo,
+                                    ),
                                   ),
                                 ),
-                              ),
-                      ),
-                      Positioned(
-                        left: 6,
-                        top: 6,
-                        child: Container(
-                          padding: const EdgeInsets.all(2.0),
-                          decoration: BoxDecoration(
-                            color: Constants.white,
-                            shape: BoxShape.circle,
-                            border:
-                                Border.all(color: Constants.penBlue, width: 1.0),
-                          ),
-                          child: Icon(
-                            Icons.mode_edit_outlined,
-                            size: 22,
-                            color: Constants.penBlue,
+                        ),
+                        Positioned(
+                          left: 6,
+                          top: 6,
+                          child: Container(
+                            padding: const EdgeInsets.all(2.0),
+                            decoration: BoxDecoration(
+                              color: Constants.white,
+                              shape: BoxShape.circle,
+                              border:
+                                  Border.all(color: Constants.penBlue, width: 1.0),
+                            ),
+                            child: Icon(
+                              Icons.mode_edit_outlined,
+                              size: 22,
+                              color: Constants.penBlue,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -610,19 +618,64 @@ class _AccountPageState extends State<AccountPage> {
         });
   }
 
+  Future<XFile?> _cropImage({required XFile imageFile}) async {
+    CroppedFile? croppedImage = await ImageCropper().cropImage(
+        sourcePath: imageFile.path,
+      uiSettings: [
+        WebUiSettings(
+          context: context,
+          presentStyle: CropperPresentStyle.dialog,
+          boundary: const CroppieBoundary(
+            width: 400,
+            height: 400,
+          ),
+          viewPort:
+          const CroppieViewPort(width: 300, height: 300, type: 'circle',),
+          enableExif: true,
+          enableZoom: true,
+          showZoomer: true,
+          enableResize: false,
+          mouseWheelZoom: true,
+          translations: WebTranslations(
+              title: 'Recortar imagen',
+              rotateLeftTooltip: 'Rotar 90 grados a la izquierda',
+              rotateRightTooltip: 'Rotar 90 grados a la derecha',
+              cancelButton: 'Cancelar',
+              cropButton: 'Recortar',
+          )
+        ),
+        AndroidUiSettings(
+            toolbarTitle: 'Recortar imagen',
+            toolbarColor: AppColors.primaryColor,
+            toolbarWidgetColor: Colors.white,
+            activeControlsWidgetColor: AppColors.primaryColor,
+            initAspectRatio: CropAspectRatioPreset.original,
+            hideBottomControls: false,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+      ]
+    );
+    if(croppedImage == null) return null;
+    return XFile(croppedImage.path);
+  }
+
   Future<void> _onImageButtonPressed(ImageSource source) async {
     try {
-      final XFile? pickedFile = await _imagePicker.pickImage(
+      XFile? pickedFile = await _imagePicker.pickImage(
         source: source,
       );
       if (pickedFile != null) {
+        pickedFile = await _cropImage(imageFile: pickedFile);
         setState(() async {
           final database = Provider.of<Database>(context, listen: false);
-          await database.uploadUserAvatar(_userId, await pickedFile.readAsBytes());
+          await database.uploadUserAvatar(_userId, await pickedFile!.readAsBytes()); //TODO check null
           setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PHOTO);
         });
       }
     } catch (e) {
+      print(e);
       setState(() {
         //_pickImageError = e;
       });

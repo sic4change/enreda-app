@@ -650,7 +650,7 @@ class _GamificationState extends State<Gamification> {
               key: Key('trainingPill-${trainingPill.id}'),
               child: TrainingTooltipVideo(
                 trainingPill: trainingPill,
-                maxi: true,
+                maxi: !Responsive.isMobile(context),
               ),
             );
           } else

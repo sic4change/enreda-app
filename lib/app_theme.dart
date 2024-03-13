@@ -32,7 +32,7 @@ class AppTheme {
       primarySwatch: white,
       useMaterial3: true,
       textTheme: _textTheme,
-      iconTheme: IconThemeData(color: AppColors.white),
+      iconTheme: IconThemeData(color: AppColors.greyBorder),
       canvasColor: colorScheme.background,
       scaffoldBackgroundColor: colorScheme.background,
       highlightColor: Colors.transparent,

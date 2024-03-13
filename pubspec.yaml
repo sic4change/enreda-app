@@ -75,6 +75,7 @@ dependencies:
   youtube_player_iframe: ^4.0.4
   smooth_star_rating_null_safety: ^1.0.4+2
   visibility_detector: ^0.4.0+2
+  image_cropper: ^4.0.1
 
 dev_dependencies:
   flutter_test:

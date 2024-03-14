@@ -50,7 +50,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
     bodyWidget = [
       ResourcesPage(),
       CompetenciesPage(showChatNotifier: widget.showChatNotifier),
-      AccountPage()
+      AccountPage(showChatNotifier: widget.showChatNotifier,)
     ];
     super.initState();
 

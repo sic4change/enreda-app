@@ -32,7 +32,9 @@ import 'package:provider/provider.dart';
 import '../../../utils/functions.dart';
 
 class AccountPage extends StatefulWidget {
-  AccountPage({Key? key}) : super(key: key);
+  AccountPage({Key? key, required this.showChatNotifier}) : super(key: key);
+
+  final ValueNotifier<bool> showChatNotifier;
 
   @override
   _AccountPageState createState() => _AccountPageState();
@@ -443,7 +445,19 @@ class _AccountPageState extends State<AccountPage> {
                 text: 'Gamificación',
                 imagePath: ImagePath.ICON_GAMIFICATION,
                 onTap: () => setState(() {
-                  _currentPage = Gamification();
+                  _currentPage = Gamification(
+                    showChatNotifier: widget.showChatNotifier,
+                    goBackToCV: () => setState(() {
+                      _currentPage = MyCurriculumPage();
+                      _currentPageTitle = StringConst.MY_CV.toUpperCase();
+                      _selectedPageName = StringConst.MY_CV;
+                    }),
+                    goBackToCompetencies: () => setState(() {
+                      _currentPage = MyCompetenciesPage();
+                      _currentPageTitle = StringConst.MY_COMPETENCIES.toUpperCase();
+                      _selectedPageName = StringConst.MY_COMPETENCIES;
+                    }),
+                  );
                   _currentPageTitle = 'Gamificación'.toUpperCase();
                   _selectedPageName = 'Gamificación';
                 }),

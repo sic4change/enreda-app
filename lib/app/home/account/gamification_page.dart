@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/account/gamification_certificate.dart';
+import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/home/curriculum/tooltip_video/training_tooltip_video.dart';
 import 'package:enreda_app/app/home/models/gamificationFlags.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
+import 'package:enreda_app/app/home/web_home_scafold.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -17,7 +20,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Gamification extends StatefulWidget {
-  const Gamification({super.key});
+  const Gamification({
+    super.key,
+    required this.goBackToCV,
+    required this.goBackToCompetencies,
+    required this.showChatNotifier,
+  });
+
+  final VoidCallback goBackToCV, goBackToCompetencies;
+  final ValueNotifier<bool> showChatNotifier;
 
   @override
   State<Gamification> createState() => _GamificationState();
@@ -355,128 +366,67 @@ class _GamificationState extends State<Gamification> {
     item.id == UserEnreda.FLAG_PILL_HOW_TO_DO_CV? TrainingPill.HOW_TO_DO_CV_ID:
     item.id == UserEnreda.FLAG_PILL_CV_COMPETENCIES? TrainingPill.CV_COMPETENCIES_ID: "";
 
-    return InkWell(
-      onTap: pillId.isNotEmpty? () => showDialog(context: context, useRootNavigator: false, builder: (dialogContext) =>
-          Dialog(
-            backgroundColor: Colors.transparent,
-            clipBehavior: Clip.hardEdge,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildTrainingTooltipVideo(dialogContext, pillId),
-              ],
-            ),)): null,
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Container(
-            width: 140,
-            height: 140,
-            decoration: BoxDecoration(
-              gradient: completed ? LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    AppColors.yellowDark,
-                    AppColors.yellowLight,
-                  ]
-              )
-                  :
-              LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    AppColors.greyMissing,
-                    AppColors.greyMissingLight,
-                  ]
-              ),
-              borderRadius: BorderRadius.circular(15),
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: TextButton(
+        clipBehavior: Clip.hardEdge,
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.greyDark,
+          padding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
             ),
-            child: Column(
-              children: [
-                Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 7),
-                    child:
-                    !kIsWeb ? CachedNetworkImage(
-                        width: 40,
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) => Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                        imageUrl: completed ? item.iconEnabled : item.iconDisabled)
-                        : PrecacheCompetencyCard(
-                      imageUrl: completed ? item.iconEnabled : item.iconDisabled,
-                      imageWidth: 40,
-                    )
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    item.description,
-                    style: TextStyle(
-                      fontSize: 13.0,
-                      fontWeight: completed ? FontWeight.w500 : FontWeight.w400,
-                      color: AppColors.greenDark,
-                    ),
-                  ),
-                )
-              ],
-            )
-        ),
-      ),
-    );
-  }
-
-  Widget _getStepTileMobile(GamificationFlag item){
-    double width = MediaQuery.of(context).size.width;
-    bool completed = (_gamificationFlags[item.id]) ?? false;
-    String pillId = item.id == UserEnreda.FLAG_PILL_WHAT_IS_ENREDA? TrainingPill.WHAT_IS_ENREDA_ID:
-      item.id == UserEnreda.FLAG_PILL_COMPETENCIES? TrainingPill.WHAT_ARE_COMPETENCIES_ID:
-      item.id == UserEnreda.FLAG_PILL_HOW_TO_DO_CV? TrainingPill.HOW_TO_DO_CV_ID:
-      item.id == UserEnreda.FLAG_PILL_CV_COMPETENCIES? TrainingPill.CV_COMPETENCIES_ID: "";
-
-    return InkWell(
-      onTap: pillId.isNotEmpty? () => showDialog(context: context, useRootNavigator: false, builder: (dialogContext) =>
-          Dialog(
-            backgroundColor: Colors.transparent,
-            clipBehavior: Clip.hardEdge,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildTrainingTooltipVideo(dialogContext, pillId),
-              ],
-            ),)): null,
-      child: Column(
-        children: [
-          Divider(
-            color: AppColors.starsBackgroundColor,
           ),
-          Container(
-              height: 50,
-              width: width*0.95,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(23.5),
-                gradient: completed ? LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      AppColors.yellowDark,
-                      AppColors.yellowLight,
-                    ]
-                )
-                    : LinearGradient(colors: [Colors.transparent, Colors.transparent]),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+        onPressed:
+          pillId.isNotEmpty? () => showDialog(context: context, useRootNavigator: false, builder: (dialogContext) =>
+              Dialog(
+                backgroundColor: Colors.transparent,
+                clipBehavior: Clip.hardEdge,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [_buildTrainingTooltipVideo(dialogContext, pillId),],
+                ),))
+          : item.id == UserEnreda.FLAG_CV_ABOUT_ME
+          || item.id == UserEnreda.FLAG_CV_FORMATION
+          || item.id == UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION
+          || item.id == UserEnreda.FLAG_CV_PROFESSIONAL
+          || item.id == UserEnreda.FLAG_CV_PERSONAL
+          || item.id == UserEnreda.FLAG_CV_PHOTO
+          || item.id == UserEnreda.FLAG_CV_DATA_OF_INTEREST ? widget.goBackToCV
+          : item.id == UserEnreda.FLAG_EVALUATE_COMPETENCY? widget.goBackToCompetencies
+          : item.id == UserEnreda.FLAG_CHAT ? () => widget.showChatNotifier.value = !widget.showChatNotifier.value
+          : item.id == UserEnreda.FLAG_JOIN_RESOURCE ? () => setState(() { WebHomeScaffold.selectedIndex.value = 0; })
+          : null,
+        child: Ink(
+          decoration:  BoxDecoration(
+            gradient: completed ? LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  AppColors.yellowDark,
+                  AppColors.yellowLight,
+                ]
+            ) :
+            LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  AppColors.greyMissing,
+                  AppColors.greyMissingLight,
+                ]
+            ),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Container(
+              width: 140,
+              height: 140,
+              child: Column(
                 children: [
                   Padding(
-                      padding: const EdgeInsets.only(left: 30, right: 12),
-                      child: !kIsWeb ? CachedNetworkImage(
-                          width: 32,
+                      padding: const EdgeInsets.symmetric(vertical: 7),
+                      child:
+                      !kIsWeb ? CachedNetworkImage(
+                          width: 40,
                           progressIndicatorBuilder:
                               (context, url, downloadProgress) => Container(
                             decoration: const BoxDecoration(
@@ -491,26 +441,126 @@ class _GamificationState extends State<Gamification> {
                         imageWidth: 40,
                       )
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, right: 4),
-                      child: Text(
-                        item.description,
-                        softWrap: true,
-                        maxLines: 3,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: completed ? FontWeight.w300 : FontWeight.w500,
-                          color: AppColors.greenDark,
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      item.description,
+                      style: TextStyle(
+                        fontSize: 13.0,
+                        fontWeight: completed ? FontWeight.w500 : FontWeight.w400,
+                        color: AppColors.greenDark,
                       ),
                     ),
                   )
                 ],
               )
           ),
-        ],
+        ),
       ),
+    );
+  }
+
+  Widget _getStepTileMobile(GamificationFlag item){
+    double width = MediaQuery.of(context).size.width;
+    bool completed = (_gamificationFlags[item.id]) ?? false;
+    String pillId = item.id == UserEnreda.FLAG_PILL_WHAT_IS_ENREDA? TrainingPill.WHAT_IS_ENREDA_ID:
+      item.id == UserEnreda.FLAG_PILL_COMPETENCIES? TrainingPill.WHAT_ARE_COMPETENCIES_ID:
+      item.id == UserEnreda.FLAG_PILL_HOW_TO_DO_CV? TrainingPill.HOW_TO_DO_CV_ID:
+      item.id == UserEnreda.FLAG_PILL_CV_COMPETENCIES? TrainingPill.CV_COMPETENCIES_ID: "";
+
+    return Column(
+      children: [
+        Divider(
+          color: AppColors.starsBackgroundColor,
+        ),
+        TextButton(
+          clipBehavior: Clip.hardEdge,
+          style: TextButton.styleFrom(
+            foregroundColor: AppColors.greyDark,
+            padding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(23.5),
+            ),
+          ),
+          onPressed:
+            pillId.isNotEmpty? () => showDialog(context: context, useRootNavigator: false, builder: (dialogContext) =>
+                Dialog(
+                  backgroundColor: Colors.transparent,
+                  clipBehavior: Clip.hardEdge,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [ _buildTrainingTooltipVideo(dialogContext, pillId),],
+                ),))
+            : item.id == UserEnreda.FLAG_CV_ABOUT_ME
+            || item.id == UserEnreda.FLAG_CV_FORMATION
+            || item.id == UserEnreda.FLAG_CV_COMPLEMENTARY_FORMATION
+            || item.id == UserEnreda.FLAG_CV_PROFESSIONAL
+            || item.id == UserEnreda.FLAG_CV_PERSONAL
+            || item.id == UserEnreda.FLAG_CV_PHOTO
+            || item.id == UserEnreda.FLAG_CV_DATA_OF_INTEREST ? widget.goBackToCV
+            : item.id == UserEnreda.FLAG_EVALUATE_COMPETENCY? widget.goBackToCompetencies
+            : item.id == UserEnreda.FLAG_CHAT ? () => CupertinoScaffold.controller.index = 2
+            : item.id == UserEnreda.FLAG_JOIN_RESOURCE ? () => CupertinoScaffold.controller.index = 0
+            : null,
+          child: Ink(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(23.5),
+              gradient: completed ? LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    AppColors.yellowDark,
+                    AppColors.yellowLight,
+                  ]
+              )
+                  : LinearGradient(colors: [Colors.transparent, Colors.transparent]),
+            ),
+            child: Container(
+                height: 50,
+                width: width*0.95,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.only(left: 30, right: 12),
+                        child: !kIsWeb ? CachedNetworkImage(
+                            width: 32,
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) => Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                            ),
+                            alignment: Alignment.center,
+                            imageUrl: completed ? item.iconEnabled : item.iconDisabled)
+                            : PrecacheCompetencyCard(
+                          imageUrl: completed ? item.iconEnabled : item.iconDisabled,
+                          imageWidth: 40,
+                        )
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 2, bottom: 2, right: 4),
+                        child: Text(
+                          item.description,
+                          softWrap: true,
+                          maxLines: 3,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: completed ? FontWeight.w300 : FontWeight.w500,
+                            color: AppColors.greenDark,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+            ),
+          ),
+        ),
+      ],
     );
   }
 

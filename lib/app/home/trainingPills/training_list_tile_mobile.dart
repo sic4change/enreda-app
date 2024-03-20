@@ -60,7 +60,7 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
                           width: 150,
                           margin: const EdgeInsets.only(right: 8.0),
                           child: videoThumbnailArea(idYoutubeVideo)),
-                      videoDescription(Constants.lilac, AppColors.greyTxtAlt),
+                      Expanded(child: videoDescription(Constants.lilac, AppColors.greyTxtAlt)),
                     ]
                 ),
               ),
@@ -136,7 +136,7 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
     final auth = Provider.of<AuthBase>(context, listen: false);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start, 
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),

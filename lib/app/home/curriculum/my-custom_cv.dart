@@ -914,6 +914,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             ),
           child: widget.competenciesNames.isNotEmpty ?
               ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: widget.competenciesNames.length,
                 itemBuilder: (context, index) {
@@ -966,7 +967,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 },
               ) :
               Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(Constants.mainPadding),
                 child: Center(
                     child: Text(
                       'Aquí aparecerán las competencias evaluadas a través de los microtests',
@@ -997,6 +998,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           child: widget.myEducation!.isNotEmpty
               ?
           ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: widget.myEducation!.length,
               itemBuilder: (context, index) {
@@ -1108,7 +1110,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 );
               },
           )
-              : CustomTextBody(text: StringConst.NO_EDUCATION),
+              : Padding(
+                padding: EdgeInsets.all(Constants.mainPadding),
+                child: Center(child: CustomTextBody(text: StringConst.NO_EDUCATION)),
+              ),
         ),
       ],
     );
@@ -1132,6 +1137,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           child: widget.mySecondaryEducation!.isNotEmpty
               ?
           ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: widget.mySecondaryEducation!.length,
             itemBuilder: (context, index) {
@@ -1241,7 +1247,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               );
             },
           )
-              : CustomTextBody(text: StringConst.NO_EDUCATION),
+              : Padding(
+                padding: EdgeInsets.all(Constants.mainPadding),
+                child: Center(child: CustomTextBody(text: StringConst.NO_EDUCATION)),
+              ),
         ),
       ],
     );
@@ -1265,6 +1274,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           child: widget.myExperiences!.isNotEmpty
               ?
           ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: widget.myExperiences!.length,
             itemBuilder: (context, index) {
@@ -1372,7 +1382,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 );
             },
           )
-              : CustomTextBody(text: StringConst.NO_EDUCATION),
+              : Padding(
+                padding: EdgeInsets.all(Constants.mainPadding),
+                child: Center(child: CustomTextBody(text: StringConst.NO_EDUCATION)),
+              ),
         ),
       ],
     );
@@ -1396,6 +1409,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           child: widget.myPersonalExperiences!.isNotEmpty
               ?
           ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: widget.myPersonalExperiences!.length,
             itemBuilder: (context, index) {
@@ -1501,7 +1515,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               );
             },
           )
-              : CustomTextBody(text: StringConst.NO_EDUCATION),
+              : Padding(
+                padding: EdgeInsets.all(Constants.mainPadding),
+                child: Center(child: CustomTextBody(text: StringConst.NO_EDUCATION)),
+              ),
         ),
       ],
     );
@@ -1523,6 +1540,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           ),
           child: myDataOfInterest.isNotEmpty ?
           ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: myDataOfInterest.length,
             itemBuilder: (context, index) {
@@ -1571,7 +1589,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             },
           ) :
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(Constants.mainPadding),
             child: Center(
                 child: Text(
                   'Aquí aparecerá la información de interés',
@@ -1601,6 +1619,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           ),
           child: myLanguagesLevels.isNotEmpty ?
           ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: myLanguagesLevels.length,
             itemBuilder: (context, index) {
@@ -1649,7 +1668,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             },
           ) :
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(Constants.mainPadding),
             child: Center(
                 child: Text(
                   'Aquí aparecerán mis idiomas',
@@ -1678,6 +1697,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           ),
           child: widget.myReferences!.isNotEmpty ?
           ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: widget.myReferences!.length,
             itemBuilder: (context, index) {
@@ -1740,7 +1760,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               );
             },
           )
-              : CustomTextBody(text: StringConst.NO_REFERENCES),
+              : Padding(
+                padding: EdgeInsets.all(Constants.mainPadding),
+                child: Center(child: CustomTextBody(text: StringConst.NO_REFERENCES)),
+              ),
         ),
       ],
     );

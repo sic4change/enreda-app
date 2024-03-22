@@ -97,6 +97,11 @@ class ImagePath {
   static const String ICON_INFO = '$imageDir/info_icon.png';
   static const String ICON_INFO_2 = '$imageDir/info_icon_2.png';
   static const String ICON_GAMIFICATION = '$imageDir/icon-gami.png';
+  static const String ICON_ENTITY = '$imageDir/icon-directorio-entidad.png';
+  static const String ICON_PANEL = '$imageDir/icon-panel-entidad.png';
+  static const String ICON_PARTICIPANTS = '$imageDir/icon-participantes-entidad.png';
+  static const String ICON_RESOURCES = '$imageDir/icon-recursos-entidad.png';
+  static const String ICON_TOOLS = '$imageDir/icon-caja-entidad.png';
 
   //Resources Categories
   static const String BACKGROUND_1 = '$imageDir/background-empleo-2X.png';

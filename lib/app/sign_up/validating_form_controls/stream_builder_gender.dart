@@ -6,7 +6,7 @@ import '../../../../../../services/database.dart';
 import '../../../utils/adaptive.dart';
 import '../../../values/values.dart';
 
-Widget streamBuilder_Dropdown_Genders (BuildContext context, Gender? selectedGender,  functionToWriteBackThings ) {
+Widget streamBuilder_Dropdown_Genders (BuildContext context, Gender? selectedGender,  functionToWriteBackThings, String? gender ) {
   final database = Provider.of<Database>(context, listen: false);
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
@@ -16,6 +16,10 @@ Widget streamBuilder_Dropdown_Genders (BuildContext context, Gender? selectedGen
 
         List<DropdownMenuItem<Gender>> genderItems = [];
         if(snapshotGenders.hasData) {
+          if(gender != null) {
+            selectedGender =
+                snapshotGenders.data!.firstWhere((element) => element.name == gender);
+          }
           genderItems = snapshotGenders.data!.map((Gender gender) =>
               DropdownMenuItem<Gender>(
                 value: gender,

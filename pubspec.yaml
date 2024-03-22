@@ -76,6 +76,7 @@ dependencies:
   smooth_star_rating_null_safety: ^1.0.4+2
   visibility_detector: ^0.4.0+2
   image_cropper: ^4.0.1
+  sidebarx: ^0.16.3
 
 dev_dependencies:
   flutter_test:

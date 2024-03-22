@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enreda_app/app/home/account/account_page.dart';
+import 'package:enreda_app/app/home/account_main_page.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
@@ -50,7 +51,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
     bodyWidget = [
       ResourcesPage(),
       CompetenciesPage(showChatNotifier: widget.showChatNotifier),
-      AccountPage(showChatNotifier: widget.showChatNotifier,)
+      WebHome(),
     ];
     super.initState();
 
@@ -79,7 +80,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                         child: Text(_userName,
                           style: textTheme.bodyLarge?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: Constants.penBlue,
+                                  color: AppColors.bluePetrol,
                                   fontSize: 16.0,)
                         ),
                       ),
@@ -113,22 +114,43 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
         builder: (context, selectedIndex, child) {
           return Scaffold(
             appBar: AppBar(
+              toolbarHeight: 120,
               elevation: 1.0,
-              backgroundColor: Constants.white,
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.transparent,
+              bottom: const PreferredSize(
+                preferredSize: Size.fromHeight(1),
+                child: Divider(
+                  height: 1,
+                  color: AppColors.grey100),
+              ),
               title: Padding(
                 padding: Responsive.isMobile(context)
                     ? EdgeInsets.symmetric(horizontal: 30)
                     : Responsive.isDesktopS(context)
-                    ? EdgeInsets.symmetric(horizontal: 30)
-                    : EdgeInsets.symmetric(horizontal: 100),
+                    ? EdgeInsets.symmetric(horizontal: 60)
+                    : EdgeInsets.symmetric(horizontal: 60),
                 child: Row(
                   children: [
-                    InkWell(
-                      onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
-                      child: Image.asset(
-                        ImagePath.LOGO,
-                        height: 20,
+                    Padding(
+                      padding: Responsive.isMobile(context)
+                          ? EdgeInsets.only(right: 30)
+                          : Responsive.isDesktopS(context)
+                          ? EdgeInsets.only(right: 60)
+                          : EdgeInsets.only(right: 60),
+                      child: InkWell(
+                        onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
+                        child: Image.asset(
+                          ImagePath.LOGO,
+                          height: 55,
+                          width: 125,
+                        ),
                       ),
+                    ),
+                    Container(
+                      width: 1,
+                      height: 120,
+                      color: AppColors.grey100,
                     ),
                     SpaceW24(),
                     Container(
@@ -186,14 +208,16 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
               ),
               actions: <Widget>[
                 if (!auth.isNullUser)
-                VerticalDivider(
-                  color: AppColors.grey100,
-                  thickness: 1,
-                ),
+                  Container(
+                    width: 1,
+                    height: 120,
+                    color: AppColors.grey100,
+                  ),
+                SizedBox(width: 20),
                 IconButton(
                   icon: const Icon(
                     CustomIcons.cuenta,
-                    color: AppColors.blueDark,
+                    color: AppColors.bluePetrol,
                     size: 30,
                   ),
                   tooltip: 'Cuenta',
@@ -212,11 +236,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                     child: _buildMyUserName(context)
                 ),
                 if (!auth.isNullUser)
-                VerticalDivider(
-                  color: AppColors.grey100,
-                  thickness: 1,
-                ),
-                SizedBox(width: 10),
+                SizedBox(width: 20),
                 if (!auth.isNullUser)
                   Container(
                     width: 30,

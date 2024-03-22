@@ -35,6 +35,8 @@ class UserEnreda {
     this.resourcesAccessCount,
     this.checkAgreeCV,
     this.gamificationFlags = const {},
+    this.nationality,
+    this.assignedEntityId,
   });
 
   factory UserEnreda.fromMap(Map<String, dynamic> data, String documentId) {
@@ -153,6 +155,9 @@ class UserEnreda {
       });
     }
 
+    final String? nationality = data['nationality'];
+    final String? assignedEntityId = data['assignedEntityId'];
+
     return UserEnreda(
       email: email,
       firstName: firstName,
@@ -184,6 +189,8 @@ class UserEnreda {
       resourcesAccessCount: resourcesAccessCount,
       checkAgreeCV: checkAgreeCV,
       gamificationFlags: gamificationFlags,
+      nationality: nationality,
+      assignedEntityId: assignedEntityId,
     );
   }
 
@@ -217,6 +224,8 @@ class UserEnreda {
   final int? resourcesAccessCount;
   final bool? checkAgreeCV;
   final Map<String, bool> gamificationFlags;
+  final String? nationality;
+  final String? assignedEntityId;
 
   Map<String, dynamic> toMap() {
     InterestsUserEnreda interestUserEnreda = InterestsUserEnreda(
@@ -247,6 +256,8 @@ class UserEnreda {
       'checkAgreeCV': checkAgreeCV,
       'gamificationFlags': gamificationFlags,
       'educationId': educationId,
+      'nationality': nationality,
+      'assignedEntityId': assignedEntityId,
     };
   }
 
@@ -284,6 +295,8 @@ class UserEnreda {
     int? resourcesAccessCount,
     bool? checkAgreeCV,
     Map<String, bool>? gamificationFlags,
+    String? nationality,
+    String? assignedEntityId,
   }) {
     return UserEnreda(
       email: email ?? this.email,
@@ -315,6 +328,8 @@ class UserEnreda {
       resourcesAccessCount: resourcesAccessCount ?? this.resourcesAccessCount,
       checkAgreeCV: checkAgreeCV ?? this.checkAgreeCV,
       gamificationFlags: gamificationFlags ?? this.gamificationFlags,
+      nationality: nationality ?? this.nationality,
+      assignedEntityId: assignedEntityId ?? this.assignedEntityId,
     );
   }
 

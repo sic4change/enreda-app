@@ -1,4 +1,5 @@
 import 'package:enreda_app/app/home/account/account_page.dart';
+import 'package:enreda_app/app/home/account_main_page.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/tab_item.dart';
 import 'package:enreda_app/common_widgets/background_mobile.dart';
@@ -44,7 +45,7 @@ class _CupertinoScaffoldAnonymousState extends State<CupertinoScaffoldAnonymous>
       TabItem.account: (_) => Stack(
             children: [
               BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
-              AccountPage(showChatNotifier: widget.showChatNotifier,),
+              WebHome(),
             ],
           )
     };

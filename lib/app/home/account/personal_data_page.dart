@@ -1,25 +1,43 @@
 import 'package:chips_choice/chips_choice.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/models/addressUser.dart';
 import 'package:enreda_app/app/home/models/city.dart';
+import 'package:enreda_app/app/home/models/contact.dart';
 import 'package:enreda_app/app/home/models/country.dart';
+import 'package:enreda_app/app/home/models/education.dart';
+import 'package:enreda_app/app/home/models/gender.dart';
 import 'package:enreda_app/app/home/models/interest.dart';
 import 'package:enreda_app/app/home/models/province.dart';
+import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_city.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_country.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_education.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_gender.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_nation.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_province.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_social_entity.dart';
 import 'package:enreda_app/common_widgets/custom_chip.dart';
+import 'package:enreda_app/common_widgets/custom_date_picker_title.dart';
+import 'package:enreda_app/common_widgets/custom_phone_form_field_title.dart';
+import 'package:enreda_app/common_widgets/custom_text_form_field_title.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_exception_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -38,15 +56,12 @@ class PersonalData extends StatefulWidget {
 class _PersonalDataState extends State<PersonalData> {
   final _formKey = GlobalKey<FormState>();
   String _userId = '';
-  String _email = '';
+  String? _email = '';
   String _firstName = '';
   String _lastName = '';
   String _phone = '';
-  String _gender = '';
+  String? _gender;
   DateTime? _birthday;
-  String _country = 'España';
-  String _province = 'Las Palmas';
-  String _city = '';
   String _postalCode = '';
   String _role = '';
   String _unemployedType = '';
@@ -64,6 +79,18 @@ class _PersonalDataState extends State<PersonalData> {
   String codeDialog = '';
   String valueText = '';
   String _phoneCode = '+34';
+  late String _formattedBirthdayDate;
+  TextEditingController textEditingControllerDateInput = TextEditingController();
+  String? _nationality = '';
+  String writtenEmail = '';
+  int? isRegistered;
+  Country? _country;
+  Province? _province;
+  City? _city;
+  Education? _education;
+  SocialEntity? _socialEntity;
+  TextEditingController _textFieldController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +146,13 @@ class _PersonalDataState extends State<PersonalData> {
                           });
                           _interestsSelected.clear();
                           _interestsSelected.addAll(interestSelectedName);
+                          _birthday != null ?
+                            _formattedBirthdayDate = DateFormat('dd-MM-yyyy').format(_birthday!) :
+                            _formattedBirthdayDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+                          _birthday != null ?
+                            textEditingControllerDateInput.text = _formattedBirthdayDate :
+                            textEditingControllerDateInput.text = '';
+                          _nationality = userEnreda.nationality ?? '';
                         }
                         return StreamBuilder<List<Country>>(
                             stream: database.countryFormatedStream(),
@@ -134,8 +168,7 @@ class _PersonalDataState extends State<PersonalData> {
                                   .firstWhere(
                                       (country) =>
                                           country.countryId == _countrySelected,
-                                      orElse: () => Country(name: ''))
-                                  .name;
+                                      orElse: () => Country(name: ''));
                               return StreamBuilder<List<Province>>(
                                   stream: database
                                       .provincesCountryStream(_countrySelected),
@@ -157,10 +190,9 @@ class _PersonalDataState extends State<PersonalData> {
                                               .firstWhere((province) =>
                                                   province.provinceId ==
                                                   _provinceSelected)
-                                              .name
-                                          : '';
+                                          : Province(name: '', countryId: '');
                                     } catch (e) {
-                                      _province = _provinces[0].name;
+                                      _province = _provinces[0];
                                       _provinceSelected =
                                           _provinces[0].provinceId ?? '';
                                     }
@@ -181,56 +213,70 @@ class _PersonalDataState extends State<PersonalData> {
                                                     .firstWhere((city) =>
                                                         city.cityId ==
                                                         userEnreda.city)
-                                                    .name
-                                                : '';
+                                                : City(name: '', countryId: '', provinceId: '');
                                           } catch (e) {
-                                            _city = _cities[0].name;
+                                            _city = _cities[0];
                                           }
-                                          return Responsive.isDesktop(context)
-                                              ? Column(
-                                                  children: [
-                                                    Expanded(
-                                                      child:
-                                                          SingleChildScrollView(
-                                                        padding:
-                                                            EdgeInsets.all(8.0),
-                                                        child: Column(
+                                          return StreamBuilder<List<Education>>(
+                                            stream: database.educationStream(),
+                                            builder: (context, snapshot) {
+                                              List<Education> educations = snapshot.hasData ? snapshot.data! : [];
+                                              if (educations != [] && userEnreda.educationId != null) {
+                                                _education = educations
+                                                    .firstWhere(
+                                                        (education) =>
+                                                    education.educationId == userEnreda.educationId,
+                                                    orElse: () => Education(order: 0, label: '', value: '', educationId: ''));
+                                              }
+
+                                              _country = _countries
+                                                  .firstWhere(
+                                                      (country) =>
+                                                  country.countryId == _countrySelected,
+                                                  orElse: () => Country(name: ''));
+
+                                              return StreamBuilder<SocialEntity>(
+                                                stream: database.socialEntityStream(userEnreda.assignedEntityId ?? ' '),
+                                                builder: (context, snapshot) {
+                                                  if(snapshot.hasData){
+                                                    _socialEntity = snapshot.data;
+                                                  }
+                                                  return Responsive.isDesktop(context)
+                                                      ? Column(
                                                           children: [
-                                                            _buildMainDataContainer(
-                                                                context,
-                                                                userEnreda),
-                                                            SpaceH40(),
-                                                            _buildInterestsContainer(
-                                                                context),
+                                                            Expanded(
+                                                              child:
+                                                                  SingleChildScrollView(
+                                                                padding:
+                                                                    EdgeInsets.all(8.0),
+                                                                child: Column(
+                                                                  children: [
+                                                                    _buildMainDataContainer(
+                                                                        context,
+                                                                        userEnreda),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
                                                           ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SpaceH36(),
-                                                    _buildSaveDataButton(
-                                                        context, userEnreda),
-                                                  ],
-                                                )
-                                              : SingleChildScrollView(
-                                                  child: Container(
-                                                    margin: EdgeInsets.all(
-                                                        Constants.mainPadding),
-                                                    child: Column(
-                                                      children: [
-                                                        _buildMainDataContainer(
-                                                            context,
-                                                            userEnreda),
-                                                        SpaceH40(),
-                                                        _buildInterestsContainer(
-                                                            context),
-                                                        SpaceH36(),
-                                                        _buildSaveDataButton(
-                                                            context,
-                                                            userEnreda),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
+                                                        )
+                                                      : SingleChildScrollView(
+                                                          child: Container(
+                                                            margin: EdgeInsets.all(
+                                                                Constants.mainPadding),
+                                                            child: Column(
+                                                              children: [
+                                                                _buildMainDataContainer(
+                                                                    context,
+                                                                    userEnreda),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        );
+                                                }
+                                              );
+                                            }
+                                          );
                                         });
                                   });
                             });
@@ -262,45 +308,174 @@ class _PersonalDataState extends State<PersonalData> {
       decoration: BoxDecoration(
         border: Border.all(color: Constants.lightGray, width: 1),
         borderRadius: BorderRadius.all(Radius.circular(15.0)),
-        color: Colors.white,
+        color: AppColors.altWhite,
+
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: EdgeInsets.all(Constants.mainPadding),
             child: Text(
-              StringConst.PERSONAL_DATA.toUpperCase(),
+              StringConst.PERSONAL_DATA,
               style: textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Constants.penBlue,
-                  fontSize: 16.0),
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.bluePetrol,
+                  fontSize: 24.0),
             ),
           ),
-          _buildForm(context, userEnreda),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 25),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Constants.lightGray, width: 1),
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                color: AppColors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: Offset(0, 1), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: _buildForm(context),
+                  ),
+                  _buildInterestsContainer(context),
+                  _buildSaveDataButton(
+                      context,
+                      userEnreda),
+                  SpaceH50(),
+                  _buildMyParameters(userEnreda),
+                ],
+              ),
+            ),
+          )
+
         ],
       ),
     );
   }
 
-  Widget _buildInterestsContainer(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
+  Widget _buildMyParameters(UserEnreda userEnreda) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
-      padding: EdgeInsets.all(Constants.mainPadding),
-      decoration: BoxDecoration(
-        border: Border.all(color: Constants.lightGray, width: 1),
-        borderRadius: BorderRadius.all(Radius.circular(15.0)),
-        color: Colors.white,
+        padding: EdgeInsets.symmetric(vertical: Constants.mainPadding),
+        decoration: BoxDecoration(
+          border: Border.all(color: Constants.lightGray, width: 1),
+          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+          color: Colors.white,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'CONFIGURACIÓN DE LA CUENTA',
+                style: textTheme.bodyLarge?.copyWith(color: Constants.penBlue),
+              ),
+            ),
+            Divider(),
+            _buildMyProfileRow(
+              text: 'Cambiar contraseña',
+              onTap: () => _confirmChangePassword(context),
+            ),
+            _buildMyProfileRow(
+              text: 'Política de privacidad',
+              onTap: () => launchURL(StringConst.PRIVACY_URL),
+            ),
+            _buildMyProfileRow(
+              text: 'Condiciones de uso',
+              onTap: () => launchURL(StringConst.USE_CONDITIONS_URL),
+            ),
+            _buildMyProfileRow(
+              text: 'Ayúdanos a mejorar',
+              onTap: () => _displayReportDialog(context),
+            ),
+            _buildMyProfileRow(
+              text: 'Cerrar sesión',
+              onTap: () {
+                _confirmSignOut(context);
+                CupertinoScaffoldAnonymous.controller.index = 2;
+              },
+            ),
+            _buildMyProfileRow(
+              text: 'Eliminar cuenta',
+              textStyle: textTheme.bodyText1?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Constants.deleteRed,
+                  fontSize: 16.0),
+              onTap: () => _confirmDeleteAccount(context, userEnreda),
+            ),
+          ],
+        ));
+  }
+
+  Widget _buildMyProfileRow(
+      {required String text,
+        TextStyle? textStyle,
+        String? imagePath,
+        void Function()? onTap}) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return Material(
+      color: text == ''
+          ? Constants.lightTurquoise
+          : Constants.white,
+      child: InkWell(
+        splashColor: Constants.onHoverTurquoise,
+        highlightColor: Constants.lightTurquoise,
+        hoverColor: text == ''
+            ? Constants.lightTurquoise
+            : Constants.onHoverTurquoise,
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.all(14.0),
+          child: Row(
+            children: [
+              Expanded(
+                  child: Text(
+                    text,
+                    style: textStyle ??
+                        textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Constants.penBlue,
+                            fontSize: 16.0),
+                  )),
+              if (imagePath != null)
+                Container(
+                  width: 30,
+                  child: Image.asset(
+                    imagePath,
+                    height: Sizes.ICON_SIZE_30,
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
+    );
+  }
+
+  Widget _buildInterestsContainer(BuildContext context) {
+
+    return Padding(
+      padding: const EdgeInsets.all(30.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Intereses',
-            style: textTheme.bodyText1?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Constants.penBlue,
-                fontSize: 16.0),
+            style: TextStyle(
+              fontFamily: GoogleFonts.outfit().fontFamily,
+                fontWeight: FontWeight.w300,
+                color: AppColors.bluePetrol,
+                fontSize: 24.0),
           ),
           SpaceH20(),
           _interests.isNotEmpty
@@ -334,6 +509,7 @@ class _PersonalDataState extends State<PersonalData> {
                     ),
                     wrapped: true,
                     runSpacing: 8,
+                    choiceCheckmark: false,
                   ),
                 )
               : Container(),
@@ -342,281 +518,181 @@ class _PersonalDataState extends State<PersonalData> {
     );
   }
 
-  Widget _buildForm(BuildContext context, UserEnreda userEnreda) {
-    final textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 14, 16, md: 15);
-    return Form(
-      key: _formKey,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        CustomFlexRowColumn(
-          childLeft: _buildFormField(
-            context: context,
-            title: 'Nombre',
-            child: TextFormField(
-              initialValue: _firstName,
-              style: textTheme.bodyText1
-                  ?.copyWith(fontSize: fontSize, color: Constants.chatDarkGray),
-              decoration: InputDecoration(border: OutlineInputBorder()),
-              keyboardType: TextInputType.name,
-              onSaved: (value) => _firstName = value ?? _firstName,
-              validator: (value) => value == null || value.isEmpty
-                  ? 'El nombre no puede estar vacío'
-                  : null,
-            ),
-          ),
-          childRight: _buildFormField(
-            context: context,
-            title: 'Apellidos',
-            child: TextFormField(
-              initialValue: _lastName,
-              style: textTheme.bodyText1
-                  ?.copyWith(fontSize: fontSize, color: Constants.chatDarkGray),
-              decoration: InputDecoration(border: OutlineInputBorder()),
-              keyboardType: TextInputType.name,
-              onSaved: (value) => _lastName = value ?? _lastName,
-              validator: (value) => value == null || value.isEmpty
-                  ? 'El apellido no puede estar vacío'
-                  : null,
-            ),
-          ),
-        ),
-        CustomFlexRowColumn(
-          childLeft: _buildFormField(
-            context: context,
-            title: 'Género',
-            child: DropdownButtonFormField<String>(
-              value: _gender,
-              iconEnabledColor: Constants.turquoise,
-              decoration: InputDecoration(border: OutlineInputBorder()),
-              style: textTheme.bodyText1
-                  ?.copyWith(fontSize: fontSize, color: Constants.chatDarkGray),
-              items: ['Mujer', 'Hombre', 'Otro', 'Prefiero no decirlo']
-                  .map((value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (value) => _gender = value ?? _gender,
-              onSaved: (value) => _gender = value ?? _gender,
-              validator: (value) => value == null || value.isEmpty
-                  ? 'El género no puede estar vacío'
-                  : null,
-            ),
-          ),
-          childRight: _countries.isNotEmpty
-              ? _buildFormField(
-                  context: context,
-                  title: 'País',
-                  child: DropdownButtonFormField<String>(
-                    value: _country,
-                    iconEnabledColor: Constants.turquoise,
-                    decoration: InputDecoration(border: OutlineInputBorder()),
-                    style: textTheme.bodyText1?.copyWith(
-                        fontSize: fontSize, color: Constants.chatDarkGray),
-                    items: _countries.map((value) {
-                      return DropdownMenuItem<String>(
-                        value: value.name,
-                        child: Text(value.name),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      _country = value ?? _country;
+  Widget _buildForm(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+    return
+      Form(
+        key: _formKey,
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget> [
+              CustomFlexRowColumn(
+                contentPadding: EdgeInsets.all(0.0),
+                separatorSize: Sizes.kDefaultPaddingDouble,
+                childLeft: CustomTextFormFieldTitle(
+                    labelText: StringConst.FORM_NAME,
+                    initialValue: _firstName,
+                    validator: (value) =>
+                    value!.isNotEmpty ? null : StringConst.NAME_ERROR,
+                    onSaved: (value){
                       setState(() {
-                        if (_countrySelected !=
-                            _countries
-                                .firstWhere(
-                                    (country) => country.name == _country)
-                                .countryId) {
-                          _countrySelected = _countries
-                                  .firstWhere(
-                                      (country) => country.name == _country)
-                                  .countryId ??
-                              '--';
-                          _provinceSelected = 'empty';
-                        }
+                        _firstName = value!;
                       });
-                    },
-                    onSaved: (value) => _country = value ?? _country,
-                    validator: (value) => value == null || value.isEmpty
-                        ? 'El país no puede estar vacío'
-                        : null,
+                    }
+                ),
+                childRight: CustomTextFormFieldTitle(
+                    labelText: StringConst.FORM_LASTNAME,
+                    initialValue: _lastName,
+                    validator: (value) =>
+                    value!.isNotEmpty ? null : StringConst.FORM_LASTNAME_ERROR,
+                    onSaved: (value){
+                      setState(() {
+                        _lastName = value!;
+                      });
+                    }
+                ),
+              ),
+              SpaceH20(),
+              Flex(
+                direction: Responsive.isMobile(context) ? Axis.vertical : Axis.horizontal,
+                children: [
+                  Expanded(
+                    flex: Responsive.isMobile(context) ? 0 : 1,
+                    child: CustomDatePickerTitle(
+                      labelText: StringConst.FORM_BIRTHDAY,
+                      initialValue: _birthday,
+                      onChanged: (value){//pickedDate output format => 2021-03-10 00:00:00.000
+                        _formattedBirthdayDate = DateFormat('dd-MM-yyyy').format(value!);
+                        print(_formattedBirthdayDate); //formatted date output using intl package =>  2021-03-16
+                        setState(() {
+                          textEditingControllerDateInput.text = _formattedBirthdayDate; //set output date to TextField value.
+                          _birthday = value;
+                        });
+                      },
+                      validator: (value) => value != null ? null : StringConst.FORM_BIRTHDAY_ERROR,
+                    ),
                   ),
-                )
-              : Container(),
-        ),
-        CustomFlexRowColumn(
-          childLeft: _buildFormField(
-            context: context,
-            title: 'Provincia',
-            child: DropdownButtonFormField<String>(
-              value: _province,
-              iconEnabledColor: Constants.turquoise,
-              decoration: InputDecoration(border: OutlineInputBorder()),
-              style: textTheme.bodyText1
-                  ?.copyWith(fontSize: fontSize, color: Constants.chatDarkGray),
-              items: _provinces.map((value) {
-                return DropdownMenuItem<String>(
-                  value: value.name,
-                  child: Text(value.name),
-                );
-              }).toList(),
-              onChanged: (value) {
-                _province = value ?? _province;
+                  if (Responsive.isMobile(context))
+                    SpaceH20(),
+                  if (!Responsive.isMobile(context))
+                    SpaceW20(),
+                  Expanded(
+                    flex: Responsive.isMobile(context) ? 0 : 1,
+                    child: streamBuilder_Dropdown_Genders(context, null, (value){
+                      setState(() {
+                        _gender = value.name;
+                      });
+                    }, _gender),
+                  ),
+                ],
+              ),
+              SpaceH20(),
+              streamBuilderForNation(context, _nationality, (value){
                 setState(() {
-                  if (_provinceSelected !=
-                      _provinces
-                          .firstWhere((province) => province.name == _province)
-                          .provinceId) {
-                    _provinceSelected = _provinces
-                            .firstWhere(
-                                (province) => province.name == _province)
-                            .provinceId ??
-                        '--';
-                  }
+                  _nationality = value;
                 });
-              },
-              onSaved: (value) => _province = value ?? _province,
-              validator: (value) => value == null || value.isEmpty
-                  ? 'La provincia no puede estar vacía'
-                  : null,
-            ),
-          ),
-          childRight: _buildFormField(
-            context: context,
-            title: 'Municipio',
-            child: DropdownButtonFormField<String>(
-              value: _city,
-              iconEnabledColor: Constants.turquoise,
-              decoration: InputDecoration(border: OutlineInputBorder()),
-              style: textTheme.bodyText1
-                  ?.copyWith(fontSize: fontSize, color: Constants.chatDarkGray),
-              items: _cities.map((value) {
-                return DropdownMenuItem<String>(
-                  value: value.name,
-                  child: Text(value.name),
-                );
-              }).toList(),
-              onChanged: (value) => _city = value ?? _city,
-              onSaved: (value) => _city = value ?? _city,
-              validator: (value) => value == null || value.isEmpty
-                  ? 'El municipio no puede estar vacío'
-                  : null,
-            ),
-          ),
-        ),
-        CustomFlexRowColumn(
-          childLeft: _buildFormField(
-            context: context,
-            title: 'Código postal',
-            child: TextFormField(
-              initialValue: _postalCode,
-              style: textTheme.bodyText1
-                  ?.copyWith(fontSize: fontSize, color: Constants.chatDarkGray),
-              decoration: InputDecoration(border: OutlineInputBorder()),
-              keyboardType: TextInputType.number,
-              onSaved: (value) => _postalCode = value ?? _postalCode,
-            ),
-          ),
-          childRight: _buildFormField(
-            context: context,
-            prefix: Row(
-              children: [
-                Icon(
-                  Icons.calendar_today,
-                  color: Constants.chatDarkGray,
-                  size: 18.0,
-                ),
-                SpaceW8(),
-              ],
-            ),
-            title: 'Fecha de nacimiento',
-            child: DateTimeField(
-              initialValue: _birthday,
-              format: DateFormat('dd/MM/yyyy'),
-              decoration: InputDecoration(border: OutlineInputBorder()),
-              style: textTheme.bodyLarge
-                  ?.copyWith(fontSize: fontSize, color: Constants.chatDarkGray),
-              onShowPicker: (context, currentValue) {
-                return showDatePicker(
-                  context: context,
-                  locale: Locale('es', 'ES'),
-                  firstDate: new DateTime(DateTime.now().year - 100,
-                      DateTime.now().month, DateTime.now().day),
-                  initialDate: currentValue ?? DateTime.now(),
-                  lastDate: new DateTime(DateTime.now().year - 16,
-                      DateTime.now().month, DateTime.now().day),
-                  initialEntryMode: DatePickerEntryMode.calendarOnly,
-                );
-              },
-              onChanged: (dateTime) {
-                setState(() => _birthday = dateTime);
-              },
-              validator: (value) {
-                if (value == null || value.toString().isEmpty)
-                  return 'La fecha de nacimiento no puede estar vacía';
-                return null;
-              },
-            ),
-          ),
-        ),
-        CustomFlexRowColumn(
-          childLeft: TextFormField(
-            decoration: InputDecoration(
-              labelText: StringConst.FORM_PHONE,
-              prefixIcon: CountryCodePicker(
-                onChanged: _onCountryChange,
-                initialSelection: _phoneCode == '+34'
-                    ? 'ES'
-                    : _phoneCode == '+51'
-                        ? 'PE'
-                        : 'GT',
-                countryFilter: ['ES', 'PE', 'GT'],
-                showFlagDialog: true,
+              }, StringConst.FORM_CURRENT_NATIONALITY),
+              SpaceH20(),
+              Flex(
+                direction: Responsive.isMobile(context) ? Axis.vertical : Axis.horizontal,
+                children: [
+                  Expanded(
+                    flex: Responsive.isMobile(context) ? 0 : 1,
+                    child: CustomPhoneFormFieldTitle(
+                      labelText: StringConst.FORM_PHONE,
+                      phoneCode: _phoneCode,
+                      onCountryChange: _onCountryChange,
+                      initialValue: _phone,
+                      validator: (value) =>
+                      value!.isNotEmpty ? null : StringConst.PHONE_ERROR,
+                      onSaved: (value) => this._phone = _phoneCode +' '+ value!,
+                      fontSize: 15,
+                    ),
+                  ),
+                  if (Responsive.isMobile(context))
+                    SpaceH20(),
+                  if (!Responsive.isMobile(context))
+                    SpaceW20(),
+                  Expanded(
+                    flex: Responsive.isMobile(context) ? 0 : 1,
+                    child: StreamBuilder <List<UserEnreda>>(
+                        stream:
+                        // Empty stream (no call to firestore) if email not valid
+                        !EmailValidator.validate(writtenEmail)
+                            ? Stream<List<UserEnreda>>.empty()
+                            : database.checkIfUserEmailRegistered(writtenEmail),
+                        builder:  (context, snapshotUsers) {
+
+                          var usersListLength = snapshotUsers.data != null ? snapshotUsers.data?.length : 0;
+                          isRegistered = usersListLength! > 0 ? 1 : 0;
+
+                          final validationMessage = (value) => EmailValidator.validate(value!)
+                              ? (isRegistered == 0 ? null : StringConst.EMAIL_REGISTERED)
+                              : StringConst.EMAIL_ERROR;
+
+                          return CustomTextFormFieldTitle(
+                            labelText: StringConst.FORM_EMAIL,
+                            initialValue: _email,
+                            validator: validationMessage,
+                            onSaved: (value) => _email = value,
+                            keyboardType: TextInputType.emailAddress,
+                            onChanged: (value) => setState(() => this.writtenEmail = value),
+                          );
+                        }
+                    ),
+                  ),
+                ],
               ),
-              focusColor: Constants.turquoise,
-              labelStyle: textTheme.button?.copyWith(
-                height: 1.5,
-                color: AppColors.greyDark,
-                fontWeight: FontWeight.w400,
-                fontSize: fontSize,
+              SpaceH20(),
+              CustomFlexRowColumn(
+                contentPadding: EdgeInsets.all(0.0),
+                separatorSize: Sizes.kDefaultPaddingDouble,
+                childLeft: streamBuilderForCountry(context, _country, (value){
+                  setState(() {
+                    _country = value;
+                  });
+                }, StringConst.FORM_CURRENT_COUNTRY),
+                childRight: streamBuilderForProvince(context, _country, _province, (value){
+                  setState(() {
+                    _province = value;
+                  });
+                }),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5.0),
-                borderSide: BorderSide(
-                  color: AppColors.greyUltraLight,
+              SpaceH20(),
+              CustomFlexRowColumn(
+                contentPadding: EdgeInsets.all(0.0),
+                separatorSize: Sizes.kDefaultPaddingDouble,
+                childLeft: streamBuilderForCity(context, _country, _province, _city, (value){
+                  setState(() {
+                    _city = value;
+                  });
+                }),
+                //childLeft: Container(),
+                childRight: CustomTextFormFieldTitle(
+                    labelText: StringConst.FORM_POSTAL_CODE,
+                    initialValue: _postalCode,
+                    /*validator: (value) =>
+                      value!.isNotEmpty ? null : StringConst.POSTAL_CODE_ERROR,*/
+                    onSaved: (value){
+                      _postalCode = value!;
+                    }
                 ),
               ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5.0),
-                borderSide: BorderSide(
-                  color: AppColors.greyUltraLight,
-                  width: 1.0,
-                ),
-              ),
-            ),
-            initialValue: _phone.indexOf(' ') < 0
-                ? _phone.substring(3)
-                : _phone.substring(_phone.indexOf(' ') + 1),
-            validator: (value) =>
-                value!.isNotEmpty ? null : StringConst.PHONE_ERROR,
-            onSaved: (value) => this._phone = _phoneCode + ' ' + value!,
-            textCapitalization: TextCapitalization.sentences,
-            keyboardType: TextInputType.phone,
-            style: textTheme.button?.copyWith(
-              height: 1.5,
-              color: AppColors.greyDark,
-              fontWeight: FontWeight.w400,
-              fontSize: fontSize,
-            ),
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-            ],
-          ),
-          childRight: Container(),
-        ),
-      ]),
-    );
+              SpaceH20(),
+              streamBuilderDropdownEducation(context, _education, (value){
+                setState(() {
+                  _education = value;
+                });
+              }),
+              SpaceH20(),
+              streamBuilderForSocialEntity(context, _socialEntity, (value){
+                setState(() {
+                  _socialEntity = value;
+                });
+              }),
+
+            ]),
+      );
   }
 
   void _onCountryChange(CountryCode countryCode) {
@@ -673,18 +749,17 @@ class _PersonalDataState extends State<PersonalData> {
           interests: interestsSelectedId,
           specificInterests: _specificInterest,
           address: Address(
-              country: _countries
-                  .firstWhere((country) => country.name == _country)
-                  .countryId,
-              province: _provinces
-                  .firstWhere((province) => province.name == _province)
-                  .provinceId,
-              city: _cities.firstWhere((city) => city.name == _city).cityId,
+              country: _country!.countryId,
+              province: _province!.provinceId,
+              city: _city!.cityId,
               postalCode: _postalCode),
           birthday: _birthday,
           role: _role,
           abilities: _abilities,
-          unemployedType: _unemployedType);
+          unemployedType: _unemployedType,
+        educationId: _education?.educationId ?? '',
+        assignedEntityId: _socialEntity?.socialEntityId ?? ''
+      );
       try {
         final database = Provider.of<Database>(context, listen: false);
         await database.setUserEnreda(updatedUserEnreda);
@@ -710,4 +785,155 @@ class _PersonalDataState extends State<PersonalData> {
 
     return false;
   }
+
+  Future<void> _displayReportDialog(BuildContext context) async {
+    final database = Provider.of<Database>(context, listen: false);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Ayudanos a mejorar',
+              style: textTheme.button?.copyWith(
+                height: 1.5,
+                color: AppColors.greyDark,
+                fontWeight: FontWeight.w700,
+              ), ),
+            content: TextField(
+              onChanged: (value) {
+                setState(() {
+                  valueText = value;
+                });
+              },
+              controller: _textFieldController,
+              decoration: InputDecoration(
+                hintText: "Escribe tus sugerencias",
+                hintStyle: textTheme.button?.copyWith(
+                  color: AppColors.greyDark,
+                  height: 1.5,
+                  fontWeight: FontWeight.w400,
+                ),),
+              style: textTheme.button?.copyWith(
+                height: 1.5,
+                color: AppColors.greyDark,
+                fontWeight: FontWeight.w400,),
+              minLines: 4,
+              maxLines: 4,
+              textCapitalization: TextCapitalization.sentences,
+              keyboardType: TextInputType.multiline,
+            ),
+            actions: <Widget>[
+              TextButton(
+                style: ButtonStyle(
+                  foregroundColor:
+                  MaterialStateProperty.all<Color>(Colors.white),
+                  backgroundColor:
+                  MaterialStateProperty.all<Color>(AppColors.primaryColor),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text('Cancelar'),
+                ),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+              TextButton(
+                style: ButtonStyle(
+                  foregroundColor:
+                  MaterialStateProperty.all<Color>(Colors.white),
+                  backgroundColor:
+                  MaterialStateProperty.all<Color>(AppColors.primaryColor),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text('Enviar'),
+                ),
+                onPressed: () {
+                  setState(() {
+                    codeDialog = valueText;
+                    if (valueText.isNotEmpty) {
+                      final auth =
+                      Provider.of<AuthBase>(context, listen: false);
+                      final contact = Contact(
+                          email: auth.currentUser?.email ?? '',
+                          name: auth.currentUser?.displayName ?? '',
+                          text: valueText);
+                      database.addContact(contact);
+                      showAlertDialog(
+                        context,
+                        title: 'Mensaje ensaje enviado',
+                        content:
+                        'Hemos recibido satistactoriamente tu sugerencia. ¡Muchas gracias por tu información!',
+                        defaultActionText: 'Aceptar',
+                      ).then((value) => Navigator.pop(context));
+                    }
+                  });
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  Future<void> _confirmSignOut(BuildContext context) async {
+    final didRequestSignOut = await showAlertDialog(context,
+        title: 'Cerrar sesión',
+        content: '¿Estás seguro que quieres cerrar sesión?',
+        cancelActionText: 'Cancelar',
+        defaultActionText: 'Cerrar');
+    if (didRequestSignOut == true) {
+      final auth = Provider.of<AuthBase>(context, listen: false);
+      await auth.signOut();
+    }
+  }
+
 }
+
+Future<void> _confirmChangePassword(BuildContext context) async {
+  final didRequestSignOut = await showAlertDialog(context,
+      title: 'Cambiar contraseña',
+      content: 'Si pulsa en Aceptar se le envirá a su correo las acciones a '
+          'realizar para cambiar su contraseña. Si no aparece, revisa las carpetas de SPAM y Correo no deseado',
+      cancelActionText: 'Cancelar',
+      defaultActionText: 'Aceptar');
+  if (didRequestSignOut == true) {
+    _changePasword(context);
+  }
+}
+
+Future<void> _confirmDeleteAccount(BuildContext context, UserEnreda userEnreda) async {
+  final didRequestSignOut = await showAlertDialog(context,
+      title: 'Eliminar cuenta',
+      content: 'Si pulsa en Aceptar se procederá a la eliminación completa '
+          'de su cuenta, esta acción no se podrá deshacer, '
+          '¿Está seguro que quiere continuar?',
+      cancelActionText: 'Cancelar',
+      defaultActionText: 'Aceptar');
+  if (didRequestSignOut == true) {
+    _deleteAccount(context, userEnreda);
+  }
+}
+
+Future<void> _changePasword(BuildContext context) async {
+  try {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    await auth.changePassword();
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future<void> _deleteAccount(BuildContext context, UserEnreda userEnreda) async {
+  try {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    final database = Provider.of<Database>(context, listen: false);
+    await database.deleteUser(userEnreda);
+    await auth.signOut();
+  } catch (e) {
+    print(e.toString());
+  }
+}
+

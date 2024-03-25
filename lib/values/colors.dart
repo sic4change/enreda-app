@@ -7,6 +7,7 @@ class AppColors {
   static const Color primary200 = Color(0xFF00CCCC);
   static const Color primary300 = Color(0xFF00CCCC);
   static const Color secondaryColor = Color(0xfffcfcff);
+  static const Color primary050 = Color(0xFFEDFAF9);
 
   //accent Colors
   static const Color accentColor = Color(0xFFF7F7F7);
@@ -27,6 +28,7 @@ class AppColors {
   static const Color offWhite = Color(0xFFF3F3F3);
   static const Color darkWhite = Color(0xFFDFDFDF);
   static const Color offWhite200 = Color(0xFFE5E5DB);
+  static const Color altWhite = Color(0xFFFCFCFC);
 
   //Green
   static const Color greenLight = Color(0xFFA4F5F6);
@@ -41,6 +43,7 @@ class AppColors {
   static const Color blueAlt = Color(0xFF5F7ED9);
   static const Color bluePetrol = Color(0xFF054D5E);
   static const Color turquoiseBlue = Color(0xFF054D5E);
+  static const Color penBlue = Color(0xFF002185);
 
   //Yellow
   static const Color yellow = Color(0xFFFDE934);
@@ -65,6 +68,7 @@ class AppColors {
   static const Color greyUltraLight = Color(0xFFD9D9D9);
   static const Color greyTxtAlt = Color(0xFF535A5F);
   static const Color greyBorder = Color(0xFFCBCBCB);
+  static const Color greyLight2 = Color(0xFF181945);
 
   //Alternative
   static const Color red = Color(0xFFF1291A);
@@ -76,7 +80,7 @@ class AppColors {
   static const Color lightPurple = Color(0xFFA100FE);
   static const Color ultraLightPurple = Color(0xFFF5EDF9);
 
-  //Gamificacion
+  //Gamification
   static const Color bronze = Color(0xFF8F6C32);
   static const Color silver = Color(0xFF676B6D);
   static const Color gold = Color(0xFFE8930A);
@@ -84,6 +88,13 @@ class AppColors {
   static const Color greyMissingLight = Color(0xFFF5FAFB);
   static const Color greenCheckIcon = Color(0xFF18C5C1);
   static const Color starsBackgroundColor = Color(0xFFE6EDEF);
+
+  //Violet
+  static const Color violet = Color(0xFFE3E4F2);
+  static const Color lightLilac = Color(0xFFF4F5FB);
+
+  //Turquoise
+  static const Color turquoiseUltraLight = Color(0xFFCDDBDF);
 
 
 }

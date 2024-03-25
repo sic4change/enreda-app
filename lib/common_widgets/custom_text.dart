@@ -153,3 +153,32 @@ class CustomTextChip extends StatelessWidget {
     );
   }
 }
+
+class CustomTextBoldCenter extends StatelessWidget {
+
+  const CustomTextBoldCenter({super.key,  required this.title, this.color = AppColors.greyTxtAlt, this.height = 1.5});
+  final String title;
+  final Color color;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    double fontSize = responsiveSize(context, 16, 20, md: 18);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: textTheme.titleSmall?.copyWith(
+            color: color,
+            height: height,
+            fontSize: fontSize,
+            fontWeight: FontWeight.normal
+        ),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+}

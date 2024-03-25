@@ -6,7 +6,7 @@ import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
-import 'package:enreda_app/common_widgets/rounded_container.dart';
+import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
@@ -306,7 +306,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                   }),
                 );
               }),
-              child: RoundedContainer(
+              child: MainContainer(
                 width: (MediaQuery.of(context).size.width/2) - 40,
                 height: 180.0,
                 shadowColor: Colors.black.withOpacity(0.4),

@@ -79,7 +79,7 @@ class _WebHomeScaffoldState extends State<WebHomeScaffold> {
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: Text(_userName,
                           style: textTheme.bodyLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w900,
                                   color: AppColors.bluePetrol,
                                   fontSize: 16.0,)
                         ),

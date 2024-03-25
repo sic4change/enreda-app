@@ -65,7 +65,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
         title: Text(
           'Certificación de competencias',
           textAlign: TextAlign.left,
-          style: textTheme.bodyText1?.copyWith(
+          style: textTheme.bodySmall?.copyWith(
             color: Constants.white,
             height: 1.5,
             letterSpacing: 0.3,

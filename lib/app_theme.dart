@@ -111,16 +111,14 @@ class AppTheme {
       fontWeight: _bold,
       fontStyle: FontStyle.normal,
     ),
-    bodyLarge: GoogleFonts.lato(
+    bodyLarge: GoogleFonts.outfit(
       fontSize: Sizes.TEXT_SIZE_16,
       color: AppColors.primaryText2,
-      fontWeight: _regular,
       fontStyle: FontStyle.normal,
     ),
     bodyMedium: GoogleFonts.inter(
       fontSize: Sizes.TEXT_SIZE_14,
       color: AppColors.black,
-      fontWeight: _light,
       fontStyle: FontStyle.normal,
     ),
     labelLarge: GoogleFonts.lato(

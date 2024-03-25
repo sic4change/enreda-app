@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/account/gamification_page.dart';
 import 'package:enreda_app/app/home/account/personal_data_page.dart';
+import 'package:enreda_app/app/home/competencies/my_competencies_page.dart';
 import 'package:enreda_app/app/home/resources/pages/favorite_resources_page.dart';
+import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
 import 'package:enreda_app/app/home/side_bar_widget.dart';
 import 'package:enreda_app/app/sign_in/access/access_page.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
@@ -132,20 +134,22 @@ class _WebHomeState extends State<WebHome> {
                       if (WebHome.selectedIndex.value == 0) Expanded(child: Center(child: bodyWidget[0]))
                       else if (WebHome.selectedIndex.value == 1) Expanded(child: Center(child: bodyWidget[1]))
                       else Expanded(child: Center(child: Padding(
-                        padding: const EdgeInsets.only(top: 55),
+                        padding: const EdgeInsets.only(top: 40),
                         child: AnimatedBuilder(
                             animation: WebHome.controller,
                             builder: (context, child){
                               switch(WebHome.controller.selectedIndex){
                                 case 0: _key.currentState?.closeDrawer();
-                                return FavoriteResourcesPage();
+                                return Container();
                                 case 1: _key.currentState?.closeDrawer();
                                 return Container();
                                 case 2: _key.currentState?.closeDrawer();
                                 return PersonalData();
                                 case 3: _key.currentState?.closeDrawer();
-                                return Container();
+                                return MyCompetenciesPage();
                                 case 4: _key.currentState?.closeDrawer();
+                                return MyResourcesPage();
+                                case 5: _key.currentState?.closeDrawer();
                                 return Container();
                                 default:
                                   return Container();

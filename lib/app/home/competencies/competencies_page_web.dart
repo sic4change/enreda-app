@@ -2,7 +2,7 @@ import 'package:enreda_app/app/home/competencies/competencies_subcategories_page
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
-import 'package:enreda_app/common_widgets/rounded_container.dart';
+import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -54,7 +54,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                         flex: 5,
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
-                          child: RoundedContainer(
+                          child: MainContainer(
                               child: SingleChildScrollView(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -114,7 +114,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            RoundedContainer(
+            MainContainer(
               padding: EdgeInsets.only(
                   left: 44.0, top: 44.0, right: 44.0, bottom: 0.0),
               child: Column(
@@ -328,7 +328,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                       }),
                     );
                   }),
-                  child: RoundedContainer(
+                  child: MainContainer(
                     shadowColor: Colors.black.withOpacity(0.4),
                     child: Row(
                       children: [

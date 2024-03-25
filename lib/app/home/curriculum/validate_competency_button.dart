@@ -50,7 +50,7 @@ class ValidateCompetencyButton extends StatelessWidget {
                 Text(StringConst.EVALUATE_COMPETENCY + "${competency.name}",
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
-                  style: textTheme.bodyText1?.copyWith(
+                  style: textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w800,
                       color: Constants.chatDarkGray),),
                 SpaceH20(),
@@ -69,7 +69,7 @@ class ValidateCompetencyButton extends StatelessWidget {
                       children: [
                         Text(
                           testQuestion,
-                          style: textTheme.bodyText1?.copyWith(
+                          style: textTheme.bodySmall?.copyWith(
                               color: Constants.chatDarkGray),
                         ),
                         SpaceH8(),
@@ -181,7 +181,11 @@ class ValidateCompetencyButton extends StatelessWidget {
           backgroundColor:
           MaterialStateProperty.all(
               Constants.white)),
-      child: Text('EVALUAR', style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500,),),
+      child: Text('EVALUAR', style: textTheme.bodySmall
+          ?.copyWith(
+          fontSize: 14.0,
+          fontWeight: FontWeight.w500,
+          color: Constants.penBlue)),
     );
   }
 }

@@ -32,24 +32,28 @@ class CompetencyTile extends StatelessWidget {
 
     return Container(
       width: containerWidth,
-      height: containerHeight,
+      //height: containerHeight,
       child: Column(
         children: [
           Container(
-            height: textContainerHeight,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  competency.name.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  maxLines: 3,
-                  style: textTheme.bodyText1?.copyWith(
-                      overflow: TextOverflow.ellipsis,
-                      fontSize: fontSize,
-                      fontWeight: FontWeight.bold,
-                      color: Constants.darkGray),
+                Container(
+                  alignment: Alignment.center,
+                  height: 60,
+                  child: Text(
+                    competency.name.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    maxLines: 3,
+                    style: textTheme.bodyLarge?.copyWith(
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: fontSize,
+                        height: 1.2,
+                        fontWeight: FontWeight.bold,
+                        color: Constants.darkGray),
+                  ),
                 ),
               ],
             ),

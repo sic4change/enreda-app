@@ -182,3 +182,50 @@ class CustomTextBoldCenter extends StatelessWidget {
     );
   }
 }
+
+class CustomTextBoldTitle extends StatelessWidget {
+
+  const CustomTextBoldTitle({super.key,  required this.title });
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    double fontSize = responsiveSize(context, 15, 30, md: 25);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4.0),
+      child: Text(
+        title,
+        style: textTheme.bodyLarge?.copyWith(
+          color: AppColors.turquoiseBlue,
+          height: 1.5,
+          //fontWeight: FontWeight.w600,
+          fontSize: fontSize,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+}
+
+class CustomTextMediumBold extends StatelessWidget {
+
+  const CustomTextMediumBold({super.key,  required this.text });
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    double fontSize = responsiveSize(context, 15, 24, md: 16);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Text(
+      text,
+      style: textTheme.bodyLarge?.copyWith(
+        color: AppColors.turquoiseBlue,
+        fontWeight: FontWeight.w900,
+        height: 1.5,
+        fontSize: fontSize,
+      ),
+    );
+  }
+}

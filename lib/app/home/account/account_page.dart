@@ -443,7 +443,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
               _buildMyProfileRow(
                 text: 'Gamificación',
-                imagePath: ImagePath.ICON_GAMIFICATION,
+                imagePath: ImagePath.ICON_GAMIFICATION_SIDEBAR,
                 onTap: () => setState(() {
                   _currentPage = Gamification(
                     showChatNotifier: widget.showChatNotifier,

@@ -90,18 +90,27 @@ class ImagePath {
   static const String ARROW_UP = '$imageDir/arrow_up.png';
   static const String ARROW_BACK = '$imageDir/arrow_back.png';
   static const String ARROW_FORWARD = '$imageDir/arrow_forward.png';
-  static const String DOWNLOAD = '$imageDir/icon-download.png';
+  static const String DOWNLOAD = '$imageDir/download-icon.png';
   static const String LOGOUT = '$imageDir/icon-logout.png';
   static const String ICON_SHARE = '$imageDir/icon-share.png';
   static const String ICON_CLICK_FUNDAULA = '$imageDir/icon-click-fundaula.png';
   static const String ICON_INFO = '$imageDir/info_icon.png';
   static const String ICON_INFO_2 = '$imageDir/info_icon_2.png';
-  static const String ICON_GAMIFICATION = '$imageDir/icon-gami.png';
+  static const String ICON_GAMIFICATION_SIDEBAR = '$imageDir/gamification-icon.png';
   static const String ICON_ENTITY = '$imageDir/icon-directorio-entidad.png';
   static const String ICON_PANEL = '$imageDir/icon-panel-entidad.png';
   static const String ICON_PARTICIPANTS = '$imageDir/icon-participantes-entidad.png';
   static const String ICON_RESOURCES = '$imageDir/icon-recursos-entidad.png';
   static const String ICON_TOOLS = '$imageDir/icon-caja-entidad.png';
+  static const String ICON_COMPETENCIES_SIDEBAR = '$imageDir/competencies-icon.png';
+  static const String ICON_CONTACT_SIDEBAR = '$imageDir/contacto-enreda-icon.png';
+  static const String ICON_PERSONAL_DATA_SIDEBAR = '$imageDir/datos-personales-icon.png';
+  static const String ICON_DOCUMENTS_SIDEBAR = '$imageDir/documentos-icon.png';
+  static const String ICON_RESOURCES_SIDEBAR = '$imageDir/resources-icon.png';
+  static const String ICON_MY_CV_SIDEBAR = '$imageDir/my-cv-icon.png';
+  static const String ICON_ADD = '$imageDir/plus-icon.png';
+  static const String ICON_TRASH = '$imageDir/trash-icon.png';
+
 
   //Resources Categories
   static const String BACKGROUND_1 = '$imageDir/background-empleo-2X.png';

@@ -99,7 +99,7 @@ class AppTheme {
       fontWeight: _bold,
       fontStyle: FontStyle.normal,
     ),
-    titleMedium: GoogleFonts.inter(
+    titleMedium: GoogleFonts.outfit(
       fontSize: Sizes.TEXT_SIZE_18,
       color: AppColors.black,
       fontWeight: _bold,
@@ -112,9 +112,9 @@ class AppTheme {
       fontStyle: FontStyle.normal,
     ),
     bodyLarge: GoogleFonts.outfit(
-      fontSize: Sizes.TEXT_SIZE_16,
+      fontSize: Sizes.TEXT_SIZE_18,
+      fontWeight: FontWeight.w600,
       color: AppColors.primaryText2,
-      fontStyle: FontStyle.normal,
     ),
     bodyMedium: GoogleFonts.inter(
       fontSize: Sizes.TEXT_SIZE_14,
@@ -127,8 +127,8 @@ class AppTheme {
       fontStyle: FontStyle.normal,
       fontWeight: _regular,
     ),
-    bodySmall: GoogleFonts.inter(
-      fontSize: Sizes.TEXT_SIZE_12,
+    bodySmall: GoogleFonts.lato(
+      fontSize: Sizes.TEXT_SIZE_13,
       color: AppColors.greyAlt,
       fontWeight: _regular,
       fontStyle: FontStyle.normal,

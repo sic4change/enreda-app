@@ -40,44 +40,37 @@ class ExperienceTile extends StatelessWidget {
             if (experience.activity != null && experience.activityRole != null && experience.type != 'Formativa' && experience.type != 'Complementaria')
               RichText(
                 text: TextSpan(
-                    text: '${experience.activityRole} -',
+                    text: '${experience.activityRole?.toUpperCase()} -',
                     style: textTheme.bodySmall?.copyWith(
-                      fontSize: 14.0,
                     ),
                     children: [
                       TextSpan(
-                        text: ' ${experience.activity}',
+                        text: ' ${experience.activity?.toUpperCase()}',
                         style: textTheme.bodySmall?.copyWith(
-                          fontSize: 14.0,
                           fontWeight: FontWeight.bold,
                         ),
                       )
                     ]),
               ),
 
-
             if((experience.type == 'Formativa' || experience.type == 'Complementaria') && experience.institution != '' && experience.nameFormation != '')
               RichText(
                 text: TextSpan(
-                    text: '${experience.institution} -',
+                    text: '${experience.institution?.toUpperCase()} -',
                     style: textTheme.bodySmall?.copyWith(
-                      fontSize: 14.0,
                     ),
                     children: [
                       TextSpan(
-                        text: ' ${experience.nameFormation}',
+                        text: ' ${experience.nameFormation?.toUpperCase()}',
                         style: textTheme.bodySmall?.copyWith(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
                         ),
                       )
                     ]),
               ),
             if(experience.subtype == 'Responsabilidades familiares' || experience.subtype == 'Compromiso social')
               Text(
-                '${experience.subtype}',
+                '${experience.subtype?.toUpperCase()}',
                 style: textTheme.bodySmall?.copyWith(
-                  fontSize: 14.0,
                 ),
               ),
           if(experience.subtype == 'Otro')
@@ -88,17 +81,15 @@ class ExperienceTile extends StatelessWidget {
               ),
             ),
             if (experience.activity != null && experience.activityRole == null)
-              Text( experience.position == null || experience.position == "" ? '${experience.activity}' : '${experience.position}',
+              Text( experience.position == null || experience.position == "" ? '${experience.activity?.toUpperCase()}' : '${experience.position?.toUpperCase()} - ${experience.activity?.toUpperCase()}',
                   style: textTheme.bodySmall
-                      ?.copyWith(fontSize: 14.0, fontWeight: FontWeight.bold)),
+                      ?.copyWith()),
             if (experience.position != null || experience.activity != null) SpaceH8(),
             if (experience.organization != null && experience.organization != "") Column(
               children: [
                 Text(
                   experience.organization!,
                   style: textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14.0,
                   ),
                 ),
                 SpaceH8()
@@ -106,9 +97,7 @@ class ExperienceTile extends StatelessWidget {
             ),
             Text(
               '$startDate / $endDate',
-              style: textTheme.bodySmall?.copyWith(
-                fontSize: 14.0,
-              ),
+              style: textTheme.bodySmall?.copyWith(),
             ),
             SpaceH8(),
 
@@ -118,7 +107,6 @@ class ExperienceTile extends StatelessWidget {
                   Text(
                     experience.extraData!,
                     style: textTheme.bodySmall?.copyWith(
-                      fontSize: 14.0,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -130,7 +118,6 @@ class ExperienceTile extends StatelessWidget {
             Text(
               experience.location,
               style: textTheme.bodySmall?.copyWith(
-                fontSize: 14.0,
               ),
             ),
             /*
@@ -196,7 +183,7 @@ class ExperienceTile extends StatelessWidget {
                 });
             },
           ),
-          SpaceW8()
+          SpaceW12()
         ],
       ),
     );

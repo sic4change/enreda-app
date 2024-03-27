@@ -68,7 +68,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                                             children: [
                                               Text(
                                                 StringConst.COMPETENCIES.toUpperCase(),
-                                                style: textTheme.bodyText1?.copyWith(
+                                                style: textTheme.bodySmall?.copyWith(
                                                   color: Constants.penBlue,
                                                   fontSize: 18.0,
                                                   fontWeight: FontWeight.bold,
@@ -122,15 +122,15 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                 children: [
                   Text(
                     '¿Qué es una competencia?',
-                    style: textTheme.bodyText1?.copyWith(
-                        fontSize: 32.0,
+                    style: textTheme.bodySmall?.copyWith(
+                        fontSize: 25.0,
                         fontWeight: FontWeight.bold,
                         color: Constants.darkGray),
                   ),
                   SpaceH20(),
                   Text(
                     StringConst.COMPETENCIES_INFO,
-                    style: textTheme.bodyText1
+                    style: textTheme.bodyMedium
                         ?.copyWith(color: Constants.darkGray),
                   ),
                   SpaceH30(),
@@ -162,15 +162,15 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                 children: [
                   Text(
                     'Niveles de cada competencia',
-                    style: textTheme.bodyText1?.copyWith(
-                        fontSize: 32.0,
+                    style: textTheme.bodySmall?.copyWith(
+                        fontSize: 25.0,
                         fontWeight: FontWeight.bold,
                         color: Constants.darkGray),
                   ),
                   SpaceH20(),
                   Text(
                     StringConst.COMPETENCIES_LEVEL_INFO,
-                    style: textTheme.bodyText1
+                    style: textTheme.bodyMedium
                         ?.copyWith(color: Constants.darkGray),
                   ),
                   SpaceH20(),
@@ -243,7 +243,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
             children: [
               Text(
                 StringConst.START_CHAT,
-                style: textTheme.bodyText1?.copyWith(
+                style: textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: Constants.white,
                 ),
@@ -288,7 +288,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
         Text(
           description,
           textAlign: TextAlign.center,
-          style: textTheme.bodyText1?.copyWith(
+          style: textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w500, color: Constants.darkGray),
         ),
       ],

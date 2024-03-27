@@ -34,23 +34,15 @@ class ReferenceTile extends StatelessWidget {
             RichText(
               text: TextSpan(
                   text: '${certificationRequest.certifierPosition.toUpperCase()} -',
-                  style: textTheme.bodySmall?.copyWith(
-                    color: AppColors.greyAlt,
-                    fontSize: fontSize,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: textTheme.bodySmall?.copyWith(),
                   children: [
                     TextSpan(
                       text: ' ${certificationRequest.certifierCompany}',
-                      style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.greyAlt,
-                        fontSize: fontSize,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: textTheme.bodySmall?.copyWith(),
                     )
                   ]),
             ),
-
+            SpaceH4(),
             Row(
               children: [
                 Icon(
@@ -59,9 +51,14 @@ class ReferenceTile extends StatelessWidget {
                   size: 12.0,
                 ),
                 SpaceW4(),
-                CustomTextSmall(text: '${certificationRequest.email}'),
+                Text(
+                  '${certificationRequest.email}',
+                  style: textTheme.bodySmall?.copyWith(
+                  ),
+                ),
               ],
             ),
+            SpaceH4(),
             certificationRequest.phone != "" ? Row(
               children: [
                 Icon(
@@ -70,7 +67,11 @@ class ReferenceTile extends StatelessWidget {
                   size: 12.0,
                 ),
                 SpaceW4(),
-                CustomTextSmall(text: '${certificationRequest.phone}')
+                Text(
+                  '${certificationRequest.phone}',
+                  style: textTheme.bodySmall?.copyWith(
+                  ),
+                ),
               ],
             ) : Container(),
           ]

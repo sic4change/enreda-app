@@ -44,19 +44,19 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
         .of(context)
         .textTheme;
 
-    return SingleChildScrollView(
-      child: RoundedContainer(
-        contentPadding: Responsive.isMobile(context) ?
-        EdgeInsets.all(Sizes.mainPadding) :
-        EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+    return RoundedContainer(
+      contentPadding: Responsive.isMobile(context) ?
+      EdgeInsets.all(Sizes.mainPadding) :
+      EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+      child: SingleChildScrollView(
         child: Stack(
           children: [
             CustomTextMediumBold(text: StringConst.MY_COMPETENCIES),
             MainContainer(
-              margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 3),
+              margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 3, left: 5, right: 5, bottom: 5),
               padding: Responsive.isMobile(context) ?
               EdgeInsets.symmetric(horizontal: Sizes.kDefaultPaddingDouble, vertical: Sizes.kDefaultPaddingDouble) :
-              EdgeInsets.symmetric(horizontal: Sizes.kDefaultPaddingDouble * 3, vertical: Sizes.kDefaultPaddingDouble * 2),
+              EdgeInsets.only(left: Sizes.kDefaultPaddingDouble * 3, right: Sizes.kDefaultPaddingDouble * 3, top: Sizes.kDefaultPaddingDouble * 2),
               child: StreamBuilder<User?>(
                   stream: Provider.of<AuthBase>(context).authStateChanges(),
                   builder: (context, snapshot) {

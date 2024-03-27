@@ -25,7 +25,7 @@ Future<dynamic> showCustomDialog(
             if (cancelActionText != null)
               CupertinoDialogAction(
                   onPressed: () => Navigator.of(context).pop((false)),
-                  child: Text(cancelActionText, style: textTheme.bodyText1,)),
+                  child: Text(cancelActionText, style: textTheme.bodyMedium,)),
             // ignore: deprecated_member_use
             if (defaultActionText != null && onDefaultActionPressed != null)
             CupertinoDialogAction(
@@ -46,7 +46,7 @@ Future<dynamic> showCustomDialog(
           // ignore: deprecated_member_use
             TextButton(
                 onPressed: () => Navigator.of(context).pop((false)),
-                child: Text(cancelActionText, style: textTheme.bodyText1,)),
+                child: Text(cancelActionText, style: textTheme.bodyMedium,)),
           // ignore: deprecated_member_use
           if (defaultActionText != null && onDefaultActionPressed != null)
           TextButton(
@@ -67,7 +67,7 @@ Future<dynamic> showCustomDialog(
           // ignore: deprecated_member_use
             TextButton(
                 onPressed: () => Navigator.of(context).pop((false)),
-                child: Text(cancelActionText, style: textTheme.bodyText1,)),
+                child: Text(cancelActionText, style: textTheme.bodyMedium,)),
           // ignore: deprecated_member_use
           if (defaultActionText != null && onDefaultActionPressed != null)
           TextButton(

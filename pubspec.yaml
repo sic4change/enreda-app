@@ -117,6 +117,12 @@ flutter:
     - images/icon-cv.png
     - images/icon-profile-blue.png
     - images/icon-competencies-blue.png
+    - images/gamification-icon.png
+    - images/competencies-icon.png
+    - images/datos-personales-icon.png
+    - images/contacto-enreda-icon.png
+    - images/documentos-icon.png
+    - images/resources-icon.png
     - images/icon-fav-blue.png
     - images/favorites-illustration.png
     - images/clip-cv.png
@@ -178,6 +184,9 @@ flutter:
     - images/competencies-categories-1.png
     - images/competencies-categories-2.png
     - images/competencies-categories-3.png
+    - images/plus-icon.png
+    - images/download-icon.png
+    - images/trash-icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

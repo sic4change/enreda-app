@@ -49,7 +49,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
           borderRadius: BorderRadius.circular(20),
         ),
         hoverColor: AppColors.primary050,
-        hoverTextStyle: const TextStyle(color: AppColors.turquoiseBlue, fontWeight: FontWeight.w600),
+        hoverTextStyle: const TextStyle(color: AppColors.turquoiseBlue, fontWeight: FontWeight.w900),
         textStyle: textTheme.bodySmall?.copyWith(
               color: AppColors.turquoiseBlue,
               fontSize: 15,
@@ -96,7 +96,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
       showToggleButton: false,
       headerBuilder: (context, extended) {
         return Container(
-          height: isSmallScreen ? 300 : 300,
+          height: isSmallScreen ? 250 : 250,
           child: Padding(
             padding: isSmallScreen ? EdgeInsets.only(top: 10.0, left: 0, right: 0) : EdgeInsets.only(top: 20),
             child: Column(
@@ -136,13 +136,13 @@ class _SideBarWidgetState extends State<SideBarWidget> {
       },
       items: [
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PANEL), width: 20,), label: 'Panel de control', onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PARTICIPANTS), width: 20,), label: 'Mi curriculum', onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES), width: 20,), label: 'Datos personales' , onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_TOOLS), width: 20,), label: 'Mis competencias' , onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_ENTITY), width: 20,), label: 'Mis recursos', onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_ENTITY), width: 20,), label: 'Contacto Enreda', onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_ENTITY), width: 20,), label: 'Mis documentos', onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_ENTITY), width: 20,), label: 'Gamificación', onTap: _setSelectedIndexToOne),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_MY_CV_SIDEBAR), width: 20,), label: 'Mi curriculum', onTap: _setSelectedIndexToOne),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PERSONAL_DATA_SIDEBAR), width: 20,), label: 'Datos personales' , onTap: _setSelectedIndexToOne),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: 'Mis competencias' , onTap: _setSelectedIndexToOne),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: 'Mis recursos', onTap: _setSelectedIndexToOne),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_CONTACT_SIDEBAR), width: 20,), label: 'Contacto Enreda', onTap: _setSelectedIndexToOne),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_DOCUMENTS_SIDEBAR), width: 20,), label: 'Mis documentos', onTap: _setSelectedIndexToOne),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_GAMIFICATION_SIDEBAR), width: 20,), label: 'Gamificación', onTap: _setSelectedIndexToOne),
       ],
     );
   }

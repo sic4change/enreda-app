@@ -8,10 +8,11 @@ import 'package:flutter/material.dart';
 import '../../../common_widgets/precached_avatar.dart';
 
 class CompetencyTile extends StatelessWidget {
-  const CompetencyTile({Key? key, required this.competency, this.status = StringConst.BADGE_CERTIFIED, this.mini = false}) : super(key: key);
+  const CompetencyTile({Key? key, required this.competency, this.status = StringConst.BADGE_CERTIFIED, this.mini = false, this.height = 60.0}) : super(key: key);
   final Competency competency;
   final String status;
   final bool mini;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +43,12 @@ class CompetencyTile extends StatelessWidget {
               children: [
                 Container(
                   alignment: Alignment.center,
-                  height: 60,
+                  height: height,
                   child: Text(
                     competency.name.toUpperCase(),
                     textAlign: TextAlign.center,
                     maxLines: 3,
-                    style: textTheme.bodyLarge?.copyWith(
+                    style: textTheme.bodySmall?.copyWith(
                         overflow: TextOverflow.ellipsis,
                         fontSize: fontSize,
                         height: 1.2,

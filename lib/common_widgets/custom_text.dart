@@ -4,7 +4,7 @@ import '../utils/adaptive.dart';
 
 class CustomTextTitle extends StatelessWidget {
 
-  CustomTextTitle({ required this.title, this.color = AppColors.greyViolet });
+  CustomTextTitle({ required this.title, this.color = AppColors.turquoiseBlue });
   final String title;
   final Color? color;
 
@@ -12,13 +12,12 @@ class CustomTextTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Text(
         title,
-        style: textTheme.bodySmall?.copyWith(
+        style: textTheme.bodyLarge?.copyWith(
           color: color,
           height: 1.5,
-          fontWeight: FontWeight.w600,
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -36,11 +35,11 @@ class CustomTextSubTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Text(
         title,
         style: textTheme.bodySmall?.copyWith(
-          color: AppColors.greyViolet,
+          color: AppColors.turquoiseBlue,
           height: 1.5,
           fontWeight: FontWeight.w400,
         ),
@@ -103,9 +102,7 @@ class CustomTextBold extends StatelessWidget {
     return Text(
       title,
       style: textTheme.bodySmall?.copyWith(
-        color: AppColors.greyAlt,
         height: 1.5,
-        fontSize: fontSize,
         fontWeight: FontWeight.bold
       ),
       maxLines: 2,
@@ -126,7 +123,6 @@ class CustomTextSmall extends StatelessWidget {
     return Text(
       text,
       style: textTheme.bodySmall?.copyWith(
-        color: AppColors.greyAlt,
         height: 1.5,
         fontSize: fontSize,
       ),
@@ -170,11 +166,10 @@ class CustomTextBoldCenter extends StatelessWidget {
       child: Text(
         title,
         textAlign: TextAlign.center,
-        style: textTheme.titleSmall?.copyWith(
+        style: textTheme.titleMedium?.copyWith(
             color: color,
             height: height,
             fontSize: fontSize,
-            fontWeight: FontWeight.normal
         ),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
@@ -216,13 +211,12 @@ class CustomTextMediumBold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = responsiveSize(context, 15, 24, md: 16);
+    double fontSize = responsiveSize(context, 13, 22, md: 15);
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(
       text,
-      style: textTheme.bodyLarge?.copyWith(
+      style: textTheme.titleMedium?.copyWith(
         color: AppColors.turquoiseBlue,
-        fontWeight: FontWeight.w900,
         height: 1.5,
         fontSize: fontSize,
       ),

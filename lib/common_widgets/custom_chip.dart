@@ -53,7 +53,7 @@ class CustomChip extends StatelessWidget {
               child: Text(
                 label,
                 softWrap: true,
-                style: textTheme.bodyText1?.copyWith(
+                style: textTheme.bodySmall?.copyWith(
                   color: selected ? Colors.white : textColor,
                 ),
               ),

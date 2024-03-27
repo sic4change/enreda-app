@@ -1,4 +1,5 @@
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 
 class DeleteButton extends StatelessWidget {
@@ -9,10 +10,6 @@ class DeleteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: onTap,
-        child: Icon(
-          Icons.delete_outline,
-          color: Constants.alertRed,
-          size: 18.0,
-        ));
+        child: Image.asset(ImagePath.ICON_TRASH, width: 18.0));
   }
 }

@@ -24,6 +24,7 @@ import 'package:enreda_app/common_widgets/custom_chip.dart';
 import 'package:enreda_app/common_widgets/custom_date_picker_title.dart';
 import 'package:enreda_app/common_widgets/custom_phone_form_field_title.dart';
 import 'package:enreda_app/common_widgets/custom_text_form_field_title.dart';
+import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_exception_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -242,37 +243,8 @@ class _PersonalDataState extends State<PersonalData> {
                                                     _socialEntity = snapshot.data;
                                                   }
                                                   return Responsive.isDesktop(context)
-                                                      ? Column(
-                                                          children: [
-                                                            Expanded(
-                                                              child:
-                                                                  SingleChildScrollView(
-                                                                padding:
-                                                                    EdgeInsets.all(8.0),
-                                                                child: Column(
-                                                                  children: [
-                                                                    _buildMainDataContainer(
-                                                                        context,
-                                                                        userEnreda),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : SingleChildScrollView(
-                                                          child: Container(
-                                                            margin: EdgeInsets.all(
-                                                                Constants.mainPadding),
-                                                            child: Column(
-                                                              children: [
-                                                                _buildMainDataContainer(
-                                                                    context,
-                                                                    userEnreda),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        );
+                                                      ? _buildMainDataContainer(context, userEnreda)
+                                                      : _buildMainDataContainer(context, userEnreda);
                                                 }
                                               );
                                             }
@@ -303,19 +275,11 @@ class _PersonalDataState extends State<PersonalData> {
   Widget _buildMainDataContainer(BuildContext context, UserEnreda userEnreda) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Container(
-      padding: EdgeInsets.all(Constants.mainPadding),
-      decoration: BoxDecoration(
-        border: Border.all(color: Constants.lightGray, width: 1),
-        borderRadius: BorderRadius.all(Radius.circular(15.0)),
-        color: AppColors.altWhite,
-
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return RoundedContainer(
+      child: Stack(
         children: [
           Padding(
-            padding: EdgeInsets.all(Constants.mainPadding),
+            padding: EdgeInsets.only(top: Constants.mainPadding, left: Constants.mainPadding, right: Constants.mainPadding, bottom: 0),
             child: Text(
               StringConst.PERSONAL_DATA,
               style: textTheme.bodyLarge?.copyWith(
@@ -325,8 +289,10 @@ class _PersonalDataState extends State<PersonalData> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 25),
+            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 25),
             child: Container(
+              margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5),
+              padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble),
               decoration: BoxDecoration(
                 border: Border.all(color: Constants.lightGray, width: 1),
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
@@ -340,23 +306,24 @@ class _PersonalDataState extends State<PersonalData> {
                   ),
                 ],
               ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: _buildForm(context),
-                  ),
-                  _buildInterestsContainer(context),
-                  _buildSaveDataButton(
-                      context,
-                      userEnreda),
-                  SpaceH50(),
-                  _buildMyParameters(userEnreda),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: _buildForm(context),
+                    ),
+                    _buildInterestsContainer(context),
+                    _buildSaveDataButton(
+                        context,
+                        userEnreda),
+                    SpaceH50(),
+                    _buildMyParameters(userEnreda),
+                  ],
+                ),
               ),
             ),
           )
-
         ],
       ),
     );

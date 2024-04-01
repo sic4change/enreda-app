@@ -92,8 +92,9 @@ class CustomText extends StatelessWidget {
 
 class CustomTextBold extends StatelessWidget {
 
-  CustomTextBold({ required this.title });
+  CustomTextBold({ required this.title, this.color = AppColors.greyTxtAlt });
   final String title;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {

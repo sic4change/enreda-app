@@ -110,7 +110,8 @@ class ImagePath {
   static const String ICON_MY_CV_SIDEBAR = '$imageDir/my-cv-icon.png';
   static const String ICON_ADD = '$imageDir/plus-icon.png';
   static const String ICON_TRASH = '$imageDir/trash-icon.png';
-
+  static const String LOGO_LINES = "$imageDir/enreda-lines-logo.png";
+  static const String CONTROL_PANEL = '$imageDir/enreda-control-panel.png';
 
   //Resources Categories
   static const String BACKGROUND_1 = '$imageDir/background-empleo-2X.png';
@@ -143,6 +144,16 @@ class ImagePath {
   static const String SWIRLS1 = '$imageDir/gamification_certificate/swirls1.svg';
   static const String SWIRLS2 = '$imageDir/gamification_certificate/swirls2.svg';
   static const String SWIRLS3 = '$imageDir/gamification_certificate/swirls3.svg';
+
+  //Control Panel
+  static const String GAMIFICATION_LOGO = '$imageDir/gamification_logo.png';
+  static const String GAMIFICATION_CHAT_ICON = '$imageDir/gamification_chat_icon.png';
+  static const String GAMIFICATION_COMPETENCIES_ICON = '$imageDir/gamification_competencies_icon.png';
+  static const String GAMIFICATION_PILL_ICON = '$imageDir/gamification_pill_icon.png';
+  static const String GAMIFICATION_RESOURCES_ICON = '$imageDir/gamification_resources_icon.png';
+  static const String GAMIFICATION_CV_ICON = '$imageDir/gamification_cv_icon.png';
+  static const String PARTICIPANT_DOCUMENTATION_ICON = '$imageDir/participant_documentation_icon.png';
+  static const String CONTACT_ICON = '$imageDir/contacto-enreda.png';
 
   //Competencies Categories
   static const String COMPETENCIES_CATEGORIES_1 = '$imageDir/competencies-categories-1.png';

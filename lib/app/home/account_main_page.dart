@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/account/gamification_page.dart';
 import 'package:enreda_app/app/home/account/personal_data_page.dart';
 import 'package:enreda_app/app/home/competencies/my_competencies_page.dart';
+import 'package:enreda_app/app/home/control_panel/control_panel_page.dart';
 import 'package:enreda_app/app/home/curriculum/my_curriculum_page.dart';
 import 'package:enreda_app/app/home/resources/pages/favorite_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
@@ -141,7 +142,7 @@ class _WebHomeState extends State<WebHome> {
                             builder: (context, child){
                               switch(WebHome.controller.selectedIndex){
                                 case 0: _key.currentState?.closeDrawer();
-                                return Container();
+                                return ControlPanelPage(user: user,);
                                 case 1: _key.currentState?.closeDrawer();
                                 return MyCurriculumPage();
                                 case 2: _key.currentState?.closeDrawer();

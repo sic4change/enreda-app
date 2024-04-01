@@ -196,6 +196,14 @@ class StringConst {
   static const String READ_MORE = "Read More";
   static const String BLOGGING = "";
 
+  //Control Panel Section
+  static const String WELCOME_COMPANY = "Bienvenida a Enreda";
+  static const String WELCOME_TEXT = "Esta es tu ventana de administración. \nSegún tu rol, puedes visualizar, editar y eliminar todos los recursos disponibles en esta web. Por favor, procede con precaución.";
+  static const String GAMIFICATION = "Gamificación";
+  static const String NO_COMPETENCIES = "Aquí aparecerán las competencias evaluadas a través de los microtests";
+  static const String INITIAL_FORM = "Ficha de ingreso";
+  static const String INITIAL_FORM_DATA = "Datos del formulario inicial";
+
   //Footer Section
   static const String LETS_TALK = "¡Te escuchamos!";
   static const String PHONE_ME = "Llámanos";

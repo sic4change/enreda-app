@@ -86,6 +86,7 @@ abstract class Database {
   //Stream<Set<Activity>> activitiesStreamProfessionId(List<String> activitiesIds);
   //Stream<List<Activity>> activityStreamProfessionId(String? activityId);
   Stream<Activity> activityStreamProfessionId(String? activityId);
+  Stream<List<SpecificInterest>> specificInterestsStream();
   Stream<List<SpecificInterest>> specificInterestStream(String? interestId);
   Stream<List<UserEnreda>> checkIfUserEmailRegistered(String email);
   Stream<List<Question>> questionsStream();
@@ -542,6 +543,14 @@ class FirestoreDatabase implements Database {
         builder: (data, documentId) => Interest.fromMap(data, documentId),
         sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
       );
+
+  @override
+  Stream<List<SpecificInterest>> specificInterestsStream() => _service.collectionStream(
+    path: APIPath.specificInterests(),
+    queryBuilder: (query) => query.where('name', isNotEqualTo: null),
+    builder: (data, documentId) => SpecificInterest.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
+  );
 
   @override
   Stream<List<SpecificInterest>> specificInterestStream(String? interestId) =>

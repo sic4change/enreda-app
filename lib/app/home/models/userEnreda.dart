@@ -1,6 +1,7 @@
 import 'package:enreda_app/app/home/models/addressUser.dart';
 import 'package:enreda_app/app/home/models/interestsUserEnreda.dart';
 import 'package:enreda_app/app/home/models/language.dart';
+import 'package:enreda_app/app/home/models/motivation.dart';
 import 'package:enreda_app/app/home/models/profilepic.dart';
 
 class UserEnreda {
@@ -37,6 +38,7 @@ class UserEnreda {
     this.gamificationFlags = const {},
     this.nationality,
     this.assignedEntityId,
+    this.motivation
   });
 
   factory UserEnreda.fromMap(Map<String, dynamic> data, String documentId) {
@@ -158,6 +160,13 @@ class UserEnreda {
     final String? nationality = data['nationality'];
     final String? assignedEntityId = data['assignedEntityId'];
 
+    final Motivation? motivation = new Motivation(
+        abilities: abilities,
+        dedication: data['dedication'],
+        timeSearching: data['timeSearching'],
+        timeSpentWeekly: data['timeSpentWeekly']
+    );
+
     return UserEnreda(
       email: email,
       firstName: firstName,
@@ -191,6 +200,7 @@ class UserEnreda {
       gamificationFlags: gamificationFlags,
       nationality: nationality,
       assignedEntityId: assignedEntityId,
+      motivation: motivation
     );
   }
 
@@ -226,6 +236,7 @@ class UserEnreda {
   final Map<String, bool> gamificationFlags;
   final String? nationality;
   final String? assignedEntityId;
+  final Motivation? motivation;
 
   Map<String, dynamic> toMap() {
     InterestsUserEnreda interestUserEnreda = InterestsUserEnreda(
@@ -258,6 +269,7 @@ class UserEnreda {
       'educationId': educationId,
       'nationality': nationality,
       'assignedEntityId': assignedEntityId,
+      'motivation': motivation?.toMap()
     };
   }
 
@@ -297,6 +309,7 @@ class UserEnreda {
     Map<String, bool>? gamificationFlags,
     String? nationality,
     String? assignedEntityId,
+    Motivation? motivation
   }) {
     return UserEnreda(
       email: email ?? this.email,
@@ -330,6 +343,7 @@ class UserEnreda {
       gamificationFlags: gamificationFlags ?? this.gamificationFlags,
       nationality: nationality ?? this.nationality,
       assignedEntityId: assignedEntityId ?? this.assignedEntityId,
+      motivation: motivation ?? this.motivation
     );
   }
 

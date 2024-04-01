@@ -20,6 +20,7 @@ import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_too
 import 'package:enreda_app/common_widgets/delete_button.dart';
 import 'package:enreda_app/common_widgets/edit_button.dart';
 import 'package:enreda_app/common_widgets/main_container.dart';
+import 'package:enreda_app/common_widgets/precached_avatar.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
@@ -42,9 +43,14 @@ import '../../../values/values.dart';
 import '../../anallytics/analytics.dart';
 
 class MyCurriculumPage extends StatefulWidget {
+  const MyCurriculumPage({super.key, this.mini = false});
+
+  final bool mini;
+
   @override
   State<MyCurriculumPage> createState() => _MyCurriculumPageState();
 }
+
 
 class _MyCurriculumPageState extends State<MyCurriculumPage> {
   UserEnreda? user;
@@ -93,6 +99,172 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
+    return StreamBuilder<List<UserEnreda>>(
+        stream: database.userStream(auth.currentUser?.email ?? ''),
+        builder: (context, snapshot) {
+          if (snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.active) {
+            user = snapshot.data!.isNotEmpty ? snapshot.data!.first : null;
+            var profilePic = user?.profilePic?.src ?? "";
+            return StreamBuilder<List<Competency>>(
+                stream: database.competenciesStream(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return Container();
+                  if (snapshot.hasError)
+                    return Center(child: Text('Ocurrió un error'));
+                  List<Competency> competencies = snapshot.data!;
+                  final competenciesIds = user!.competencies.keys.toList();
+                  competencies = competencies
+                      .where((competency) => competenciesIds.any((id) => competency.id == id))
+                      .toList();
+                  competencies.forEach((competency) {
+                    final status =
+                        user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
+                    if (competency.name !="" && status != StringConst.BADGE_EMPTY && status != StringConst.BADGE_IDENTIFIED ) {
+                      final index1 = competenciesNames.indexWhere((element) => element == competency.name);
+                      if (index1 == -1) competenciesNames.add(competency.name);
+                    }
+                  });
+
+                  final myAboutMe = user?.aboutMe ?? "";
+                  myCustomAboutMe = myAboutMe;
+
+                  final myEmail = user?.email ?? "";
+                  myCustomEmail = myEmail;
+
+                  final myPhone = user?.phone ?? "";
+                  myCustomPhone = myPhone;
+
+                  myCustomCompetencies = competenciesNames.map((element) => element).toList();
+                  mySelectedCompetencies = List.generate(myCustomCompetencies.length, (i) => i);
+
+                  final myDataOfInterest = user?.dataOfInterest ?? [];
+                  myCustomDataOfInterest = myDataOfInterest.map((element) => element).toList();
+                  mySelectedDataOfInterest = List.generate(myCustomDataOfInterest.length, (i) => i);
+
+                  final myLanguages = user?.languagesLevels ?? [];
+                  myCustomLanguages = myLanguages.map((element) => element).toList();
+                  mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
+
+                  _photo = profilePic;
+                  if (widget.mini)
+                    return _myCurriculumMini(context, user, profilePic, competenciesNames );
+                  else {
+                    return Responsive.isDesktop(context)
+                        ? _myCurriculumWeb(context, user, profilePic, competenciesNames )
+                        : _myCurriculumMobile(context, user, profilePic, competenciesNames);
+                  }
+                });
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        });
+  }
+
+  Widget _myCurriculumMini(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames){
+    final textTheme = Theme.of(context).textTheme;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+            padding: EdgeInsets.only(
+                top: 20.0, bottom: 20, right: 5, left: 20),
+            width: 330,
+            child: Padding(
+              padding: EdgeInsets.only(right: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        !kIsWeb ?
+                        ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(60)),
+                          child:
+                          Center(
+                            child:
+                            profilePic == "" ?
+                            Container(
+                              color:  Colors.transparent,
+                              height: 120,
+                              width: 120,
+                              child: Image.asset(ImagePath.USER_DEFAULT),
+                            ):
+                            CachedNetworkImage(
+                                width: 120,
+                                height: 120,
+                                fit: BoxFit.cover,
+                                alignment: Alignment.center,
+                                imageUrl: profilePic),
+                          ),
+                        ):
+                        ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(60)),
+                          child:
+                          profilePic == "" ?
+                          Container(
+                            color:  Colors.transparent,
+                            height: 120,
+                            width: 120,
+                            child: Image.asset(ImagePath.USER_DEFAULT),
+                          ):
+                          PrecacheAvatarCard(
+                            imageUrl: profilePic,
+                            height: 120,
+                            width: 120,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SpaceH20(),
+                  _buildPersonalData(context),
+                  SpaceH20(),
+                  _buildAboutMe(context),
+                  SpaceH20(),
+                  _buildMyDataOfInterest(context),
+                  SpaceH20(),
+                  _buildMyLanguages(context),
+                  SpaceH20(),
+                  _buildMyReferences(context, user),
+                ],
+              ),
+            )),
+        SpaceW20(),
+        Container(
+          width: 600,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${user?.firstName} ${user?.lastName}',
+                style: textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
+                    color: AppColors.penBlue),
+              ),
+              SpaceH30(),
+              _buildMyEducation(context, user),
+              SpaceH30(),
+              _buildMySecondaryEducation(context, user),
+              SpaceH30(),
+              _buildMyExperiences(context, user),
+              SpaceH30(),
+              _buildMyCompetencies(context, user),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _myCurriculumWeb(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames){
     return RoundedContainer(
       contentPadding: Responsive.isMobile(context) ?
       EdgeInsets.all(Sizes.mainPadding) :
@@ -106,121 +278,62 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             EdgeInsets.all(Sizes.mainPadding) :
             EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
             margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5),
-            child: StreamBuilder<List<UserEnreda>>(
-                stream: database.userStream(auth.currentUser?.email ?? ''),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData &&
-                      snapshot.connectionState == ConnectionState.active) {
-                    user = snapshot.data!.isNotEmpty ? snapshot.data!.first : null;
-                    var profilePic = user?.profilePic?.src ?? "";
-                    return StreamBuilder<List<Competency>>(
-                        stream: database.competenciesStream(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) return Container();
-                          if (snapshot.hasError)
-                            return Center(child: Text('Ocurrió un error'));
-                            List<Competency> competencies = snapshot.data!;
-                            final competenciesIds = user!.competencies.keys.toList();
-                            competencies = competencies
-                                .where((competency) => competenciesIds.any((id) => competency.id == id))
-                                .toList();
-                            competencies.forEach((competency) {
-                              final status =
-                                  user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
-                              if (competency.name !="" && status != StringConst.BADGE_EMPTY && status != StringConst.BADGE_IDENTIFIED ) {
-                                final index1 = competenciesNames.indexWhere((element) => element == competency.name);
-                                if (index1 == -1) competenciesNames.add(competency.name);
-                              }
-                            });
-
-                            final myAboutMe = user?.aboutMe ?? "";
-                            myCustomAboutMe = myAboutMe;
-
-                            final myEmail = user?.email ?? "";
-                            myCustomEmail = myEmail;
-
-                            final myPhone = user?.phone ?? "";
-                            myCustomPhone = myPhone;
-
-                            myCustomCompetencies = competenciesNames.map((element) => element).toList();
-                            mySelectedCompetencies = List.generate(myCustomCompetencies.length, (i) => i);
-
-                            final myDataOfInterest = user?.dataOfInterest ?? [];
-                            myCustomDataOfInterest = myDataOfInterest.map((element) => element).toList();
-                            mySelectedDataOfInterest = List.generate(myCustomDataOfInterest.length, (i) => i);
-
-                            final myLanguages = user?.languagesLevels ?? [];
-                            myCustomLanguages = myLanguages.map((element) => element).toList();
-                            mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
-
-                            _photo = profilePic;
-                          return Responsive.isDesktop(context)
-                              ? _myCurriculumWeb(context, user, profilePic, competenciesNames )
-                              : _myCurriculumMobile(context, user, profilePic, competenciesNames);
-                        });
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                }),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                    width: Responsive.isDesktop(context) ? 330 : Responsive.isDesktopS(context) ? 290.0 : 290,
+                    height: double.infinity,
+                    child: SingleChildScrollView(
+                      controller: ScrollController(),
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildMyProfilePhoto(user),
+                            SpaceH20(),
+                            _buildPersonalData(context),
+                            SpaceH20(),
+                            _buildAboutMe(context),
+                            SpaceH20(),
+                            _buildMyDataOfInterest(context),
+                            SpaceH20(),
+                            _buildMyLanguages(context),
+                            SpaceH20(),
+                            _buildMyReferences(context, user),
+                          ],
+                        ),
+                      ),
+                    )),
+                SpaceW40(),
+                Expanded(
+                    child: SingleChildScrollView(
+                      controller: ScrollController(),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildCVHeader(context, user, profilePic, competenciesNames),
+                          //_buildMyCareer(context),
+                          SpaceH30(),
+                          _buildMyEducation(context, user),
+                          SpaceH30(),
+                          _buildMySecondaryEducation(context, user),
+                          SpaceH30(),
+                          _buildMyExperiences(context, user),
+                          SpaceH30(),
+                          _buildMyCompetencies(context, user),
+                          SpaceH30(),
+                          _buildFinalCheck(context, user),
+                        ],
+                      ),
+                    ))
+              ],
+            ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _myCurriculumWeb(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames){
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-            width: Responsive.isDesktop(context) ? 330 : Responsive.isDesktopS(context) ? 290.0 : 290,
-            height: double.infinity,
-            child: SingleChildScrollView(
-              controller: ScrollController(),
-              child: Padding(
-                padding: EdgeInsets.only(right: 10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildMyProfilePhoto(user),
-                    SpaceH20(),
-                    _buildPersonalData(context),
-                    SpaceH20(),
-                    _buildAboutMe(context),
-                    SpaceH20(),
-                    _buildMyDataOfInterest(context),
-                    SpaceH20(),
-                    _buildMyLanguages(context),
-                    SpaceH20(),
-                    _buildMyReferences(context, user),
-                  ],
-                ),
-              ),
-            )),
-        SpaceW40(),
-        Expanded(
-            child: SingleChildScrollView(
-              controller: ScrollController(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildCVHeader(context, user, profilePic, competenciesNames),
-                  //_buildMyCareer(context),
-                  SpaceH30(),
-                  _buildMyEducation(context, user),
-                  SpaceH30(),
-                  _buildMySecondaryEducation(context, user),
-                  SpaceH30(),
-                  _buildMyExperiences(context, user),
-                  SpaceH30(),
-                  _buildMyCompetencies(context, user),
-                  SpaceH30(),
-                  _buildFinalCheck(context, user),
-                ],
-              ),
-            ))
-      ],
     );
   }
 

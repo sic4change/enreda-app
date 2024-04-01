@@ -77,6 +77,7 @@ dependencies:
   visibility_detector: ^0.4.0+2
   image_cropper: ^4.0.1
   sidebarx: ^0.16.3
+  circular_seek_bar: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -187,6 +188,10 @@ flutter:
     - images/plus-icon.png
     - images/download-icon.png
     - images/trash-icon.png
+    - images/enreda-control-panel.png
+    - images/gamification_logo.png
+    - images/contacto-enreda.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

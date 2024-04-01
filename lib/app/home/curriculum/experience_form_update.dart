@@ -262,11 +262,11 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                 padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
                 child: TextFormField(
                   controller: _organizationController,
-                  style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                  style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                   decoration: InputDecoration(
                     label: Text(
                       'Empresa, organización...' ,
-                      style: textTheme.bodyText2,
+                      style: textTheme.bodyMedium,
                     ),
                   ),
                 ),
@@ -277,11 +277,11 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
               padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble/2),
               child: TextFormField(
                 controller: _locationController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                     label: Text(
                       'Municipio, ciudad, región o país *',
-                      style: textTheme.bodyText2,
+                      style: textTheme.bodyMedium,
                     )),
                 validator: (value) {
                   if (value == null || value.isEmpty)
@@ -303,7 +303,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                     Icons.event,
                   ),
                 ),
-                style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 onShowPicker: (context, currentValue) {
                   return showDatePicker(
                     context: context,
@@ -333,7 +333,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                     Icons.event,
                   ),
                 ),
-                style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 onShowPicker: (context, currentValue) {
                   return showDatePicker(
                     context: context,
@@ -363,9 +363,9 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                         decoration: InputDecoration(
                           label: Text(
                             'Tareas que realizaste *',
-                            style: textTheme.bodyText2,
+                            style: textTheme.bodyMedium,
                           ),
-                          labelStyle: textTheme.bodyText1?.copyWith(
+                          labelStyle: textTheme.bodyMedium?.copyWith(
                             color: AppColors.greyDark,
                             height: 1.5,
                             fontWeight: FontWeight.w400,
@@ -395,11 +395,11 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
               padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
               child: TextFormField(
                 controller: _positionController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                   label: Text(
                     'Indica tu cargo...',
-                    style: textTheme.bodyText2,
+                    style: textTheme.bodyMedium,
                   ),
                 ),
               ),
@@ -413,11 +413,11 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
               padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble/2),
               child: DropdownButtonFormField<String>(
                 hint: Text('¿Cómo desarrollaste tu actividad?',
-                    style: textTheme.bodyText2,
+                    style: textTheme.bodyMedium,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis),
                 style:
-                    textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                    textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 isExpanded: true,
                 isDense: false,
                 value: _workType,
@@ -440,12 +440,12 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
               padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble/2),
               child: DropdownButtonFormField<String>(
                 hint: Text(
-                    '¿Esta experiencia te supuso un cambio de domicilio?', style: textTheme.bodyText2
+                    '¿Esta experiencia te supuso un cambio de domicilio?', style: textTheme.bodyMedium
                 ),
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 value: _contextPlace,
                 items: StringConst.EXPERIENCE_CONTEXT_PLACES
-                    .map((e) => DropdownMenuItem<String>(value: e, child: Text(e, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+                    .map((e) => DropdownMenuItem<String>(value: e, child: Text(e, style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),)))
                     .toList(),
                 onChanged: (value) {
                   _contextPlace = value ?? _contextPlace;
@@ -462,10 +462,10 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
               child: DropdownButtonFormField<String>(
                 hint: Text(
                   '¿Esta experiencia te supuso hacer cosas que no solías hacer antes?',
-                  style: textTheme.bodyText2,
+                  style: textTheme.bodyMedium,
                   maxLines: 2, overflow: TextOverflow.ellipsis
                 ),
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 isExpanded: true,
                 isDense: false,
                 value: _context,
@@ -474,7 +474,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                     value: e,
                     child: Text(
                       e,
-                      style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                     )))
                     .toList(),
                 onChanged: (value) {
@@ -496,7 +496,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                     padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: (Text(
                       StringConst.CANCEL,
-                      style: textTheme.bodyText1,
+                      style: textTheme.bodyMedium,
                     )),
                   ),
                   onPressed: () => Navigator.of(context).pop(),
@@ -512,7 +512,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                           padding: const EdgeInsets.symmetric(vertical: 12.0),
                           child: (Text(
                             StringConst.SAVE,
-                            style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600,
+                            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600,
                               color: Constants.white,),
                           )),
                         ),
@@ -605,12 +605,12 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
     final textTheme = Theme.of(context).textTheme;
 
     return DropdownButtonFormField<Choice>(
-      hint: Text('Tipo *', style: textTheme.bodyText1,),
-      style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+      hint: Text('Tipo *', style: textTheme.bodyMedium,),
+      style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
       isExpanded: true,
       isDense: false,
       items: _experienceTypes
-          .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+          .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),)))
           .toList(),
       value: _type,
       onChanged: (_type != null && _type!.name.isNotEmpty)? null :  (newType) {
@@ -645,12 +645,12 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
     final textTheme = Theme.of(context).textTheme;
 
     return DropdownButtonFormField<Choice>(
-        hint: Text('Subtipo', style: textTheme.bodyText1,),
-        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+        hint: Text('Subtipo', style: textTheme.bodyMedium,),
+        style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
         isExpanded: true,
         isDense: false,
         items: _experienceSubtypes
-            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),)))
             .toList(),
         value: _subtype,
         onChanged: (newSubtype) {
@@ -670,12 +670,12 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
     final textTheme = Theme.of(context).textTheme;
 
     return DropdownButtonFormField<Choice>(
-        hint: Text('Actividad', style: textTheme.bodyText1, maxLines: 2, overflow: TextOverflow.ellipsis),
-        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+        hint: Text('Actividad', style: textTheme.bodyMedium, maxLines: 2, overflow: TextOverflow.ellipsis),
+        style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
         isExpanded: true,
         isDense: false,
         items: _experienceActivities
-            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),)))
             .toList(),
         value: _activity,
         onChanged: (newActivity) {
@@ -702,7 +702,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
           return AlertDialog(
             content: Text(
               StringConst.FORM_ACTIVITIES_EMPTY,
-              style: textTheme.bodyText1,
+              style: textTheme.bodyMedium,
             ),
             actions: <Widget>[
               ElevatedButton(
@@ -752,12 +752,12 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
     final textTheme = Theme.of(context).textTheme;
 
     return DropdownButtonFormField<Choice>(
-        hint: Text('Rol', style: textTheme.bodyText1,),
-        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+        hint: Text('Rol', style: textTheme.bodyMedium,),
+        style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
         isExpanded: true,
         isDense: false,
         items: _experienceRoles
-            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),)))
             .toList(),
         value: _role,
         onChanged: (newRole) {
@@ -771,10 +771,10 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
     final textTheme = Theme.of(context).textTheme;
 
     return DropdownButtonFormField<Choice>(
-        hint: Text('Nivel', style: textTheme.bodyText1,),
-        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+        hint: Text('Nivel', style: textTheme.bodyMedium,),
+        style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
         items: _experienceLevels
-            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),)))
             .toList(),
         value: _level,
         onChanged: (newLevel) {

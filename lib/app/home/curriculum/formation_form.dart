@@ -123,11 +123,11 @@ class _FormationFormState extends State<FormationForm> {
             formFieldCustom(
               TextFormField(
                 controller: _nameFormationController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                     label: Text(
                       'Nombre de la formación',
-                      style: textTheme.bodyText2,
+                      style: textTheme.bodyMedium,
                     )),
                 validator: (value) {
                   if (value == null || value.isEmpty)
@@ -149,18 +149,18 @@ class _FormationFormState extends State<FormationForm> {
             onChanged: (value) => setState(() {
               _selectedEducation = value;
             }),
-            style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
 
             formFieldCustom(
               DropdownButtonFormField<String>(
                 hint: Text('Institución educativa',
-                    style: textTheme.bodyText2,
+                    style: textTheme.bodyMedium,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis),
                 style:
-                textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 isExpanded: true,
                 isDense: false,
                 value: _institution == '' ? null : _institution,
@@ -182,11 +182,11 @@ class _FormationFormState extends State<FormationForm> {
             formFieldCustom(
               TextFormField(
                 controller: _organizationController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                     label: Text(
                       'Nombre institución educativa',
-                      style: textTheme.bodyText2,
+                      style: textTheme.bodyMedium,
                     )),
                 validator: (value) {
                   if (value == null || value.isEmpty)
@@ -207,7 +207,7 @@ class _FormationFormState extends State<FormationForm> {
                     Icons.event,
                   ),
                 ),
-                style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 onShowPicker: (context, currentValue) {
                   return showDatePicker(
                     context: context,
@@ -237,7 +237,7 @@ class _FormationFormState extends State<FormationForm> {
                     Icons.event,
                   ),
                 ),
-                style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 onShowPicker: (context, currentValue) {
                   return showDatePicker(
                     context: context,
@@ -262,11 +262,11 @@ class _FormationFormState extends State<FormationForm> {
             formFieldCustom(
               TextFormField(
                 controller: _locationController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                     label: Text(
                       'Municipio, ciudad, región o país',
-                      style: textTheme.bodyText2,
+                      style: textTheme.bodyMedium,
                     )),
                 validator: (value) {
                   if (value == null || value.isEmpty)
@@ -279,11 +279,11 @@ class _FormationFormState extends State<FormationForm> {
             formFieldCustom(
               TextFormField(
                 controller: _extraDataController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                     label: Text(
                       'Datos de interés sobre la formación',
-                      style: textTheme.bodyText2,
+                      style: textTheme.bodyMedium,
                     )),
               ),
             ),
@@ -298,7 +298,7 @@ class _FormationFormState extends State<FormationForm> {
                     padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: (Text(
                       StringConst.CANCEL,
-                      style: textTheme.bodyText1,
+                      style: textTheme.bodyMedium,
                     )),
                   ),
                   onPressed: () => Navigator.of(context).pop(),
@@ -314,7 +314,7 @@ class _FormationFormState extends State<FormationForm> {
                           padding: const EdgeInsets.symmetric(vertical: 12.0),
                           child: (Text(
                             StringConst.SAVE,
-                            style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600,
+                            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600,
                               color: Constants.white,),
                           )),
                         ),

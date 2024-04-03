@@ -64,7 +64,7 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
       TabItem.account: (_) => Stack(
             children: [
               BackgroundMobileAccount(backgroundHeight: BackgroundHeight.Small),
-              WebHome(),
+              WebHome(showChatNotifier: widget.showChatNotifier,),
             ],
           )
     };

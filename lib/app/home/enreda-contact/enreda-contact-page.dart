@@ -23,7 +23,6 @@ import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_s
 import 'package:enreda_app/common_widgets/custom_chip.dart';
 import 'package:enreda_app/common_widgets/custom_date_picker_title.dart';
 import 'package:enreda_app/common_widgets/custom_phone_form_field_title.dart';
-import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/custom_text_form_field_title.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
@@ -48,14 +47,14 @@ import '../../../common_widgets/flex_row_column.dart';
 import '../../../utils/adaptive.dart';
 import '../../../values/values.dart';
 
-class PersonalData extends StatefulWidget {
-  const PersonalData({Key? key}) : super(key: key);
+class EnredaContactPage extends StatefulWidget {
+  const EnredaContactPage({Key? key}) : super(key: key);
 
   @override
-  State<PersonalData> createState() => _PersonalDataState();
+  State<EnredaContactPage> createState() => _EnredaContactPageState();
 }
 
-class _PersonalDataState extends State<PersonalData> {
+class _EnredaContactPageState extends State<EnredaContactPage> {
   final _formKey = GlobalKey<FormState>();
   String _userId = '';
   String? _email = '';
@@ -99,170 +98,7 @@ class _PersonalDataState extends State<PersonalData> {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
 
-    return StreamBuilder<User?>(
-        stream: Provider.of<AuthBase>(context).authStateChanges(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return Container();
-          if (snapshot.hasData) {
-            return StreamBuilder<List<Interest>>(
-                stream: database.interestStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    snapshot.data!.forEach((interest) {
-                      if (!_interests.any((element) =>
-                          element.interestId == interest.interestId)) {
-                        _interests.add(interest);
-                      }
-                    });
-                  }
-                  return StreamBuilder<List<UserEnreda>>(
-                    stream: database.userStream(auth.currentUser!.email),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) return Container();
-                      if (snapshot.hasData) {
-                        final userEnreda = snapshot.data![0];
-                        _userId = userEnreda.userId ?? '';
-                        _email = userEnreda.email;
-                        _firstName = userEnreda.firstName ?? '';
-                        _lastName = userEnreda.lastName ?? '';
-                        _role = userEnreda.role ?? '';
-                        _abilities = userEnreda.abilities ?? [];
-                        _unemployedType = userEnreda.unemployedType ?? '';
-                        if (_phone.isEmpty) _phone = userEnreda.phone ?? '';
-                        _phoneCode =
-                            '${userEnreda.phone?[0]}${userEnreda.phone?[1]}${userEnreda.phone?[2]}';
-                        _gender = userEnreda.gender ?? '';
-                        _birthday =
-                            _birthday == null ? userEnreda.birthday : _birthday;
-                        _postalCode = userEnreda.address?.postalCode ?? '';
-                        _specificInterest = userEnreda.specificInterests;
-                        if (_interestsSelected.isEmpty) {
-                          _interestsSelected = userEnreda.interests;
-                          List<String> interestSelectedName = [];
-                          _interests
-                              .where((interest) => _interestsSelected.any(
-                                  (interestId) =>
-                                      interestId == interest.interestId))
-                              .forEach((interest) {
-                            interestSelectedName.add(interest.name);
-                          });
-                          _interestsSelected.clear();
-                          _interestsSelected.addAll(interestSelectedName);
-                          _birthday != null ?
-                            _formattedBirthdayDate = DateFormat('dd-MM-yyyy').format(_birthday!) :
-                            _formattedBirthdayDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
-                          _birthday != null ?
-                            textEditingControllerDateInput.text = _formattedBirthdayDate :
-                            textEditingControllerDateInput.text = '';
-                          _nationality = userEnreda.nationality ?? '';
-                        }
-                        return StreamBuilder<List<Country>>(
-                            stream: database.countryFormatedStream(),
-                            builder: (context, snapshot) {
-                              _countries =
-                                  snapshot.hasData ? snapshot.data! : [];
-                              if (_countrySelected == '') {
-                                _countrySelected =
-                                    userEnreda.address?.country ?? '';
-                              }
-
-                              _country = _countries
-                                  .firstWhere(
-                                      (country) =>
-                                          country.countryId == _countrySelected,
-                                      orElse: () => Country(name: ''));
-                              return StreamBuilder<List<Province>>(
-                                  stream: database
-                                      .provincesCountryStream(_countrySelected),
-                                  builder: (context, snapshot) {
-                                    _provinces = snapshot.hasData
-                                        ? snapshot.data!
-                                            .where((province) =>
-                                                province.countryId ==
-                                                _countrySelected)
-                                            .toList()
-                                        : [];
-                                    if (_provinceSelected == '') {
-                                      _provinceSelected =
-                                          userEnreda.address?.province ?? '';
-                                    }
-                                    try {
-                                      _province = _provinces.isNotEmpty
-                                          ? _provinces
-                                              .firstWhere((province) =>
-                                                  province.provinceId ==
-                                                  _provinceSelected)
-                                          : Province(name: '', countryId: '');
-                                    } catch (e) {
-                                      _province = _provinces[0];
-                                      _provinceSelected =
-                                          _provinces[0].provinceId ?? '';
-                                    }
-                                    return StreamBuilder<List<City>>(
-                                        stream: database.citiesProvinceStream(
-                                            _provinceSelected),
-                                        builder: (context, snapshot) {
-                                          _cities = snapshot.hasData
-                                              ? snapshot.data!
-                                                  .where((city) =>
-                                                      city.provinceId ==
-                                                      _provinceSelected)
-                                                  .toList()
-                                              : [];
-                                          try {
-                                            _city = _cities.isNotEmpty
-                                                ? _cities
-                                                    .firstWhere((city) =>
-                                                        city.cityId ==
-                                                        userEnreda.city)
-                                                : City(name: '', countryId: '', provinceId: '');
-                                          } catch (e) {
-                                            _city = _cities[0];
-                                          }
-                                          return StreamBuilder<List<Education>>(
-                                            stream: database.educationStream(),
-                                            builder: (context, snapshot) {
-                                              List<Education> educations = snapshot.hasData ? snapshot.data! : [];
-                                              if (educations != [] && userEnreda.educationId != null) {
-                                                _education = educations
-                                                    .firstWhere(
-                                                        (education) =>
-                                                    education.educationId == userEnreda.educationId,
-                                                    orElse: () => Education(order: 0, label: '', value: '', educationId: ''));
-                                              }
-
-                                              _country = _countries
-                                                  .firstWhere(
-                                                      (country) =>
-                                                  country.countryId == _countrySelected,
-                                                  orElse: () => Country(name: ''));
-
-                                              return StreamBuilder<SocialEntity>(
-                                                stream: database.socialEntityStream(userEnreda.assignedEntityId ?? ' '),
-                                                builder: (context, snapshot) {
-                                                  if(snapshot.hasData){
-                                                    _socialEntity = snapshot.data;
-                                                  }
-                                                  return Responsive.isDesktop(context)
-                                                      ? _buildMainDataContainer(context, userEnreda)
-                                                      : _buildMainDataContainer(context, userEnreda);
-                                                }
-                                              );
-                                            }
-                                          );
-                                        });
-                                  });
-                            });
-                      } else {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                    },
-                  );
-                });
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        });
+    return Container();
   }
 
   Widget _buildSaveDataButton(BuildContext context, UserEnreda userEnreda) {
@@ -274,49 +110,60 @@ class _PersonalDataState extends State<PersonalData> {
   }
 
   Widget _buildMainDataContainer(BuildContext context, UserEnreda userEnreda) {
+    final textTheme = Theme.of(context).textTheme;
+
     return RoundedContainer(
-      contentPadding: Responsive.isMobile(context) ?
-      EdgeInsets.all(Sizes.mainPadding) :
-      EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomTextMediumBold(text: StringConst.PERSONAL_DATA),
-            Container(
-              margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble),
-              padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble),
-              decoration: BoxDecoration(
-                border: Border.all(color: Constants.lightGray, width: 1),
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                color: AppColors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 1), // changes position of shadow
-                  ),
-                ],
+            Padding(
+              padding: EdgeInsets.only(top: Constants.mainPadding, left: Constants.mainPadding, right: Constants.mainPadding, bottom: 0),
+              child: Text(
+                StringConst.PERSONAL_DATA,
+                style: textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.bluePetrol,
+                    fontSize: 24.0),
               ),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: _buildForm(context),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 0),
+              child: Container(
+                margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5),
+                padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Constants.lightGray, width: 1),
+                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                  color: AppColors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 1), // changes position of shadow
                     ),
-                    _buildInterestsContainer(context),
-                    _buildSaveDataButton(
-                        context,
-                        userEnreda),
                   ],
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: _buildForm(context),
+                      ),
+                      _buildInterestsContainer(context),
+                      _buildSaveDataButton(
+                          context,
+                          userEnreda),
+                    ],
+                  ),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 25),
+              padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 25),
               child: _buildMyParameters(userEnreda),
             ),
           ],
@@ -328,6 +175,7 @@ class _PersonalDataState extends State<PersonalData> {
   Widget _buildMyParameters(UserEnreda userEnreda) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
+        margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5),
         padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble, horizontal: Sizes.kDefaultPaddingDouble),
         decoration: BoxDecoration(
           border: Border.all(color: Constants.lightGray, width: 1),
@@ -443,7 +291,7 @@ class _PersonalDataState extends State<PersonalData> {
           Text(
             'Intereses',
             style: TextStyle(
-              fontFamily: GoogleFonts.outfit().fontFamily,
+                fontFamily: GoogleFonts.outfit().fontFamily,
                 fontWeight: FontWeight.w300,
                 color: AppColors.bluePetrol,
                 fontSize: 24.0),
@@ -451,38 +299,38 @@ class _PersonalDataState extends State<PersonalData> {
           SpaceH20(),
           _interests.isNotEmpty
               ? Container(
-                  alignment: Alignment.centerLeft,
-                  child: ChipsChoice<String>.multiple(
-                    padding: EdgeInsets.all(0.0),
-                    value: _interestsSelected,
-                    onChanged: (val) {
-                      if (val.isEmpty) {
-                        showAlertDialog(
-                          context,
-                          title: 'Intereses',
-                          content: 'Debes seleccionar al menos un interés',
-                          defaultActionText: 'Ok',
-                        );
-                      } else {
-                        setState(() => _interestsSelected = val);
-                      }
-                    },
-                    choiceItems: C2Choice.listFrom<String, String>(
-                      source: _interests.map((e) => e.name).toList(),
-                      value: (i, v) => v,
-                      label: (i, v) => v,
-                      tooltip: (i, v) => v,
-                    ),
-                    choiceBuilder: (item, i) => CustomChip(
-                      label: item.label,
-                      selected: item.selected,
-                      onSelect: item.select!,
-                    ),
-                    wrapped: true,
-                    runSpacing: 8,
-                    choiceCheckmark: false,
-                  ),
-                )
+            alignment: Alignment.centerLeft,
+            child: ChipsChoice<String>.multiple(
+              padding: EdgeInsets.all(0.0),
+              value: _interestsSelected,
+              onChanged: (val) {
+                if (val.isEmpty) {
+                  showAlertDialog(
+                    context,
+                    title: 'Intereses',
+                    content: 'Debes seleccionar al menos un interés',
+                    defaultActionText: 'Ok',
+                  );
+                } else {
+                  setState(() => _interestsSelected = val);
+                }
+              },
+              choiceItems: C2Choice.listFrom<String, String>(
+                source: _interests.map((e) => e.name).toList(),
+                value: (i, v) => v,
+                label: (i, v) => v,
+                tooltip: (i, v) => v,
+              ),
+              choiceBuilder: (item, i) => CustomChip(
+                label: item.label,
+                selected: item.selected,
+                onSelect: item.select!,
+              ),
+              wrapped: true,
+              runSpacing: 8,
+              choiceCheckmark: false,
+            ),
+          )
               : Container(),
         ],
       ),
@@ -672,9 +520,9 @@ class _PersonalDataState extends State<PersonalData> {
 
   Widget _buildFormField(
       {required BuildContext context,
-      required String title,
-      required Widget child,
-      Widget? prefix}) {
+        required String title,
+        required Widget child,
+        Widget? prefix}) {
     final textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 14, 16, md: 15);
     return Column(
@@ -705,7 +553,7 @@ class _PersonalDataState extends State<PersonalData> {
       List<String> interestsSelectedId = [];
       _interests
           .where((interest) => _interestsSelected
-              .any((interestName) => interest.name == interestName))
+          .any((interestName) => interest.name == interestName))
           .forEach((interest) {
         interestsSelectedId.add(interest.interestId!);
       });
@@ -728,8 +576,8 @@ class _PersonalDataState extends State<PersonalData> {
           role: _role,
           abilities: _abilities,
           unemployedType: _unemployedType,
-        educationId: _education?.educationId ?? '',
-        assignedEntityId: _socialEntity?.socialEntityId ?? ''
+          educationId: _education?.educationId ?? '',
+          assignedEntityId: _socialEntity?.socialEntityId ?? ''
       );
       try {
         final database = Provider.of<Database>(context, listen: false);

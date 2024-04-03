@@ -2,6 +2,7 @@ import 'package:enreda_app/app/home/models/addressUser.dart';
 import 'package:enreda_app/app/home/models/interestsUserEnreda.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/motivation.dart';
+import 'package:enreda_app/app/home/models/personalDocument.dart';
 import 'package:enreda_app/app/home/models/profilepic.dart';
 
 class UserEnreda {
@@ -38,7 +39,8 @@ class UserEnreda {
     this.gamificationFlags = const {},
     this.nationality,
     this.assignedEntityId,
-    this.motivation
+    this.motivation,
+    this.personalDocuments = const [],
   });
 
   factory UserEnreda.fromMap(Map<String, dynamic> data, String documentId) {
@@ -167,6 +169,20 @@ class UserEnreda {
         timeSpentWeekly: data['timeSpentWeekly']
     );
 
+    List<PersonalDocument> personalDocuments = [];
+    if (data['personalDocuments'] != null) {
+      data['personalDocuments'].forEach((personalDocument) {
+        final personalDocumentsFirestore = personalDocument as Map<String, dynamic>;
+        personalDocuments.add(
+            PersonalDocument(
+              name: personalDocumentsFirestore['name'] ?? '',
+              order: personalDocumentsFirestore['order'] ?? 0,
+              document: personalDocumentsFirestore['document'] ?? '',
+            )
+        );
+      });
+    }
+
     return UserEnreda(
       email: email,
       firstName: firstName,
@@ -200,7 +216,8 @@ class UserEnreda {
       gamificationFlags: gamificationFlags,
       nationality: nationality,
       assignedEntityId: assignedEntityId,
-      motivation: motivation
+      motivation: motivation,
+      personalDocuments: personalDocuments,
     );
   }
 
@@ -237,6 +254,7 @@ class UserEnreda {
   final String? nationality;
   final String? assignedEntityId;
   final Motivation? motivation;
+  final List<PersonalDocument> personalDocuments;
 
   Map<String, dynamic> toMap() {
     InterestsUserEnreda interestUserEnreda = InterestsUserEnreda(
@@ -269,7 +287,8 @@ class UserEnreda {
       'educationId': educationId,
       'nationality': nationality,
       'assignedEntityId': assignedEntityId,
-      'motivation': motivation?.toMap()
+      'motivation': motivation?.toMap(),
+      'personalDocuments': personalDocuments.map((e) => e.toMap()).toList(),
     };
   }
 
@@ -309,7 +328,8 @@ class UserEnreda {
     Map<String, bool>? gamificationFlags,
     String? nationality,
     String? assignedEntityId,
-    Motivation? motivation
+    Motivation? motivation,
+    List<PersonalDocument>? personalDocuments,
   }) {
     return UserEnreda(
       email: email ?? this.email,
@@ -343,7 +363,8 @@ class UserEnreda {
       gamificationFlags: gamificationFlags ?? this.gamificationFlags,
       nationality: nationality ?? this.nationality,
       assignedEntityId: assignedEntityId ?? this.assignedEntityId,
-      motivation: motivation ?? this.motivation
+      motivation: motivation ?? this.motivation,
+      personalDocuments: personalDocuments ?? this.personalDocuments,
     );
   }
 

@@ -102,9 +102,10 @@ class CustomTextBold extends StatelessWidget {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(
       title,
-      style: textTheme.bodySmall?.copyWith(
+      style: textTheme.bodyMedium?.copyWith(
         height: 1.5,
-        fontWeight: FontWeight.bold
+        fontWeight: FontWeight.bold,
+        color: color,
       ),
       maxLines: 2,
       overflow: TextOverflow.ellipsis,

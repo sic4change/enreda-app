@@ -53,7 +53,7 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
           children: [
             CustomTextMediumBold(text: StringConst.MY_COMPETENCIES),
             MainContainer(
-              margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 3, left: 5, right: 5, bottom: 5),
+              margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5, left: 1, right: 1, bottom: Sizes.kDefaultPaddingDouble),
               padding: Responsive.isMobile(context) ?
               EdgeInsets.symmetric(horizontal: Sizes.kDefaultPaddingDouble, vertical: Sizes.kDefaultPaddingDouble) :
               EdgeInsets.only(left: Sizes.kDefaultPaddingDouble * 3, right: Sizes.kDefaultPaddingDouble * 3, top: Sizes.kDefaultPaddingDouble * 2),

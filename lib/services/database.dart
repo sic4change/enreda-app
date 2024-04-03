@@ -22,6 +22,7 @@ import 'package:enreda_app/app/home/models/mentorUser.dart';
 import 'package:enreda_app/app/home/models/nature.dart';
 import 'package:enreda_app/app/home/models/organization.dart';
 import 'package:enreda_app/app/home/models/organizationUser.dart';
+import 'package:enreda_app/app/home/models/personalDocumentType.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/resourceCategory.dart';
@@ -40,6 +41,7 @@ import 'package:enreda_app/services/api_path.dart';
 import 'package:enreda_app/services/firestore_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../app/home/models/certificationRequest.dart';
+import '../app/home/models/personalDocument.dart';
 import '../app/home/models/resourcePicture.dart';
 import '../app/home/models/activity.dart';
 import '../app/home/models/question.dart';
@@ -110,6 +112,7 @@ abstract class Database {
   Stream<List<GamificationFlag>> gamificationFlagsStream();
   Stream<List<SocialEntity>> socialEntitiesStream();
   Stream<List<KeepLearningOption>> keepLearningOptionsStream();
+  Stream<List<PersonalDocumentType>> personalDocumentTypeStream();
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> addUserEnreda(UserEnreda userEnreda);
@@ -132,6 +135,7 @@ abstract class Database {
   Future<void> addCertificationRequest(CertificationRequest certificationRequest);
   Future<void> updateCertificationRequest(CertificationRequest certificationRequest, bool certified, bool referenced );
   Future<void> setTrainingPill(TrainingPill trainingPill);
+  Future<void> uploadPersonalDocument(UserEnreda user, Uint8List data, String name, PersonalDocument document, int position);
   Stream<List<String>> nationsSpanishStream();
 }
 
@@ -507,6 +511,28 @@ class FirestoreDatabase implements Database {
 
 
   @override
+  Future<void> uploadPersonalDocument(UserEnreda user, Uint8List data, String name, PersonalDocument document, int position) async {
+    var firebaseStorageRef =
+    FirebaseStorage.instance.ref().child('users/${user.userId}/personalDocuments/$name');
+    UploadTask uploadTask = firebaseStorageRef.putData(data);
+    TaskSnapshot taskSnapshot = await uploadTask;
+    taskSnapshot.ref.getDownloadURL().then(
+          (value) async => {
+        if(user.personalDocuments.contains(document)){
+          user.personalDocuments.remove(document),
+        },
+        user.personalDocuments.add(
+            PersonalDocument(
+                name: document.name,
+                order: document.order,
+                document: value)
+        ),
+        await setUserEnreda(user),
+      },
+    );
+  }
+
+  @override
   Stream<List<Country>> countryFormatedStream() => _service.collectionStream(
         path: APIPath.countries(),
         queryBuilder: (query) => query.where('name', isNotEqualTo: 'Online'),
@@ -679,6 +705,14 @@ class FirestoreDatabase implements Database {
     path: APIPath.keepLearningOptions(),
     queryBuilder: (query) => query.where('keepLearningOptionId', isNotEqualTo: null),
     builder: (data, documentId) => KeepLearningOption.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+  );
+
+  @override
+  Stream<List<PersonalDocumentType>> personalDocumentTypeStream() => _service.collectionStream(
+    path: APIPath.personalDocumentType(),
+    queryBuilder: (query) => query.where('personalDocId', isNotEqualTo: null),
+    builder: (data, documentId) => PersonalDocumentType.fromMap(data, documentId),
     sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
   );
 

@@ -112,6 +112,7 @@ class ImagePath {
   static const String ICON_TRASH = '$imageDir/trash-icon.png';
   static const String LOGO_LINES = "$imageDir/enreda-lines-logo.png";
   static const String CONTROL_PANEL = '$imageDir/enreda-control-panel.png';
+  static const String ICON_RESOURCES_ENROLLED = '$imageDir/icon-inscripcion-participante.png';
 
   //Resources Categories
   static const String BACKGROUND_1 = '$imageDir/background-empleo-2X.png';
@@ -159,4 +160,11 @@ class ImagePath {
   static const String COMPETENCIES_CATEGORIES_1 = '$imageDir/competencies-categories-1.png';
   static const String COMPETENCIES_CATEGORIES_2 = '$imageDir/competencies-categories-2.png';
   static const String COMPETENCIES_CATEGORIES_3 = '$imageDir/competencies-categories-3.png';
+
+  //Personal documentation
+  static const String PERSONAL_DOCUMENTATION_DELETE = '$imageDir/icon-eliminar-entidad.png';
+  static const String PERSONAL_DOCUMENTATION_VIEW = '$imageDir/icon-ver-entidad.png';
+  static const String PERSONAL_DOCUMENTATION_ADD = '$imageDir/icon-add-entidad.png';
+  static const String PERSONAL_DOCUMENTATION_DOWNLOAD = '$imageDir/icon-descargar-entidad.png';
+  static const String NAME_IN_USE = 'Nombre en uso';
 }

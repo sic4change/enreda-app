@@ -11,6 +11,7 @@ class MainContainer extends StatelessWidget {
     this.margin,
     this.padding = const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
     this.shadowColor,
+    this.color = AppColors.white,
   }) : super(key: key);
 
   final Widget child;
@@ -18,6 +19,7 @@ class MainContainer extends StatelessWidget {
   final EdgeInsets? margin;
   final double? height, width;
   final Color? shadowColor;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,7 @@ class MainContainer extends StatelessWidget {
               spreadRadius: 1.0),
         ],
         borderRadius: BorderRadius.all(Radius.circular(15)),
-        color: Constants.white,
+        color: color,
       ),
       child: child,
       );

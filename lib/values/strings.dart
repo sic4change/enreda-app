@@ -290,12 +290,15 @@ class StringConst {
   static const String CANCEL = 'Cancelar';
   static const String CLOSE = 'Cerrar';
   static const String SAVE = 'Guardar';
+  static const String ADD = 'Añadir';
   static const String ONLY_USERS_ALERT = 'Solo los usuarios registrados pueden acceder a los recursos internos. ¿Desea entrar como usuario registrado?';
   static const String NOT_ALLOWED = '¿Te gusta este recurso?';
   static const String REGISTER = 'Registrarse';
   static String RESOURCE_LINK(String resourceId) => 'https://enredawebapp.web.app/resources/$resourceId';
   static String TRAINING_PILL_LINK(String trainingPillId) => 'https://enredawebapp.web.app/pills/$trainingPillId';
   //static String TRAINING_PILL_LINK(String trainingPillId) => 'https://test-enreda.web.app/pills/$trainingPillId';
+  static const String ENROLLED_RESOURCES = 'Recursos inscritos';
+  static const String FAVORITES_RESOURCES = 'Recursos favoritos';
 
 
   //Resource modalities
@@ -498,4 +501,13 @@ class StringConst {
 
   static const String SOMETHING_WRONG = 'Algo fue mal';
   static const String CANNOT_LOAD_DATA = 'No se pudo cargar los datos';
+
+  //Documentation
+  static const String PERSONAL_DOCUMENTATION = "Documentación personal";
+  static const String DOCUMENTATION = "Documentación";
+  static const String ADD_DOCUMENTS = "Añadir documentos";
+  static const String SET_DOCUMENT_NAME = "Introduce el nombre del documento";
+  static const String FORM_GENERIC_ERROR = 'Es obligatorio rellenar este campo';
+  static const String NAME_IN_USE = 'Nombre en uso';
+
 }

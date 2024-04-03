@@ -78,6 +78,8 @@ dependencies:
   image_cropper: ^4.0.1
   sidebarx: ^0.16.3
   circular_seek_bar: ^1.1.1
+  file_picker: ^8.0.0+1
+
 
 dev_dependencies:
   flutter_test:
@@ -191,7 +193,11 @@ flutter:
     - images/enreda-control-panel.png
     - images/gamification_logo.png
     - images/contacto-enreda.png
-
+    - images/icon-inscripcion-participante.png
+    - images/icon-eliminar-entidad.png
+    - images/icon-ver-entidad.png
+    - images/icon-add-entidad.png
+    - images/icon-descargar-entidad.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

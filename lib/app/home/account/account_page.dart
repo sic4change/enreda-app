@@ -445,7 +445,7 @@ class _AccountPageState extends State<AccountPage> {
                 text: 'Gamificación',
                 imagePath: ImagePath.ICON_GAMIFICATION_SIDEBAR,
                 onTap: () => setState(() {
-                  _currentPage = Gamification(
+                  _currentPage = GamificationPage(
                     showChatNotifier: widget.showChatNotifier,
                     goBackToCV: () => setState(() {
                       _currentPage = MyCurriculumPage();

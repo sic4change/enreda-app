@@ -36,7 +36,7 @@ class CustomTextFormFieldTitle extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 8.0),
           child: Text(
             labelText,
-            style: textTheme.button?.copyWith(
+            style: textTheme.bodySmall?.copyWith(
               height: 1.5,
               color: AppColors.greyDark,
               fontWeight: FontWeight.w700,
@@ -89,9 +89,9 @@ class CustomTextFormFieldTitle extends StatelessWidget {
       keyboardType: keyboardType,
       onChanged: onChanged,
       enabled: enabled,
-      style: textTheme.button?.copyWith(
+      style: textTheme.bodySmall?.copyWith(
         height: 1.5,
-        color: AppColors.greyDark,
+        color: AppColors.greyTxtAlt,
         fontWeight: FontWeight.w400,
         fontSize: fontSize,
       ),

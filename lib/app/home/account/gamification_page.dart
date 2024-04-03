@@ -7,8 +7,11 @@ import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
 import 'package:enreda_app/app/home/web_home_scafold.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
+import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
+import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
@@ -19,8 +22,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Gamification extends StatefulWidget {
-  const Gamification({
+class GamificationPage extends StatefulWidget {
+  const GamificationPage({
     super.key,
     required this.goBackToCV,
     required this.goBackToCompetencies,
@@ -31,10 +34,10 @@ class Gamification extends StatefulWidget {
   final ValueNotifier<bool> showChatNotifier;
 
   @override
-  State<Gamification> createState() => _GamificationState();
+  State<GamificationPage> createState() => _GamificationState();
 }
 
-class _GamificationState extends State<Gamification> {
+class _GamificationState extends State<GamificationPage> {
   String _firstName = '';
   String _lastName = '';
   int _points = 0;
@@ -50,84 +53,100 @@ class _GamificationState extends State<Gamification> {
     final database = Provider.of<Database>(context, listen: false);
     textTheme = Theme.of(context).textTheme;
 
-    return StreamBuilder(
-        stream: database.userStream(auth.currentUser!.email),
-        builder: (context, snapshot){
-          if (!snapshot.hasData) return Container();
-          if(snapshot.hasData){
-            final userEnreda = snapshot.data![0];
-            _firstName = userEnreda.firstName ?? '';
-            _lastName = userEnreda.lastName ?? '';
-            userFullName = _firstName + ' ' + _lastName;
-            _gamificationFlags = userEnreda.gamificationFlags;
-            _points = 0;
-            _gamificationFlags.forEach((key, value) {
-              if(value == true){
-                _points++;
-                print(_points);
-              }
-            });
-            print(_gamificationFlags);
-            print('Puntos finales: $_points');
-            return StreamBuilder(
-              stream: database.gamificationFlagsStream(),
-              builder: (context, snapshot){
-                if(!snapshot.hasData) return Container();
-                if(snapshot.hasData){
-                  _gamificationValues = snapshot.data!;
-                  _gamificationValues.forEach((element) {print(element.description);});
+    return RoundedContainer(
+      contentPadding: Responsive.isMobile(context) ?
+      EdgeInsets.all(Sizes.mainPadding) :
+      EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+      child: StreamBuilder(
+          stream: database.userStream(auth.currentUser!.email),
+          builder: (context, snapshot){
+            if (!snapshot.hasData) return Container();
+            if(snapshot.hasData){
+              final userEnreda = snapshot.data![0];
+              _firstName = userEnreda.firstName ?? '';
+              _lastName = userEnreda.lastName ?? '';
+              userFullName = _firstName + ' ' + _lastName;
+              _gamificationFlags = userEnreda.gamificationFlags;
+              _points = 0;
+              _gamificationFlags.forEach((key, value) {
+                if(value == true){
+                  _points++;
+                  print(_points);
+                }
+              });
+              print(_gamificationFlags);
+              print('Puntos finales: $_points');
+              return StreamBuilder(
+                stream: database.gamificationFlagsStream(),
+                builder: (context, snapshot){
+                  if(!snapshot.hasData) return Container();
+                  if(snapshot.hasData){
+                    _gamificationValues = snapshot.data!;
+                    _gamificationValues.forEach((element) {print(element.description);});
 
-                  if (_gamificationFlags.length == _gamificationValues.length
-                      && !_gamificationFlags.containsValue(false)){
-                    _allTasksDone = true;
+                    if (_gamificationFlags.length == _gamificationValues.length
+                        && !_gamificationFlags.containsValue(false)){
+                      _allTasksDone = true;
+                    }
+
+                    return Responsive.isDesktop(context)
+                        ? _gamificationWeb()
+                        : _gamificationMobile();
                   }
-
-                  return Responsive.isDesktop(context)
-                      ? _gamificationWeb()
-                      : _gamificationMobile();
+                  else{
+                    return Container();
+                  }
                 }
-                else{
-                  return Container();
-                }
-              }
-            );
-          }
-          else{
-            return Container();
-          }
-        });
+              );
+            }
+            else{
+              return Container();
+            }
+          }),
+    );
   }
 
   Widget _gamificationWeb(){
-    return SingleChildScrollView(
-      controller: ScrollController(),
-      child: Column(
-        children: [
-          Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            alignment: WrapAlignment.center,
-            direction: Axis.horizontal,
-            runSpacing: 20,
-            spacing: 20,
-            children: [
-              _getStar('BRONCE'),
-              _getStar('PLATA'),
-              _getStar('ORO'),
-            ],
-          ),
-          SpaceH20(),
-
-          _allTasksDone ? _getCertificateButtonWeb(userFullName) : Container(),
-
-          SpaceH20(),
-
-          Wrap(
+    return Stack(
+      children: [
+        CustomTextMediumBold(text: StringConst.GAMIFICATION),
+        MainContainer(
+          margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5),
+          padding: Responsive.isMobile(context) ?
+          EdgeInsets.symmetric(horizontal: Sizes.kDefaultPaddingDouble, vertical: Sizes.kDefaultPaddingDouble) :
+          EdgeInsets.only(left: Sizes.kDefaultPaddingDouble * 3, right: Sizes.kDefaultPaddingDouble * 3, top: Sizes.kDefaultPaddingDouble * 2),
+          child: SingleChildScrollView(
+            controller: ScrollController(),
+            child: Column(
               children: [
-                for(var item in _gamificationValues) _getStepTile(item),
-              ]
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  alignment: WrapAlignment.center,
+                  direction: Axis.horizontal,
+                  runSpacing: 20,
+                  spacing: 20,
+                  children: [
+                    _getStar('BRONCE'),
+                    _getStar('PLATA'),
+                    _getStar('ORO'),
+                  ],
+                ),
+                SpaceH20(),
+
+                _allTasksDone ? _getCertificateButtonWeb(userFullName) : Container(),
+
+                SpaceH20(),
+
+                Wrap(
+                    children: [
+                      for(var item in _gamificationValues) _getStepTile(item),
+                    ]
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

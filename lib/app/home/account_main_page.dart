@@ -4,6 +4,8 @@ import 'package:enreda_app/app/home/account/personal_data_page.dart';
 import 'package:enreda_app/app/home/competencies/my_competencies_page.dart';
 import 'package:enreda_app/app/home/control_panel/control_panel_page.dart';
 import 'package:enreda_app/app/home/curriculum/my_curriculum_page.dart';
+import 'package:enreda_app/app/home/documentation/documentation_page.dart';
+import 'package:enreda_app/app/home/enreda-contact/enreda-contact-page.dart';
 import 'package:enreda_app/app/home/resources/pages/favorite_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
 import 'package:enreda_app/app/home/side_bar_widget.dart';
@@ -29,11 +31,12 @@ import 'models/userEnreda.dart';
 
 
 class WebHome extends StatefulWidget {
-  const WebHome({Key? key})
+  const WebHome({Key? key, required this.showChatNotifier})
       : super(key: key);
 
   static final SidebarXController controller = SidebarXController(selectedIndex: 0, extended: true);
   static ValueNotifier<int> selectedIndex = ValueNotifier(2);
+  final ValueNotifier<bool> showChatNotifier;
 
   static goToControlPanel() {
     WebHome.selectedIndex.value = 2;
@@ -45,19 +48,9 @@ class WebHome extends StatefulWidget {
     WebHome.controller.selectIndex(1);
   }
 
-  static goToEntities() {
-    WebHome.selectedIndex.value = 2;
-    WebHome.controller.selectIndex(4);
-  }
-
   static goResources() {
     WebHome.selectedIndex.value = 2;
     WebHome.controller.selectIndex(2);
-  }
-
-  static goToolBox() {
-    WebHome.selectedIndex.value = 2;
-    WebHome.controller.selectIndex(3);
   }
 
   @override
@@ -152,7 +145,19 @@ class _WebHomeState extends State<WebHome> {
                                 case 4: _key.currentState?.closeDrawer();
                                 return MyResourcesPage();
                                 case 5: _key.currentState?.closeDrawer();
-                                return Container();
+                                return EnredaContactPage();
+                                case 6: _key.currentState?.closeDrawer();
+                                return ParticipantDocumentationPage(participantUser: user,);
+                                case 7: _key.currentState?.closeDrawer();
+                                return GamificationPage(
+                                  showChatNotifier: widget.showChatNotifier,
+                                  goBackToCV: () => setState(() {
+                                    WebHome.controller.selectIndex(1);
+                                  }),
+                                  goBackToCompetencies: () => setState(() {
+                                    WebHome.controller.selectIndex(3);
+                                  }),
+                                );
                                 default:
                                   return Container();
                               }

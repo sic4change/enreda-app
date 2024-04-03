@@ -45,7 +45,7 @@ class _CupertinoScaffoldAnonymousState extends State<CupertinoScaffoldAnonymous>
       TabItem.account: (_) => Stack(
             children: [
               BackgroundMobile(backgroundHeight: BackgroundHeight.Small),
-              WebHome(),
+              WebHome(showChatNotifier: widget.showChatNotifier,),
             ],
           )
     };

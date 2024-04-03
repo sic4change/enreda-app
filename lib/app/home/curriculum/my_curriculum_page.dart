@@ -168,73 +168,83 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-            padding: EdgeInsets.only(
-                top: 20.0, bottom: 20, right: 5, left: 20),
-            width: 330,
-            child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        !kIsWeb ?
-                        ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(60)),
-                          child:
-                          Center(
-                            child:
-                            profilePic == "" ?
-                            Container(
-                              color:  Colors.transparent,
-                              height: 120,
-                              width: 120,
-                              child: Image.asset(ImagePath.USER_DEFAULT),
-                            ):
-                            CachedNetworkImage(
-                                width: 120,
-                                height: 120,
-                                fit: BoxFit.cover,
-                                alignment: Alignment.center,
-                                imageUrl: profilePic),
-                          ),
-                        ):
-                        ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(60)),
-                          child:
-                          profilePic == "" ?
-                          Container(
-                            color:  Colors.transparent,
-                            height: 120,
-                            width: 120,
-                            child: Image.asset(ImagePath.USER_DEFAULT),
-                          ):
-                          PrecacheAvatarCard(
-                            imageUrl: profilePic,
-                            height: 120,
-                            width: 120,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  SpaceH20(),
-                  _buildPersonalData(context),
-                  SpaceH20(),
-                  _buildAboutMe(context),
-                  SpaceH20(),
-                  _buildMyDataOfInterest(context),
-                  SpaceH20(),
-                  _buildMyLanguages(context),
-                  SpaceH20(),
-                  _buildMyReferences(context, user),
+          width: Responsive.isDesktop(context) ? 400 : Responsive.isDesktopS(context) ? 400.0 : 400,
+          padding: EdgeInsets.only(
+            left: Sizes.mainPadding * 2,
+            top: Sizes.mainPadding * 2,
+          ),
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  AppColors.turquoise.withOpacity(0.15),
+                  AppColors.turquoiseUltraLight.withOpacity(0.13)
                 ],
+              )
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    !kIsWeb ?
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(60)),
+                      child:
+                      Center(
+                        child:
+                        profilePic == "" ?
+                        Container(
+                          color:  Colors.transparent,
+                          height: 120,
+                          width: 120,
+                          child: Image.asset(ImagePath.USER_DEFAULT),
+                        ):
+                        CachedNetworkImage(
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.cover,
+                            alignment: Alignment.center,
+                            imageUrl: profilePic),
+                      ),
+                    ):
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(60)),
+                      child:
+                      profilePic == "" ?
+                      Container(
+                        color:  Colors.transparent,
+                        height: 120,
+                        width: 120,
+                        child: Image.asset(ImagePath.USER_DEFAULT),
+                      ):
+                      PrecacheAvatarCard(
+                        imageUrl: profilePic,
+                        height: 120,
+                        width: 120,
+                      ),
+                    )
+                  ],
+                ),
               ),
-            )),
+              SpaceH20(),
+              _buildPersonalData(context),
+              SpaceH20(),
+              _buildAboutMe(context),
+              SpaceH20(),
+              _buildMyDataOfInterest(context),
+              SpaceH20(),
+              _buildMyLanguages(context),
+              SpaceH20(),
+              _buildMyReferences(context, user),
+            ],
+          ),
+        ),
         SpaceW20(),
         Container(
           width: 600,
@@ -247,7 +257,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 style: textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-                    color: AppColors.penBlue),
+                    color: AppColors.turquoiseBlue),
               ),
               SpaceH30(),
               _buildMyEducation(context, user),
@@ -274,20 +284,32 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           CustomTextMediumBold(text: StringConst.MY_CV),
           MainContainer(
             height: MediaQuery.of(context).size.height,
-            padding: Responsive.isMobile(context) ?
-            EdgeInsets.all(Sizes.mainPadding) :
-            EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+            padding: EdgeInsets.all(0),
             margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                    width: Responsive.isDesktop(context) ? 330 : Responsive.isDesktopS(context) ? 290.0 : 290,
+                    width: Responsive.isDesktop(context) ? 400 : Responsive.isDesktopS(context) ? 400.0 : 400,
                     height: double.infinity,
+                    padding: EdgeInsets.only(
+                      left: Sizes.mainPadding * 2,
+                      top: Sizes.mainPadding * 2,
+                    ),
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            AppColors.turquoise.withOpacity(0.15),
+                            AppColors.turquoiseUltraLight.withOpacity(0.13)
+                          ],
+                        )
+                    ),
                     child: SingleChildScrollView(
                       controller: ScrollController(),
                       child: Padding(
-                        padding: EdgeInsets.only(right: 10.0),
+                        padding: EdgeInsets.only(right: 50.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -310,23 +332,29 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 Expanded(
                     child: SingleChildScrollView(
                       controller: ScrollController(),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildCVHeader(context, user, profilePic, competenciesNames),
-                          //_buildMyCareer(context),
-                          SpaceH30(),
-                          _buildMyEducation(context, user),
-                          SpaceH30(),
-                          _buildMySecondaryEducation(context, user),
-                          SpaceH30(),
-                          _buildMyExperiences(context, user),
-                          SpaceH30(),
-                          _buildMyCompetencies(context, user),
-                          SpaceH30(),
-                          _buildFinalCheck(context, user),
-                        ],
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          right: Sizes.mainPadding * 2,
+                          top: Sizes.mainPadding * 2,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildCVHeader(context, user, profilePic, competenciesNames),
+                            //_buildMyCareer(context),
+                            SpaceH30(),
+                            _buildMyEducation(context, user),
+                            SpaceH30(),
+                            _buildMySecondaryEducation(context, user),
+                            SpaceH30(),
+                            _buildMyExperiences(context, user),
+                            SpaceH30(),
+                            _buildMyCompetencies(context, user),
+                            SpaceH30(),
+                            _buildFinalCheck(context, user),
+                          ],
+                        ),
                       ),
                     ))
               ],
@@ -662,7 +690,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               child: Container(
                 width: 120,
                 height: 120,
-                color: Colors.white,
+                color: Colors.transparent,
                 child: Stack(
                   children: [
                     Container(

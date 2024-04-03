@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../utils/const.dart';
 
 class FavoriteResourcesPage extends StatelessWidget {
   @override
@@ -28,76 +27,79 @@ class FavoriteResourcesPage extends StatelessWidget {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
 
-    return StreamBuilder<List<Resource>>(
-          stream: database.likeResourcesStream(auth.currentUser?.uid ?? ''),
-          builder: (context, snapshot) {
-            return snapshot.hasData && snapshot.data!.isNotEmpty?
-            ListItemBuilderGrid<Resource>(
-              snapshot: snapshot,
-              fitSmallerLayout: false,
-              itemBuilder: (context, resource) {
-                return StreamBuilder(
-                  stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
-                  resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
-                      : database.mentorStream(resource.organizer),
-                  builder: (context, snapshotOrganizer) {
-                    if (snapshotOrganizer.hasData) {
-                      if (resource.organizerType == 'Organización') {
-                        final organization = snapshotOrganizer.data as Organization;
-                        resource.organizerName = organization.name;
-                        resource.organizerImage = organization.photo;
-                      } else if (resource.organizerType == 'Entidad Social') {
-                        final organization = snapshotOrganizer.data as SocialEntity;
-                        resource.organizerName = organization.name;
-                        resource.organizerImage = organization.photo;
-                      } else {
-                        final mentor = snapshotOrganizer.data as UserEnreda;
-                        resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
-                        resource.organizerImage = mentor.photo;
+    return Container(
+      margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 5),
+      child: StreamBuilder<List<Resource>>(
+            stream: database.likeResourcesStream(auth.currentUser?.uid ?? ''),
+            builder: (context, snapshot) {
+              return snapshot.hasData && snapshot.data!.isNotEmpty?
+              ListItemBuilderGrid<Resource>(
+                snapshot: snapshot,
+                fitSmallerLayout: false,
+                itemBuilder: (context, resource) {
+                  return StreamBuilder(
+                    stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
+                    resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
+                        : database.mentorStream(resource.organizer),
+                    builder: (context, snapshotOrganizer) {
+                      if (snapshotOrganizer.hasData) {
+                        if (resource.organizerType == 'Organización') {
+                          final organization = snapshotOrganizer.data as Organization;
+                          resource.organizerName = organization.name;
+                          resource.organizerImage = organization.photo;
+                        } else if (resource.organizerType == 'Entidad Social') {
+                          final organization = snapshotOrganizer.data as SocialEntity;
+                          resource.organizerName = organization.name;
+                          resource.organizerImage = organization.photo;
+                        } else {
+                          final mentor = snapshotOrganizer.data as UserEnreda;
+                          resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
+                          resource.organizerImage = mentor.photo;
+                        }
                       }
-                    }
-                    resource.setResourceTypeName();
-                    resource.setResourceCategoryName();
-                    return StreamBuilder<Country>(
-                        stream: database.countryStream(resource.country),
-                        builder: (context, snapshot) {
-                          final country = snapshot.data;
-                          resource.countryName =
-                          country == null ? '' : country.name;
-                          return StreamBuilder<Province>(
-                            stream:
-                            database.provinceStream(resource.province),
-                            builder: (context, snapshot) {
-                              final province = snapshot.data;
-                              resource.provinceName =
-                              province == null ? '' : province.name;
-                              return StreamBuilder<City>(
-                                  stream: database.cityStream(resource.city),
-                                  builder: (context, snapshot) {
-                                    final city = snapshot.data;
-                                    resource.cityName =
-                                    city == null ? '' : city.name;
-                                    return Container(
-                                      key: Key(
-                                          'resource-${resource.resourceId}'),
-                                      child: ResourceListTile(
-                                        resource: resource,
-                                        onTap: () => context.go(
-                                            '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                      ),
-                                    );
-                                  });
-                            },
-                          );
-                        });
-                  },
-                );
-              },
-              emptyTitle: 'Sin recursos',
-              emptyMessage: 'No tienes recursos en favoritos',
-            ): snapshot.connectionState == ConnectionState.active
-                ? NoResourcesIlustration(title: '¡No tienes ningún recurso en favoritos!', imagePath: ImagePath.FAVORITES_ILLUSTRATION,)
-                : Center(child: CircularProgressIndicator());;
-          });
+                      resource.setResourceTypeName();
+                      resource.setResourceCategoryName();
+                      return StreamBuilder<Country>(
+                          stream: database.countryStream(resource.country),
+                          builder: (context, snapshot) {
+                            final country = snapshot.data;
+                            resource.countryName =
+                            country == null ? '' : country.name;
+                            return StreamBuilder<Province>(
+                              stream:
+                              database.provinceStream(resource.province),
+                              builder: (context, snapshot) {
+                                final province = snapshot.data;
+                                resource.provinceName =
+                                province == null ? '' : province.name;
+                                return StreamBuilder<City>(
+                                    stream: database.cityStream(resource.city),
+                                    builder: (context, snapshot) {
+                                      final city = snapshot.data;
+                                      resource.cityName =
+                                      city == null ? '' : city.name;
+                                      return Container(
+                                        key: Key(
+                                            'resource-${resource.resourceId}'),
+                                        child: ResourceListTile(
+                                          resource: resource,
+                                          onTap: () => context.go(
+                                              '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                        ),
+                                      );
+                                    });
+                              },
+                            );
+                          });
+                    },
+                  );
+                },
+                emptyTitle: 'Sin recursos',
+                emptyMessage: 'No tienes recursos en favoritos',
+              ): snapshot.connectionState == ConnectionState.active
+                  ? NoResourcesIlustration(title: '¡No tienes ningún recurso en favoritos!', imagePath: ImagePath.FAVORITES_ILLUSTRATION,)
+                  : Center(child: CircularProgressIndicator());;
+            }),
+    );
   }
 }

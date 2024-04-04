@@ -57,7 +57,6 @@ abstract class Database {
   Stream<List<Resource>> likeResourcesStream(String userId);
   Stream<List<Resource>> recommendedResourcesStream(UserEnreda? user);
   Stream<UserEnreda> enredaUserStream(String userId);
-  Stream<UserEnreda> userAssignedIdStream(String userId);
   Stream<List<Certificate>> myCertificatesStream(String userId);
   Stream<List<Organization>> organizationsStream();
   Stream<Organization> organizationStream(String organizationId);
@@ -316,12 +315,6 @@ class FirestoreDatabase implements Database {
         builder: (data, documentId) => UserEnreda.fromMap(data, documentId),
       );
 
-  @override
-  Stream<UserEnreda> userAssignedIdStream(String userId) =>
-      _service.documentStream<UserEnreda>(
-        path: APIPath.user(userId),
-        builder: (data, documentId) => UserEnreda.fromMap(data, documentId),
-      );
 
   @override
   Stream<List<Organization>> organizationsStream() => _service.collectionStream(

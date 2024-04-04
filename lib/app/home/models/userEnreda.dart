@@ -39,6 +39,7 @@ class UserEnreda {
     this.gamificationFlags = const {},
     this.nationality,
     this.assignedEntityId,
+    this.assignedById,
     this.motivation,
     this.personalDocuments = const [],
   });
@@ -161,6 +162,7 @@ class UserEnreda {
 
     final String? nationality = data['nationality'];
     final String? assignedEntityId = data['assignedEntityId'];
+    final String? assignedById = data['assignedById'];
 
     final Motivation? motivation = new Motivation(
         abilities: abilities,
@@ -218,6 +220,7 @@ class UserEnreda {
       assignedEntityId: assignedEntityId,
       motivation: motivation,
       personalDocuments: personalDocuments,
+      assignedById: assignedById,
     );
   }
 
@@ -253,8 +256,10 @@ class UserEnreda {
   final Map<String, bool> gamificationFlags;
   final String? nationality;
   final String? assignedEntityId;
+  final String? assignedById;
   final Motivation? motivation;
   final List<PersonalDocument> personalDocuments;
+
 
   Map<String, dynamic> toMap() {
     InterestsUserEnreda interestUserEnreda = InterestsUserEnreda(
@@ -274,7 +279,6 @@ class UserEnreda {
       'abilities': abilities,
       'certifications': certifications,
       'role': role,
-      'unemployedType': unemployedType,
       'showChatWelcome': showChatWelcome,
       'competencies': competencies,
       'dataOfInterest': dataOfInterest,
@@ -287,6 +291,7 @@ class UserEnreda {
       'educationId': educationId,
       'nationality': nationality,
       'assignedEntityId': assignedEntityId,
+      'assignedById' : assignedById,
       'motivation': motivation?.toMap(),
       'personalDocuments': personalDocuments.map((e) => e.toMap()).toList(),
     };
@@ -328,6 +333,7 @@ class UserEnreda {
     Map<String, bool>? gamificationFlags,
     String? nationality,
     String? assignedEntityId,
+    String? assignedById,
     Motivation? motivation,
     List<PersonalDocument>? personalDocuments,
   }) {
@@ -363,6 +369,7 @@ class UserEnreda {
       gamificationFlags: gamificationFlags ?? this.gamificationFlags,
       nationality: nationality ?? this.nationality,
       assignedEntityId: assignedEntityId ?? this.assignedEntityId,
+      assignedById: assignedById ?? this.assignedById,
       motivation: motivation ?? this.motivation,
       personalDocuments: personalDocuments ?? this.personalDocuments,
     );

@@ -91,6 +91,7 @@ class _PersonalDataState extends State<PersonalData> {
   City? _city;
   Education? _education;
   SocialEntity? _socialEntity;
+  String? _assignedEntityId;
   TextEditingController _textFieldController = TextEditingController();
 
 
@@ -136,6 +137,7 @@ class _PersonalDataState extends State<PersonalData> {
                             _birthday == null ? userEnreda.birthday : _birthday;
                         _postalCode = userEnreda.address?.postalCode ?? '';
                         _specificInterest = userEnreda.specificInterests;
+                        _assignedEntityId = userEnreda.assignedEntityId;
                         if (_interestsSelected.isEmpty) {
                           _interestsSelected = userEnreda.interests;
                           List<String> interestSelectedName = [];
@@ -305,7 +307,7 @@ class _PersonalDataState extends State<PersonalData> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: _buildForm(context),
+                      child: _buildForm(context, userEnreda),
                     ),
                     _buildInterestsContainer(context),
                     _buildSaveDataButton(
@@ -379,7 +381,7 @@ class _PersonalDataState extends State<PersonalData> {
             ),
             _buildMyProfileRow(
               text: 'Eliminar cuenta',
-              textStyle: textTheme.bodyText1?.copyWith(
+              textStyle: textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Constants.deleteRed,
                   fontSize: 16.0),
@@ -489,7 +491,7 @@ class _PersonalDataState extends State<PersonalData> {
     );
   }
 
-  Widget _buildForm(BuildContext context) {
+  Widget _buildForm(BuildContext context, UserEnreda userEnreda) {
     final database = Provider.of<Database>(context, listen: false);
     return
       Form(
@@ -656,6 +658,7 @@ class _PersonalDataState extends State<PersonalData> {
                 });
               }),
               SpaceH20(),
+              if(_assignedEntityId != null && _assignedEntityId != "")
               streamBuilderForSocialEntity(context, _socialEntity, (value){
                 setState(() {
                   _socialEntity = value;

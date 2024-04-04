@@ -117,7 +117,7 @@ class _WebHomeState extends State<WebHome> {
           final isSmallScreen = MediaQuery.of(context).size.width < 600;
           return Scaffold(
             key: _key,
-            drawer: SideBarWidget(controller: WebHome.controller, profilePic: profilePic, userName: userName, keyWebHome: _key,),
+            drawer: SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,),
             body: Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: 1600),
@@ -125,7 +125,7 @@ class _WebHomeState extends State<WebHome> {
                   padding: Responsive.isMobile(context) ? const EdgeInsets.all(0.0) : const EdgeInsets.only(left: 20.0,),
                   child: Row(
                     children: [
-                      if(!isSmallScreen) SideBarWidget(controller: WebHome.controller, profilePic: profilePic, userName: userName, keyWebHome: _key,),
+                      if(!isSmallScreen) SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,),
                       if (WebHome.selectedIndex.value == 0) Expanded(child: Center(child: bodyWidget[0]))
                       else if (WebHome.selectedIndex.value == 1) Expanded(child: Center(child: bodyWidget[1]))
                       else Expanded(child: Center(child: Padding(
@@ -133,34 +133,46 @@ class _WebHomeState extends State<WebHome> {
                         child: AnimatedBuilder(
                             animation: WebHome.controller,
                             builder: (context, child){
+                              bool hasEntity = user.assignedEntityId == null || user.assignedEntityId == "" ? false : true;
+                              _key.currentState?.closeDrawer();
+                              if (!hasEntity && WebHome.controller.selectedIndex > 4) {
+                                WebHome.controller.selectIndex(WebHome.controller.selectedIndex + 2);
+                              }
                               switch(WebHome.controller.selectedIndex){
-                                case 0: _key.currentState?.closeDrawer();
-                                return ControlPanelPage(user: user,);
-                                case 1: _key.currentState?.closeDrawer();
-                                return MyCurriculumPage();
-                                case 2: _key.currentState?.closeDrawer();
-                                return PersonalData();
-                                case 3: _key.currentState?.closeDrawer();
-                                return MyCompetenciesPage();
-                                case 4: _key.currentState?.closeDrawer();
-                                return MyResourcesPage();
-                                case 5: _key.currentState?.closeDrawer();
-                                return EnredaContactPage();
-                                case 6: _key.currentState?.closeDrawer();
-                                return ParticipantDocumentationPage(participantUser: user,);
-                                case 7: _key.currentState?.closeDrawer();
-                                return GamificationPage(
-                                  showChatNotifier: widget.showChatNotifier,
-                                  goBackToCV: () => setState(() {
-                                    WebHome.controller.selectIndex(1);
-                                  }),
-                                  goBackToCompetencies: () => setState(() {
-                                    WebHome.controller.selectIndex(3);
-                                  }),
-                                );
+                                case 0:
+                                  return ControlPanelPage(user: user,);
+                                case 1:
+                                  return MyCurriculumPage();
+                                case 2:
+                                  return PersonalData();
+                                case 3:
+                                  return MyCompetenciesPage();
+                                case 4:
+                                  return MyResourcesPage();
+                                case 5:
+                                  if (hasEntity) {
+                                    return EnredaContactPage();
+                                  }
+                                  break;
+                                case 6:
+                                  if (hasEntity) {
+                                    return ParticipantDocumentationPage(participantUser: user);
+                                  }
+                                  break;
+                                case 7:
+                                  return GamificationPage(
+                                    showChatNotifier: widget.showChatNotifier,
+                                    goBackToCV: () => setState(() {
+                                      WebHome.controller.selectIndex(1);
+                                    }),
+                                    goBackToCompetencies: () => setState(() {
+                                      WebHome.controller.selectIndex(3);
+                                    }),
+                                  );
                                 default:
                                   return Container();
                               }
+                              return Container();
                             },
                           ),
                       ),))

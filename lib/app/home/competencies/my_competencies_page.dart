@@ -2,10 +2,13 @@ import 'package:enreda_app/app/home/competencies/competencies_item_builder.dart'
 import 'package:enreda_app/app/home/competencies/expandable_competency_tile.dart';
 import 'package:enreda_app/app/home/curriculum/validate_competency_button.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
+import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
@@ -51,7 +54,23 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
       child: SingleChildScrollView(
         child: Stack(
           children: [
-            CustomTextMediumBold(text: StringConst.MY_COMPETENCIES),
+            Container(
+              height: 34,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CustomTextMediumBold(text: StringConst.MY_COMPETENCIES),
+                  SpaceW8(),
+                  Container(
+                    width: 34,
+                    child: PillTooltip(
+                      title: StringConst.PILL_COMPETENCIES,
+                      pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
+                    ),
+                  )
+                ],
+              ),
+            ),
             MainContainer(
               margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5, left: 1, right: 1, bottom: Sizes.kDefaultPaddingDouble),
               padding: Responsive.isMobile(context) ?

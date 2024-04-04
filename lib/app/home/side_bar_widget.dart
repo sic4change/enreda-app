@@ -1,6 +1,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/account_main_page.dart';
+import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/custom_sidebar_button.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
@@ -18,11 +19,11 @@ class SideBarWidget extends StatefulWidget {
     Key? key,
     required SidebarXController controller,
     required this.profilePic,
-    required this.userName,
+    required this.user,
     required this.keyWebHome}) : _controller = controller, super(key: key);
   final SidebarXController _controller;
   final String profilePic;
-  final String userName;
+  final UserEnreda user;
   final GlobalKey<ScaffoldState> keyWebHome;
 
   @override
@@ -113,7 +114,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                     _buildMyUserPhoto(context, widget.profilePic),
                     Padding(
                       padding: const EdgeInsets.all(5.0),
-                      child: CustomTextBoldCenter(title: widget.userName),
+                      child: CustomTextBoldCenter(title: '${widget.user.firstName ?? ""} ${widget.user.lastName ?? ""}'),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0, right: 10, top: 0.0, bottom: 0),
@@ -140,8 +141,8 @@ class _SideBarWidgetState extends State<SideBarWidget> {
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PERSONAL_DATA_SIDEBAR), width: 20,), label: 'Datos personales' , onTap: _setSelectedIndexToOne),
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: 'Mis competencias' , onTap: _setSelectedIndexToOne),
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: 'Mis recursos', onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_CONTACT_SIDEBAR), width: 20,), label: 'Contacto Enreda', onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_DOCUMENTS_SIDEBAR), width: 20,), label: 'Mis documentos', onTap: _setSelectedIndexToOne),
+        if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_CONTACT_SIDEBAR), width: 20,), label: 'Contacto Enreda', onTap: _setSelectedIndexToOne),
+        if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_DOCUMENTS_SIDEBAR), width: 20,), label: 'Mis documentos', onTap: _setSelectedIndexToOne),
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_GAMIFICATION_SIDEBAR), width: 20,), label: 'Gamificación', onTap: _setSelectedIndexToOne),
       ],
     );

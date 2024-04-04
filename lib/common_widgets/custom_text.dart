@@ -102,10 +102,10 @@ class CustomTextBold extends StatelessWidget {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(
       title,
-      style: textTheme.bodyMedium?.copyWith(
+      style: textTheme.headlineLarge?.copyWith(
         height: 1.5,
-        fontWeight: FontWeight.bold,
         color: color,
+        fontSize: fontSize
       ),
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
@@ -221,6 +221,27 @@ class CustomTextMediumBold extends StatelessWidget {
         color: AppColors.turquoiseBlue,
         height: 1.5,
         fontSize: fontSize,
+      ),
+    );
+  }
+}
+
+class CustomTextLargeBold extends StatelessWidget {
+
+  const CustomTextLargeBold({super.key,  required this.text });
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    double fontSize = responsiveSize(context, 15, 22, md: 20);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Text(
+      text,
+      textAlign: TextAlign.center,
+      style: textTheme.bodyLarge?.copyWith(
+        color: AppColors.turquoiseBlue,
+        height: 1.5,
+        fontSize: fontSize
       ),
     );
   }

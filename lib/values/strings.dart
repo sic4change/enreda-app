@@ -510,4 +510,8 @@ class StringConst {
   static const String FORM_GENERIC_ERROR = 'Es obligatorio rellenar este campo';
   static const String NAME_IN_USE = 'Nombre en uso';
 
+  //AssignedContact
+  static const String ASSIGNED_USER = 'Tu técnica de referencia es ';
+  static const String ASSIGNED_CONTACT = 'Podrás ponerte en contacto con ella o con la sede de SIC4Change y trazar tu ruta hacia el empleo.';
+
 }

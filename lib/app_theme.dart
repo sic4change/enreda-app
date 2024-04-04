@@ -121,6 +121,11 @@ class AppTheme {
       color: AppColors.black,
       fontStyle: FontStyle.normal,
     ),
+    headlineLarge: GoogleFonts.inter(
+      fontSize: Sizes.TEXT_SIZE_18,
+      fontWeight: FontWeight.w600,
+      color: AppColors.primaryText2,
+    ),
     labelLarge: GoogleFonts.lato(
       fontSize: Sizes.TEXT_SIZE_16,
       color: AppColors.black,

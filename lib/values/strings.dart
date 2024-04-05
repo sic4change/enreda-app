@@ -247,6 +247,7 @@ class StringConst {
   static const String NAME = "Nombre";
   static const String NAME_ERROR = "El nombre no puede estar vacío";
   static const String EMAIL = "Email";
+  static const String CALL = "Llamar";
   static const String EMAIL_ERROR = "El email no es válido";
   static const String EMAIL_REGISTERED = "El email ya se encuentra registrado";
   static const String DESCRIPTION = "Descripción";
@@ -512,6 +513,9 @@ class StringConst {
 
   //AssignedContact
   static const String ASSIGNED_USER = 'Tu técnica de referencia es ';
-  static const String ASSIGNED_CONTACT = 'Podrás ponerte en contacto con ella o con la sede de SIC4Change y trazar tu ruta hacia el empleo.';
+  static const String ASSIGNED_CONTACT1 = 'Podrás ponerte en contacto con ella o con la sede de ';
+  static const String ASSIGNED_CONTACT2 = ' y trazar tu ruta hacia el empleo.';
+  static const String ASSIGNED_CONTACT_TITLE = 'Técnica de inserción laboral';
+  static const String ASSIGNED_CONTACT_DESCRIPTION = 'Técnica de inserción laboral';
 
 }

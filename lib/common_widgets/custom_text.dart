@@ -70,8 +70,9 @@ class CustomTextBody extends StatelessWidget {
 
 class CustomText extends StatelessWidget {
 
-  CustomText({ required this.title });
+  CustomText({ required this.title, this.color = AppColors.greyAlt });
   final String title;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,7 @@ class CustomText extends StatelessWidget {
     return Text(
       title,
       style: textTheme.bodySmall?.copyWith(
-        color: AppColors.greyAlt,
+        color: color,
         height: 1.5,
         fontSize: fontSize,
       ),
@@ -154,17 +155,23 @@ class CustomTextChip extends StatelessWidget {
 
 class CustomTextBoldCenter extends StatelessWidget {
 
-  const CustomTextBoldCenter({super.key,  required this.title, this.color = AppColors.greyTxtAlt, this.height = 1.5});
+  const CustomTextBoldCenter({super.key,
+    required this.title,
+    this.color = AppColors.greyTxtAlt,
+    this.height = 1.5,
+    this.padding = const EdgeInsets.all(8.0),
+  });
   final String title;
   final Color color;
   final double height;
+  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
     double fontSize = responsiveSize(context, 16, 20, md: 18);
     TextTheme textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: padding,
       child: Text(
         title,
         textAlign: TextAlign.center,

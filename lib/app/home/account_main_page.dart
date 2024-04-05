@@ -5,7 +5,7 @@ import 'package:enreda_app/app/home/competencies/my_competencies_page.dart';
 import 'package:enreda_app/app/home/control_panel/control_panel_page.dart';
 import 'package:enreda_app/app/home/curriculum/my_curriculum_page.dart';
 import 'package:enreda_app/app/home/documentation/documentation_page.dart';
-import 'package:enreda_app/app/home/enreda-contact/enreda-contact-page.dart';
+import 'package:enreda_app/app/home/enreda-contact/enreda_contact_page.dart';
 import 'package:enreda_app/app/home/resources/pages/favorite_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
 import 'package:enreda_app/app/home/side_bar_widget.dart';

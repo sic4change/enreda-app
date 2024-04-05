@@ -155,6 +155,7 @@ class ImagePath {
   static const String GAMIFICATION_CV_ICON = '$imageDir/gamification_cv_icon.png';
   static const String PARTICIPANT_DOCUMENTATION_ICON = '$imageDir/participant_documentation_icon.png';
   static const String CONTACT_ICON = '$imageDir/contacto-enreda.png';
+  static const String WHATSAPP_ICON = '$imageDir/logos_whatsapp-icon.png';
 
   //Competencies Categories
   static const String COMPETENCIES_CATEGORIES_1 = '$imageDir/competencies-categories-1.png';

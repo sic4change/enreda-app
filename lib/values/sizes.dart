@@ -9,6 +9,7 @@ class Sizes {
   static const double SIZE_80 = 80.0;
   static const double SIZE_60 = 60.0;
   static const double SIZE_48 = 48.0;
+  static const double SIZE_45 = 45.0;
   static const double SIZE_40 = 40.0;
   static const double SIZE_36 = 36.0;
   static const double SIZE_32 = 32.0;
@@ -203,6 +204,7 @@ class Sizes {
   static const double RADIUS_80 = 80.0;
   static const double RADIUS_70 = 70.0;
   static const double RADIUS_60 = 60.0;
+  static const double RADIUS_45 = 60.0;
   static const double RADIUS_40 = 40.0;
   static const double RADIUS_32 = 32.0;
   static const double RADIUS_30 = 30.0;

@@ -198,6 +198,7 @@ flutter:
     - images/icon-ver-entidad.png
     - images/icon-add-entidad.png
     - images/icon-descargar-entidad.png
+    - images/background-recursos.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

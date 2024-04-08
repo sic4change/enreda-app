@@ -116,7 +116,7 @@ class AppTheme {
       fontWeight: FontWeight.w600,
       color: AppColors.primaryText2,
     ),
-    bodyMedium: GoogleFonts.inter(
+    bodyMedium: GoogleFonts.outfit(
       fontSize: Sizes.TEXT_SIZE_14,
       color: AppColors.black,
       fontStyle: FontStyle.normal,

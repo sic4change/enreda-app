@@ -24,6 +24,7 @@ import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
+import 'package:enreda_app/app/home/resources/global.dart' as globals;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,9 @@ import 'package:provider/provider.dart';
 import '../../../../utils/functions.dart';
 
 class ResourcesPage extends StatefulWidget {
+  ResourcesPage({Key? key})
+      : super(key: key);
+
   @override
   State<ResourcesPage> createState() => _ResourcesPageState();
 

@@ -220,11 +220,31 @@ class CustomTextMediumBold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = responsiveSize(context, 13, 22, md: 15);
+    double fontSize = responsiveSize(context, 15, 20, md: 16);
     TextTheme textTheme = Theme.of(context).textTheme;
     return Text(
       text,
       style: textTheme.titleMedium?.copyWith(
+        color: AppColors.turquoiseBlue,
+        height: 1.5,
+        fontSize: fontSize,
+      ),
+    );
+  }
+}
+
+class CustomTextMedium extends StatelessWidget {
+
+  const CustomTextMedium({super.key,  required this.text });
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    double fontSize = responsiveSize(context, 15, 20, md: 16);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Text(
+      text,
+      style: textTheme.bodyMedium?.copyWith(
         color: AppColors.turquoiseBlue,
         height: 1.5,
         fontSize: fontSize,

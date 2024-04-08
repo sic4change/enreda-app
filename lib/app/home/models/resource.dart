@@ -41,6 +41,8 @@ class Resource {
     this.resourcePhoto,
     this.searchText,
     required this.createdate,
+    this.interests,
+    this.competencies,
   });
 
   factory Resource.fromMap(Map<String, dynamic> data, String documentId) {
@@ -84,6 +86,14 @@ class Resource {
     List<String> likes = [];
     if (data['likes'] != null) {
       data['likes'].forEach((like) {likes.add(like.toString());});
+    }
+    List<String>? interests = [];
+    if (data['interests'] != null) {
+      data['interests'].forEach((interest) {interests.add(interest.toString());});
+    }
+    List<String>? competencies = [];
+    if (data['competencies'] != null) {
+      data['competencies'].forEach((competency) {competencies.add(competency.toString());});
     }
     final String? contactEmail = data['contactEmail'];
     final String? contactPhone = data['contactPhone'];
@@ -132,6 +142,8 @@ class Resource {
       resourcePhoto: resourcePhoto,
       searchText: searchText,
       createdate: createdate,
+      interests: interests,
+      competencies: competencies,
     );
   }
 
@@ -175,6 +187,8 @@ class Resource {
   String? resourcePhoto;
   final String? searchText;
   final DateTime createdate;
+  final List<String>? interests;
+  final List<String>? competencies;
 
   Map<String, dynamic> toMap() {
     return {
@@ -216,6 +230,8 @@ class Resource {
       'resourcePhoto': resourcePhoto,
       'searchText': searchText,
       'createdate': createdate,
+      'interests' : interests,
+      'competencies' : competencies,
     };
   }
 

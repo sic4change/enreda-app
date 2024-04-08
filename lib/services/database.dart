@@ -56,6 +56,8 @@ abstract class Database {
   Stream<List<Resource>> myResourcesStream(String userId);
   Stream<List<Resource>> likeResourcesStream(String userId);
   Stream<List<Resource>> recommendedResourcesStream(UserEnreda? user);
+  Stream<List<Interest>> resourcesInterestsStream(List<String?> interestsIdList);
+  Stream<List<Competency>> resourcesCompetenciesStream(List<String?> competenciesIdList);
   Stream<UserEnreda> enredaUserStream(String userId);
   Stream<List<Certificate>> myCertificatesStream(String userId);
   Stream<List<Organization>> organizationsStream();
@@ -299,6 +301,42 @@ class FirestoreDatabase implements Database {
       },
       sort: (lhs, rhs) => lhs.createdate.compareTo(rhs.createdate),
     );
+  }
+
+  @override
+  Stream<List<Interest>> resourcesInterestsStream(List<String?> interestsIdList) async* {
+    final collectionPath = FirebaseFirestore.instance.collection(APIPath.interests());
+    final batches = <Future<List<Interest>>>[];
+
+    for (var i = 0; i < interestsIdList.length; i += 10) {
+      final batch = interestsIdList.sublist(i, i + 10 < interestsIdList.length ? i + 10 : interestsIdList.length);
+      final futureBatch = collectionPath
+          .where('interestId', whereIn: batch)
+          .get()
+          .then((results) => results.docs.map<Interest>((result) => Interest.fromMap(result.data(), result.id)).toList());
+      batches.add(futureBatch);
+    }
+    final results = await Future.wait(batches);
+    var combinedResults = results.expand((i) => i).toSet().toList();
+    yield combinedResults;
+  }
+
+  @override
+  Stream<List<Competency>> resourcesCompetenciesStream(List<String?> competenciesIdList) async* {
+    final collectionPath = FirebaseFirestore.instance.collection(APIPath.competencies());
+    final batches = <Future<List<Competency>>>[];
+
+    for (var i = 0; i < competenciesIdList.length; i += 10) {
+      final batch = competenciesIdList.sublist(i, i + 10 < competenciesIdList.length ? i + 10 : competenciesIdList.length);
+      final futureBatch = collectionPath
+          .where('id', whereIn: batch)
+          .get()
+          .then((results) => results.docs.map<Competency>((result) => Competency.fromMap(result.data(), result.id)).toList());
+      batches.add(futureBatch);
+    }
+    final results = await Future.wait(batches);
+    var combinedResults = results.expand((i) => i).toSet().toList();
+    yield combinedResults;
   }
 
   @override

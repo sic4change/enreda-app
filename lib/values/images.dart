@@ -114,7 +114,7 @@ class ImagePath {
   static const String CONTROL_PANEL = '$imageDir/enreda-control-panel.png';
   static const String ICON_RESOURCES_ENROLLED = '$imageDir/icon-inscripcion-participante.png';
 
-  //Resources Categories
+  //Resources
   static const String BACKGROUND_1 = '$imageDir/background-empleo-2X.png';
   static const String PERSON_1 = '$imageDir/person-empleo.png';
   static const String BACKGROUND_2 = '$imageDir/background-formacion-2X.png';
@@ -128,6 +128,7 @@ class ImagePath {
   static const String BACKGROUND_6 = '$imageDir/background-voluntariado-2X.png';
   static const String PERSON_6 = '$imageDir/person-voluntariado.png';
   static const String FUNDAULA = '$imageDir/icon-click-fundaula.png';
+  static const String RECTANGLE_RESOURCE = '$imageDir/background-recursos.png';
 
   //Training pills
   static const String BACKGROUND_PILLS = '$imageDir/background-pildoras.png';

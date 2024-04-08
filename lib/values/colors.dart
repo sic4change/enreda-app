@@ -74,6 +74,7 @@ class AppColors {
   static const Color greyLight2 = Color(0xFF181945);
   static const Color greySearch = Color(0xFFEBF1F2);
   static const Color chatDarkGray = Color(0xFF44494B);
+  static const Color darkGray = Color(0xFF535A5F);
 
   //Alternative
   static const Color red = Color(0xFFF1291A);
@@ -103,5 +104,7 @@ class AppColors {
   static const Color turquoise = Color(0xFF00D0CE);
   static const Color turquoiseLight = Color(0xFFB5F0F0);
   static const Color turquoiseSuperLight = Color(0xFFEEFAFA);
+  static const Color turquoiseButton = Color(0xFF00D0CE);
+  static const Color turquoiseButton2 = Color(0xFF18C5C1);
 
 }

@@ -52,10 +52,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
             Resource resource = snapshot.data!;
             resource.setResourceTypeName();
             resource.setResourceCategoryName();
-            if (resource.resourceId == null) {
-              return const Center(
-                  child: CircularProgressIndicator());
-            }
             return StreamBuilder<SocialEntity>(
               stream: database.socialEntityStream(resource.organizer),
               builder: (context, snapshot) {

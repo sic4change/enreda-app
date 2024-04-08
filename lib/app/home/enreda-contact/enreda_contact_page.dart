@@ -13,6 +13,7 @@ import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
@@ -167,7 +168,9 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                     title: '${user.firstName} ${user.lastName}',
                     description: StringConst.ASSIGNED_CONTACT_DESCRIPTION,
                     icon: InkWell(
-                        onTap: (){},
+                        onTap: (){
+                          openWhatsAppChat(user.phone ?? '');
+                        },
                         child: Image.asset(ImagePath.WHATSAPP_ICON)),
                   ),
                   ContactDetail(
@@ -259,7 +262,9 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
           CardButtonContact(
             title: StringConst.EMAIL,
             icon: Icon(Icons.email_outlined, color: AppColors.turquoiseBlue, size: 20,),
-            onTap: () {},
+            onTap: () {
+              launchEmail(email, StringConst.SUBJECT);
+            },
           ),
           SpaceW4(),
           Container(
@@ -275,7 +280,6 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
       ),
     );
   }
-
 
 
 }

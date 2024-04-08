@@ -1,4 +1,3 @@
-import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/values/strings.dart';
@@ -25,6 +24,36 @@ Future<void> launchURL(url) async {
   }
 }
 
+Future<void> openWhatsAppChat(String phoneNumber) async {
+  final String whatsappUrl = "https://api.whatsapp.com/send/?phone=$phoneNumber&text=hi";
+  // final String androidUrl = "whatsapp://send?phone=$contact&text=$text";
+  // final String iosUrl = "https://wa.me/$contact?text=${Uri.parse(text)}";
+  try {
+    if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
+      await launchUrl(Uri.parse(whatsappUrl));
+    }
+  } catch(e) {
+    print(e);
+    await launchUrl(Uri.parse(whatsappUrl), mode: LaunchMode.externalApplication);
+  }
+
+}
+
+void launchEmail(String email, String subject) async {
+  final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: email, // add recipient email
+      queryParameters: {
+        'subject': subject, // add subject line
+      }
+  );
+
+  if (await canLaunchUrl(emailLaunchUri)) {
+    await launchUrl(emailLaunchUri);
+  } else {
+    throw 'Could not launch $emailLaunchUri';
+  }
+}
 
 scrollToSection(BuildContext context) {
   Scrollable.ensureVisible(

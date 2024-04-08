@@ -303,6 +303,7 @@ class StringConst {
   static const String FORM_DESCRIPTION = "Descripción del puesto";
   static const String FORM_SCHEDULE = "Horario";
   static const String AVAILABLE = "Disponibilidad";
+  static const String SUBJECT = "Enreda";
 
   //Resource modalities
   static const String FACE_TO_FACE = 'Presencial';

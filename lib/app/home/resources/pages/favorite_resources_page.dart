@@ -6,6 +6,7 @@ import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/list_item_builder_grid.dart';
+import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/no_resources_ilustration.dart';
 import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -15,9 +16,15 @@ import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:enreda_app/app/home/resources/global.dart' as globals;
 
 
-class FavoriteResourcesPage extends StatelessWidget {
+class FavoriteResourcesPage extends StatefulWidget {
+  @override
+  State<FavoriteResourcesPage> createState() => _FavoriteResourcesPageState();
+}
+
+class _FavoriteResourcesPageState extends State<FavoriteResourcesPage> {
   @override
   Widget build(BuildContext context) {
     return _buildContents(context);
@@ -28,7 +35,6 @@ class FavoriteResourcesPage extends StatelessWidget {
     final database = Provider.of<Database>(context, listen: false);
 
     return Container(
-      margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 5),
       child: StreamBuilder<List<Resource>>(
             stream: database.likeResourcesStream(auth.currentUser?.uid ?? ''),
             builder: (context, snapshot) {
@@ -83,8 +89,13 @@ class FavoriteResourcesPage extends StatelessWidget {
                                             'resource-${resource.resourceId}'),
                                         child: ResourceListTile(
                                           resource: resource,
-                                          onTap: () => context.go(
-                                              '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                          onTap: () =>
+                                              setState(() {
+                                                globals.currentResource = resource;
+                                                MyResourcesPage.selectedIndex.value = 3;
+                                              }),
+                                          // onTap: () => context.go(
+                                          //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                         ),
                                       );
                                     });

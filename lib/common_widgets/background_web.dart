@@ -1,4 +1,5 @@
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -14,7 +15,7 @@ class BackgroundWeb extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
-            color: Constants.turquoise,
+            color: AppColors.primaryColor,
             height: 260,
           ),
         Expanded(

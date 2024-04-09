@@ -369,7 +369,7 @@ class _ResourceDetailPageWebState extends State<ResourceDetailPageWeb> {
                       resource.participants.contains(userId)
                           ? StringConst.QUIT_RESOURCE
                           : StringConst.JOIN_RESOURCE,
-                      style: textTheme.bodyText1?.copyWith(
+                      style: textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: Constants.white,
                       ),

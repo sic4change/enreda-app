@@ -7,40 +7,49 @@ import 'package:enreda_app/app/home/models/organization.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/socialEntity.dart';
+import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/build_share_button.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
-import 'package:enreda_app/app/home/resources/resource_detail/box_item_data.dart';
-import 'package:enreda_app/app/home/resources/streams/competencies_by_resource.dart';
-import 'package:enreda_app/app/home/resources/streams/interests_by_resource.dart';
+import 'package:enreda_app/common_widgets/background_web.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
-import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
-import 'package:enreda_app/common_widgets/show_exception_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
-import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
-import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:enreda_app/app/home/models/competency.dart';
+import 'package:enreda_app/app/home/models/interest.dart';
+import 'package:enreda_app/app/home/resources/resource_detail/box_item_data.dart';
+import 'package:enreda_app/app/home/resources/streams/competencies_by_resource.dart';
+import 'package:enreda_app/app/home/resources/streams/interests_by_resource.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:enreda_app/app/home/resources/global.dart' as globals;
 
-import '../../models/userEnreda.dart';
+import '../../../../common_widgets/show_alert_dialog.dart';
+import '../../../../common_widgets/show_back_icon.dart';
+import '../../../../common_widgets/show_exception_alert_dialog.dart';
+import '../../../../utils/adaptive.dart';
+import '../../../../utils/functions.dart';
+import '../../../../values/values.dart';
+import '../../../anallytics/analytics.dart';
 
-class ResourceDetailPage extends StatefulWidget {
-  const ResourceDetailPage({Key? key}) : super(key: key);
+class ResourceDetailLinkPage extends StatefulWidget {
+  const ResourceDetailLinkPage({Key? key, required this.resourceId})
+      : super(key: key);
+  final String resourceId;
 
   @override
-  State<ResourceDetailPage> createState() => _ResourceDetailPageState();
+  _ResourceDetailLinkPageState createState() => _ResourceDetailLinkPageState();
 }
 
-class _ResourceDetailPageState extends State<ResourceDetailPage> {
+class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
   TextEditingController _textFieldController = TextEditingController();
+  late Resource resource;
+
   final _formKey = GlobalKey<FormState>();
   String? _email;
   String? _name;
@@ -59,75 +68,76 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildResourcePage(context, globals.currentResource! );
+    return Scaffold(
+      //extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: AppColors.primaryColor,
+        elevation: 0.0,
+        leading: showBackIconButton(context, Colors.white),
+      ),
+      body: Stack(
+        children: <Widget>[
+          Opacity(opacity: 0.8, child: BackgroundWeb()),
+          Container(
+              margin: const EdgeInsets.symmetric(vertical: 30.0),
+              child: _buildContent()),
+        ],
+      ),
+    );
   }
 
-  Widget _buildResourcePage(BuildContext context, Resource resource) {
+  Widget _buildContent() {
     final database = Provider.of<Database>(context, listen: false);
     return StreamBuilder<Resource>(
-        stream: database.resourceStream(resource.resourceId),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-                child: CircularProgressIndicator());
-          }
-          if (snapshot.hasData) {
-            Resource resource = snapshot.data!;
+        stream: database.resourceStream(widget.resourceId),
+        builder: (context, snapshotResource) {
+          if (snapshotResource.hasData) {
+            resource = snapshotResource.data!;
             resource.setResourceTypeName();
             resource.setResourceCategoryName();
+            sendResourceAnalyticsEvent(context, "enreda_app_open_resource", resource.resourceCategoryName!);
             return StreamBuilder(
-              stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
-              resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
-                  : database.mentorStream(resource.organizer),
-              builder: (context, snapshotOrganizer) {
-                if (snapshotOrganizer.hasData) {
-                  if (resource.organizerType == 'Organización') {
-                    final organization = snapshotOrganizer.data as Organization;
-                    resource.organizerName = organization.name;
-                    resource.organizerImage = organization.photo;
-                  } else if (resource.organizerType == 'Entidad Social') {
-                    final organization = snapshotOrganizer.data as SocialEntity;
-                    resource.organizerName = organization.name;
-                    resource.organizerImage = organization.photo;
-                  } else {
-                    final mentor = snapshotOrganizer.data as UserEnreda;
-                    resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
-                    resource.organizerImage = mentor.photo;
+                stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
+                resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
+                    : database.mentorStream(resource.organizer),
+                builder: (context, snapshotOrganizer) {
+                  if (snapshotOrganizer.hasData) {
+                    if (resource.organizerType == 'Organización') {
+                      final organization = snapshotOrganizer.data as Organization;
+                      resource.organizerName = organization.name;
+                      resource.organizerImage = organization.photo;
+                    } else if (resource.organizerType == 'Entidad Social') {
+                      final organization = snapshotOrganizer.data as SocialEntity;
+                      resource.organizerName = organization.name;
+                      resource.organizerImage = organization.photo;
+                    } else {
+                      final mentor = snapshotOrganizer.data as UserEnreda;
+                      resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
+                      resource.organizerImage = mentor.photo;
+                    }
                   }
-                }
-                if (!snapshot.hasData) {
-                  return const Center(
-                      child: CircularProgressIndicator());
-                }
-                resource.setResourceTypeName();
-                resource.setResourceCategoryName();
-                return StreamBuilder<Country>(
-                    stream: database.countryStream(resource.country),
-                    builder: (context, snapshot) {
-                      final country = snapshot.data;
-                      resource.countryName = country == null ? '' : country.name;
-                      resource.province ?? "";
-                      resource.city ?? "";
-                      return StreamBuilder<Province>(
-                        stream: database.provinceStream(resource.province),
-                        builder: (context, snapshot) {
-                          final province = snapshot.data;
-                          resource.provinceName = province == null ? '' : province.name;
-                          return StreamBuilder<City>(
-                              stream: database
-                                  .cityStream(resource.city),
-                              builder: (context, snapshot) {
-                                final city = snapshot.data;
-                                resource.cityName = city == null ? '' : city.name;
-                                return _buildResourceDetail(context, resource);
-                              });
-                        },
-                      );
-                    });
-              },
-            );
-          }
-          return const Center(child: CircularProgressIndicator());
+                  return StreamBuilder<Country>(
+                      stream: database.countryStream(resource.country),
+                      builder: (context, snapshot) {
+                        final country = snapshot.data;
+                        resource.countryName = country == null ? '' : country.name;
+                        return StreamBuilder<Province>(
+                            stream: database.provinceStream(resource.province),
+                            builder: (context, snapshot) {
+                              final province = snapshot.data;
+                              resource.provinceName = province == null ? '' : province.name;
+                              return StreamBuilder<City>(
+                                  stream: database.cityStream(resource.city!),
+                                  builder: (context, snapshot) {
+                                    final city = snapshot.data;
+                                    resource.cityName = city == null ? '' : city.name;
+                                    return _buildResourceDetail(context, resource);
+                                  });
+                            });
+                      });
+                });
+          } else
+            return Container();
         });
   }
 
@@ -144,8 +154,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
           Container(
             constraints: BoxConstraints(
               maxWidth: Responsive.isMobile(context) ? MediaQuery.of(context).size.width :
-                Responsive.isDesktopS(context) ? MediaQuery.of(context).size.width * 0.8 :
-                MediaQuery.of(context).size.width * 0.5,
+              Responsive.isDesktopS(context) ? MediaQuery.of(context).size.width * 0.9 :
+              MediaQuery.of(context).size.width * 0.6,
             ),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -259,13 +269,13 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                                     ? showAlertNullUser(context)
                                     : resource.likes.contains(userId)
                                     ? removeUserToLike(
-                                      context: context,
-                                      userId: userId,
-                                      resource: resource)
+                                    context: context,
+                                    userId: userId,
+                                    resource: resource)
                                     : addUserToLike(
-                                      context: context,
-                                      userId: userId,
-                                      resource: resource);
+                                    context: context,
+                                    userId: userId,
+                                    resource: resource);
                               },
                             ),
                             SpaceW16(),
@@ -278,7 +288,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                   child: _buildBoxes(resource),
                 ),
-                _buildDetailResource(context, resource),
+                _buildDetailResource(
+                    context, resource),
               ],
             ),
           ),
@@ -416,8 +427,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   resource.participants.contains(userId)
                       ? StringConst.QUIT_RESOURCE
                       : StringConst.JOIN_RESOURCE,
-                  style: textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w600,
+                  style: textTheme.bodyLarge?.copyWith(
                     color: Constants.white,
                   ),
                 ),
@@ -462,7 +472,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
       BoxItemData(
         icon: Icons.calendar_month_outlined,
         title: StringConst.DATE,
-        contact: '${DateFormat('dd/MM/yyyy').format(resource.start!)} - ${DateFormat('dd/MM/yyyy').format(resource.end!)}',
+        contact: '${DateFormat('dd/MM/yyyy').format(resource.start)} - ${DateFormat('dd/MM/yyyy').format(resource.end)}',
       ),
       BoxItemData(
         icon: Icons.list_alt,

@@ -65,7 +65,6 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                     ],
                   ),
                 ),
-                Responsive.isMobile(context) ? Container() : Spacer(),
                 selectedIndex == 1 || selectedIndex == 2 ?
                 Positioned(
                   top: 50,
@@ -107,8 +106,6 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                   EdgeInsets.only(top: Sizes.mainPadding * 3),
                     child: bodyWidget[MyResourcesPage.selectedIndex.value],
                 ),
-
-
               ],
             ),
           );

@@ -30,7 +30,6 @@ class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
     return Container(
-      //margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 5),
       child: StreamBuilder<List<Resource>>(
           stream: database.myResourcesStream(auth.currentUser?.uid ?? ''),
           builder: (context, snapshot) {

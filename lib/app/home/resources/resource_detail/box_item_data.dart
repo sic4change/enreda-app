@@ -43,7 +43,7 @@ class BoxItem extends StatelessWidget {
       ),
       key: Key("default"),
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10, bottom: 4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -58,11 +58,11 @@ class BoxItem extends StatelessWidget {
                 ),
               ],
             ),
-            SpaceH12(),
+            SpaceH8(),
             Text(
               contact,
               textAlign: TextAlign.start,
-              style: textTheme.bodySmall?.copyWith(height: 0.5, fontWeight: FontWeight.w500, color: AppColors.turquoiseButton2),
+              style: textTheme.bodySmall?.copyWith(height: 0.7, fontWeight: FontWeight.w500, color: AppColors.turquoiseButton2),
             ),
           ],
         ),

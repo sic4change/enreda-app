@@ -1,6 +1,5 @@
 import 'package:enreda_app/app/home/control_panel/participant_control_panel_page.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
-import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';

@@ -42,6 +42,7 @@ class UserEnreda {
     this.assignedById,
     this.motivation,
     this.personalDocuments = const [],
+    required this.resources,
   });
 
   factory UserEnreda.fromMap(Map<String, dynamic> data, String documentId) {
@@ -149,6 +150,11 @@ class UserEnreda {
       });
     }
 
+    List<String> resources = [];
+    if (data['resources'] != null) {
+      data['resources'].forEach((resource) {resources.add(resource.toString());});
+    }
+
     final String? aboutMe = data['aboutMe'];
     final int resourcesAccessCount = data['resourcesAccessCount']?? 0;
     final bool? checkAgreeCV = data['checkAgreeCV'];
@@ -221,6 +227,7 @@ class UserEnreda {
       motivation: motivation,
       personalDocuments: personalDocuments,
       assignedById: assignedById,
+      resources: resources,
     );
   }
 
@@ -259,6 +266,7 @@ class UserEnreda {
   final String? assignedById;
   final Motivation? motivation;
   final List<PersonalDocument> personalDocuments;
+  final List<String> resources;
 
 
   Map<String, dynamic> toMap() {
@@ -294,6 +302,7 @@ class UserEnreda {
       'assignedById' : assignedById,
       'motivation': motivation?.toMap(),
       'personalDocuments': personalDocuments.map((e) => e.toMap()).toList(),
+      'resources': resources,
     };
   }
 
@@ -336,6 +345,7 @@ class UserEnreda {
     String? assignedById,
     Motivation? motivation,
     List<PersonalDocument>? personalDocuments,
+    List<String>? resources,
   }) {
     return UserEnreda(
       email: email ?? this.email,
@@ -372,6 +382,7 @@ class UserEnreda {
       assignedById: assignedById ?? this.assignedById,
       motivation: motivation ?? this.motivation,
       personalDocuments: personalDocuments ?? this.personalDocuments,
+      resources: resources ?? this.resources,
     );
   }
 

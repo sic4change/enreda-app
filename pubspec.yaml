@@ -114,7 +114,9 @@ flutter:
     - images/arrow_down.png
     - images/arrow_up.png
     - images/arrow_back.png
+    - images/arrow-back.png
     - images/arrow_forward.png
+    - images/arrow-forward.png
     - images/icon-resources-blue.png
     - images/icon-resources-gray.png
     - images/icon-cv.png
@@ -199,6 +201,7 @@ flutter:
     - images/icon-add-entidad.png
     - images/icon-descargar-entidad.png
     - images/background-recursos.png
+    - images/document-icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

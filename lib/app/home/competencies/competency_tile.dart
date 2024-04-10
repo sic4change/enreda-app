@@ -8,10 +8,11 @@ import 'package:flutter/material.dart';
 import '../../../common_widgets/precached_avatar.dart';
 
 class CompetencyTile extends StatelessWidget {
-  const CompetencyTile({Key? key, required this.competency, this.status = StringConst.BADGE_CERTIFIED, this.mini = false, this.height = 60.0}) : super(key: key);
+  const CompetencyTile({Key? key, required this.competency, this.status = StringConst.BADGE_CERTIFIED, this.mini = false, this.medium = false, this.height = 60.0}) : super(key: key);
   final Competency competency;
   final String status;
   final bool mini;
+  final bool medium;
   final double height;
 
   @override
@@ -20,7 +21,7 @@ class CompetencyTile extends StatelessWidget {
     var containerHeight = Responsive.isMobile(context) || Responsive.isTablet(context) ? 160.0: 260.0;
     var imageWidth = Responsive.isMobile(context) || Responsive.isTablet(context) ? 120.0: 180.0;
     var textContainerHeight = Responsive.isMobile(context) || Responsive.isTablet(context) ? 40.0: 50.0;
-    var fontSize = Responsive.isMobile(context) || Responsive.isTablet(context) ? 11.0: 16.0;
+    var fontSize = Responsive.isMobile(context) || Responsive.isTablet(context) ? 11.0: 13.0;
     final textTheme = Theme.of(context).textTheme;
 
     if (mini){
@@ -29,6 +30,14 @@ class CompetencyTile extends StatelessWidget {
       imageWidth /= 1.6;
       textContainerHeight /= 1.65;
       fontSize /= 1.6;
+    }
+
+    if (medium){
+      containerWidth /= 1.6;
+      containerHeight /= Responsive.isMobile(context) || Responsive.isTablet(context) ? 1.6 : 1.8;
+      imageWidth /= 1;
+      textContainerHeight /= 1.65;
+      fontSize /= 1.1;
     }
 
     return Container(

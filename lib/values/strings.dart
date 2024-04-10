@@ -26,6 +26,7 @@ class StringConst {
   static const String MY_EXPERIENCES = "Mis Experiencias";
   static const String MY_PERSONAL_EXPERIENCES = "Mis experiencias personales";
   static const String MY_PROFESIONAL_EXPERIENCES = "Mis experiencias profesionales";
+  static const String MY_DOCUMENTS = "Mis documentos";
   static const String ABILITIES = "Destrezas";
   static const String EDUCATION = "Formación";
   static const String SECONDARY_EDUCATION = "Formación complementaria";
@@ -201,8 +202,11 @@ class StringConst {
   static const String WELCOME_TEXT = "Esta es tu ventana de administración. \nSegún tu rol, puedes visualizar, editar y eliminar todos los recursos disponibles en esta web. Por favor, procede con precaución.";
   static const String GAMIFICATION = "Gamificación";
   static const String NO_COMPETENCIES = "Aquí aparecerán las competencias evaluadas a través de los microtests";
+  static const String NO_DOCUMENTS = "Aquí aparecerán los documentos agregados";
+  static const String NO_RESOURCES = "Aquí aparecerán los recursos en los que te has inscrito";
   static const String INITIAL_FORM = "Ficha de ingreso";
   static const String INITIAL_FORM_DATA = "Datos del formulario inicial";
+  static const String RESOURCES_JOINED = "Te has inscrito en los siguientes recursos:";
 
   //Footer Section
   static const String LETS_TALK = "¡Te escuchamos!";

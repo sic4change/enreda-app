@@ -89,7 +89,9 @@ class ImagePath {
   static const String ARROW_DOWN = '$imageDir/arrow_down.png';
   static const String ARROW_UP = '$imageDir/arrow_up.png';
   static const String ARROW_BACK = '$imageDir/arrow_back.png';
+  static const String ARROW_BACK_ALT = '$imageDir/arrow-back.png';
   static const String ARROW_FORWARD = '$imageDir/arrow_forward.png';
+  static const String ARROW_FORWARD_ALT = '$imageDir/arrow-forward.png';
   static const String DOWNLOAD = '$imageDir/download-icon.png';
   static const String LOGOUT = '$imageDir/icon-logout.png';
   static const String ICON_SHARE = '$imageDir/icon-share.png';
@@ -113,6 +115,7 @@ class ImagePath {
   static const String LOGO_LINES = "$imageDir/enreda-lines-logo.png";
   static const String CONTROL_PANEL = '$imageDir/enreda-control-panel.png';
   static const String ICON_RESOURCES_ENROLLED = '$imageDir/icon-inscripcion-participante.png';
+  static const String ICON_DOCUMENT = '$imageDir/document-icon.png';
 
   //Resources
   static const String BACKGROUND_1 = '$imageDir/background-empleo-2X.png';

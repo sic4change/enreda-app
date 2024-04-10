@@ -143,7 +143,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         children: [
           Container(
             constraints: BoxConstraints(
-              maxWidth: Responsive.isMobile(context) ? MediaQuery.of(context).size.width :
+              maxWidth: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.95 :
                 Responsive.isDesktopS(context) ? MediaQuery.of(context).size.width * 0.8 :
                 MediaQuery.of(context).size.width * 0.5,
             ),
@@ -167,7 +167,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                         bottomRight: Radius.circular(Sizes.MARGIN_16),
                         bottomLeft: Radius.circular(Sizes.MARGIN_16)),
                   ),
-                  margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                  margin: Responsive.isMobile(context) ? const EdgeInsets.all(0.0) : const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
                       children: [
                         Responsive.isMobile(context) ? SpaceH8() : SpaceH20(),
@@ -275,7 +275,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  padding: Responsive.isMobile(context) ? const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0) :
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                   child: _buildBoxes(resource),
                 ),
                 _buildDetailResource(context, resource),
@@ -482,7 +483,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     ];
     const int crossAxisCount = 2; // The number of columns in the grid
     const double maxCrossAxisExtent = 250;
-    const double mainAxisExtent = 65;
+    const double mainAxisExtent = 70;
     const double childAspectRatio = 6 / 2;
     const double crossAxisSpacing = 10;
     const double mainAxisSpacing = 10;

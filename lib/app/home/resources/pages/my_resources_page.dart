@@ -44,12 +44,15 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
         builder: (context, selectedIndex, child) {
           return RoundedContainer(
             contentPadding: Responsive.isMobile(context) ?
-            EdgeInsets.all(Sizes.mainPadding) :
-            EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+              EdgeInsets.all(0.0) :
+              EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+            margin: Responsive.isMobile(context) ? const EdgeInsets.only(left: 0, bottom: Sizes.kDefaultPaddingDouble, right: 0.0) :
+              const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble, bottom: Sizes.kDefaultPaddingDouble),
             child: Stack(
               children: [
                 Container(
                   height: 50,
+                  padding: Responsive.isMobile(context) ? EdgeInsets.only(left: 20, top: 20) : EdgeInsets.all(0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -103,7 +106,7 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                 ) : Container(),
                 Container(
                   margin: selectedIndex == 1 || selectedIndex == 2 ? EdgeInsets.only(top: Sizes.mainPadding * 5) :
-                  EdgeInsets.only(top: Sizes.mainPadding * 3),
+                  EdgeInsets.only(top: Sizes.mainPadding * 3 , bottom: Sizes.mainPadding * 3),
                     child: bodyWidget[MyResourcesPage.selectedIndex.value],
                 ),
               ],

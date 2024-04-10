@@ -110,7 +110,6 @@ class _WebHomeState extends State<WebHome> {
   }
 
   Widget _buildContent(BuildContext context, UserEnreda user, String profilePic, String userName){
-    final auth = Provider.of<AuthBase>(context, listen: false);
     return ValueListenableBuilder<int>(
         valueListenable: WebHome.selectedIndex,
         builder: (context, selectedIndex, child) {
@@ -122,7 +121,7 @@ class _WebHomeState extends State<WebHome> {
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: 1600),
                 child: Padding(
-                  padding: Responsive.isMobile(context) ? const EdgeInsets.all(0.0) : const EdgeInsets.only(left: 20.0,),
+                  padding: Responsive.isMobile(context) ? const EdgeInsets.all(0) : const EdgeInsets.only(left: 20.0,),
                   child: Row(
                     children: [
                       if(!isSmallScreen) SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,),
@@ -256,7 +255,7 @@ Future<void> adminSignOut(BuildContext context) async {
                   ),
                   SpaceH20(),
                   Text(StringConst.ARENT_YOU_PARTICIPANT,
-                      style: textTheme.bodyText1?.copyWith(
+                      style: textTheme.bodySmall?.copyWith(
                         color: AppColors.greyDark,
                         height: 1.5,
                         fontWeight: FontWeight.w800,

@@ -492,7 +492,7 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
     ];
     const int crossAxisCount = 2; // The number of columns in the grid
     const double maxCrossAxisExtent = 250;
-    const double mainAxisExtent = 65;
+    const double mainAxisExtent = 70;
     const double childAspectRatio = 6 / 2;
     const double crossAxisSpacing = 10;
     const double mainAxisSpacing = 10;

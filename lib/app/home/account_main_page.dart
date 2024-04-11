@@ -116,7 +116,7 @@ class _WebHomeState extends State<WebHome> {
           final isSmallScreen = MediaQuery.of(context).size.width < 600;
           return Scaffold(
             key: _key,
-            drawer: SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,),
+            drawer: Responsive.isMobile(context) ? Container() : SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,),
             body: Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: 1600),

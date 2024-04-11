@@ -161,125 +161,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         });
   }
 
-  // Widget _myCurriculumMini(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames){
-  //   final textTheme = Theme.of(context).textTheme;
-  //
-  //   return Container(
-  //     child: Row(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Container(
-  //           width: Responsive.isDesktop(context) ? 500 : Responsive.isDesktopS(context) ? 400.0 : 400,
-  //           padding: EdgeInsets.only(
-  //             left: Sizes.mainPadding * 2,
-  //             top: Sizes.mainPadding * 2,
-  //             right: Sizes.mainPadding * 2,
-  //           ),
-  //           decoration: BoxDecoration(
-  //               gradient: LinearGradient(
-  //                 begin: Alignment.bottomCenter,
-  //                 end: Alignment.topCenter,
-  //                 colors: [
-  //                   AppColors.turquoise.withOpacity(0.15),
-  //                   AppColors.turquoiseUltraLight.withOpacity(0.13)
-  //                 ],
-  //               )
-  //           ),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.stretch,
-  //             children: [
-  //               Padding(
-  //                 padding: const EdgeInsets.all(20.0),
-  //                 child: Row(
-  //                   mainAxisAlignment: MainAxisAlignment.start,
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     !kIsWeb ?
-  //                     ClipRRect(
-  //                       borderRadius: BorderRadius.all(Radius.circular(60)),
-  //                       child:
-  //                       Center(
-  //                         child:
-  //                         profilePic == "" ?
-  //                         Container(
-  //                           color:  Colors.transparent,
-  //                           height: 120,
-  //                           width: 120,
-  //                           child: Image.asset(ImagePath.USER_DEFAULT),
-  //                         ):
-  //                         CachedNetworkImage(
-  //                             width: 120,
-  //                             height: 120,
-  //                             fit: BoxFit.cover,
-  //                             alignment: Alignment.center,
-  //                             imageUrl: profilePic),
-  //                       ),
-  //                     ):
-  //                     ClipRRect(
-  //                       borderRadius: BorderRadius.all(Radius.circular(60)),
-  //                       child:
-  //                       profilePic == "" ?
-  //                       Container(
-  //                         color:  Colors.transparent,
-  //                         height: 120,
-  //                         width: 120,
-  //                         child: Image.asset(ImagePath.USER_DEFAULT),
-  //                       ):
-  //                       PrecacheAvatarCard(
-  //                         imageUrl: profilePic,
-  //                         height: 120,
-  //                         width: 120,
-  //                       ),
-  //                     )
-  //                   ],
-  //                 ),
-  //               ),
-  //               SpaceH20(),
-  //               _buildPersonalData(context),
-  //               SpaceH20(),
-  //               _buildAboutMe(context),
-  //               SpaceH20(),
-  //               _buildMyDataOfInterest(context),
-  //               SpaceH20(),
-  //               _buildMyLanguages(context),
-  //               SpaceH20(),
-  //               _buildMyReferences(context, user),
-  //               SpaceH100()
-  //             ],
-  //           ),
-  //         ),
-  //         SpaceW20(),
-  //         Container(
-  //           width: 600,
-  //           color: Colors.pink,
-  //           child: Column(
-  //             mainAxisAlignment: MainAxisAlignment.start,
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               SpaceH30(),
-  //               Text(
-  //                 '${user?.firstName} ${user?.lastName}',
-  //                 style: textTheme.bodyLarge?.copyWith(
-  //                     fontWeight: FontWeight.bold,
-  //                     fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-  //                     color: AppColors.turquoiseBlue),
-  //               ),
-  //               SpaceH30(),
-  //               _buildMyEducation(context, user),
-  //               SpaceH30(),
-  //               _buildMySecondaryEducation(context, user),
-  //               SpaceH30(),
-  //               _buildMyExperiences(context, user),
-  //               SpaceH30(),
-  //               _buildMyCompetencies(context, user),
-  //             ],
-  //           ),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _myCurriculumMini(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames){
     final textTheme = Theme.of(context).textTheme;
 
@@ -411,7 +292,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                    width: Responsive.isDesktop(context) ? 400 : Responsive.isDesktopS(context) ? 400.0 : 400,
+                    width: Responsive.isDesktop(context) ? MediaQuery.of(context).size.width * 0.3 :
+                      Responsive.isDesktopS(context) ?  MediaQuery.of(context).size.width * 0.2 : 200,
                     height: double.infinity,
                     padding: EdgeInsets.only(
                       left: Sizes.mainPadding * 2,

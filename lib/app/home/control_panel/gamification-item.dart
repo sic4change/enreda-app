@@ -26,14 +26,14 @@ class GamificationItem extends StatelessWidget {
     return Column(
       children: [
         CircularSeekBar(
-          height: !Responsive.isDesktop(context)? size/2:size,
-          width: !Responsive.isDesktop(context)? size/2:size,
+          height: !Responsive.isDesktop(context) ? size/2 : size,
+          width: !Responsive.isDesktop(context) ? size/2 : size,
           startAngle: 45,
           sweepAngle: 270,
           progress: progress,
-          barWidth: !Responsive.isDesktop(context)?5: 10,
+          barWidth: !Responsive.isDesktop(context) ? 5 : 10,
           progressColor: AppColors.darkYellow,
-          innerThumbStrokeWidth: !Responsive.isDesktop(context)?5: 10,
+          innerThumbStrokeWidth: !Responsive.isDesktop(context) ? 5 : 10,
           innerThumbColor: AppColors.darkYellow,
           outerThumbColor: Colors.transparent,
           trackColor: AppColors.lightYellow,
@@ -41,15 +41,15 @@ class GamificationItem extends StatelessWidget {
           animation: true,
           animDurationMillis: 1500,
           child: Padding(
-            padding: EdgeInsets.only(top: !Responsive.isDesktop(context)?4.0: 8.0),
+            padding: EdgeInsets.only(top: !Responsive.isDesktop(context) ? 4.0 : 8.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
                   imagePath,
-                  width: !Responsive.isDesktop(context)? imageSize/2.8:imageSize,
-                  height: !Responsive.isDesktop(context)? imageSize/2.8:imageSize,
+                  width: !Responsive.isDesktop(context) ? imageSize/2.8 : imageSize,
+                  height: !Responsive.isDesktop(context) ? imageSize/2.8 : imageSize,
                 ),
                 if (!Responsive.isDesktop(context))
                   SpaceH4(),
@@ -58,7 +58,7 @@ class GamificationItem extends StatelessWidget {
                     progressText!,
                     style: textTheme.titleLarge?.copyWith(
                       color: AppColors.turquoiseBlue,
-                      fontSize: !Responsive.isDesktop(context)? textTheme.titleLarge!.fontSize!/1.8:textTheme.titleLarge!.fontSize!,
+                      fontSize: !Responsive.isDesktop(context) ? textTheme.titleLarge!.fontSize!/1.8 : textTheme.titleLarge!.fontSize!,
                     ),
                   ),
                 if (progressText == null)

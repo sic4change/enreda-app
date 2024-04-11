@@ -32,8 +32,8 @@ class ParticipantControlPanelPage extends StatefulWidget {
 class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPage> {
   @override
   Widget build(BuildContext context) {
-    return Responsive.isDesktop(context)? _buildBodyDesktop(context):
-    _buildBodyMobile(context);
+    //return Responsive.isDesktop(context) ? _buildBodyDesktop(context) : _buildBodyMobile(context);
+    return Responsive.isMobile(context) || Responsive.isDesktopS(context) ? _buildBodyMobile(context) : _buildBodyDesktop(context);
   }
 
   Widget _buildBodyDesktop(BuildContext context) {
@@ -83,18 +83,23 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
 
   Widget _buildBodyMobile(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildGamificationSection(context),
-          SpaceH20(),
-          _buildContactSection(context),
-          SpaceH20(),
+          SpaceH30(),
           _buildCompetenciesSection(context),
-          SpaceH20(),
+          SpaceH30(),
           _buildCvSection(context),
-          SpaceH20(),
+          SpaceH30(),
+          widget.participantUser.assignedEntityId != null && widget.participantUser.assignedEntityId != "" ?
+          ParticipantDocumentationPage(participantUser: widget.participantUser,) :
+          _buildResourcesSection(context),
+          SpaceH30(),
+          if(widget.participantUser.assignedEntityId != null && widget.participantUser.assignedEntityId != "")
+            _buildContactSection(context),
+          SpaceH30(),
         ],
       ),
     );
@@ -110,12 +115,11 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (Responsive.isDesktop(context))
-              Container(
+            Responsive.isMobile(context) || Responsive.isDesktopS(context) ? Container() :
+            Container(
                 height: 250,
-                  child: Image.asset(ImagePath.GAMIFICATION_LOGO, height: 250.0,)),
-            if (Responsive.isDesktop(context))
-              SpaceW8(),
+                child: Image.asset(ImagePath.GAMIFICATION_LOGO, height: 250.0,)),
+            SpaceW8(),
             Expanded(
               child: Container(
                 child: Column(
@@ -124,7 +128,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                   children: [
                     CustomTextBoldTitle(title: StringConst.GAMIFICATION),
                     GamificationSlider(
-                      height: Responsive.isDesktop(context)? 20.0 : 10.0,
+                      height: Responsive.isDesktop(context) ? 20.0 : 10.0,
                       value: widget.participantUser.gamificationFlags.length,
                     ),
                     SpaceH20(),
@@ -254,7 +258,8 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
     final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
     return Container(
-      margin: const EdgeInsets.only(top: 10.0, right: 10.0, left: 0.0, bottom: 10.0,),
+      margin: Responsive.isMobile(context) ? const EdgeInsets.only(top: 10.0, right: 0, left: 0.0, bottom: 10.0,) :
+        const EdgeInsets.only(top: 10.0, right: 10.0, left: 0.0, bottom: 10.0,),
       padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -285,7 +290,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        height: Responsive.isDesktop(context)? 180.0 : 180.0,
+                        height: Responsive.isDesktop(context) || Responsive.isDesktopS(context) ? 180.0 : 150.0,
                         child: ScrollConfiguration(
                           behavior: MyCustomScrollBehavior(),
                           child: ListView(
@@ -296,7 +301,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                               return Column(
                                 children: [
                                   Container(
-                                    height: 180,
+                                    height: Responsive.isDesktop(context) || Responsive.isDesktopS(context) ? 180.0 : 150.0,
                                     child: CompetencyTile(
                                       competency: competency,
                                       status: status,
@@ -357,42 +362,63 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
   }
 
   Widget _buildCvSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomTextBoldTitle(title: StringConst.CV),
-        SpaceH12(),
-        RoundedContainer(
-          margin: const EdgeInsets.all(0),
-          contentPadding: const EdgeInsets.all(0),
-          height: 450.0,
-          width: 340.0,
-          borderColor: AppColors.greyAlt.withOpacity(0.15),
-          child: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                  onTap: () => showCustomDialog(
-                    context,
-                    content: Container(
-                        height: MediaQuery.sizeOf(context).height * 0.85,
-                        width: Responsive.isDesktop(context)? MediaQuery.sizeOf(context).width * 0.6: MediaQuery.sizeOf(context).width * 0.9,
-                        child: MyCurriculumPage()),
+    return Container(
+      margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+        const EdgeInsets.only(top: 10.0, right: 10.0, left: 0.0, bottom: 10.0,),
+      padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.rectangle,
+        border: Border.all(color: AppColors.greyLight2.withOpacity(0.3), width: 1),
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomTextBoldTitle(title: StringConst.CV),
+              SpaceH12(),
+              RoundedContainer(
+                margin: const EdgeInsets.all(0),
+                contentPadding: const EdgeInsets.all(0),
+                //height: 450.0,
+                height: Responsive.isMobile(context) ? 360 : MediaQuery.sizeOf(context).height * 0.4,
+                //width: 340.0,
+                width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.7 :
+                  Responsive.isDesktopS(context) ? MediaQuery.of(context).size.width * 0.5 : MediaQuery.sizeOf(context).width * 0.2,
+                borderColor: AppColors.greyAlt.withOpacity(0.15),
+                child: SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () => showCustomDialog(
+                          context,
+                          content: Container(
+                              height: MediaQuery.sizeOf(context).height * 0.85,
+                              width: Responsive.isDesktop(context) || Responsive.isDesktopS(context) ? MediaQuery.sizeOf(context).width * 0.6
+                                  : MediaQuery.sizeOf(context).width * 0.9,
+                              child: MyCurriculumPage()),
+                        ),
+                        child: Transform.scale(
+                          scale: Responsive.isMobile(context) ? 0.25 : 0.33,
+                          child: MyCurriculumPage(
+                            mini: true,
+                          ),
+                          alignment: Alignment.topLeft,),
+                      ),
+                    ],
                   ),
-                  child: Transform.scale(
-                    scale: 0.33,
-                    child: MyCurriculumPage(
-                      mini: true,
-                    ),
-                    alignment: Alignment.topLeft,),
-                ),
-              ],
-            ),
-          ),)
-      ],
+                ),)
+            ],
+          ),
+        ],
+      ),
     );
   }
 

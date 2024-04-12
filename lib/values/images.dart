@@ -116,6 +116,12 @@ class ImagePath {
   static const String CONTROL_PANEL = '$imageDir/enreda-control-panel.png';
   static const String ICON_RESOURCES_ENROLLED = '$imageDir/icon-inscripcion-participante.png';
   static const String ICON_DOCUMENT = '$imageDir/document-icon.png';
+  static const String ICON_CONTRACT = '$imageDir/contract-icon.png';
+  static const String ICON_CURRENCY = '$imageDir/currency-icon.png';
+  static const String ICON_DATE = '$imageDir/date-icon.png';
+  static const String ICON_MODALITY = '$imageDir/modality-icon.png';
+  static const String ICON_PLACE = '$imageDir/place-icon.png';
+  static const String ICON_SEATS = '$imageDir/seats-icon.png';
 
   //Resources
   static const String BACKGROUND_1 = '$imageDir/background-empleo-2X.png';

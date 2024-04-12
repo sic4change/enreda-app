@@ -202,6 +202,12 @@ flutter:
     - images/icon-descargar-entidad.png
     - images/background-recursos.png
     - images/document-icon.png
+    - images/contract-icon.png
+    - images/currency-icon.png
+    - images/date-icon.png
+    - images/modality-icon.png
+    - images/place-icon.png
+    - images/seats-icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

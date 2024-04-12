@@ -11,12 +11,14 @@ class CustomStepperButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble / 3, horizontal: Sizes.kDefaultPaddingDouble),
+      margin: EdgeInsets.only(right: 10),
+      padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble / 3, horizontal: Sizes.kDefaultPaddingDouble /2),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(Sizes.kDefaultPaddingDouble * 2),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           icon,
           SpaceW8(),

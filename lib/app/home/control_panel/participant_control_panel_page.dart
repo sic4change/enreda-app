@@ -32,7 +32,6 @@ class ParticipantControlPanelPage extends StatefulWidget {
 class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPage> {
   @override
   Widget build(BuildContext context) {
-    //return Responsive.isDesktop(context) ? _buildBodyDesktop(context) : _buildBodyMobile(context);
     return Responsive.isMobile(context) || Responsive.isDesktopS(context) ? _buildBodyMobile(context) : _buildBodyDesktop(context);
   }
 
@@ -290,7 +289,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        height: Responsive.isDesktop(context) || Responsive.isDesktopS(context) ? 180.0 : 150.0,
+                        height: Responsive.isDesktop(context) ? 210.0 : Responsive.isDesktopS(context) ? 200 : 150.0,
                         child: ScrollConfiguration(
                           behavior: MyCustomScrollBehavior(),
                           child: ListView(
@@ -301,7 +300,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                               return Column(
                                 children: [
                                   Container(
-                                    height: Responsive.isDesktop(context) || Responsive.isDesktopS(context) ? 180.0 : 150.0,
+                                    height: Responsive.isDesktop(context) ? 210.0 : Responsive.isDesktopS(context) ? 200 : 150.0,
                                     child: CompetencyTile(
                                       competency: competency,
                                       status: status,

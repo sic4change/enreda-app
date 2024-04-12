@@ -137,7 +137,7 @@ class _PersonalDataState extends State<PersonalData> {
                             _birthday == null ? userEnreda.birthday : _birthday;
                         _postalCode = userEnreda.address?.postalCode ?? '';
                         _specificInterest = userEnreda.specificInterests;
-                        _assignedEntityId = userEnreda.assignedEntityId;
+                        _assignedEntityId = userEnreda.assignedEntityId ?? '';
                         if (_interestsSelected.isEmpty) {
                           _interestsSelected = userEnreda.interests;
                           List<String> interestSelectedName = [];
@@ -161,17 +161,13 @@ class _PersonalDataState extends State<PersonalData> {
                         return StreamBuilder<List<Country>>(
                             stream: database.countryFormatedStream(),
                             builder: (context, snapshot) {
-                              _countries =
-                                  snapshot.hasData ? snapshot.data! : [];
+                              _countries = snapshot.hasData ? snapshot.data! : [];
                               if (_countrySelected == '') {
                                 _countrySelected =
                                     userEnreda.address?.country ?? '';
                               }
-
-                              _country = _countries
-                                  .firstWhere(
-                                      (country) =>
-                                          country.countryId == _countrySelected,
+                              _country = _countries.firstWhere((country) =>
+                                  country.countryId == _countrySelected,
                                       orElse: () => Country(name: ''));
                               return StreamBuilder<List<Province>>(
                                   stream: database
@@ -226,30 +222,27 @@ class _PersonalDataState extends State<PersonalData> {
                                             builder: (context, snapshot) {
                                               List<Education> educations = snapshot.hasData ? snapshot.data! : [];
                                               if (educations != [] && userEnreda.educationId != null) {
-                                                _education = educations
-                                                    .firstWhere(
-                                                        (education) =>
+                                                _education = educations.firstWhere((education) =>
                                                     education.educationId == userEnreda.educationId,
                                                     orElse: () => Education(order: 0, label: '', value: '', educationId: ''));
-                                              }
-
-                                              _country = _countries
-                                                  .firstWhere(
-                                                      (country) =>
-                                                  country.countryId == _countrySelected,
-                                                  orElse: () => Country(name: ''));
-
-                                              return StreamBuilder<SocialEntity>(
-                                                stream: database.socialEntityStream(userEnreda.assignedEntityId ?? ' '),
-                                                builder: (context, snapshot) {
-                                                  if(snapshot.hasData){
-                                                    _socialEntity = snapshot.data;
-                                                  }
-                                                  return Responsive.isDesktop(context)
-                                                      ? _buildMainDataContainer(context, userEnreda)
-                                                      : _buildMainDataContainer(context, userEnreda);
+                                                if(_assignedEntityId != null && _assignedEntityId != '' )  {
+                                                  return StreamBuilder<SocialEntity>(
+                                                      stream: database.socialEntityStream(_assignedEntityId!),
+                                                      builder: (context, snapshot) {
+                                                        if(snapshot.hasData){
+                                                          _socialEntity = snapshot.data;
+                                                          return Responsive.isDesktop(context)
+                                                              ? _buildMainDataContainer(context, userEnreda)
+                                                              : _buildMainDataContainer(context, userEnreda);
+                                                        }
+                                                        return Container();
+                                                      }
+                                                  );
                                                 }
-                                              );
+                                              }
+                                              return Responsive.isDesktop(context)
+                                                  ? _buildMainDataContainer(context, userEnreda)
+                                                  : _buildMainDataContainer(context, userEnreda);
                                             }
                                           );
                                         });
@@ -493,6 +486,8 @@ class _PersonalDataState extends State<PersonalData> {
 
   Widget _buildForm(BuildContext context, UserEnreda userEnreda) {
     final database = Provider.of<Database>(context, listen: false);
+    final textTheme = Theme.of(context).textTheme;
+    double fontSize = responsiveSize(context, 14, 16, md: 15);
     return
       Form(
         key: _formKey,
@@ -566,55 +561,94 @@ class _PersonalDataState extends State<PersonalData> {
                 });
               }, StringConst.FORM_CURRENT_NATIONALITY),
               SpaceH20(),
-              Flex(
-                direction: Responsive.isMobile(context) ? Axis.vertical : Axis.horizontal,
-                children: [
-                  Expanded(
-                    flex: Responsive.isMobile(context) ? 0 : 1,
-                    child: CustomPhoneFormFieldTitle(
+              CustomFlexRowColumn(
+                contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: Sizes.kDefaultPaddingDouble / 2),
+                childLeft: StreamBuilder <List<UserEnreda>>(
+                    stream:
+                    // Empty stream (no call to firestore) if email not valid
+                    !EmailValidator.validate(writtenEmail)
+                        ? Stream<List<UserEnreda>>.empty()
+                        : database.checkIfUserEmailRegistered(writtenEmail),
+                    builder:  (context, snapshotUsers) {
+
+                      var usersListLength = snapshotUsers.data != null ? snapshotUsers.data?.length : 0;
+                      isRegistered = usersListLength! > 0 ? 1 : 0;
+
+                      final validationMessage = (value) => EmailValidator.validate(value!)
+                          ? (isRegistered == 0 ? null : StringConst.EMAIL_REGISTERED)
+                          : StringConst.EMAIL_ERROR;
+
+                      return Padding(
+                        padding: Responsive.isMobile(context) || Responsive.isDesktopS(context) ? const EdgeInsets.only(right: 0, bottom: Sizes.kDefaultPaddingDouble )
+                            : const EdgeInsets.only(right: Sizes.kDefaultPaddingDouble / 2, bottom: Sizes.kDefaultPaddingDouble),
+                        child: CustomTextFormFieldTitle(
+                          textColor: AppColors.primaryText1,
+                          enabled: false,
+                          labelText: StringConst.FORM_EMAIL,
+                          initialValue: _email,
+                          validator: validationMessage,
+                          onSaved: (value) => _email = value,
+                          keyboardType: TextInputType.emailAddress,
+                          onChanged: (value) => setState(() => this.writtenEmail = value),
+                        ),
+                      );
+                    }
+                ),
+                childRight: Padding(
+                  padding: Responsive.isMobile(context) || Responsive.isDesktopS(context) ? EdgeInsets.zero : EdgeInsets.only(left: Sizes.kDefaultPaddingDouble / 2),
+                  child: TextFormField(
+                    decoration: InputDecoration(
                       labelText: StringConst.FORM_PHONE,
-                      phoneCode: _phoneCode,
-                      onCountryChange: _onCountryChange,
-                      initialValue: _phone,
-                      validator: (value) =>
-                      value!.isNotEmpty ? null : StringConst.PHONE_ERROR,
-                      onSaved: (value) => this._phone = _phoneCode +' '+ value!,
-                      fontSize: 15,
+                      prefixIcon: CountryCodePicker(
+                        onChanged: _onCountryChange,
+                        initialSelection: _phoneCode == '+34'
+                            ? 'ES'
+                            : _phoneCode == '+51'
+                            ? 'PE'
+                            : 'GT',
+                        countryFilter: const ['ES', 'PE', 'GT'],
+                        showFlagDialog: true,
+                      ),
+                      focusColor: AppColors.turquoise,
+                      labelStyle: textTheme.button?.copyWith(
+                        height: 1.5,
+                        color: AppColors.greyDark,
+                        fontWeight: FontWeight.w400,
+                        fontSize: fontSize,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: const BorderSide(
+                          color: AppColors.greyUltraLight,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: const BorderSide(
+                          color: AppColors.greyUltraLight,
+                          width: 1.0,
+                        ),
+                      ),
                     ),
-                  ),
-                  if (Responsive.isMobile(context))
-                    SpaceH20(),
-                  if (!Responsive.isMobile(context))
-                    SpaceW20(),
-                  Expanded(
-                    flex: Responsive.isMobile(context) ? 0 : 1,
-                    child: StreamBuilder <List<UserEnreda>>(
-                        stream:
-                        // Empty stream (no call to firestore) if email not valid
-                        !EmailValidator.validate(writtenEmail)
-                            ? Stream<List<UserEnreda>>.empty()
-                            : database.checkIfUserEmailRegistered(writtenEmail),
-                        builder:  (context, snapshotUsers) {
-
-                          var usersListLength = snapshotUsers.data != null ? snapshotUsers.data?.length : 0;
-                          isRegistered = usersListLength! > 0 ? 1 : 0;
-
-                          final validationMessage = (value) => EmailValidator.validate(value!)
-                              ? (isRegistered == 0 ? null : StringConst.EMAIL_REGISTERED)
-                              : StringConst.EMAIL_ERROR;
-
-                          return CustomTextFormFieldTitle(
-                            labelText: StringConst.FORM_EMAIL,
-                            initialValue: _email,
-                            validator: validationMessage,
-                            onSaved: (value) => _email = value,
-                            keyboardType: TextInputType.emailAddress,
-                            onChanged: (value) => setState(() => this.writtenEmail = value),
-                          );
-                        }
+                    initialValue: _phone.indexOf(' ') < 0 && _phone.length > 3
+                        ? _phone.substring(3)
+                        : _phone.substring(_phone.indexOf(' ') + 1),
+                    validator: (value) =>
+                    value!.isNotEmpty ? null : StringConst.PHONE_ERROR,
+                    onSaved: (value) => this._phone = _phoneCode + ' ' + value!,
+                    textCapitalization: TextCapitalization.sentences,
+                    keyboardType: TextInputType.phone,
+                    style: textTheme.button?.copyWith(
+                      height: 1.5,
+                      color: AppColors.greyDark,
+                      fontWeight: FontWeight.w400,
+                      fontSize: fontSize,
                     ),
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    ],
                   ),
-                ],
+                ),
               ),
               SpaceH20(),
               CustomFlexRowColumn(
@@ -732,7 +766,6 @@ class _PersonalDataState extends State<PersonalData> {
           abilities: _abilities,
           unemployedType: _unemployedType,
         educationId: _education?.educationId ?? '',
-        assignedEntityId: _socialEntity?.socialEntityId ?? ''
       );
       try {
         final database = Provider.of<Database>(context, listen: false);

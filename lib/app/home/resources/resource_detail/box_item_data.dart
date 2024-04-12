@@ -49,7 +49,7 @@ class BoxItem extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(icon, color: AppColors.turquoiseBlue, size: 20),
+                Icon(icon, color: AppColors.turquoiseBlue, size: 18),
                 SizedBox(width: 5),
                 Text(
                   title,

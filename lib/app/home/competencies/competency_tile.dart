@@ -21,7 +21,7 @@ class CompetencyTile extends StatelessWidget {
     var containerHeight = Responsive.isMobile(context) || Responsive.isTablet(context) ? 160.0: 260.0;
     var imageWidth = Responsive.isMobile(context) || Responsive.isTablet(context) ? 120.0: 180.0;
     var textContainerHeight = Responsive.isMobile(context) || Responsive.isTablet(context) ? 40.0: 50.0;
-    var fontSize = Responsive.isMobile(context) || Responsive.isTablet(context) ? 11.0: 13.0;
+    var fontSize = 13.0;
     final textTheme = Theme.of(context).textTheme;
 
     if (mini){
@@ -29,7 +29,7 @@ class CompetencyTile extends StatelessWidget {
       containerHeight /= Responsive.isMobile(context) || Responsive.isTablet(context) ? 1.6 : 1.8;
       imageWidth /= 1.6;
       textContainerHeight /= 1.65;
-      fontSize /= 1.6;
+      fontSize /= 1.4;
     }
 
     if (medium){

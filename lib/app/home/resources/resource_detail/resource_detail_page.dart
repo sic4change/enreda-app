@@ -138,152 +138,144 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     double fontSizeTitle = responsiveSize(context, 14, 22, md: 18);
     double fontSizePromotor = responsiveSize(context, 12, 16, md: 14);
     return SingleChildScrollView(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            constraints: BoxConstraints(
-              maxWidth: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.95 :
-                Responsive.isDesktopS(context) ? MediaQuery.of(context).size.width * 0.8 :
-                MediaQuery.of(context).size.width * 0.5,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.rectangle,
-              border: Border.all(
-                  color: AppColors.greyLight2.withOpacity(0.2),
-                  width: 1),
-              borderRadius: BorderRadius.circular(Sizes.MARGIN_16),
-            ),
-            child: Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(ImagePath.RECTANGLE_RESOURCE),
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(Sizes.MARGIN_16),
-                        bottomLeft: Radius.circular(Sizes.MARGIN_16)),
-                  ),
-                  margin: Responsive.isMobile(context) ? const EdgeInsets.all(0.0) : const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Column(
+      child: Container(
+        margin: MediaQuery.of(context).size.width >= 1200 ?
+          EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1) : EdgeInsets.zero,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.rectangle,
+          border: Border.all(
+              color: AppColors.greyLight2.withOpacity(0.2),
+              width: 1),
+          borderRadius: BorderRadius.circular(Sizes.MARGIN_16),
+        ),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(ImagePath.RECTANGLE_RESOURCE),
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(Sizes.MARGIN_16),
+                    bottomLeft: Radius.circular(Sizes.MARGIN_16)),
+              ),
+              margin: Responsive.isMobile(context) ? const EdgeInsets.all(0.0) : const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                  children: [
+                    Responsive.isMobile(context) ? SpaceH8() : SpaceH20(),
+                    resource.organizerImage == null || resource.organizerImage!.isEmpty ? Row(
                       children: [
-                        Responsive.isMobile(context) ? SpaceH8() : SpaceH20(),
-                        resource.organizerImage == null || resource.organizerImage!.isEmpty ? Row(
-                          children: [
-                            Spacer(),
-                            Container(
-                                width: 60,
-                                child: _buildMenuButton(context, resource))
-                          ],
-                        ) :
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(width: 60,),
-                            Spacer(),
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(width: 1.0, color: AppColors.greyLight),
-                                    borderRadius: BorderRadius.circular(100,),
-                                    color: AppColors.greyLight),
-                                child: CircleAvatar(
-                                  radius: Responsive.isMobile(context) ? 28 : 40,
-                                  backgroundColor: AppColors.white,
-                                  backgroundImage: NetworkImage(resource.organizerImage!),
-                                ),
-                              ),
-                            ),
-                            Spacer(),
-                            Container(
-                                width: 60,
-                                child: _buildMenuButton(context, resource))
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, right: 30.0, left: 30.0),
-                          child: Text(
-                            resource.title,
-                            textAlign: TextAlign.center,
-                            maxLines:
-                            Responsive.isMobile(context) ? 2 : 1,
-                            style: textTheme.bodySmall?.copyWith(
-                              letterSpacing: 1.2,
-                              color: AppColors.white,
-                              height: 1.5,
-                              fontWeight: FontWeight.w300,
-                              fontSize: fontSizeTitle,
+                        Spacer(),
+                        Container(
+                            width: 60,
+                            child: _buildMenuButton(context, resource))
+                      ],
+                    ) :
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(width: 60,),
+                        Spacer(),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 1.0, color: AppColors.greyLight),
+                                borderRadius: BorderRadius.circular(100,),
+                                color: AppColors.greyLight),
+                            child: CircleAvatar(
+                              radius: Responsive.isMobile(context) ? 28 : 40,
+                              backgroundColor: AppColors.white,
+                              backgroundImage: NetworkImage(resource.organizerImage!),
                             ),
                           ),
                         ),
-                        SpaceH4(),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              resource.promotor != null
-                                  ? resource.promotor != ""
-                                  ? resource.promotor!
-                                  : resource.organizerName!
-                                  : resource.organizerName!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                letterSpacing: 1.2,
-                                fontSize: fontSizePromotor,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ],
+                        Spacer(),
+                        Container(
+                            width: 60,
+                            child: _buildMenuButton(context, resource))
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, right: 30.0, left: 30.0),
+                      child: Text(
+                        resource.title,
+                        textAlign: TextAlign.center,
+                        maxLines:
+                        Responsive.isMobile(context) ? 2 : 1,
+                        style: textTheme.bodySmall?.copyWith(
+                          letterSpacing: 1.2,
+                          color: AppColors.white,
+                          height: 1.5,
+                          fontWeight: FontWeight.w300,
+                          fontSize: fontSizeTitle,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            buildShare(context, resource, AppColors.darkGray),
-                            SpaceW8(),
-                            IconButton(
-                              icon: (resource.likes.contains(userId))
-                                  ? FaIcon(FontAwesomeIcons.solidHeart) : FaIcon(FontAwesomeIcons.heart),
-                              tooltip: 'Me gusta',
-                              color: (resource.likes.contains(userId))
-                                  ? AppColors.red : AppColors.white,
-                              iconSize: 30,
-                              onPressed: () {
-                                auth.currentUser == null
-                                    ? showAlertNullUser(context)
-                                    : resource.likes.contains(userId)
-                                    ? removeUserToLike(
-                                      context: context,
-                                      userId: userId,
-                                      resource: resource)
-                                    : addUserToLike(
-                                      context: context,
-                                      userId: userId,
-                                      resource: resource);
-                              },
-                            ),
-                            SpaceW16(),
-                          ],
-                        )
-                      ]
-                  ),
-                ),
-                Padding(
-                  padding: Responsive.isMobile(context) ? const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0) :
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  child: _buildBoxes(resource),
-                ),
-                _buildDetailResource(context, resource),
-              ],
+                      ),
+                    ),
+                    SpaceH4(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          resource.promotor != null
+                              ? resource.promotor != ""
+                              ? resource.promotor!
+                              : resource.organizerName!
+                              : resource.organizerName!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            letterSpacing: 1.2,
+                            fontSize: fontSizePromotor,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        buildShare(context, resource, AppColors.darkGray),
+                        SpaceW8(),
+                        IconButton(
+                          icon: (resource.likes.contains(userId))
+                              ? FaIcon(FontAwesomeIcons.solidHeart) : FaIcon(FontAwesomeIcons.heart),
+                          tooltip: 'Me gusta',
+                          color: (resource.likes.contains(userId))
+                              ? AppColors.red : AppColors.white,
+                          iconSize: 30,
+                          onPressed: () {
+                            auth.currentUser == null
+                                ? showAlertNullUser(context)
+                                : resource.likes.contains(userId)
+                                ? removeUserToLike(
+                                  context: context,
+                                  userId: userId,
+                                  resource: resource)
+                                : addUserToLike(
+                                  context: context,
+                                  userId: userId,
+                                  resource: resource);
+                          },
+                        ),
+                        SpaceW16(),
+                      ],
+                    )
+                  ]
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: Responsive.isMobile(context) ? const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0) :
+              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: _buildBoxes(resource),
+            ),
+            _buildDetailResource(context, resource),
+          ],
+        ),
       ),
     );
   }
@@ -291,7 +283,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   Widget _buildDetailResource(BuildContext context, Resource resource) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -434,6 +426,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
             ),
           ],
         ),
+        Responsive.isMobile(context) ?  SizedBox(height: 30,) : Container(),
       ],
     );
   }
@@ -441,7 +434,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   Widget _buildBoxes(Resource resource) {
     List<BoxItemData> boxItemData = [
       BoxItemData(
-          icon: Icons.card_travel,
+          icon: FontAwesomeIcons.briefcase,
           title: StringConst.RESOURCE_TYPE,
           contact: '${resource.resourceCategoryName}'
       ),
@@ -463,20 +456,20 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
       BoxItemData(
         icon: Icons.calendar_month_outlined,
         title: StringConst.DATE,
-        contact: '${DateFormat('dd/MM/yyyy').format(resource.start!)} - ${DateFormat('dd/MM/yyyy').format(resource.end!)}',
+        contact: '${DateFormat('dd/MM/yyyy').format(resource.start)} - ${DateFormat('dd/MM/yyyy').format(resource.end)}',
       ),
       BoxItemData(
-        icon: Icons.list_alt,
+        icon: FontAwesomeIcons.fileContract,
         title: StringConst.CONTRACT_TYPE,
         contact: resource.contractType != null && resource.contractType != ''  ? '${resource.contractType}' : 'Sin especificar',
       ),
       BoxItemData(
-        icon: Icons.alarm,
+        icon: FontAwesomeIcons.clock,
         title: StringConst.FORM_SCHEDULE,
         contact: resource.temporality != null && resource.temporality != ''  ? '${resource.temporality}' :  'Sin especificar',
       ),
       BoxItemData(
-        icon: Icons.currency_exchange,
+        icon: FontAwesomeIcons.euroSign,
         title: StringConst.SALARY,
         contact: resource.salary != null && resource.salary != ''  ? '${resource.salary}' :  'Sin especificar',
       ),

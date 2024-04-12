@@ -51,7 +51,6 @@ class MyCurriculumPage extends StatefulWidget {
   State<MyCurriculumPage> createState() => _MyCurriculumPageState();
 }
 
-
 class _MyCurriculumPageState extends State<MyCurriculumPage> {
   UserEnreda? user;
   String? myLocation;
@@ -269,6 +268,9 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               _buildMyExperiences(context, user),
               SpaceH30(),
               _buildMyCompetencies(context, user),
+              SpaceH30(),
+              _buildFinalCheck(context, user),
+              SpaceH30(),
             ],
           ),
         )
@@ -345,7 +347,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildCVHeader(context, user, profilePic, competenciesNames),
-                            //_buildMyCareer(context),
                             SpaceH30(),
                             _buildMyEducation(context, user),
                             SpaceH30(),
@@ -356,6 +357,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                             _buildMyCompetencies(context, user),
                             SpaceH30(),
                             _buildFinalCheck(context, user),
+                            SpaceH30(),
                           ],
                         ),
                       ),
@@ -372,215 +374,227 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     final textTheme = Theme.of(context).textTheme;
     return SingleChildScrollView(
       child: Container(
-        margin: Responsive.isTablet(context) ? EdgeInsets.only(top: 30, bottom: Constants.mainPadding * 3 ) : EdgeInsets.symmetric(vertical: 0.0),
         decoration: BoxDecoration(
           border: Border.all(color: Constants.lightGray, width: 1),
           borderRadius: BorderRadius.all(Radius.circular(40.0)),
           color: Colors.white,
         ),
-        child: Padding(
-          padding: EdgeInsets.all(Constants.mainPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(Constants.mainPadding),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                      flex: 1,
-                      child: SizedBox(width: Responsive.isTablet(context) || Responsive.isMobile(context) ? 26: 50,)),
-                  Expanded(
-                    flex: 1,
-                    child: InkWell(
-                      onTap: () async {
-                        final checkAgreeDownload = user?.checkAgreeCV ?? false;
-                        if(!checkAgreeDownload){
-                          showAlertDialog(context,
-                              title: 'Error',
-                              content: 'Por favor, acepta las condiciones antes de continuar',
-                              defaultActionText: 'Ok'
-                          );
-                          return;
-                        }
-
-                        _hasEnoughExperiences(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute( builder: (context) =>
-                              MyCvModelsPage(
-                                user: user!,
-                                city: city!,
-                                province: province!,
-                                country: country!,
-                                myCustomAboutMe: myCustomAboutMe,
-                                myCustomEmail: myCustomEmail,
-                                myCustomPhone: myCustomPhone,
-                                myExperiences: myExperiences!,
-                                myCustomExperiences: myCustomExperiences,
-                                mySelectedExperiences: mySelectedExperiences,
-                                myPersonalExperiences: myPersonalExperiences,
-                                myPersonalSelectedExperiences: myPersonalSelectedExperiences,
-                                myPersonalCustomExperiences: myPersonalCustomExperiences,
-                                myEducation: myEducation!,
-                                myCustomEducation: myCustomEducation,
-                                mySelectedEducation: mySelectedEducation,
-                                mySecondaryEducation: mySecondaryEducation,
-                                mySecondaryCustomEducation: mySecondaryCustomEducation,
-                                mySecondarySelectedEducation: mySecondarySelectedEducation,
-                                competenciesNames: competenciesNames,
-                                myCustomCompetencies: myCustomCompetencies,
-                                mySelectedCompetencies: mySelectedCompetencies,
-                                myCustomDataOfInterest: myCustomDataOfInterest,
-                                mySelectedDataOfInterest: mySelectedDataOfInterest,
-                                myCustomLanguages: myCustomLanguages,
-                                mySelectedLanguages: mySelectedLanguages,
-                                myCustomCity: myCustomCity,
-                                myCustomProvince: myCustomProvince,
-                                myCustomCountry: myCustomCountry,
-                                myReferences: myReferences!,
-                                myCustomReferences: myCustomReferences,
-                                mySelectedReferences: mySelectedReferences,
-                                myMaxEducation: myMaxEducation?.label??"",
-                              )),
-                          );
-                      },
-                      child: Image.asset(
-                        ImagePath.DOWNLOAD,
-                        height: Responsive.isTablet(context) || Responsive.isMobile(context) ? Sizes.ICON_SIZE_30 : Sizes.ICON_SIZE_50,
-                      ),),
-                  ),
-                ],
-              ),
-              SpaceH20(),
-              Padding(
-                padding: Responsive.isMobile(context)
-                    ? const EdgeInsets.all(8.0)
-                    : const EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    !kIsWeb ?
-                    ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(60)),
-                      child:
-                      Center(
-                        child:
-                        profilePic == "" ?
-                        Container(
-                          color:  Colors.transparent,
-                          height: 120,
-                          width: 120,
-                          child: Image.asset(ImagePath.USER_DEFAULT),
+                  SpaceH12(),
+                  Padding(
+                    padding: Responsive.isMobile(context)
+                        ? const EdgeInsets.all(8.0)
+                        : const EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        !kIsWeb ?
+                        ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(60)),
+                          child:
+                          Center(
+                            child:
+                            profilePic == "" ?
+                            Container(
+                              color:  Colors.transparent,
+                              height: 120,
+                              width: 120,
+                              child: Image.asset(ImagePath.USER_DEFAULT),
+                            ):
+                            CachedNetworkImage(
+                                width: 120,
+                                height: 120,
+                                fit: BoxFit.cover,
+                                alignment: Alignment.center,
+                                imageUrl: profilePic),
+                          ),
                         ):
-                        CachedNetworkImage(
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.cover,
-                            alignment: Alignment.center,
-                            imageUrl: profilePic),
-                      ),
-                    ):
-                    ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(60)),
-                      child:
-                      Center(
-                        child: profilePic == "" ?
-                        Container(
-                          color:  Colors.transparent,
-                          height: 120,
-                          width: 120,
-                          child: Image.asset(ImagePath.USER_DEFAULT),
-                        ):
-                        FadeInImage.assetNetwork(
-                          placeholder: ImagePath.USER_DEFAULT,
-                          width: 120,
-                          height: 120,
-                          fit: BoxFit.cover,
-                          image: profilePic,
+                        ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(60)),
+                          child:
+                          Center(
+                            child: profilePic == "" ?
+                            Container(
+                              color:  Colors.transparent,
+                              height: 120,
+                              width: 120,
+                              child: Image.asset(ImagePath.USER_DEFAULT),
+                            ):
+                            FadeInImage.assetNetwork(
+                              placeholder: ImagePath.USER_DEFAULT,
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                              image: profilePic,
+                            ),
+                          ),
                         ),
-                      ),
+                        Spacer(),
+                        InkWell(
+                          onTap: () async {
+                            final checkAgreeDownload = user?.checkAgreeCV ?? false;
+                            if(!checkAgreeDownload){
+                              showAlertDialog(context,
+                                  title: 'Error',
+                                  content: 'Por favor, acepta las condiciones antes de continuar',
+                                  defaultActionText: 'Ok'
+                              );
+                              return;
+                            }
+
+                            _hasEnoughExperiences(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute( builder: (context) =>
+                                  MyCvModelsPage(
+                                    user: user!,
+                                    city: city!,
+                                    province: province!,
+                                    country: country!,
+                                    myCustomAboutMe: myCustomAboutMe,
+                                    myCustomEmail: myCustomEmail,
+                                    myCustomPhone: myCustomPhone,
+                                    myExperiences: myExperiences!,
+                                    myCustomExperiences: myCustomExperiences,
+                                    mySelectedExperiences: mySelectedExperiences,
+                                    myPersonalExperiences: myPersonalExperiences,
+                                    myPersonalSelectedExperiences: myPersonalSelectedExperiences,
+                                    myPersonalCustomExperiences: myPersonalCustomExperiences,
+                                    myEducation: myEducation!,
+                                    myCustomEducation: myCustomEducation,
+                                    mySelectedEducation: mySelectedEducation,
+                                    mySecondaryEducation: mySecondaryEducation,
+                                    mySecondaryCustomEducation: mySecondaryCustomEducation,
+                                    mySecondarySelectedEducation: mySecondarySelectedEducation,
+                                    competenciesNames: competenciesNames,
+                                    myCustomCompetencies: myCustomCompetencies,
+                                    mySelectedCompetencies: mySelectedCompetencies,
+                                    myCustomDataOfInterest: myCustomDataOfInterest,
+                                    mySelectedDataOfInterest: mySelectedDataOfInterest,
+                                    myCustomLanguages: myCustomLanguages,
+                                    mySelectedLanguages: mySelectedLanguages,
+                                    myCustomCity: myCustomCity,
+                                    myCustomProvince: myCustomProvince,
+                                    myCustomCountry: myCustomCountry,
+                                    myReferences: myReferences!,
+                                    myCustomReferences: myCustomReferences,
+                                    mySelectedReferences: mySelectedReferences,
+                                    myMaxEducation: myMaxEducation?.label??"",
+                                  )),
+                            );
+                          },
+                          child: Image.asset(
+                            ImagePath.DOWNLOAD,
+                            height: Responsive.isTablet(context) || Responsive.isMobile(context) ? Sizes.ICON_SIZE_30 : Sizes.ICON_SIZE_50,
+                          ),),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              Responsive.isMobile(context) ? SpaceH12() : SpaceH24(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    '${user?.firstName} ${user?.lastName}',
-                    style: textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-                        color: Constants.penBlue),
-                    textAlign: TextAlign.center,
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${user?.firstName} ${user?.lastName}',
+                        style: textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                            color: AppColors.turquoiseBlue),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: 34,
+                    child: PillTooltip(
+                      title: StringConst.PILL_HOW_TO_DO_CV,
+                      pillId: TrainingPill.HOW_TO_DO_CV_ID,
+                    ),
+                  ),
+                  //SpaceH24(),
+                  //_buildMyCareer(context),
+                  SpaceH24(),
+                  CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase(), color: AppColors.turquoiseBlue),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.mail,
+                        color: Colors.black.withOpacity(0.7),
+                        size: 16,
+                      ),
+                      SpaceW4(),
+                      CustomTextSmall(text: user?.email ?? ''),
+                    ],
+                  ),
+                  SpaceH8(),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.phone,
+                        color: Constants.darkGray,
+                        size: 12.0,
+                      ),
+                      SpaceW4(),
+                      Text(
+                        user?.phone ?? '',
+                        style: textTheme.bodySmall?.copyWith(
+                            fontSize: Responsive.isDesktop(context) ? 16 : 14.0,
+                            color: Constants.darkGray),
+                      ),
+                    ],
+                  ),
+                  SpaceH8(),
+                  _buildMyLocation(context, user),
+                  SpaceH24(),
+                  _buildMyEducation(context, user),
+                  SpaceH24(),
+                  _buildMySecondaryEducation(context, user),
+                  SpaceH24(),
+                  _buildMyExperiences(context, user),
+                  SpaceH24(),
+                  _buildMyCompetencies(context, user),
+                  SpaceH24(),
+                  _buildFinalCheck(context, user),
                 ],
               ),
-              Container(
-                height: 34,
-                child: PillTooltip(
-                  title: StringConst.PILL_HOW_TO_DO_CV,
-                  pillId: TrainingPill.HOW_TO_DO_CV_ID,
-                ),
+            ),
+            Container(
+              padding: EdgeInsets.all(Constants.mainPadding),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      AppColors.turquoise.withOpacity(0.15),
+                      AppColors.turquoiseUltraLight.withOpacity(0.13)
+                    ],
+                  )
               ),
-              //SpaceH24(),
-              //_buildMyCareer(context),
-              SpaceH24(),
-              CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase(), color: AppColors.turquoiseBlue),
-              Row(
+              child: Column(
                 children: [
-                  Icon(
-                    Icons.mail,
-                    color: Colors.black.withOpacity(0.7),
-                    size: 16,
-                  ),
-                  SpaceW4(),
-                  CustomTextSmall(text: user?.email ?? ''),
+                  SpaceH24(),
+                  _buildAboutMe(context),
+                  SpaceH24(),
+                  _buildMyDataOfInterest(context),
+                  SpaceH24(),
+                  _buildMyLanguages(context),
+                  SpaceH24(),
+                  _buildMyReferences(context, user),
+                  SpaceH50(),
                 ],
               ),
-              SpaceH8(),
-              Row(
-                children: [
-                  Icon(
-                    Icons.phone,
-                    color: Constants.darkGray,
-                    size: 12.0,
-                  ),
-                  SpaceW4(),
-                  Text(
-                    user?.phone ?? '',
-                    style: textTheme.bodySmall?.copyWith(
-                        fontSize: Responsive.isDesktop(context) ? 16 : 14.0,
-                        color: Constants.darkGray),
-                  ),
-                ],
-              ),
-              SpaceH8(),
-              _buildMyLocation(context, user),
-              SpaceH24(),
-              _buildMyEducation(context, user),
-              SpaceH24(),
-              _buildMySecondaryEducation(context, user),
-              SpaceH24(),
-              _buildMyExperiences(context, user),
-              SpaceH24(),
-              _buildMyCompetencies(context, user),
-              SpaceH24(),
-              _buildFinalCheck(context, user),
-              SpaceH24(),
-              _buildAboutMe(context),
-              SpaceH24(),
-              _buildMyDataOfInterest(context),
-              SpaceH24(),
-              _buildMyLanguages(context),
-              SpaceH24(),
-              _buildMyReferences(context, user),
-              SpaceH24(),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -594,12 +608,17 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-              '${user?.firstName} ${user?.lastName}',
-              style: textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-                  color: AppColors.turquoiseBlue),
+            Container(
+              constraints: BoxConstraints(
+                minWidth: 300,
+              ),
+              child: Text(
+                '${user?.firstName} ${user?.lastName}',
+                style: textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: Responsive.isDesktopS(context) ? 30.0 : 40.0,
+                    color: AppColors.turquoiseBlue),
+              ),
             ),
             Spacer(),
             InkWell(
@@ -946,39 +965,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             return Container();
           }
         });
-    return StreamBuilder(
-      stream: database.myExperiencesStream(user?.userId ?? ''),
-      builder: (context, snapshotExperiences) {
-        return StreamBuilder(
-          stream: database.educationStream(),
-          builder: (context, snapshotEducations) {
-
-            if (snapshotEducations.hasData && snapshotExperiences.hasData) {
-              final myEducationalExperiencies = snapshotExperiences.data!
-                  .where((experience) => experience.type == 'Formativa')
-                  .toList();
-              if (myEducationalExperiencies.isNotEmpty) {
-                final educations = snapshotEducations.data!;
-                final areEduactions = myEducationalExperiencies.any((exp) => exp.education != null && exp.education!.isNotEmpty);
-                if (areEduactions) {
-                  final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
-                  myEducations.sort((a, b) => a.order.compareTo(b.order));
-                  myMaxEducation = myEducations.first;
-                } else {
-                  myMaxEducation = educations.firstWhere((e) => e.educationId == user!.educationId, orElse: () => Education(label: "", value: "", order: 0));
-                }
-
-                return CustomTextBody(text: myMaxEducation?.label??"");
-              } else {
-                return Container();
-              }
-            } else {
-              return Container();
-            }
-          }
-        );
-      }
-    );
   }
 
   Widget _buildAboutMe(BuildContext context) {
@@ -1234,14 +1220,13 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                       height: 40,
                                     ),
                                     Text(
-                                        status ==
-                                                StringConst
-                                                    .BADGE_VALIDATED
+                                        status == StringConst.BADGE_VALIDATED
                                             ? 'EVALUADA'
                                             : 'CERTIFICADA',
                                         style: textTheme.bodySmall
                                             ?.copyWith(
                                             fontWeight: FontWeight.w500,
+                                            fontSize: 10,
                                             color: Constants.turquoise)),
                                   ],
                                 );

@@ -369,9 +369,9 @@ class FirestoreDatabase implements Database {
       );
 
   @override
-  Stream<SocialEntity> socialEntityStream(String? socialEntityId) =>
+  Stream<SocialEntity> socialEntityStream(String socialEntityId) =>
       _service.documentStream<SocialEntity>(
-        path: APIPath.socialEntity(socialEntityId!),
+        path: APIPath.socialEntity(socialEntityId),
         builder: (data, documentId) => SocialEntity.fromMap(data, documentId),
       );
 

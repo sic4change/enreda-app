@@ -71,11 +71,11 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                 selectedIndex == 1 || selectedIndex == 2 ?
                 Positioned(
                   top: 50,
-                  child: Flex(
-                    direction: Responsive.isMobile(context) ? Axis.vertical : Axis.horizontal,
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(width: 10,),
                       InkWell(
                         onTap: () => {
                           setState(() {
@@ -84,11 +84,11 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                         },
                         child: CustomStepperButton(
                           child: CustomTextBold(title: StringConst.ENROLLED_RESOURCES, color: AppColors.turquoise,),
-                          icon: Image.asset(ImagePath.ICON_RESOURCES_ENROLLED),
+                          icon: SizedBox(width: 21, child: Image.asset(ImagePath.ICON_RESOURCES_ENROLLED)),
                           color: MyResourcesPage.selectedIndex.value == 1 ? AppColors.turquoiseSuperLight : AppColors.altWhite,
                         ),
                       ),
-                      Responsive.isMobile(context) ? SizedBox(height: Sizes.mainPadding,) : SizedBox(width: Sizes.mainPadding,),
+                      SizedBox(width: 10,),
                       InkWell(
                         onTap: () => {
                           setState(() {
@@ -97,7 +97,7 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                         },
                         child: CustomStepperButton(
                           child: CustomTextBold(title: StringConst.FAVORITES_RESOURCES, color: AppColors.turquoise,),
-                          icon: Icon(Icons.favorite, color: AppColors.red,),
+                          icon: SizedBox(width: 21, child: Icon(Icons.favorite, color: AppColors.red,)),
                           color: MyResourcesPage.selectedIndex.value == 2 ? AppColors.turquoiseSuperLight : AppColors.altWhite,
                         ),
                       ),
@@ -106,7 +106,7 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                 ) : Container(),
                 Container(
                   margin: selectedIndex == 1 || selectedIndex == 2 ? EdgeInsets.only(top: Sizes.mainPadding * 5) :
-                  EdgeInsets.only(top: Sizes.mainPadding * 3 , bottom: Sizes.mainPadding * 3),
+                  EdgeInsets.only(top: Sizes.mainPadding * 2.5 , bottom: Sizes.mainPadding),
                     child: bodyWidget[MyResourcesPage.selectedIndex.value],
                 ),
               ],

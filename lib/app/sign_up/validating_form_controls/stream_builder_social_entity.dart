@@ -45,7 +45,8 @@ Widget streamBuilderForSocialEntity (BuildContext context, SocialEntity? selecte
                     child: DropdownButtonFormField(
                       value: selectedSocialEntity,
                       items: socialEntityItems,
-                      onChanged: (value) => functionToWriteBackThings(value),
+                      //onChanged: (value) => functionToWriteBackThings(value),
+                      onChanged: null,
                       //validator: validator,
                       decoration: InputDecoration(
                         errorStyle: TextStyle(height: 0.01),

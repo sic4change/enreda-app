@@ -14,6 +14,7 @@ class CustomTextFormFieldTitle extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.enabled = true,
     this.height,
+    this.textColor = AppColors.greyTxtAlt,
   });
 
   final String labelText;
@@ -25,6 +26,7 @@ class CustomTextFormFieldTitle extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool enabled;
   final double? height;
+  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +93,7 @@ class CustomTextFormFieldTitle extends StatelessWidget {
       enabled: enabled,
       style: textTheme.bodySmall?.copyWith(
         height: 1.5,
-        color: AppColors.greyTxtAlt,
+        color: textColor,
         fontWeight: FontWeight.w400,
         fontSize: fontSize,
       ),

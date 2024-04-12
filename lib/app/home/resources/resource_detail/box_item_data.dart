@@ -3,7 +3,7 @@ import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 
 class BoxItemData {
-  final IconData icon;
+  final Widget icon;
   final String title;
   final String contact;
 
@@ -21,7 +21,7 @@ class BoxItem extends StatelessWidget {
     this.contact = "",
   });
 
-  final IconData? icon;
+  final Widget? icon;
   final String title;
   final String contact;
 
@@ -49,7 +49,7 @@ class BoxItem extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(icon, color: AppColors.turquoiseBlue, size: 18),
+                SizedBox(child: icon, width: 18),
                 SizedBox(width: 5),
                 Text(
                   title,

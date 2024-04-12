@@ -450,42 +450,42 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
   Widget _buildBoxes(Resource resource) {
     List<BoxItemData> boxItemData = [
       BoxItemData(
-          icon: Icons.card_travel,
+          icon: Image.asset(ImagePath.ICON_MODALITY),
           title: StringConst.RESOURCE_TYPE,
           contact: '${resource.resourceCategoryName}'
       ),
       BoxItemData(
-        icon: Icons.location_on_outlined,
+        icon: Image.asset(ImagePath.ICON_PLACE),
         title: StringConst.LOCATION,
         contact: '${resource.countryName}',
       ),
       BoxItemData(
-        icon: Icons.card_travel,
+        icon: Image.asset(ImagePath.ICON_MODALITY),
         title: StringConst.MODALITY,
         contact: '${resource.modality}',
       ),
       BoxItemData(
-        icon: Icons.people,
+        icon: Image.asset(ImagePath.ICON_SEATS),
         title: StringConst.CAPACITY,
         contact: '${resource.capacity}',
       ),
       BoxItemData(
-        icon: Icons.calendar_month_outlined,
+        icon: Image.asset(ImagePath.ICON_DATE),
         title: StringConst.DATE,
         contact: '${DateFormat('dd/MM/yyyy').format(resource.start)} - ${DateFormat('dd/MM/yyyy').format(resource.end)}',
       ),
       BoxItemData(
-        icon: Icons.list_alt,
+        icon: Image.asset(ImagePath.ICON_CONTRACT),
         title: StringConst.CONTRACT_TYPE,
         contact: resource.contractType != null && resource.contractType != ''  ? '${resource.contractType}' : 'Sin especificar',
       ),
       BoxItemData(
-        icon: Icons.alarm,
+        icon: Image.asset(ImagePath.ICON_CONTRACT),
         title: StringConst.FORM_SCHEDULE,
         contact: resource.temporality != null && resource.temporality != ''  ? '${resource.temporality}' :  'Sin especificar',
       ),
       BoxItemData(
-        icon: Icons.currency_exchange,
+        icon: Image.asset(ImagePath.ICON_CURRENCY),
         title: StringConst.SALARY,
         contact: resource.salary != null && resource.salary != ''  ? '${resource.salary}' :  'Sin especificar',
       ),

@@ -99,6 +99,28 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
           if(widget.participantUser.assignedEntityId != null && widget.participantUser.assignedEntityId != "")
             _buildContactSection(context),
           SpaceH30(),
+          RoundedContainer(
+            margin: EdgeInsets.zero,
+            child: InkWell(
+                onTap: () {
+                  setState(() {
+                    WebHome.controller.selectIndex(4);
+                  });
+                },
+                child: CustomTextBold(title: 'Mis recursos')),
+          ),
+          SpaceH30(),
+          RoundedContainer(
+            margin: EdgeInsets.zero,
+            child: InkWell(
+                onTap: () {
+                  setState(() {
+                    WebHome.controller.selectIndex(2);
+                  });
+                },
+                child: CustomTextBold(title: 'Mis datos personales')),
+          ),
+          SpaceH30(),
         ],
       ),
     );
@@ -108,90 +130,97 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
     final database = Provider.of<Database>(context, listen: false);
     final totalGamificationPills = 5;
     final cvTotalSteps = 7;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Responsive.isMobile(context) || Responsive.isDesktopS(context) ? Container() :
-            Container(
-                height: 250,
-                child: Image.asset(ImagePath.GAMIFICATION_LOGO, height: 250.0,)),
-            SpaceW8(),
-            Expanded(
-              child: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextBoldTitle(title: StringConst.GAMIFICATION),
-                    GamificationSlider(
-                      height: Responsive.isDesktop(context) ? 20.0 : 10.0,
-                      value: widget.participantUser.gamificationFlags.length,
-                    ),
-                    SpaceH20(),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Wrap(
-                            spacing: Responsive.isDesktop(context)? 5.0 : 4.0,
-                            runSpacing: Responsive.isDesktop(context)? 5.0 : 4.0,
-                            alignment: WrapAlignment.spaceEvenly,
-                            children: [
-                              GamificationItem(
-                                imagePath: ImagePath.GAMIFICATION_CHAT_ICON,
-                                progress: (widget.participantUser.gamificationFlags[UserEnreda.FLAG_CHAT]?? false)? 100 : 0,
-                                title: (widget.participantUser.gamificationFlags[UserEnreda.FLAG_CHAT]?? false)? "CHAT INICIADO": "CHAT NO INICIADO",
-                              ),
-                              GamificationItem(
-                                imagePath: ImagePath.GAMIFICATION_PILL_ICON,
-                                progress: (_getUserPillsConsumed()/totalGamificationPills) * 100,
-                                progressText: "${_getUserPillsConsumed()}",
-                                title: "PÍLDORAS CONSUMIDAS",
-                              ),
-                              StreamBuilder<List<Competency>>(
-                                  stream: database.competenciesStream(),
-                                  builder: (context, competenciesStream) {
-                                    double competenciesProgress = 0;
-                                    Map<String, String> certifiedCompetencies = {};
-                                    if (competenciesStream.hasData) {
-                                      certifiedCompetencies = Map.from(widget.participantUser.competencies);
-                                      certifiedCompetencies.removeWhere((key, value) => value != "certified");
-                                      competenciesProgress = (certifiedCompetencies.length / competenciesStream.data!.length) * 100;
-                                    }
+    return InkWell(
+      onTap: () {
+        setState(() {
+          WebHome.controller.selectIndex(7);
+        });
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Responsive.isMobile(context) || Responsive.isDesktopS(context) ? Container() :
+              Container(
+                  height: 250,
+                  child: Image.asset(ImagePath.GAMIFICATION_LOGO, height: 250.0,)),
+              SpaceW8(),
+              Expanded(
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextBoldTitle(title: StringConst.GAMIFICATION),
+                      GamificationSlider(
+                        height: Responsive.isDesktop(context) ? 20.0 : 10.0,
+                        value: widget.participantUser.gamificationFlags.length,
+                      ),
+                      SpaceH20(),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Wrap(
+                              spacing: Responsive.isDesktop(context)? 5.0 : 4.0,
+                              runSpacing: Responsive.isDesktop(context)? 5.0 : 4.0,
+                              alignment: WrapAlignment.spaceEvenly,
+                              children: [
+                                GamificationItem(
+                                  imagePath: ImagePath.GAMIFICATION_CHAT_ICON,
+                                  progress: (widget.participantUser.gamificationFlags[UserEnreda.FLAG_CHAT]?? false)? 100 : 0,
+                                  title: (widget.participantUser.gamificationFlags[UserEnreda.FLAG_CHAT]?? false)? "CHAT INICIADO": "CHAT NO INICIADO",
+                                ),
+                                GamificationItem(
+                                  imagePath: ImagePath.GAMIFICATION_PILL_ICON,
+                                  progress: (_getUserPillsConsumed()/totalGamificationPills) * 100,
+                                  progressText: "${_getUserPillsConsumed()}",
+                                  title: "PÍLDORAS CONSUMIDAS",
+                                ),
+                                StreamBuilder<List<Competency>>(
+                                    stream: database.competenciesStream(),
+                                    builder: (context, competenciesStream) {
+                                      double competenciesProgress = 0;
+                                      Map<String, String> certifiedCompetencies = {};
+                                      if (competenciesStream.hasData) {
+                                        certifiedCompetencies = Map.from(widget.participantUser.competencies);
+                                        certifiedCompetencies.removeWhere((key, value) => value != "certified");
+                                        competenciesProgress = (certifiedCompetencies.length / competenciesStream.data!.length) * 100;
+                                      }
 
-                                    return GamificationItem(
-                                      imagePath: ImagePath.GAMIFICATION_COMPETENCIES_ICON,
-                                      progress: competenciesProgress,
-                                      progressText: "${certifiedCompetencies.length}",
-                                      title: "COMPETENCIAS CERTIFICADAS",
-                                    );
-                                  }),
-                              GamificationItem(
-                                imagePath: ImagePath.GAMIFICATION_RESOURCES_ICON,
-                                progress: ((widget.participantUser.resourcesAccessCount?? 0) / 15) * 100,
-                                progressText: "${widget.participantUser.resourcesAccessCount}",
-                                title: "RECURSOS INSCRITOS",
-                              ),
-                              GamificationItem(
-                                imagePath: ImagePath.GAMIFICATION_CV_ICON,
-                                progress: (_getUserCvStepsCompleted()/cvTotalSteps) * 100,
-                                progressText: "${(_getUserCvStepsCompleted() / cvTotalSteps * 100).toStringAsFixed(2)}%",
-                                title: "CV COMPLETADO",
-                              ),
-                            ],
+                                      return GamificationItem(
+                                        imagePath: ImagePath.GAMIFICATION_COMPETENCIES_ICON,
+                                        progress: competenciesProgress,
+                                        progressText: "${certifiedCompetencies.length}",
+                                        title: "COMPETENCIAS CERTIFICADAS",
+                                      );
+                                    }),
+                                GamificationItem(
+                                  imagePath: ImagePath.GAMIFICATION_RESOURCES_ICON,
+                                  progress: ((widget.participantUser.resourcesAccessCount?? 0) / 15) * 100,
+                                  progressText: "${widget.participantUser.resourcesAccessCount}",
+                                  title: "RECURSOS INSCRITOS",
+                                ),
+                                GamificationItem(
+                                  imagePath: ImagePath.GAMIFICATION_CV_ICON,
+                                  progress: (_getUserCvStepsCompleted()/cvTotalSteps) * 100,
+                                  progressText: "${(_getUserCvStepsCompleted() / cvTotalSteps * 100).toStringAsFixed(2)}%",
+                                  title: "CV COMPLETADO",
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    )
-                  ],
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ],);
+            ],
+          ),
+        ],),
+    );
   }
 
   Widget _buildContactSection(BuildContext context) {
@@ -236,15 +265,13 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
               ),
             ),
             Positioned(
-              bottom: 0,
-              top: -20,
-              right: 0,
-              child: InkWell(
-                onTap: () {
-                },
-                child: Container(
-                    width: 500,
-                    child: Image.asset(ImagePath.CONTACT_ICON, fit: BoxFit.fitHeight,)),
+              bottom: 20,
+              top: Responsive.isMobile(context) ? 100 : -20,
+              right: 50,
+              child: Container(
+                  width: Responsive.isMobile(context) ? 190 : 500,
+                  height: 100,
+                  child: Image.asset(ImagePath.CONTACT_ICON, fit: BoxFit.fitHeight,)
               ),
             ),
           ],
@@ -255,108 +282,114 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
 
   Widget _buildCompetenciesSection(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-    final textTheme = Theme.of(context).textTheme;
-    return Container(
-      margin: Responsive.isMobile(context) ? const EdgeInsets.only(top: 10.0, right: 0, left: 0.0, bottom: 10.0,) :
-        const EdgeInsets.only(top: 10.0, right: 10.0, left: 0.0, bottom: 10.0,),
-      padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.rectangle,
-        border: Border.all(color: AppColors.greyLight2.withOpacity(0.3), width: 1),
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomTextBoldTitle(title: StringConst.MY_COMPETENCIES),
-          SpaceH8(),
-          StreamBuilder<List<Competency>>(
-              stream: database.competenciesStream(),
-              builder: (context, snapshotCompetencies) {
-                if (snapshotCompetencies.hasData) {
-                  final controller = ScrollController();
-                  var scrollJump = Responsive.isDesktopS(context) ? 350 : 410;
-                  List<Competency> myCompetencies = snapshotCompetencies.data!;
-                  final competenciesIds = widget.participantUser.competencies.keys.toList();
-                  myCompetencies = myCompetencies
-                      .where((competency) => competenciesIds.any((id) => competency.id == id))
-                      .toList();
-                  return myCompetencies.isEmpty ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: Center(child: CustomTextSubTitle(title: StringConst.NO_COMPETENCIES,)),
-                  ) : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: Responsive.isDesktop(context) ? 210.0 : Responsive.isDesktopS(context) ? 200 : 150.0,
-                        child: ScrollConfiguration(
-                          behavior: MyCustomScrollBehavior(),
-                          child: ListView(
-                            controller: controller,
-                            scrollDirection: Axis.horizontal,
-                            children: myCompetencies.map((competency) {
-                              final status = widget.participantUser.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
-                              return Column(
-                                children: [
-                                  Container(
-                                    height: Responsive.isDesktop(context) ? 210.0 : Responsive.isDesktopS(context) ? 200 : 150.0,
-                                    child: CompetencyTile(
-                                      competency: competency,
-                                      status: status,
-                                      height: 40,
-                                      medium: true,
+    return InkWell(
+      onTap: () {
+        setState(() {
+          WebHome.controller.selectIndex(3);
+        });
+      },
+      child: Container(
+        margin: Responsive.isMobile(context) ? const EdgeInsets.only(top: 10.0, right: 0, left: 0.0, bottom: 10.0,) :
+          const EdgeInsets.only(top: 10.0, right: 10.0, left: 0.0, bottom: 10.0,),
+        padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.rectangle,
+          border: Border.all(color: AppColors.greyLight2.withOpacity(0.3), width: 1),
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomTextBoldTitle(title: StringConst.MY_COMPETENCIES),
+            SpaceH8(),
+            StreamBuilder<List<Competency>>(
+                stream: database.competenciesStream(),
+                builder: (context, snapshotCompetencies) {
+                  if (snapshotCompetencies.hasData) {
+                    final controller = ScrollController();
+                    var scrollJump = Responsive.isDesktopS(context) ? 350 : 410;
+                    List<Competency> myCompetencies = snapshotCompetencies.data!;
+                    final competenciesIds = widget.participantUser.competencies.keys.toList();
+                    myCompetencies = myCompetencies
+                        .where((competency) => competenciesIds.any((id) => competency.id == id))
+                        .toList();
+                    return myCompetencies.isEmpty ? Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: Center(child: CustomTextSubTitle(title: StringConst.NO_COMPETENCIES,)),
+                    ) : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: Responsive.isDesktop(context) ? 210.0 : Responsive.isDesktopS(context) ? 200 : 150.0,
+                          child: ScrollConfiguration(
+                            behavior: MyCustomScrollBehavior(),
+                            child: ListView(
+                              controller: controller,
+                              scrollDirection: Axis.horizontal,
+                              children: myCompetencies.map((competency) {
+                                final status = widget.participantUser.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
+                                return Column(
+                                  children: [
+                                    Container(
+                                      height: Responsive.isDesktop(context) ? 210.0 : Responsive.isDesktopS(context) ? 200 : 150.0,
+                                      child: CompetencyTile(
+                                        competency: competency,
+                                        status: status,
+                                        height: 40,
+                                        medium: true,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            }).toList(),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
                           ),
                         ),
-                      ),
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                if (controller.position.pixels >=
-                                    controller.position.minScrollExtent)
-                                  controller.animateTo(
-                                      controller.position.pixels - scrollJump,
-                                      duration: Duration(milliseconds: 500),
-                                      curve: Curves.ease);
-                              },
-                              child: Image.asset(
-                                ImagePath.ARROW_BACK_ALT,
-                                width: 30.0,
+                        Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  if (controller.position.pixels >=
+                                      controller.position.minScrollExtent)
+                                    controller.animateTo(
+                                        controller.position.pixels - scrollJump,
+                                        duration: Duration(milliseconds: 500),
+                                        curve: Curves.ease);
+                                },
+                                child: Image.asset(
+                                  ImagePath.ARROW_BACK_ALT,
+                                  width: 30.0,
+                                ),
                               ),
-                            ),
-                            SpaceW12(),
-                            InkWell(
-                              onTap: () {
-                                if (controller.position.pixels <=
-                                    controller.position.maxScrollExtent)
-                                  controller.animateTo(
-                                      controller.position.pixels + scrollJump,
-                                      duration: Duration(milliseconds: 500),
-                                      curve: Curves.ease);
-                              },
-                              child: Image.asset(
-                                ImagePath.ARROW_FORWARD_ALT,
-                                width: 30.0,
+                              SpaceW12(),
+                              InkWell(
+                                onTap: () {
+                                  if (controller.position.pixels <=
+                                      controller.position.maxScrollExtent)
+                                    controller.animateTo(
+                                        controller.position.pixels + scrollJump,
+                                        duration: Duration(milliseconds: 500),
+                                        curve: Curves.ease);
+                                },
+                                child: Image.asset(
+                                  ImagePath.ARROW_FORWARD_ALT,
+                                  width: 30.0,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              }),
-        ],),
+                      ],
+                    );
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                }),
+          ],),
+      ),
     );
   }
 
@@ -443,7 +476,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
               return myResources.isEmpty? Text(
                 StringConst.NO_RESOURCES,
                 style: textTheme.bodyMedium,
-              ): Wrap(
+              ) : Wrap(
                 spacing: 10.0,
                 runSpacing: 10.0,
                 children: myResources.map((r) => Container(

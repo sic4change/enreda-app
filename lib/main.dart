@@ -1,7 +1,5 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:enreda_app/app/home/home_page.dart';
-import 'package:enreda_app/app/home/resources/pages/resource_detail_mobile.dart';
-import 'package:enreda_app/app/home/resources/pages/resource_detail_web.dart';
 import 'package:enreda_app/app/home/resources/resource_detail/resource_detail_link_page.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/training_pill_page_mobile.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_page.dart';
@@ -9,7 +7,6 @@ import 'package:enreda_app/app_theme.dart';
 import 'package:enreda_app/firebase_options.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
-import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -29,6 +26,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);

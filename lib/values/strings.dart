@@ -517,6 +517,8 @@ class StringConst {
   static const String SET_DOCUMENT_NAME = "Introduce el nombre del documento";
   static const String FORM_GENERIC_ERROR = 'Es obligatorio rellenar este campo';
   static const String NAME_IN_USE = 'Nombre en uso';
+  static const String PREVIEW = 'Vista previa';
+  static const String DOCUMENT = 'Documento';
 
   //AssignedContact
   static const String ASSIGNED_USER = 'Tu técnica de referencia es ';

@@ -41,9 +41,10 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
     String countryName = '';
     String location = '';
     return RoundedContainer(
-        contentPadding: Responsive.isMobile(context) ?
-        EdgeInsets.all(Sizes.mainPadding) :
-        EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+        margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+          const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+        contentPadding: Responsive.isMobile(context) ? EdgeInsets.zero :
+          EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
         child: StreamBuilder<User?>(
           stream: Provider.of<AuthBase>(context).authStateChanges(),
           builder: (context, snapshot) {
@@ -180,8 +181,8 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                     icon: _buildEntityActions(context, socialEntity.email!, socialEntity.phone!),
                   ),
                 ],
-              )
-
+              ),
+              SpaceH30(),
             ],
           ),
         ),

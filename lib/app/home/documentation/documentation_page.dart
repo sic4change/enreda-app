@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:enreda_app/app/home/documentation/pdf_preview.dart';
 import 'package:enreda_app/app/home/models/personalDocument.dart';
 import 'package:enreda_app/app/home/models/personalDocumentType.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
@@ -9,18 +8,15 @@ import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
-import 'package:file_picker/_internal/file_picker_web.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
-import 'dart:html' as html;
+
+import 'package:enreda_app/app/home/documentation/download_mobile.dart'
+if (dart.library.html) 'package:enreda_app/app/home/documentation/download_web.dart' as my_controls;
+
+import 'package:enreda_app/app/home/documentation/upload_mobile.dart'
+if (dart.library.html) 'package:enreda_app/app/home/documentation/upload_web.dart' as my_upload;
 
 import '../../../common_widgets/spaces.dart';
 
@@ -42,6 +38,8 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
     late int documentsCount = 0;
 
     return RoundedContainer(
+      margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+        const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
       contentPadding: Responsive.isMobile(context) ?
       EdgeInsets.all(Sizes.mainPadding) :
       EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
@@ -101,7 +99,8 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
                                       for( var document in _userDocuments)
                                         _documentTile(context, document, widget.participantUser),
                                     ]
-                                )
+                                ),
+                                SpaceH50(),
                               ]
                           ),
                         ),
@@ -201,7 +200,6 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
         borderRadius: _userDocuments.indexOf(document) == _userDocuments.length-1 ?
         BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)) :
         BorderRadius.all(Radius.circular(0)),
-        //border: Border.all(color: AppColors.greyBorder),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -221,7 +219,8 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 30),
+            padding: Responsive.isMobile(context) ? const EdgeInsets.only(right: 8) :
+              const EdgeInsets.only(right: 30),
             child: document.document != '' ? Row(
               children: [
                 IconButton(
@@ -237,7 +236,7 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
                     });
                   },
                 ),
-                SpaceW8(),
+                Responsive.isMobile(context) ? SpaceW4() : SpaceW8(),
                 IconButton(
                   icon: Image.asset(
                     ImagePath.PERSONAL_DOCUMENTATION_VIEW,
@@ -245,12 +244,17 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
                     height: 20,
                   ),
                   onPressed: () async {
-                    var data = await http.get(Uri.parse(document.document));
-                    var pdfData = data.bodyBytes;
-                    await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdfData);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              MyPreviewPdf(
+                                  url: document.document, title: document.name,
+                              )),
+                    );
                   },
                 ),
-                SpaceW8(),
+                Responsive.isMobile(context) ? SpaceW4() : SpaceW8(),
                 IconButton(
                   icon: Image.asset(
                     ImagePath.PERSONAL_DOCUMENTATION_DOWNLOAD,
@@ -258,16 +262,7 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
                     height: 20,
                   ),
                   onPressed: () async {
-                    final ref = FirebaseStorage.instance.refFromURL(document.document);
-                    if(kIsWeb){
-                      html.AnchorElement anchorElement = html.AnchorElement(href: document.document);
-                      anchorElement.download = document.name;
-                      anchorElement.click();
-                    }else{
-                      final dir = await getApplicationDocumentsDirectory();
-                      final file = File('${dir.path}/${ref.name}');
-                      await ref.writeToFile(file);
-                    }
+                    my_controls.downloadDocument(document.document, document.name);
                   },
                 ),
               ],
@@ -279,26 +274,7 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
                 height: 20,
               ),
               onPressed: () async {
-                PlatformFile? pickedFile;
-
-                var result;
-                if(kIsWeb){
-                  result = await FilePickerWeb.platform.pickFiles();
-                }else{
-                  result = await FilePicker.platform.pickFiles();
-                }
-                if(result == null) return;
-                pickedFile = result.files.first;
-                Uint8List fileBytes = pickedFile!.bytes!;
-                String fileName = pickedFile.name;
-
-                await database.uploadPersonalDocument(
-                  user,
-                  fileBytes,
-                  fileName,
-                  document,
-                  user.personalDocuments.indexOf(document),
-                );
+                my_upload.uploadDocument(context, user, document);
               },
             ),
           )
@@ -384,3 +360,5 @@ Future<void> setPersonalDocument({
   }
   await database.setUserEnreda(user);
 }
+
+

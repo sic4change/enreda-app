@@ -47,15 +47,15 @@ class CompetenciesItemBuilder<T> extends StatelessWidget {
 
   Widget _build(List<Competency> items, BuildContext context) {
 
-    final padding = Responsive.isDesktop(context)? 12.0: 0.0;
+    final padding = Responsive.isDesktop(context)? 12.0 : 0.0;
     return Align(
       alignment: Alignment.topCenter,
       child: Padding(
               padding: EdgeInsets.symmetric(horizontal: padding),
               child: Wrap(
                 children: items.map((c) => itemBuilder(context, c)).toList(),
-                spacing: 15.0,
-                runSpacing: 15.0,
+                spacing: Responsive.isMobile(context) ? 10 : 15.0,
+                runSpacing: Responsive.isMobile(context) ? 10 : 15.0,
               ),
             ),
     );

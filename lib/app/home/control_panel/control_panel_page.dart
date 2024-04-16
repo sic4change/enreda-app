@@ -18,7 +18,6 @@ class ControlPanelPage extends StatefulWidget {
 class _ControlPanelPageState extends State<ControlPanelPage> {
   @override
   Widget build(BuildContext context) {
-    //return Responsive.isMobile(context) ? myWelcomePageMobile(context) : myWelcomePageDesktop(context);
     return myWelcomePageDesktop(context);
   }
 
@@ -101,54 +100,5 @@ class _ControlPanelPageState extends State<ControlPanelPage> {
       ),
     );
   }
-
-  // Widget myWelcomePageMobile(BuildContext context){
-  //   final textTheme = Theme.of(context).textTheme;
-  //   return RoundedContainer(
-  //     child: SingleChildScrollView(
-  //       child: Column(
-  //         children: [
-  //           Container(
-  //               margin: const EdgeInsets.only(top: 10.0, right: 0, left: 0, bottom: 10.0,),
-  //               height: Responsive.isDesktopS(context) ? 300 : 255,
-  //               decoration: BoxDecoration(
-  //                 color: Colors.white,
-  //               ),
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   Padding(
-  //                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
-  //                     child: Text('Hola ${widget.user?.firstName},',
-  //                       style: textTheme.displaySmall?.copyWith(
-  //                           fontWeight: FontWeight.bold,
-  //                           fontSize: Responsive.isMobile(context) ? 30 : 42.0,
-  //                           color: AppColors.turquoiseBlue),),
-  //                   ),
-  //                   Padding(
-  //                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
-  //                     child: Text(StringConst.WELCOME_COMPANY,
-  //                       style: textTheme.headlineMedium?.copyWith(
-  //                           fontWeight: FontWeight.bold,
-  //                           fontSize: Responsive.isMobile(context) ? 30 : 42.0,
-  //                           color: Colors.black),),
-  //                   ),
-  //                   Padding(
-  //                     padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 20.0),
-  //                     child: Text(StringConst.WELCOME_TEXT,
-  //                       style: textTheme.bodySmall?.copyWith(
-  //                           fontWeight: FontWeight.normal,
-  //                           fontSize: Responsive.isMobile(context) ? 15 : 18.0,
-  //                           color: AppColors.greyAlt),),
-  //                   )
-  //                 ],
-  //               )
-  //           ),
-  //           SizedBox(height: 20,),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
 }

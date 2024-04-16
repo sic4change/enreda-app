@@ -47,10 +47,7 @@ class CustomTextFormFieldTitle extends StatelessWidget {
           ),
         ),
         height != null ? 
-        Container(
-          height: 45,
-          child: textField(context)
-        ) :
+        textField(context) :
         textField(context),
       ],
     );

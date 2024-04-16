@@ -42,7 +42,7 @@ class CustomDatePickerTitle extends StatelessWidget {
                 SpaceW12(),
                 Text(
                   labelText,
-                  style: textTheme.button?.copyWith(
+                  style: textTheme.bodySmall?.copyWith(
                     height: 1.5,
                     color: AppColors.greyDark,
                     fontWeight: FontWeight.w700,
@@ -52,53 +52,50 @@ class CustomDatePickerTitle extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            height: 50,
-            child: DateTimeField(
-              initialValue: initialValue,
-              enabled: enabled ?? true,
-              onChanged: onChanged,
-              validator: validator,
-              format: DateFormat('dd/MM/yyyy'),
-              decoration: InputDecoration(
-                hintText: hintText,
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  borderSide: BorderSide(
-                    color: AppColors.greyUltraLight,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  borderSide: BorderSide(
-                    color: AppColors.greyUltraLight,
-                    width: 1.0,
-                  ),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  borderSide: BorderSide(
-                    color: AppColors.greyUltraLight,
-                    width: 1.0,
-                  ),
+          DateTimeField(
+            initialValue: initialValue,
+            enabled: enabled ?? true,
+            onChanged: onChanged,
+            validator: validator,
+            format: DateFormat('dd/MM/yyyy'),
+            decoration: InputDecoration(
+              hintText: hintText,
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                borderSide: BorderSide(
+                  color: AppColors.greyUltraLight,
                 ),
               ),
-              style: textTheme.button?.copyWith(
-                height: 1.5,
-                color: AppColors.greyDark,
-                fontWeight: FontWeight.w400,
-                fontSize: fontSize,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                borderSide: BorderSide(
+                  color: AppColors.greyUltraLight,
+                  width: 1.0,
+                ),
               ),
-              onShowPicker: (context, currentValue) {
-                return showDatePicker(
-                  context: context,
-                  locale: Locale('es', 'ES'),
-                  firstDate: DateTime(DateTime.now().year - 100, DateTime.now().month, DateTime.now().day),
-                  initialDate: currentValue ?? DateTime.now(),
-                  lastDate: DateTime(DateTime.now().year + 100, DateTime.now().month, DateTime.now().day),
-                );
-              },
+              disabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                borderSide: BorderSide(
+                  color: AppColors.greyUltraLight,
+                  width: 1.0,
+                ),
+              ),
             ),
+            style: textTheme.bodySmall?.copyWith(
+              height: 1.5,
+              color: AppColors.greyDark,
+              fontWeight: FontWeight.w400,
+              fontSize: fontSize,
+            ),
+            onShowPicker: (context, currentValue) {
+              return showDatePicker(
+                context: context,
+                locale: Locale('es', 'ES'),
+                firstDate: DateTime(DateTime.now().year - 100, DateTime.now().month, DateTime.now().day),
+                initialDate: currentValue ?? DateTime.now(),
+                lastDate: DateTime(DateTime.now().year + 100, DateTime.now().month, DateTime.now().day),
+              );
+            },
           ),
         ]
     );

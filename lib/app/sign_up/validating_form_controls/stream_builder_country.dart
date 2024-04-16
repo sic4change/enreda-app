@@ -31,7 +31,7 @@ Widget streamBuilderForCountry (BuildContext context, Country? selectedCountry, 
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Text(
                   title,
-                  style: textTheme.button?.copyWith(
+                  style: textTheme.bodySmall?.copyWith(
                     height: 1.5,
                     color: AppColors.greyDark,
                     fontWeight: FontWeight.w700,
@@ -39,42 +39,39 @@ Widget streamBuilderForCountry (BuildContext context, Country? selectedCountry, 
                   ),
                 ),
               ),
-              Container(
-                height: 50,
-                child: DropdownButtonFormField(
-                  value: selectedCountry,
-                  items: countryItems,
-                  onChanged: (value) => functionToWriteBackThings(value),
-                  validator: (value) => selectedCountry != null ? null : StringConst.COUNTRY_ERROR,
-                  decoration: InputDecoration(
-                    errorStyle: TextStyle(height: 0.01),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: AppColors.greyUltraLight,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: AppColors.greyUltraLight,
-                        width: 1.0,
-                      ),
-                    ),
-                    disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: AppColors.greyUltraLight,
-                        width: 1.0,
-                      ),
+              DropdownButtonFormField(
+                value: selectedCountry,
+                items: countryItems,
+                onChanged: (value) => functionToWriteBackThings(value),
+                validator: (value) => selectedCountry != null ? null : StringConst.COUNTRY_ERROR,
+                decoration: InputDecoration(
+                  errorStyle: TextStyle(height: 0.01),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: AppColors.greyUltraLight,
                     ),
                   ),
-                  style: textTheme.button?.copyWith(
-                    height: 1.4,
-                    color: AppColors.greyDark,
-                    fontWeight: FontWeight.w400,
-                    fontSize: fontSize,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: AppColors.greyUltraLight,
+                      width: 1.0,
+                    ),
                   ),
+                  disabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: AppColors.greyUltraLight,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+                style: textTheme.bodySmall?.copyWith(
+                  height: 1.4,
+                  color: AppColors.greyDark,
+                  fontWeight: FontWeight.w400,
+                  fontSize: fontSize,
                 ),
               ),
             ]

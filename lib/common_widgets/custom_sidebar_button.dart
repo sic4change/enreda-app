@@ -1,4 +1,4 @@
-import 'package:enreda_app/app/home/account_main_page.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';

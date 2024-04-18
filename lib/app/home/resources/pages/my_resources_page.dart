@@ -43,11 +43,12 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
         valueListenable: MyResourcesPage.selectedIndex,
         builder: (context, selectedIndex, child) {
           return RoundedContainer(
+            height: MediaQuery.of(context).size.height,
             contentPadding: Responsive.isMobile(context) ?
               EdgeInsets.all(0.0) :
               EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
-            margin: Responsive.isMobile(context) ? const EdgeInsets.only(left: 0, bottom: Sizes.kDefaultPaddingDouble, right: 0.0) :
-              const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble, bottom: Sizes.kDefaultPaddingDouble),
+            margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+              const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
             child: Stack(
               children: [
                 Container(
@@ -62,8 +63,8 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                               MyResourcesPage.selectedIndex.value = 1;
                             })
                           },
-                          child: selectedIndex == 1 || selectedIndex == 2 ? CustomTextMediumBold(text: 'Recursos ') :
-                          CustomTextMedium(text: 'Recursos ') ),
+                          child: selectedIndex == 1 || selectedIndex == 2 ? CustomTextMediumBold(text: StringConst.MY_RESOURCES_SPACE) :
+                          CustomTextMedium(text: StringConst.MY_RESOURCES_SPACE) ),
                       selectedIndex == 3 ? CustomTextMediumBold(text: '> Detalle del recurso',) : Container()
                     ],
                   ),

@@ -18,6 +18,7 @@ class StringConst {
   static const String EMAIL_URL = "mailto:<$DEV_EMAIL>?subject=&body=";
 
   static const String MY_RESOURCES = "Mis Recursos";
+  static const String MY_RESOURCES_SPACE = "Mis Recursos ";
   static const String FAVORITES = "Favoritos";
   static const String RECOMMENDED = "Recomendados";
 

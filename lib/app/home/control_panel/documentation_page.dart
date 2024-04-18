@@ -1,4 +1,4 @@
-import 'package:enreda_app/app/home/account_main_page.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/home/models/personalDocument.dart';
 import 'package:enreda_app/app/home/models/personalDocumentType.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';

@@ -38,6 +38,7 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
     late int documentsCount = 0;
 
     return RoundedContainer(
+      height: MediaQuery.of(context).size.height,
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
         const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
       contentPadding: Responsive.isMobile(context) ?

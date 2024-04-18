@@ -1,6 +1,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:enreda_app/app/home/account_main_page.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/custom_sidebar_button.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
@@ -50,17 +50,18 @@ class _SideBarWidgetState extends State<SideBarWidget> {
           borderRadius: BorderRadius.circular(20),
         ),
         hoverColor: AppColors.primary050,
-        hoverTextStyle: const TextStyle(color: AppColors.turquoiseBlue, fontWeight: FontWeight.w900),
+        hoverTextStyle: textTheme.titleLarge?.copyWith(
+          color: AppColors.turquoiseBlue,
+          fontSize: 15,
+        ),
         textStyle: textTheme.bodySmall?.copyWith(
               color: AppColors.turquoiseBlue,
               fontSize: 15,
               fontWeight: FontWeight.w500,
             ),
-        selectedTextStyle: textTheme.bodySmall?.copyWith(
+        selectedTextStyle: textTheme.titleLarge?.copyWith(
           color: AppColors.turquoiseBlue,
           fontSize: 15,
-          fontWeight: WebHome.selectedIndex.value == 0 ||
-              WebHome.selectedIndex.value == 1 ? FontWeight.w500 : FontWeight.w900,
         ),
         itemTextPadding: const EdgeInsets.only(left: 10),
         selectedItemTextPadding: const EdgeInsets.only(left: 10),
@@ -104,13 +105,13 @@ class _SideBarWidgetState extends State<SideBarWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                isSmallScreen ? SpaceH20() : Container(),
                 isSmallScreen ? Image.asset(
                   ImagePath.LOGO,
-                  height: 20,
+                  height: 30,
                 ) : Container(),
                 Column(
                   children: [
+                    SizedBox(height: 20),
                     _buildMyUserPhoto(context, widget.profilePic),
                     Padding(
                       padding: const EdgeInsets.all(5.0),
@@ -144,6 +145,8 @@ class _SideBarWidgetState extends State<SideBarWidget> {
         if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_CONTACT_SIDEBAR), width: 20,), label: 'Contacto Enreda', onTap: _setSelectedIndexToOne),
         if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_DOCUMENTS_SIDEBAR), width: 20,), label: 'Mis documentos', onTap: _setSelectedIndexToOne),
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_GAMIFICATION_SIDEBAR), width: 20,), label: 'Gamificación', onTap: _setSelectedIndexToOne),
+        if(isSmallScreen) SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: 'Recursos', onTap: _setSelectedIndexToOne),
+        if(isSmallScreen) SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: 'Competencias', onTap: _setSelectedIndexToOne),
       ],
     );
   }
@@ -154,7 +157,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
       onTap: () {
         setState(() {
           widget.keyWebHome.currentState?.closeDrawer();
-          WebHome.selectedIndex.value = 0;
+          WebHome.controller.selectIndex(2);
         });
       },
       child: Column(

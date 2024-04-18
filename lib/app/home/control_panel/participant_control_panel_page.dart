@@ -1,4 +1,4 @@
-import 'package:enreda_app/app/home/account_main_page.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/home/competencies/competency_tile.dart';
 import 'package:enreda_app/app/home/control_panel/documentation_page.dart';
 import 'package:enreda_app/app/home/control_panel/gamification-item.dart';
@@ -98,28 +98,6 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
           SpaceH30(),
           if(widget.participantUser.assignedEntityId != null && widget.participantUser.assignedEntityId != "")
             _buildContactSection(context),
-          SpaceH30(),
-          RoundedContainer(
-            margin: EdgeInsets.zero,
-            child: InkWell(
-                onTap: () {
-                  setState(() {
-                    WebHome.controller.selectIndex(4);
-                  });
-                },
-                child: CustomTextBold(title: 'Mis recursos')),
-          ),
-          SpaceH30(),
-          RoundedContainer(
-            margin: EdgeInsets.zero,
-            child: InkWell(
-                onTap: () {
-                  setState(() {
-                    WebHome.controller.selectIndex(2);
-                  });
-                },
-                child: CustomTextBold(title: 'Mis datos personales')),
-          ),
           SpaceH30(),
         ],
       ),

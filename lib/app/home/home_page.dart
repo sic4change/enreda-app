@@ -1,11 +1,10 @@
 import 'package:enreda_app/app/anallytics/analytics.dart';
 import 'package:enreda_app/app/home/assistant/assistant_page_web.dart';
-import 'package:enreda_app/app/home/cupertino_scaffold.dart';
-import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
-import 'package:enreda_app/app/home/web_home_scafold.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -39,22 +38,15 @@ class _HomePageState extends State<HomePage> {
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
           return LayoutBuilder(builder: (context, constraints) {
-            final isBigScreen = constraints.maxWidth >= 900;
-            return Stack(
-              children: [
-                !snapshot.hasData && !kIsWeb
-                    ? OnboardingCarrusel()
-                    : isBigScreen
-                        ? WebHomeScaffold(showChatNotifier: showChatNotifier)
-                        : snapshot.hasData
-                            ? CupertinoScaffold(
-                                showChatNotifier: showChatNotifier)
-                            : CupertinoScaffoldAnonymous(
-                                showChatNotifier: showChatNotifier),
-                if (snapshot.hasData && isBigScreen) _buildChatFAB(context),
-                if (snapshot.hasData && isBigScreen) _buildChatContainer(),
-              ],
-            );
+            return !snapshot.hasData && !kIsWeb
+                ? OnboardingCarrusel()
+                : Stack(
+                  children: [
+                    WebHome(showChatNotifier: showChatNotifier),
+                    _buildChatFAB(context),
+                    _buildChatContainer(),
+                  ],
+                );
           });
         });
   }
@@ -89,7 +81,7 @@ class _HomePageState extends State<HomePage> {
             duration: Duration(seconds: 1),
             child: Container(
               clipBehavior: Clip.antiAlias,
-              width: 400.0,
+              width: Responsive.isMobile(context) ? 300.0 : 400.0,
               height: 500.0,
               child: showChat
                   ? AssistantPageWeb(

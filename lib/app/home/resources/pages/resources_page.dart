@@ -12,6 +12,7 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/filter_text_field_row.dart';
 import 'package:enreda_app/app/home/resources/list_item_builder_grid.dart';
 import 'package:enreda_app/app/home/resources/pages/list_item_builder_vertical.dart';
+import 'package:enreda_app/app/home/resources/resource_detail/resource_detail_page.dart';
 import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
 import 'package:enreda_app/app/home/trainingPills/training_list_tile_mobile.dart';
 import 'package:enreda_app/app/home/trainingPills/training_list_tile.dart';
@@ -156,7 +157,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
     bodyWidget = [
       _buildResourcesPage(context),
       _buildFilteredResourcesPage(context),
-      _buildTrainingPills(context)
+      _buildTrainingPills(context),
+      _buildResourceDetail(context),
     ];
 
     return ValueListenableBuilder<int>(
@@ -355,7 +357,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
       ),
     );
   }
-
 
   Widget _buildFilteredResourcesPage(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -756,8 +757,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                     'resource-${resource.resourceId}'),
                                                 child: ResourceListTile(
                                                   resource: resource,
-                                                  onTap: () => context.push(
-                                                      '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                                  onTap: () =>
+                                                      setState(() {
+                                                        globals.currentResource = resource;
+                                                        ResourcesPage.selectedIndex.value = 3;
+                                                      }),
+                                                  // onTap: () => context.push(
+                                                  //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                 ),
                                               );
                                             });
@@ -810,8 +816,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                     'resource-${resource.resourceId}'),
                                                 child: ResourceListTile(
                                                   resource: resource,
-                                                  onTap: () => context.push(
-                                                      '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                                  onTap: () =>
+                                                      setState(() {
+                                                        globals.currentResource = resource;
+                                                        ResourcesPage.selectedIndex.value = 3;
+                                                      }),
+                                                  // onTap: () => context.push(
+                                                  //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                 ),
                                               );
                                             });
@@ -912,8 +923,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                           'resource-${resource.resourceId}'),
                                                       child: ResourceListTile(
                                                         resource: resource,
-                                                        onTap: () => context.push(
-                                                            '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                                        onTap: () =>
+                                                            setState(() {
+                                                              globals.currentResource = resource;
+                                                              ResourcesPage.selectedIndex.value = 3;
+                                                            }),
+                                                        // onTap: () => context.push(
+                                                        //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                       ),
                                                     );
                                                   });
@@ -966,8 +982,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                           'resource-${resource.resourceId}'),
                                                       child: ResourceListTile(
                                                         resource: resource,
-                                                        onTap: () => context.push(
-                                                            '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                                        onTap: () =>
+                                                            setState(() {
+                                                              globals.currentResource = resource;
+                                                              ResourcesPage.selectedIndex.value = 3;
+                                                            }),
+                                                        // onTap: () => context.push(
+                                                        //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                       ),
                                                     );
                                                   });
@@ -1006,6 +1027,45 @@ class _ResourcesPageState extends State<ResourcesPage> {
     );
   }
 
+  Widget _buildResourceDetail(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: Responsive.isMobile(context) ? EdgeInsets.symmetric(horizontal: 0, vertical: 10)
+          : Responsive.isDesktopS(context) ? EdgeInsets.symmetric(horizontal: 30, vertical: 20)
+          : EdgeInsets.symmetric(horizontal: 100, vertical: 20),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () {
+                setStateIfMounted(() {
+                  ResourcesPage.selectedIndex.value = 1;
+                  _clearFilter();
+                });
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.arrow_back, color: AppColors.primaryColor),
+                  SpaceW12(),
+                  Text(_categoryName, style: textTheme.titleSmall?.copyWith(
+                    color: AppColors.greyAlt,
+                    height: 1.5,
+                    letterSpacing: 0.2,
+                    fontWeight: FontWeight.w700,
+                    //fontSize: fontSize,
+                  ),),
+                ],
+              ),
+            ),
+            Responsive.isMobile(context) || Responsive.isTablet(context) ? SpaceH8() : SpaceH4(),
+            ResourceDetailPage(),
+            SpaceH50(),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _showDialogNotValidUser(BuildContext context) async {
     isAlertBoxOpened = true;
     final didRequestNotValidUser = await showAlertDialog(context,
@@ -1036,4 +1096,5 @@ class _ResourcesPageState extends State<ResourcesPage> {
       filterTrainingPill.searchText = '';
     });
   }
+
 }

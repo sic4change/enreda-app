@@ -24,10 +24,11 @@ class _ControlPanelPageState extends State<ControlPanelPage> {
   Widget myWelcomePageDesktop(BuildContext context){
     final textTheme = Theme.of(context).textTheme;
     return RoundedContainer(
-      contentPadding: Responsive.isMobile(context) ? EdgeInsets.only(left: 0, right: 0, bottom: Sizes.kDefaultPaddingDouble, top: Sizes.kDefaultPaddingDouble) :
+      contentPadding: Responsive.isMobile(context) ?
+        EdgeInsets.only(left: 0, right: 0, bottom: Sizes.kDefaultPaddingDouble, top: Sizes.kDefaultPaddingDouble) :
         EdgeInsets.only(left: 0, right: Sizes.kDefaultPaddingDouble, bottom: Sizes.kDefaultPaddingDouble, top: Sizes.kDefaultPaddingDouble),
-      margin: Responsive.isMobile(context) ? const EdgeInsets.only(left: 0, bottom: Sizes.kDefaultPaddingDouble) :
-        const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble, bottom: Sizes.kDefaultPaddingDouble),
+      margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+        const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
       child: SingleChildScrollView(
         child: Column(
           children: [

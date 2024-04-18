@@ -54,9 +54,12 @@ class _GamificationState extends State<GamificationPage> {
     textTheme = Theme.of(context).textTheme;
 
     return RoundedContainer(
+      height: MediaQuery.of(context).size.height,
       contentPadding: Responsive.isMobile(context) ?
-      EdgeInsets.all(Sizes.mainPadding) :
-      EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+        EdgeInsets.all(Sizes.mainPadding) :
+        EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+      margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+        const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
       child: StreamBuilder(
           stream: database.userStream(auth.currentUser!.email),
           builder: (context, snapshot){
@@ -155,6 +158,13 @@ class _GamificationState extends State<GamificationPage> {
       controller: ScrollController(),
       child: Column(
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CustomTextMediumBold(text: StringConst.GAMIFICATION),
+            ],
+          ),
+          SpaceH20(),
           Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             alignment: WrapAlignment.center,

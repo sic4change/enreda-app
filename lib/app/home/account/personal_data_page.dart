@@ -277,8 +277,8 @@ class _PersonalDataState extends State<PersonalData> {
 
   Widget _buildMainDataContainer(BuildContext context, UserEnreda userEnreda) {
     return RoundedContainer(
-      margin: Responsive.isMobile(context) ? const EdgeInsets.only(left: 0, bottom: Sizes.kDefaultPaddingDouble) :
-        const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble, bottom: Sizes.kDefaultPaddingDouble),
+      margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+       const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
       contentPadding: Responsive.isMobile(context) ?
         EdgeInsets.all(Sizes.mainPadding) :
         EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),

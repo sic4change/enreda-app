@@ -41,6 +41,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
     String countryName = '';
     String location = '';
     return RoundedContainer(
+      height: MediaQuery.of(context).size.height,
         margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
           const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
         contentPadding: Responsive.isMobile(context) ? EdgeInsets.zero :

@@ -98,7 +98,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                 children: [
                   Text(
                     StringConst.COMPETENCIES.toUpperCase(),
-                    style: textTheme.bodyText1?.copyWith(
+                    style: textTheme.bodySmall?.copyWith(
                         fontSize: 18.0,
                         color: Constants.penBlue,
                         fontWeight: FontWeight.w400),
@@ -130,7 +130,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
         padding: const EdgeInsets.all(12.0),
         child: Text('Niveles de cada competencia',
             textAlign: TextAlign.start,
-            style: textTheme.bodyText1?.copyWith(
+            style: textTheme.bodySmall?.copyWith(
               color: Constants.penBlue,
               fontWeight: FontWeight.bold,
               fontSize: 18.0,
@@ -140,7 +140,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
         children: [
           Text(
             StringConst.COMPETENCIES_LEVEL_INFO,
-            style: textTheme.bodyText1?.copyWith(
+            style: textTheme.bodySmall?.copyWith(
               color: Constants.darkGray,
             ),
           ),
@@ -202,7 +202,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
         padding: const EdgeInsets.all(8.0),
         child: Text('¿Qué es una competencia?',
             textAlign: TextAlign.start,
-            style: textTheme.bodyText1?.copyWith(
+            style: textTheme.bodySmall?.copyWith(
               color: Constants.penBlue,
               fontWeight: FontWeight.bold,
               fontSize: 18.0,
@@ -213,7 +213,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
         child: Column(
           children: [
             Text(StringConst.COMPETENCIES_INFO,
-                style: textTheme.bodyText1?.copyWith(
+                style: textTheme.bodySmall?.copyWith(
                   color: Constants.darkGray,
                 )),
             SpaceH30(),
@@ -229,7 +229,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(StringConst.START_CHAT,
-                          style: textTheme.bodyText1?.copyWith(
+                          style: textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: Constants.white,
                           )),
@@ -279,7 +279,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
         Text(
           description,
           textAlign: TextAlign.center,
-          style: textTheme.bodyText1?.copyWith(
+          style: textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w500, color: Constants.darkGray),
         ),
       ],
@@ -323,7 +323,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                     Text(
                       c.name.toUpperCase(),
                       style: textTheme.titleSmall?.copyWith(
-                        fontSize: 13.0
+                        fontSize: 12.0
                       ),
                     ),
                   ],
@@ -351,7 +351,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
             )),
         content: Text(
             'Sólo los usuarios registrados pueden acceder al chat. ¿Deseas entrar como usuario registrado?',
-            style: textTheme.bodyText1?.copyWith(
+            style: textTheme.bodySmall?.copyWith(
                 color: Constants.grey,
                 height: 1.5,
                 fontWeight: FontWeight.w400,
@@ -362,7 +362,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text('Cancelar',
-                    style: textTheme.bodyText1?.copyWith(
+                    style: textTheme.bodySmall?.copyWith(
                         color: AppColors.white,
                         height: 1.5,
                         fontWeight: FontWeight.w400,
@@ -376,7 +376,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text('Entrar',
-                    style: textTheme.bodyText1?.copyWith(
+                    style: textTheme.bodySmall?.copyWith(
                         color: AppColors.white,
                         height: 1.5,
                         fontWeight: FontWeight.w400,

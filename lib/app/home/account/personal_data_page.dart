@@ -96,6 +96,13 @@ class _PersonalDataState extends State<PersonalData> {
 
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+   context.dependOnInheritedWidgetOfExactType();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
@@ -270,9 +277,11 @@ class _PersonalDataState extends State<PersonalData> {
 
   Widget _buildMainDataContainer(BuildContext context, UserEnreda userEnreda) {
     return RoundedContainer(
+      margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+       const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
       contentPadding: Responsive.isMobile(context) ?
-      EdgeInsets.all(Sizes.mainPadding) :
-      EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+        EdgeInsets.all(Sizes.mainPadding) :
+        EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -322,6 +331,7 @@ class _PersonalDataState extends State<PersonalData> {
 
   Widget _buildMyParameters(UserEnreda userEnreda) {
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final isBigScreen = MediaQuery.of(context).size.width >= 900;
     return Container(
         padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble, horizontal: Sizes.kDefaultPaddingDouble),
         decoration: BoxDecoration(
@@ -368,9 +378,14 @@ class _PersonalDataState extends State<PersonalData> {
             _buildMyProfileRow(
               text: 'Cerrar sesión',
               onTap: () {
-                _confirmSignOut(context);
-                CupertinoScaffoldAnonymous.controller.index = 2;
-              },
+                !isBigScreen ? Future.delayed(Duration.zero, () {
+                  _signOut(context);
+                }) : _confirmSignOut(context);
+              }
+              // onTap: () {
+              //   _confirmSignOut(context);
+              //   CupertinoScaffoldAnonymous.controller.index = 2;
+              // },
             ),
             _buildMyProfileRow(
               text: 'Eliminar cuenta',
@@ -610,7 +625,7 @@ class _PersonalDataState extends State<PersonalData> {
                         showFlagDialog: true,
                       ),
                       focusColor: AppColors.turquoise,
-                      labelStyle: textTheme.button?.copyWith(
+                      labelStyle: textTheme.bodySmall?.copyWith(
                         height: 1.5,
                         color: AppColors.greyDark,
                         fontWeight: FontWeight.w400,
@@ -638,7 +653,7 @@ class _PersonalDataState extends State<PersonalData> {
                     onSaved: (value) => this._phone = _phoneCode + ' ' + value!,
                     textCapitalization: TextCapitalization.sentences,
                     keyboardType: TextInputType.phone,
-                    style: textTheme.button?.copyWith(
+                    style: textTheme.bodySmall?.copyWith(
                       height: 1.5,
                       color: AppColors.greyDark,
                       fontWeight: FontWeight.w400,
@@ -944,3 +959,13 @@ Future<void> _deleteAccount(BuildContext context, UserEnreda userEnreda) async {
   }
 }
 
+
+
+Future<void> _signOut(BuildContext context) async {
+  try {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    await auth.signOut();
+  } catch (e) {
+    print(e.toString());
+  }
+}

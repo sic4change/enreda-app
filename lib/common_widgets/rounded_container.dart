@@ -6,7 +6,7 @@ class RoundedContainer extends StatelessWidget {
     super.key,
     this.child,
     this.contentPadding = const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-    this.margin = const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble, bottom: Sizes.kDefaultPaddingDouble),
+    this.margin = const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble, right: Sizes.kDefaultPaddingDouble, bottom: Sizes.kDefaultPaddingDouble),
     this.width,
     this.height,
     this.borderColor = AppColors.turquoiseUltraLight,

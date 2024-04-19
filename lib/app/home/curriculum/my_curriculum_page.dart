@@ -280,9 +280,11 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
 
   Widget _myCurriculumWeb(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames){
     return RoundedContainer(
+      margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+        const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
       contentPadding: Responsive.isMobile(context) ?
-      EdgeInsets.all(Sizes.mainPadding) :
-      EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+        EdgeInsets.all(Sizes.mainPadding) :
+        EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       child: Stack(
         children: [
           CustomTextMediumBold(text: StringConst.MY_CV),

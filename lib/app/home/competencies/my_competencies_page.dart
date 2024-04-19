@@ -48,9 +48,12 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
         .textTheme;
 
     return RoundedContainer(
+      height: MediaQuery.of(context).size.height,
+      margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+        const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
       contentPadding: Responsive.isMobile(context) ?
-      EdgeInsets.all(Sizes.mainPadding) :
-      EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+        EdgeInsets.all(Sizes.mainPadding) :
+        EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       child: SingleChildScrollView(
         child: Stack(
           children: [
@@ -119,20 +122,17 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
                                             if (status ==
                                                 StringConst.BADGE_VALIDATED ||
                                                 status == StringConst.BADGE_CERTIFIED)
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                    status ==
-                                                        StringConst.BADGE_VALIDATED
-                                                        ? 'EVALUADA'
-                                                        : 'CERTIFICADA',
-                                                    style: textTheme.bodySmall
-                                                        ?.copyWith(
-                                                        fontSize: 14.0,
-                                                        fontWeight: FontWeight.w500,
-                                                        color:
-                                                        Constants.turquoise)),
-                                              ),
+                                              Text(
+                                                  status ==
+                                                      StringConst.BADGE_VALIDATED
+                                                      ? 'EVALUADA'
+                                                      : 'CERTIFICADA',
+                                                  style: textTheme.bodySmall
+                                                      ?.copyWith(
+                                                      fontSize: 14.0,
+                                                      fontWeight: FontWeight.w500,
+                                                      color:
+                                                      Constants.turquoise)),
 
                                             if (status == StringConst.BADGE_VALIDATED)
                                               TextButton(

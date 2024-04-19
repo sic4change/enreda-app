@@ -83,7 +83,7 @@ class CompetencyTile extends StatelessWidget {
           : PrecacheCompetencyCard(
               imageUrl: competency.badgesImages[status]!,
               imageWidth: imageWidth,
-            )
+            ),
         ],
       ),
     );

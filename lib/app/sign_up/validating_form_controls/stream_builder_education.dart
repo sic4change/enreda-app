@@ -33,7 +33,7 @@ Widget streamBuilderDropdownEducation (BuildContext context, Education? selected
                   StringConst.FORM_EDUCATION,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: textTheme.button?.copyWith(
+                  style: textTheme.bodySmall?.copyWith(
                     height: 1.5,
                     color: AppColors.greyDark,
                     fontWeight: FontWeight.w700,
@@ -41,42 +41,40 @@ Widget streamBuilderDropdownEducation (BuildContext context, Education? selected
                   ),
                 ),
               ),
-              Container(
-                height: 55,
-                child: DropdownButtonFormField(
-                  value: selectedEducation,
-                  items: educationItems,
-                  onChanged: (value) => functionToWriteBackThings(value),
-                  validator: (value) => selectedEducation != null ? null : StringConst.FORM_MOTIVATION_ERROR,
-                  decoration: InputDecoration(
-                    errorStyle: TextStyle(height: 0.01),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: AppColors.greyUltraLight,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: AppColors.greyUltraLight,
-                        width: 1.0,
-                      ),
-                    ),
-                    disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: AppColors.greyUltraLight,
-                        width: 1.0,
-                      ),
+              DropdownButtonFormField(
+                isDense: true,
+                value: selectedEducation,
+                items: educationItems,
+                onChanged: (value) => functionToWriteBackThings(value),
+                validator: (value) => selectedEducation != null ? null : StringConst.FORM_MOTIVATION_ERROR,
+                decoration: InputDecoration(
+                  errorStyle: TextStyle(height: 0.01),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: AppColors.greyUltraLight,
                     ),
                   ),
-                  style: textTheme.button?.copyWith(
-                    height: 1.4,
-                    color: AppColors.greyDark,
-                    fontWeight: FontWeight.w400,
-                    fontSize: fontSize,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: AppColors.greyUltraLight,
+                      width: 1.0,
+                    ),
                   ),
+                  disabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: AppColors.greyUltraLight,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+                style: textTheme.bodySmall?.copyWith(
+                  height: 1.4,
+                  color: AppColors.greyDark,
+                  fontWeight: FontWeight.w400,
+                  fontSize: fontSize,
                 ),
               ),
             ]

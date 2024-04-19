@@ -1,5 +1,6 @@
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 
@@ -19,9 +20,11 @@ class ContactDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RoundedContainer(
+      margin: Responsive.isMobile(context) ? const EdgeInsets.only(left: 0, bottom: Sizes.kDefaultPaddingDouble) :
+        const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble, bottom: Sizes.kDefaultPaddingDouble),
       contentPadding: const EdgeInsets.only(top: Sizes.kDefaultPaddingDouble),
       width: 260,
-      height: 253,
+      height: Responsive.isMobile(context) ? 220 : 253,
       child: Column(
         children: [
           widget,

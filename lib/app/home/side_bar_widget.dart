@@ -131,7 +131,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                       child: CustomTextBoldCenter(title: '${widget.user.firstName ?? ""} ${widget.user.lastName ?? ""}'),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10, top: 0.0, bottom: 0),
+                      padding: const EdgeInsets.only(left: 10.0, right: 10, top: 0.0, bottom: 20),
                       child: Container(
                         margin: EdgeInsets.symmetric(vertical: 0), // optional for spacing
                         height: 6, // Thickness of the 'divider'

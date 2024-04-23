@@ -149,7 +149,7 @@ class StringConst {
 
   //Awards & Section
   static const String MY = "My";
-  static const String CV = "CV";
+  static const String CV = "Mi curriculum";
   static const String TAG_ENREDA = "¿Qué es enREDa?";
   static const String WHAT_ENREDA_TITLE = "Ya somos muchos, ¿y tú? ¿te enREDas?";
   static const String AWARDS_DESC =
@@ -253,12 +253,15 @@ class StringConst {
   static const String NAME_ERROR = "El nombre no puede estar vacío";
   static const String EMAIL = "Email";
   static const String CALL = "Llamar";
+  static const String CALL_NUMBER = "Teléfonos de contacto";
   static const String EMAIL_ERROR = "El email no es válido";
   static const String EMAIL_REGISTERED = "El email ya se encuentra registrado";
   static const String DESCRIPTION = "Descripción";
   static const String DESCRIPTION_ERROR = "La descripción no puede estar vacía";
   static const String SEND = "Enviar";
   static const String INTERESTED = "Para completar su inscripción debe contactar con:";
+  static const String HELLO_WP_MESSAGE1 = "Hola ";
+  static const String HELLO_WP_MESSAGE2 = ", quisiera más información";
 
   //Stores
   static const String URL_GOOGLE_PLAY = "https://play.google.com/store/apps/details?id=org.sic4change.enreda_app&hl=es";
@@ -308,7 +311,8 @@ class StringConst {
   static const String FORM_DESCRIPTION = "Descripción del puesto";
   static const String FORM_SCHEDULE = "Horario";
   static const String AVAILABLE = "Disponibilidad";
-  static const String SUBJECT = "Enreda";
+  static const String SUBJECT = "Participante Enreda";
+  static const String BODY = "Hola! Quisiera más información";
 
   //Resource modalities
   static const String FACE_TO_FACE = 'Presencial';

@@ -7,7 +7,10 @@ class SocialEntity {
     this.socialEntityId,
     required this.name,
     this.email,
-    this.phone,
+    this.contactPhone,
+    this.contactMobilePhone,
+    this.entityPhone,
+    this.entityMobilePhone,
     this.address,
     this.country,
     this.province,
@@ -23,7 +26,10 @@ class SocialEntity {
   final String? socialEntityId;
   final String name;
   final String? email;
-  final String? phone;
+  final String? contactPhone;
+  final String? contactMobilePhone;
+  final String? entityPhone;
+  final String? entityMobilePhone;
   final String? country;
   final String? province;
   final String? city;
@@ -47,7 +53,11 @@ class SocialEntity {
     final String name = data['name'];
     final String? socialEntityId = data['socialEntityId'];
     final String email = data['email']??"";
-    final String phone = data['phone']??"";
+
+    final String contactPhone = data['contactPhone']??"";
+    final String contactMobilePhone = data['contactMobilePhone']??"";
+    final String entityPhone = data['entityPhone']??"";
+    final String entityMobilePhone = data['entityMobilePhone']??"";
 
     String photo;
     try {
@@ -67,7 +77,10 @@ class SocialEntity {
         socialEntityId: socialEntityId,
         name: name,
         email: email,
-        phone: phone,
+        contactPhone: contactPhone,
+        contactMobilePhone: contactMobilePhone,
+        entityPhone: entityPhone,
+        entityMobilePhone: entityMobilePhone,
         address: address,
         website: website,
         photo: photo,
@@ -88,7 +101,10 @@ class SocialEntity {
       'socialEntityId': socialEntityId,
       'name': name,
       'email': email,
-      'phone': phone,
+      'contactPhone': contactPhone,
+      'contactMobilePhone': contactMobilePhone,
+      'entityPhone': entityPhone,
+      'entityMobilePhone': entityMobilePhone,
       'address': address?.toMap(),
       'website': website,
       'types': types,

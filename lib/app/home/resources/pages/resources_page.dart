@@ -31,6 +31,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../utils/functions.dart';
 
 class ResourcesPage extends StatefulWidget {
@@ -48,6 +49,9 @@ class ResourcesPage extends StatefulWidget {
 class _ResourcesPageState extends State<ResourcesPage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final _searchTextController = TextEditingController();
+  ScrollController _scrollController = ScrollController();
+  late SharedPreferences _prefs;
+  double _scrollPosition = 0;
   FilterResource filterResource = FilterResource("", "");
   FilterTrainingPill filterTrainingPill = FilterTrainingPill("", "");
   bool isAlertBoxOpened = false;
@@ -99,13 +103,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getMessage();
-    getResourceCategories();
-  }
-
   void getMessage() {
     if (!kIsWeb) {
       FirebaseMessaging.onMessage.listen((message) {
@@ -146,8 +143,18 @@ class _ResourcesPageState extends State<ResourcesPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _loadScrollPosition();
+    getMessage();
+    getResourceCategories();
+  }
+
+
+  @override
   void dispose() {
     _searchTextController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -165,7 +172,10 @@ class _ResourcesPageState extends State<ResourcesPage> {
         valueListenable: ResourcesPage.selectedIndex,
         builder: (context, selectedIndex, child) {
           return Scaffold(
-            body: bodyWidget[selectedIndex],
+            body: AnimatedSwitcher(
+              duration: Duration(milliseconds: 300),
+              child: bodyWidget[selectedIndex],
+            ),
           );
         });
   }
@@ -390,6 +400,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     setStateIfMounted(() {
                       ResourcesPage.selectedIndex.value = 0;
                       _clearFilter();
+                      _clearScrollPosition();
                     });
                   },
                   child: Row(
@@ -582,6 +593,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
               ResourcesPage.selectedIndex.value = 1;
               _categoryName = resourceCategories[index].name;
               _categoryFormationId = resourceCategories[index].id;
+              _clearScrollPosition();
             });
           },
           child: Container(
@@ -646,6 +658,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
               showDescription = false;
             }
             return ListItemBuilderGrid<TrainingPill>(
+              scrollController: ScrollController(),
               snapshot: snapshot,
               maxCrossAxisExtentValue: 490,
               mainAxisExtentValue: mainAxisExtentValue,
@@ -717,6 +730,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
             stream: database.filteredResourcesCategoryStream(filterResource),
             builder: (context, snapshot) {
               return ListItemBuilderGrid<Resource>(
+                scrollController: _scrollController,
                 snapshot: snapshot,
                 itemBuilder: (context, resource) {
                   if (resource.organizerType == 'Organización') {
@@ -757,11 +771,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                     'resource-${resource.resourceId}'),
                                                 child: ResourceListTile(
                                                   resource: resource,
-                                                  onTap: () =>
-                                                      setState(() {
-                                                        globals.currentResource = resource;
-                                                        ResourcesPage.selectedIndex.value = 3;
-                                                      }),
+                                                  onTap: () {
+                                                    _saveScrollPosition();
+                                                    setState(() {
+                                                      globals.currentResource = resource;
+                                                      ResourcesPage.selectedIndex.value = 3;
+                                                    });
+                                                  },
                                                   // onTap: () => context.push(
                                                   //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                 ),
@@ -816,11 +832,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                     'resource-${resource.resourceId}'),
                                                 child: ResourceListTile(
                                                   resource: resource,
-                                                  onTap: () =>
-                                                      setState(() {
-                                                        globals.currentResource = resource;
-                                                        ResourcesPage.selectedIndex.value = 3;
-                                                      }),
+                                                  onTap: () {
+                                                    _saveScrollPosition();
+                                                    setState(() {
+                                                      globals.currentResource = resource;
+                                                      ResourcesPage.selectedIndex.value = 3;
+                                                    });
+                                                  },
                                                   // onTap: () => context.push(
                                                   //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                 ),
@@ -873,6 +891,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   stream: database.filteredResourcesCategoryStream(filterResource),
                   builder: (context, snapshot) {
                     return ListItemBuilderGrid<Resource>(
+                      scrollController: _scrollController,
                       snapshot: snapshot,
                       itemBuilder: (context, resource) {
                         if (resource.organizerType == 'Organización') {
@@ -923,11 +942,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                           'resource-${resource.resourceId}'),
                                                       child: ResourceListTile(
                                                         resource: resource,
-                                                        onTap: () =>
-                                                            setState(() {
-                                                              globals.currentResource = resource;
-                                                              ResourcesPage.selectedIndex.value = 3;
-                                                            }),
+                                                        onTap: () {
+                                                          _saveScrollPosition();
+                                                          setState(() {
+                                                            globals.currentResource = resource;
+                                                            ResourcesPage.selectedIndex.value = 3;
+                                                          });
+                                                        },
                                                         // onTap: () => context.push(
                                                         //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                       ),
@@ -982,11 +1003,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                                           'resource-${resource.resourceId}'),
                                                       child: ResourceListTile(
                                                         resource: resource,
-                                                        onTap: () =>
-                                                            setState(() {
+                                                        onTap: () {
+                                                          _saveScrollPosition();
+                                                          setState(() {
                                                               globals.currentResource = resource;
                                                               ResourcesPage.selectedIndex.value = 3;
-                                                            }),
+                                                            });
+                                                        },
                                                         // onTap: () => context.push(
                                                         //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
                                                       ),
@@ -1038,6 +1061,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
           children: [
             InkWell(
               onTap: () {
+                _loadScrollPosition();
                 setStateIfMounted(() {
                   ResourcesPage.selectedIndex.value = 1;
                   _clearFilter();
@@ -1095,6 +1119,21 @@ class _ResourcesPageState extends State<ResourcesPage> {
       filterResource.searchText = '';
       filterTrainingPill.searchText = '';
     });
+  }
+
+  void _clearScrollPosition() {
+    _scrollController = ScrollController(initialScrollOffset: 0);
+  }
+
+  void _loadScrollPosition() async {
+    final prefs = await SharedPreferences.getInstance();
+    double scrollPosition = prefs.getDouble('scrollPosition') ?? 0;
+    _scrollController = ScrollController(initialScrollOffset: scrollPosition);
+  }
+
+  void _saveScrollPosition() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('scrollPosition', _scrollController.offset);
   }
 
 }

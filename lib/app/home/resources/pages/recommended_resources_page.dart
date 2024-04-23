@@ -40,6 +40,7 @@ class RecommendedResourcesPage extends StatelessWidget {
                   stream: database.recommendedResourcesStream(user),
                   builder: (context, snapshot) {
                     return ListItemBuilderGrid<Resource>(
+                      scrollController: ScrollController(),
                       snapshot: snapshot,
                       fitSmallerLayout: true,
                       itemBuilder: (context, resource) {

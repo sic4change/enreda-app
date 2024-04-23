@@ -7,9 +7,11 @@ import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/card_button_contact.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
+import 'package:enreda_app/common_widgets/custom_text_form_field_title.dart';
 import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
+import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
@@ -30,7 +32,7 @@ class EnredaContactPage extends StatefulWidget {
 }
 
 class _EnredaContactPageState extends State<EnredaContactPage> {
-  String? _assignedEntityId;
+  String? _assignedContactId;
   String? _assignedSocialEntity;
 
   @override
@@ -57,10 +59,10 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                     if (!snapshot.hasData) return Container();
                     if (snapshot.hasData) {
                       final userEnreda = snapshot.data![0];
-                      _assignedEntityId = userEnreda.assignedById;
+                      _assignedContactId = userEnreda.assignedById;
                       _assignedSocialEntity = userEnreda.assignedEntityId;
                       return StreamBuilder<UserEnreda>(
-                        stream: database.enredaUserStream(_assignedEntityId!),
+                        stream: database.enredaUserStream(_assignedContactId!),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) return Container();
                           if (snapshot.hasData) {
@@ -171,7 +173,9 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                     description: StringConst.ASSIGNED_CONTACT_DESCRIPTION,
                     icon: InkWell(
                         onTap: (){
-                          openWhatsAppChat(user.phone ?? '');
+                          kIsWeb ?
+                          sendWhatsAppWebMessage(socialEntity.contactMobilePhone!, StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2) :
+                          sendWhatsAppMessage(socialEntity.contactMobilePhone!, StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2);
                         },
                         child: Image.asset(ImagePath.WHATSAPP_ICON)),
                   ),
@@ -179,7 +183,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                     widget: _buildMyUserPhoto(context, socialEntity.photo!),
                     title: '${socialEntity.name}',
                     description: '$cityName, $countryName',
-                    icon: _buildEntityActions(context, socialEntity.email!, socialEntity.phone!),
+                    icon: _buildEntityActions(context, socialEntity),
                   ),
                 ],
               ),
@@ -253,7 +257,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
     );
   }
 
-  Widget _buildEntityActions(BuildContext context, String email, String phone) {
+  Widget _buildEntityActions(BuildContext context, SocialEntity socialEntity) {
     return Container(
       height: 40,
       width: double.infinity,
@@ -265,7 +269,15 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
             title: StringConst.EMAIL,
             icon: Icon(Icons.email_outlined, color: AppColors.turquoiseBlue, size: 20,),
             onTap: () {
-              launchEmail(email, StringConst.SUBJECT);
+              sendEmail(
+                toEmail: socialEntity.email!,
+                subject: StringConst.SUBJECT,
+                body: StringConst.BODY,
+              ).catchError((error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Hubo un error al enviar el correo: $error')),
+                );
+              });
             },
           ),
           SpaceW4(),
@@ -276,12 +288,42 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
           CardButtonContact(
             title: StringConst.CALL,
             icon: Icon(Icons.phone, color: AppColors.turquoiseBlue, size: 20),
-            onTap: () {},
+            onTap: () {
+              kIsWeb ? showCustomDialog(
+              context,
+              content: Container(
+                  height: 100,
+                  width: 200,
+                  child: Center(child:
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SpaceH12(),
+                        CustomTextBold(title:StringConst.CALL_NUMBER),
+                        SpaceH12(),
+                        socialEntity.entityPhone!.isNotEmpty ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.local_phone, color: AppColors.turquoiseBlue, size: 20),
+                            CustomTextBold(title: socialEntity.entityPhone!, color: AppColors.turquoiseBlue,),
+                          ],) : Container(),
+                        SpaceH8(),
+                        socialEntity.entityMobilePhone!.isNotEmpty ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.phone_android, color: AppColors.turquoiseBlue, size: 20),
+                            CustomTextBold(title: socialEntity.entityMobilePhone!, color: AppColors.turquoiseBlue,),
+                          ],) : Container(),
+                      ]
+                    ))),
+            ) : socialEntity.entityMobilePhone!.isNotEmpty ?
+                makePhoneCall(socialEntity.entityMobilePhone!) : null;
+            },
           ),
         ],
       ),
     );
   }
-
 
 }

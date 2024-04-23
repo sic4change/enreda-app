@@ -24,28 +24,49 @@ Future<void> launchURL(url) async {
   }
 }
 
-Future<void> openWhatsAppChat(String phoneNumber) async {
-  final String whatsappUrl = "https://api.whatsapp.com/send/?phone=$phoneNumber&text=hi";
-  // final String androidUrl = "whatsapp://send?phone=$contact&text=$text";
-  // final String iosUrl = "https://wa.me/$contact?text=${Uri.parse(text)}";
-  try {
-    if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
-      await launchUrl(Uri.parse(whatsappUrl));
-    }
-  } catch(e) {
-    print(e);
-    await launchUrl(Uri.parse(whatsappUrl), mode: LaunchMode.externalApplication);
-  }
 
+Future<void> sendWhatsAppWebMessage(String phoneNumber, String message) async {
+  var whatsappWebUrl = "https://web.whatsapp.com/send?phone=$phoneNumber&text=${Uri.encodeFull(message)}";
+  if (await canLaunch(whatsappWebUrl)) {
+    await launch(whatsappWebUrl);
+  } else {
+    throw 'Could not launch $whatsappWebUrl';
+  }
 }
 
-void launchEmail(String email, String subject) async {
+Future<void> sendWhatsAppMessage(String phoneNumber, String message) async {
+  var whatsappUrl = "whatsapp://send?phone=$phoneNumber&text=${Uri.encodeFull(message)}";
+  if (await canLaunch(whatsappUrl)) {
+    await launch(whatsappUrl);
+  } else {
+    throw 'Could not launch $whatsappUrl';
+  }
+}
+
+Future<void> makePhoneCall(String phoneNumber) async {
+  final Uri launchUri = Uri(
+    scheme: 'tel',
+    path: phoneNumber,
+  );
+  if (await canLaunchUrl(launchUri)) {
+    await launchUrl(launchUri);
+  } else {
+    throw 'Could not launch $launchUri';
+  }
+}
+
+Future<void> sendEmail({
+  required String toEmail,
+  String subject = '',
+  String body = '',
+}) async {
   final Uri emailLaunchUri = Uri(
-      scheme: 'mailto',
-      path: email, // add recipient email
-      queryParameters: {
-        'subject': subject, // add subject line
-      }
+    scheme: 'mailto',
+    path: toEmail,
+    query: encodeQueryParameters(<String, String>{
+      'subject': subject,
+      'body': body,
+    }),
   );
 
   if (await canLaunchUrl(emailLaunchUri)) {
@@ -53,6 +74,13 @@ void launchEmail(String email, String subject) async {
   } else {
     throw 'Could not launch $emailLaunchUri';
   }
+}
+
+String? encodeQueryParameters(Map<String, String> params) {
+  return params.entries
+      .map((e) =>
+  '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+      .join('&');
 }
 
 scrollToSection(BuildContext context) {

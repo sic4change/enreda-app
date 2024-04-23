@@ -1,4 +1,5 @@
 import 'package:enreda_app/utils/responsive.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'empty_content.dart';
@@ -14,7 +15,9 @@ class ListItemBuilderGrid<T> extends StatelessWidget {
       this.emptyMessage,
       this.maxCrossAxisExtentValue = 520,
       this.mainAxisExtentValue = 250,
-      this.fitSmallerLayout = false})
+      this.fitSmallerLayout = false,
+      required this.scrollController,
+      })
       : super(key: key);
   final AsyncSnapshot<List<T>> snapshot;
   final ItemWidgetBuilder<T> itemBuilder;
@@ -23,6 +26,7 @@ class ListItemBuilderGrid<T> extends StatelessWidget {
   final bool? fitSmallerLayout;
   final double? maxCrossAxisExtentValue;
   final double? mainAxisExtentValue;
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +48,7 @@ class ListItemBuilderGrid<T> extends StatelessWidget {
   Widget _build(BuildContext context, List<T> items) {
     return LayoutBuilder(builder: (context, constraints) {
       return GridView.builder(
-        controller: ScrollController(),
+        controller: scrollController,
         shrinkWrap: constraints.maxWidth < 550 ? true : false,
         padding: EdgeInsets.all(4.0),
         itemCount: items.length,

@@ -40,6 +40,7 @@ class _FavoriteResourcesPageState extends State<FavoriteResourcesPage> {
             builder: (context, snapshot) {
               return snapshot.hasData && snapshot.data!.isNotEmpty?
               ListItemBuilderGrid<Resource>(
+                scrollController: ScrollController(),
                 snapshot: snapshot,
                 fitSmallerLayout: false,
                 itemBuilder: (context, resource) {

@@ -407,14 +407,11 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       InkWell(
-                        onTap: () => showCustomDialog(
-                          context,
-                          content: Container(
-                              height: MediaQuery.sizeOf(context).height * 0.85,
-                              width: Responsive.isDesktop(context) || Responsive.isDesktopS(context) ? MediaQuery.sizeOf(context).width * 0.6
-                                  : MediaQuery.sizeOf(context).width * 0.9,
-                              child: MyCurriculumPage()),
-                        ),
+                        onTap: () {
+                          setState(() {
+                            WebHome.controller.selectIndex(1);
+                          });
+                        },
                         child: Transform.scale(
                           scale: Responsive.isMobile(context) ? 0.25 : 0.33,
                           child: MyCurriculumPage(

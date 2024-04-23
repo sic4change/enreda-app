@@ -6,11 +6,13 @@ import 'package:enreda_app/common_widgets/custom_sidebar_button.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
+import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 
@@ -97,6 +99,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
       footerDivider: Divider(color: Colors.grey.withOpacity(0.5), height: 1),
       showToggleButton: false,
       headerBuilder: (context, extended) {
+        final database = Provider.of<Database>(context, listen: false);
         return Container(
           height: isSmallScreen ? 250 : 250,
           child: Padding(
@@ -112,7 +115,18 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                 Column(
                   children: [
                     SizedBox(height: 20),
-                    _buildMyUserPhoto(context, widget.profilePic),
+                    StreamBuilder<UserEnreda>(
+                        stream: database.userEnredaStreamByUserId(widget.user.userId),
+                        builder: (context, snapshot) {
+                          if(snapshot.hasData && snapshot.data!.photo != null){
+                            print('imprime foto');
+                            print(snapshot.data!.profilePic!.src);
+                            PaintingBinding.instance.imageCache.clear();
+                            return _buildMyUserPhoto(context, snapshot.data!.profilePic!.src);
+                          } else return Container();
+                          //return _buildMyUserPhoto(context, widget.profilePic);
+                        }
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: CustomTextBoldCenter(title: '${widget.user.firstName ?? ""} ${widget.user.lastName ?? ""}'),
@@ -181,12 +195,13 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                     width: isSmallScreen ? 80 : 100,
                     child: Image.asset(ImagePath.USER_DEFAULT),
                   ):
-                  CachedNetworkImage(
-                      width: isSmallScreen ? 80 : 100,
-                      height: isSmallScreen ? 80 : 100,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.center,
-                      imageUrl: profilePic),
+                  Image.network(
+                    profilePic,
+                    width: isSmallScreen ? 80 : 100,
+                    height: isSmallScreen ? 80 : 100,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
+                  ),
                 ),
               ) :
               ClipRRect(
@@ -202,15 +217,17 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                 Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.turquoiseUltraLight,
-                    )
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppColors.turquoiseUltraLight,
+                      )
                   ),
-                  child: PrecacheAvatarCard(
-                    imageUrl: profilePic,
+                  child: Image.network(
+                    profilePic,
                     width: isSmallScreen ? 80 : 100,
                     height: isSmallScreen ? 80 : 100,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
                   ),
                 ),
               )
@@ -220,4 +237,5 @@ class _SideBarWidgetState extends State<SideBarWidget> {
       ),
     );
   }
+  
 }

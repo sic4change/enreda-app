@@ -7,6 +7,7 @@ import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 
@@ -101,11 +102,11 @@ class _SideBarWidgetState extends State<SideBarWidget> {
       headerBuilder: (context, extended) {
         final database = Provider.of<Database>(context, listen: false);
         return Container(
-          height: isSmallScreen ? 250 : 250,
+          height: Responsive.isMobile(context) ? 250 : 250,
           child: Padding(
-            padding: isSmallScreen ? EdgeInsets.only(top: 10.0, left: 0, right: 0) : EdgeInsets.only(top: 20),
+            padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 20.0, left: 0, right: 0) : EdgeInsets.only(top: 20),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 isSmallScreen ? Image.asset(
@@ -119,12 +120,10 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                         stream: database.userEnredaStreamByUserId(widget.user.userId),
                         builder: (context, snapshot) {
                           if(snapshot.hasData && snapshot.data!.photo != null){
-                            print('imprime foto');
                             print(snapshot.data!.profilePic!.src);
                             PaintingBinding.instance.imageCache.clear();
                             return _buildMyUserPhoto(context, snapshot.data!.profilePic!.src);
                           } else return Container();
-                          //return _buildMyUserPhoto(context, widget.profilePic);
                         }
                     ),
                     Padding(
@@ -132,7 +131,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                       child: CustomTextBoldCenter(title: '${widget.user.firstName ?? ""} ${widget.user.lastName ?? ""}'),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10, top: 0.0, bottom: 0),
+                      padding: const EdgeInsets.only(left: 10.0, right: 10, top: 0.0, bottom: 20),
                       child: Container(
                         margin: EdgeInsets.symmetric(vertical: 0), // optional for spacing
                         height: 6, // Thickness of the 'divider'

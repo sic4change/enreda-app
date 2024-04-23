@@ -710,7 +710,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             ),
             child: InkWell(
               mouseCursor: MaterialStateMouseCursor.clickable,
-              onTap: () => !kIsWeb? _displayPickImageDialog(): _onImageButtonPressed(ImageSource.gallery),
+              onTap: () => !kIsWeb? _displayPickImageDialog()
+                  : _onImageButtonPressed(ImageSource.gallery),
               child: Container(
                 width: 120,
                 height: 120,
@@ -909,7 +910,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         pickedFile = await _cropImage(imageFile: pickedFile);
         setState(() async {
           final database = Provider.of<Database>(context, listen: false);
-          await database.uploadUserAvatar(_userId, await pickedFile!.readAsBytes()); //TODO check null
+          await database.uploadUserAvatar(user!.userId!, await pickedFile!.readAsBytes()); //TODO check null
           setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PHOTO);
         });
       }

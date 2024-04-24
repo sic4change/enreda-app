@@ -72,7 +72,10 @@ class ImagePath {
   static const String PORTFOLIO_6 = "$imageDir/company_06.png";
 
   // Ilustrations
-  static const String LEARNING_GIRL = "$imageDir/learning-girl.png";
+  static const String LEARNING_GIRL = "$imageDir/empty-resources.png";
+  static const String ACCESS_PHOTO = "$imageDir/access-photo.png";
+  static const String ACCESS_VECTOR = "$imageDir/vector-access.png";
+  static const String LOGO_ENREDA_LIGHT = "$imageDir/logo-enreda-light.png";
   static const String COMPETENCIES = "$imageDir/ilustracion-competencias.png";
   static const String FAVORITES_ILLUSTRATION = '$imageDir/favorites-illustration.png';
   static const String CLIP_CV = '$imageDir/clip-cv.png';

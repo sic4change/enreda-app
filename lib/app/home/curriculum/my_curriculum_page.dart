@@ -777,14 +777,18 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ),
           AndroidUiSettings(
               toolbarTitle: 'Recortar imagen',
-              toolbarColor: AppColors.primaryColor,
-              toolbarWidgetColor: Colors.white,
+              toolbarColor: AppColors.white,
+              toolbarWidgetColor: AppColors.turquoiseBlue,
               activeControlsWidgetColor: AppColors.primaryColor,
               initAspectRatio: CropAspectRatioPreset.original,
               hideBottomControls: false,
-              lockAspectRatio: false),
+              lockAspectRatio: false,
+          ),
           IOSUiSettings(
-            title: 'Cropper',
+            title: 'Recortar imagen',
+            doneButtonTitle: 'Listo',
+            cancelButtonTitle: 'Cancelar',
+            resetAspectRatioEnabled: true,
           ),
         ]
     );

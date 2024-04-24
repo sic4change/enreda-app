@@ -209,6 +209,11 @@ flutter:
     - images/modality-icon.png
     - images/place-icon.png
     - images/seats-icon.png
+    - images/access-photo.png
+    - images/empty-resources.png
+    - images/empty-resources.png
+    - images/vector-access.png
+    - images/logo-enreda-light.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

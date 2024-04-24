@@ -43,8 +43,8 @@ class _HomePageState extends State<HomePage> {
                 : Stack(
                   children: [
                     WebHome(showChatNotifier: showChatNotifier),
-                    _buildChatFAB(context),
-                    _buildChatContainer(),
+                    if (snapshot.hasData) _buildChatFAB(context),
+                    if (snapshot.hasData) _buildChatContainer(),
                   ],
                 );
           });

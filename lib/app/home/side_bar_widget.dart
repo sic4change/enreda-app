@@ -182,10 +182,46 @@ class _SideBarWidgetState extends State<SideBarWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               !kIsWeb ?
-              ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(60)),
-                child:
-                Center(
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.turquoiseUltraLight,
+                    )
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(60)),
+                  child:
+                  Center(
+                    child:
+                    profilePic == "" ?
+                    Container(
+                      color:  Colors.transparent,
+                      height: isSmallScreen ? 80 : 100,
+                      width: isSmallScreen ? 80 : 100,
+                      child: Image.asset(ImagePath.USER_DEFAULT),
+                    ) :
+                    Image.network(
+                      profilePic,
+                      width: isSmallScreen ? 80 : 100,
+                      height: isSmallScreen ? 80 : 100,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                    ),
+                  ),
+                ),
+              ) :
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.turquoiseUltraLight,
+                    )
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(60)),
                   child:
                   profilePic == "" ?
                   Container(
@@ -193,40 +229,16 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                     height: isSmallScreen ? 80 : 100,
                     width: isSmallScreen ? 80 : 100,
                     child: Image.asset(ImagePath.USER_DEFAULT),
-                  ):
-                  Image.network(
-                    profilePic,
-                    width: isSmallScreen ? 80 : 100,
-                    height: isSmallScreen ? 80 : 100,
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
-                  ),
-                ),
-              ) :
-              ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(60)),
-                child:
-                profilePic == "" ?
-                Container(
-                  color:  Colors.transparent,
-                  height: isSmallScreen ? 80 : 100,
-                  width: isSmallScreen ? 80 : 100,
-                  child: Image.asset(ImagePath.USER_DEFAULT),
-                ):
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.turquoiseUltraLight,
-                      )
-                  ),
-                  child: Image.network(
-                    profilePic,
-                    width: isSmallScreen ? 80 : 100,
-                    height: isSmallScreen ? 80 : 100,
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
+                  ) :
+                  Container(
+                    child: FadeInImage.assetNetwork(
+                      image: profilePic,
+                      placeholder: ImagePath.USER_DEFAULT,
+                      width: isSmallScreen ? 80 : 100,
+                      height: isSmallScreen ? 80 : 100,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                    ),
                   ),
                 ),
               )

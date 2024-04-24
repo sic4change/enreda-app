@@ -22,31 +22,32 @@ class AccessBackgroundWeb extends StatelessWidget {
 
     return Container(
       color: Constants.lightGreen.withOpacity(0.2),
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: Stack(
-              children: <Widget>[
-                Positioned(
-                    left: -(sizeOfBlobSm * 0.75),
-                    //top: blobOffset,
-                    top: 300,
-                    child: Image.asset(
-                      ImagePath.BLOB_BLACK,
-                      height: sizeOfBlobSm,
-                      width: sizeOfBlobSm,
-                    )),
-
-                Positioned(
-                  child:
-                  Image.asset(ImagePath.BOX_COVER_GOLD, height: sizeOfBlobSm, width: sizeOfBlobSm,),
-                  right: (-sizeOfBlobSm*0.8),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      child: Container()
+      // Column(
+      //   children: <Widget>[
+      //     Expanded(
+      //       child: Stack(
+      //         children: <Widget>[
+      //           Positioned(
+      //               left: -(sizeOfBlobSm * 0.75),
+      //               //top: blobOffset,
+      //               top: 300,
+      //               child: Image.asset(
+      //                 ImagePath.BLOB_BLACK,
+      //                 height: sizeOfBlobSm,
+      //                 width: sizeOfBlobSm,
+      //               )),
+      //
+      //           Positioned(
+      //             child:
+      //             Image.asset(ImagePath.BOX_COVER_GOLD, height: sizeOfBlobSm, width: sizeOfBlobSm,),
+      //             right: (-sizeOfBlobSm*0.8),
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   ],
+      // ),
     );
   }
 }

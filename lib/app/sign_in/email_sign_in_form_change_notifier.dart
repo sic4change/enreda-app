@@ -119,26 +119,32 @@ class _EmailSignInFormChangeNotifierState
       decoration: InputDecoration(
         labelText: 'Correo electrónico',
         hintText: 'email@email.com',
+        hintStyle: textTheme.button?.copyWith(
+          height: 1.5,
+          color: AppColors.white,
+          fontWeight: FontWeight.w400,
+          fontSize: fontSize,
+        ),
         errorText: model.emailErrorText,
         enabled: model.isLoading == false,
         focusColor: AppColors.primaryColor,
         labelStyle: textTheme.button?.copyWith(
           height: 1.5,
-          color: AppColors.greyDark,
+          color: AppColors.white,
           fontWeight: FontWeight.w400,
           fontSize: fontSize,
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5.0),
           borderSide: BorderSide(
-            color: AppColors.greyUltraLight,
+            color: AppColors.turquoise,
           ),
         ),
         border: OutlineInputBorder(),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5.0),
           borderSide: BorderSide(
-            color: AppColors.greyUltraLight,
+            color: AppColors.white,
             width: 1.0,
           ),
         ),
@@ -152,7 +158,7 @@ class _EmailSignInFormChangeNotifierState
       onEditingComplete: () => _emailEditingComplete(),
       style: textTheme.button?.copyWith(
         height: 1.5,
-        color: AppColors.greyDark,
+        color: AppColors.white,
         fontWeight: FontWeight.w400,
         fontSize: fontSize,
       ),
@@ -176,13 +182,14 @@ class _EmailSignInFormChangeNotifierState
             onTap: _toggle,
             child: CircleAvatar(
                 backgroundColor: Colors.transparent,
-                child: FaIcon(_obscureText ? FontAwesomeIcons.eye : FontAwesomeIcons.eyeSlash, size: 20, color: AppColors.turquoiseBlue,)),
+                child: FaIcon(_obscureText ? FontAwesomeIcons.eye :
+                FontAwesomeIcons.eyeSlash, size: 20, color: AppColors.white,)),
           ),
         ),
         focusColor: AppColors.primaryColor,
         labelStyle: textTheme.button?.copyWith(
           height: 1.5,
-          color: AppColors.greyDark,
+          color: AppColors.white,
           fontWeight: FontWeight.w400,
           fontSize: fontSize,
         ),
@@ -193,7 +200,7 @@ class _EmailSignInFormChangeNotifierState
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5.0),
           borderSide: BorderSide(
-            color: AppColors.greyUltraLight,
+            color: AppColors.white,
             width: 1.0,
           ),
         ),
@@ -205,7 +212,7 @@ class _EmailSignInFormChangeNotifierState
       onEditingComplete: _submit,
       style: textTheme.button?.copyWith(
         height: 1.5,
-        color: AppColors.greyDark,
+        color: AppColors.white,
         fontWeight: FontWeight.w400,
         fontSize: fontSize,
       ),
@@ -227,7 +234,8 @@ class _EmailSignInFormChangeNotifierState
     return InkWell(
       mouseCursor: MaterialStateMouseCursor.clickable,
       onTap: () => _launchForgotPassword(context),
-      child: Center(child: Text("¿Has olvidado la contraseña?")),
+      child: Center(child: Text("¿Has olvidado la contraseña?", style: TextStyle(
+          fontWeight: FontWeight.normal, color: Constants.white),)),
     );
   }
 
@@ -246,7 +254,7 @@ class _EmailSignInFormChangeNotifierState
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text('¿Aún no tienes cuenta?', style: TextStyle(
-            fontWeight: FontWeight.bold,),),
+            fontWeight: FontWeight.normal, color: Constants.white),),
         SpaceW8(),
         InkWell(
           mouseCursor: MaterialStateMouseCursor.clickable,
@@ -254,7 +262,7 @@ class _EmailSignInFormChangeNotifierState
           child: Center(
               child: Text(
                 "Regístrate",
-                style: TextStyle(color: Constants.turquoise, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Constants.white, fontWeight: FontWeight.bold),
               )),
         ),
       ],

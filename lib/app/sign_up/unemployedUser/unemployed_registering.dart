@@ -21,6 +21,7 @@ import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/unemployedUser.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
+import 'package:enreda_app/app/sign_in/access/access_page.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_page.dart';
 import 'package:enreda_app/app/sign_up/unemployedUser/unemployed_revision_form.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/checkbox_form.dart';
@@ -50,6 +51,7 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -299,7 +301,10 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
         ).then((value) => {
           Navigator.of(this.context).push(
             MaterialPageRoute<void>(
-              builder: ((context) => EmailSignInPage()),
+              builder: ((context) {
+                //return EmailSignInPage();
+                return AccessPage();
+              }),
             ),
           )
         },
@@ -983,9 +988,19 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                   ),
                 ),
                 Responsive.isMobile(context) ? Container() : SizedBox(width: Constants.mainPadding),
-                Container(
-                  padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2), child: Text(StringConst.FORM_UNEMPLOYED.toUpperCase(),
-                    style: TextStyle(color: AppColors.greyDark)),)
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2), child: Text(StringConst.FORM_UNEMPLOYED.toUpperCase(),
+                        style: TextStyle(color: AppColors.greyDark)),),
+                    Padding(
+                      padding: EdgeInsets.only(right: Responsive.isMobile(context) || Responsive.isTablet(context)? 30.0: 0.0),
+                      child: Container(
+                          width: 34,
+                          child: PillTooltip(title: StringConst.PILL_TRAVEL_BEGINS, pillId: TrainingPill.TRAVEL_BEGINS_ID)),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
@@ -995,19 +1010,6 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                 child:
                     Column(
                       children: [
-                        SizedBox(
-                          width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width * 0.70,
-                          height: 34,
-                          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                            Padding(
-                              padding: EdgeInsets.only(right: Responsive.isMobile(context) || Responsive.isTablet(context)? 30.0: 0.0),
-                              child: Container(
-                                  width: 34,
-                                  child: PillTooltip(title: StringConst.PILL_TRAVEL_BEGINS, pillId: TrainingPill.TRAVEL_BEGINS_ID)),
-                            )
-                          ],),
-                        ),
-                        SpaceH20(),
                         Container(
                           height: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.height * 0.70,
                           width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width * 0.70,

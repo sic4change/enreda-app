@@ -16,11 +16,10 @@ const double socialTextSizeSm = 14.0;
 const double sidePadding = Sizes.PADDING_20;
 
 class OnboardingPageData {
-  final String? logoImagePath, logoImagePathText, logoWithTextImagePath, mainImagePath, titleText, descriptionText, buttonText, circleImagePath;
+  final String? logoImagePath, logoWithTextImagePath, mainImagePath, titleText, descriptionText, buttonText, circleImagePath;
 
   OnboardingPageData({
     this.logoImagePath,
-    this.logoImagePathText,
     this.logoWithTextImagePath,
     this.mainImagePath,
     this.titleText,
@@ -34,7 +33,6 @@ class OnboardingPage extends StatefulWidget {
   const OnboardingPage(
       { Key? key,
         this.logoImagePath,
-        this.logoImagePathText,
         this.logoWithTextImagePath,
         this.mainImagePath,
         this.titleText,
@@ -44,7 +42,7 @@ class OnboardingPage extends StatefulWidget {
 
       }) : super(key: key);
 
-  final String? logoImagePath, logoImagePathText, logoWithTextImagePath, mainImagePath, titleText, descriptionText, buttonText, circleImagePath;
+  final String? logoImagePath, logoWithTextImagePath, mainImagePath, titleText, descriptionText, buttonText, circleImagePath;
 
   @override
   _OnboardingPageState createState() => _OnboardingPageState();
@@ -90,17 +88,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 30.0),
                       child: Image.asset(
                         widget.logoImagePath!,
-                        width: Responsive.isMobile(context) ? 150 : 250,
+                        width: Responsive.isMobile(context) ? 180 : 250,
                       ),
                     ),
                     SpaceH20(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: Image.asset(
-                        widget.logoImagePathText!,
-                        width: Responsive.isMobile(context) ? 200 : 300,
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -111,7 +102,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   padding: const EdgeInsets.all(30.0),
                   child: Image.asset(
                     widget.logoWithTextImagePath!,
-                    width: Responsive.isMobile(context) ? 230 : 300,
+                    width: Responsive.isMobile(context) ? 180 : 300,
                   ),
                 ),
               ),

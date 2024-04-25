@@ -50,7 +50,6 @@ class _OnboardingCarruselState extends State<OnboardingCarrusel> {
                 OnboardingPageData page = Data.mainPageData[index];
                 return OnboardingPage(
                   logoImagePath: page.logoImagePath,
-                  logoImagePathText: page.logoImagePathText,
                   mainImagePath: page.mainImagePath,
                   logoWithTextImagePath: page.logoWithTextImagePath,
                   titleText: page.titleText,

@@ -172,38 +172,42 @@ class EmailSignInPage extends StatelessWidget {
         leading: showBackIconButton(context, Constants.penBlue),
         title: Image.asset(
             ImagePath.LOGO,
-            height: 25,
+            height: 30,
         ),
         backgroundColor: Constants.white,
         elevation: 1.0,
       ),
       backgroundColor: Constants.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Text(
-              StringConst.LOOKING_FOR_JOB,
-              style: TextStyle(
-                fontSize: fontSize,
-                fontWeight: FontWeight.w600,
+      body: Container(
+        color: AppColors.turquoiseBlue,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                StringConst.LOOKING_FOR_JOB,
+                style: TextStyle(
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
               ),
             ),
-          ),
-          SpaceH20(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: EmailSignInFormChangeNotifier.create(context),
-          ),
-          kIsWeb ? buildStoresButtons(context) : Container(),
-          SpaceH4(),
-          kIsWeb ? Text(
-            StringConst.BETTER_FROM_APPS,
-            style: textTheme.bodyText2,
-          ) : Container(),
-        ],
+            SpaceH20(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: EmailSignInFormChangeNotifier.create(context),
+            ),
+            kIsWeb ? buildStoresButtons(context) : Container(),
+            SpaceH4(),
+            kIsWeb ? Text(
+              StringConst.BETTER_FROM_APPS,
+              style: textTheme.bodyText2,
+            ) : Container(),
+          ],
+        ),
       ),
     );
   }

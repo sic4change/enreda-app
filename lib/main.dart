@@ -50,7 +50,8 @@ class MyApp extends StatelessWidget {
         path: StringConst.PATH_LOGIN,
         builder: (context, state) => MaterialPage<void>(
           key: state.pageKey,
-          child: EmailSignInPage(),
+          child: AccessPage(),
+          //child: EmailSignInPage(),
         ),
       ),
       GoRoute(

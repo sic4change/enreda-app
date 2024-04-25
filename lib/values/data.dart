@@ -26,8 +26,7 @@ class Data {
 
   static List<OnboardingPageData> mainPageData = [
     OnboardingPageData(
-      logoImagePath: ImagePath.LOGO_ALONE,
-      logoImagePathText: ImagePath.LOGO_TEXT,
+      logoImagePath: ImagePath.LOGO,
       buttonText: StringConst.LET_US_GO,
       circleImagePath: ImagePath.BLOB_1,
     ),

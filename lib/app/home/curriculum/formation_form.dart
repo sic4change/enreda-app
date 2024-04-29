@@ -9,6 +9,7 @@ import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
@@ -335,7 +336,7 @@ class _FormationFormState extends State<FormationForm> {
     return Padding(
         padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
           child: SizedBox(
-            width: MediaQuery.of(context).size.width/3,
+            width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width/3,
             child: child,
           ),
     );

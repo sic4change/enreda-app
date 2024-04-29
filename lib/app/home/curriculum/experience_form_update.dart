@@ -442,7 +442,9 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                 hint: Text(
                     '¿Esta experiencia te supuso un cambio de domicilio?', style: textTheme.bodyMedium
                 ),
-                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold,),
+                isDense: false,
+                isExpanded: true,
                 value: _contextPlace,
                 items: StringConst.EXPERIENCE_CONTEXT_PLACES
                     .map((e) => DropdownMenuItem<String>(value: e, child: Text(e, style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),)))
@@ -463,7 +465,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                 hint: Text(
                   '¿Esta experiencia te supuso hacer cosas que no solías hacer antes?',
                   style: textTheme.bodyMedium,
-                  maxLines: 2, overflow: TextOverflow.ellipsis
+                  maxLines: 3, overflow: TextOverflow.ellipsis
                 ),
                 style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                 isExpanded: true,

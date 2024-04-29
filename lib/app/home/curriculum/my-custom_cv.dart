@@ -466,19 +466,14 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 ),
               ),
               Responsive.isMobile(context) ? SpaceH12() : SpaceH24(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    '${widget.user?.firstName} ${widget.user?.lastName}',
-                    style: textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-                        color: Constants.penBlue),
+              Text(
+                '${widget.user?.firstName} ${widget.user?.lastName}',
+                style: textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    height: 1.2,
+                    fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
+                    color: AppColors.turquoiseBlue),
                     textAlign: TextAlign.center,
-                  ),
-                ],
               ),
               SpaceH24(),
               InkWell(

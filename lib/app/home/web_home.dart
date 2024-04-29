@@ -38,7 +38,7 @@ class WebHome extends StatefulWidget {
       : super(key: key);
 
   static final SidebarXController controller = SidebarXController(selectedIndex: 0, extended: true);
-  static ValueNotifier<int> selectedIndex = ValueNotifier(2);
+  static ValueNotifier<int> selectedIndex = ValueNotifier(0);
   final ValueNotifier<bool> showChatNotifier;
 
   static goToControlPanel() {
@@ -61,7 +61,6 @@ class WebHome extends StatefulWidget {
 }
 
 class _WebHomeState extends State<WebHome> {
-  var bodyWidget = [];
   final _key = GlobalKey<ScaffoldState>();
 
   Color _underlineColor = Constants.lilac;
@@ -71,10 +70,7 @@ class _WebHomeState extends State<WebHome> {
 
   @override
   void initState() {
-    bodyWidget = [
-      const PersonalData(),
-      Container(),
-    ];
+    WebHome.controller.selectIndex(0);
     super.initState();
   }
 
@@ -290,7 +286,7 @@ class _WebHomeState extends State<WebHome> {
                     });
                   },
                 ) : Container(),
-                !isSmallScreen ? InkWell(
+                Responsive.isDesktop(context) ? InkWell(
                     onTap: () {
                       setState(() {
                         WebHome.controller.selectIndex(0);

@@ -51,6 +51,7 @@ class CompetencyTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
+                  padding: EdgeInsets.all(4.0),
                   alignment: Alignment.center,
                   height: height,
                   child: Text(

@@ -203,6 +203,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
 
   Widget _buildContactSection(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final isSmallScreen = MediaQuery.of(context).size.width < 1400;
     return InkWell(
       onTap: () {
         setState(() {
@@ -244,11 +245,11 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
             ),
             Positioned(
               bottom: 20,
-              top: Responsive.isMobile(context) ? 100 : -20,
-              right: 50,
+              top: Responsive.isMobile(context) ? 100 : isSmallScreen ? 50  : -20,
+              right: Responsive.isMobile(context) ? 10 :  isSmallScreen ? 0 : 30,
               child: Container(
-                  width: Responsive.isMobile(context) ? 190 : 500,
-                  height: 100,
+                  width: Responsive.isMobile(context) ? 190 : Responsive.isDesktopS(context) ? 250 : 300,
+                  //height: 100,
                   child: Image.asset(ImagePath.CONTACT_ICON, fit: BoxFit.fitHeight,)
               ),
             ),

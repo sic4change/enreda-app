@@ -1,0 +1,8 @@
+{
+  "NSPrivacyAccessedAPITypes": [
+    {
+      "API": "NSUserDefaults",
+      "PurposeString": "This app uses NSUserDefaults to save scroll user preferences to enhance user experience."
+    }
+  ]
+}

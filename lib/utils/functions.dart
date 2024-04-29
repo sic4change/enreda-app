@@ -34,13 +34,22 @@ Future<void> sendWhatsAppWebMessage(String phoneNumber, String message) async {
   }
 }
 
-Future<void> sendWhatsAppMessage(String phoneNumber, String message) async {
-  var whatsappUrl = "whatsapp://send?phone=$phoneNumber&text=${Uri.encodeFull(message)}";
-  if (await canLaunch(whatsappUrl)) {
-    await launch(whatsappUrl);
+void openWhatsAppMobile(BuildContext context, phoneNumber, message) async {
+  var phoneNumberOnlyNumbers = removeNonNumeric(phoneNumber);
+  var whatsappUrl = "https://wa.me/$phoneNumberOnlyNumbers/?text=${Uri.encodeFull(message)}";
+  if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
+    await launchUrl(Uri.parse(whatsappUrl));
   } else {
-    throw 'Could not launch $whatsappUrl';
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("WhatsApp no está instalado. Por favor, instalelo para poder enviar mensajes."),
+      ),
+    );
   }
+}
+
+String removeNonNumeric(String inputString) {
+  return inputString.replaceAll(RegExp(r'[^0-9]'), '');
 }
 
 Future<void> makePhoneCall(String phoneNumber) async {

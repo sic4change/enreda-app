@@ -331,7 +331,6 @@ class _PersonalDataState extends State<PersonalData> {
 
   Widget _buildMyParameters(UserEnreda userEnreda) {
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final isBigScreen = MediaQuery.of(context).size.width >= 900;
     return Container(
         padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble, horizontal: Sizes.kDefaultPaddingDouble),
         decoration: BoxDecoration(
@@ -378,14 +377,8 @@ class _PersonalDataState extends State<PersonalData> {
             _buildMyProfileRow(
               text: 'Cerrar sesión',
               onTap: () {
-                !isBigScreen ? Future.delayed(Duration.zero, () {
-                  _signOut(context);
-                }) : _confirmSignOut(context);
-              }
-              // onTap: () {
-              //   _confirmSignOut(context);
-              //   CupertinoScaffoldAnonymous.controller.index = 2;
-              // },
+                _confirmSignOut(context);
+              },
             ),
             _buildMyProfileRow(
               text: 'Eliminar cuenta',
@@ -900,18 +893,18 @@ class _PersonalDataState extends State<PersonalData> {
         });
   }
 
-  Future<void> _confirmSignOut(BuildContext context) async {
-    final didRequestSignOut = await showAlertDialog(context,
-        title: 'Cerrar sesión',
-        content: '¿Estás seguro que quieres cerrar sesión?',
-        cancelActionText: 'Cancelar',
-        defaultActionText: 'Cerrar');
-    if (didRequestSignOut == true) {
-      final auth = Provider.of<AuthBase>(context, listen: false);
-      await auth.signOut();
-    }
-  }
+}
 
+Future<void> _confirmSignOut(BuildContext context) async {
+  final didRequestSignOut = await showAlertDialog(context,
+      title: 'Cerrar sesión',
+      content: '¿Estás seguro que quieres cerrar sesión?',
+      cancelActionText: 'Cancelar',
+      defaultActionText: 'Cerrar');
+  if (didRequestSignOut == true) {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    await auth.signOut();
+  }
 }
 
 Future<void> _confirmChangePassword(BuildContext context) async {

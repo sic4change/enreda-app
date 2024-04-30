@@ -75,13 +75,9 @@ class _SideBarWidgetState extends State<SideBarWidget> {
         selectedItemDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
-            color: WebHome.selectedIndex.value == 0 ||
-                WebHome.selectedIndex.value == 1 ?
-            Colors.transparent : AppColors.primary100,
+            color: AppColors.primary100,
           ),
-          color: WebHome.selectedIndex.value == 0 ||
-              WebHome.selectedIndex.value == 1 ?
-          Colors.transparent : AppColors.primary100,
+          color: AppColors.primary100,
         ),
         iconTheme: const IconThemeData(
           color: AppColors.turquoiseBlue,

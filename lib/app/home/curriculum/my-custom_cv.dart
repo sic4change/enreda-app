@@ -615,7 +615,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           style: textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
               fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-              color: Constants.penBlue),
+              color: AppColors.turquoiseBlue),
         ),
         SpaceH20(),
         InkWell(

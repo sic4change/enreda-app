@@ -32,7 +32,7 @@ Widget streamBuilderForNation (BuildContext context, String? selectedCountry,  f
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
                     title,
-                    style: textTheme.button?.copyWith(
+                    style: textTheme.bodySmall?.copyWith(
                       height: 1.5,
                       color: AppColors.greyDark,
                       fontWeight: FontWeight.w700,
@@ -45,6 +45,8 @@ Widget streamBuilderForNation (BuildContext context, String? selectedCountry,  f
                   child: DropdownButtonFormField(
                     value: selectedCountry,
                     items: countryItems,
+                    isDense: true,
+                    isExpanded: true,
                     onChanged: (value) => functionToWriteBackThings(value),
                     validator: (value) =>
                     selectedCountry != null
@@ -73,8 +75,7 @@ Widget streamBuilderForNation (BuildContext context, String? selectedCountry,  f
                         ),
                       ),
                     ),
-                    style: textTheme.button?.copyWith(
-                      height: 1.4,
+                    style: textTheme.bodySmall?.copyWith(
                       color: AppColors.greyDark,
                       fontWeight: FontWeight.w400,
                       fontSize: fontSize,

@@ -98,7 +98,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
           color: AppColors.white,
         ),
       ),
-      footerDivider: Divider(color: Colors.grey.withOpacity(0.5), height: 1),
+      //footerDivider: Divider(color: Colors.grey.withOpacity(0.5), height: 1),
       showToggleButton: false,
       headerBuilder: (context, extended) {
         final database = Provider.of<Database>(context, listen: false);
@@ -156,11 +156,11 @@ class _SideBarWidgetState extends State<SideBarWidget> {
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PERSONAL_DATA_SIDEBAR), width: 20,), label: 'Datos personales' , onTap: _clearResourcesNavigation),
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: 'Mis competencias' , onTap: _clearResourcesNavigation),
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: 'Mis recursos', onTap: _clearResourcesNavigation),
-        if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_CONTACT_SIDEBAR), width: 20,), label: 'Contacto Enreda', onTap: _clearResourcesNavigation),
-        if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_DOCUMENTS_SIDEBAR), width: 20,), label: 'Mis documentos', onTap: _clearResourcesNavigation),
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_GAMIFICATION_SIDEBAR), width: 20,), label: 'Gamificación', onTap: _clearResourcesNavigation),
         if(isSmallScreen) SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: 'Recursos', onTap: _clearResourcesNavigation),
         if(isSmallScreen) SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: 'Competencias', onTap: _clearResourcesNavigation),
+        if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_CONTACT_SIDEBAR), width: 20,), label: 'Contacto Enreda', onTap: _clearResourcesNavigation),
+        if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_DOCUMENTS_SIDEBAR), width: 20,), label: 'Mis documentos', onTap: _clearResourcesNavigation),
       ],
     );
   }

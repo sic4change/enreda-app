@@ -700,7 +700,7 @@ class _PersonalDataState extends State<PersonalData> {
                 });
               }),
               SpaceH20(),
-              if(_assignedEntityId != null && _assignedEntityId != "")
+              //if(_assignedEntityId != null && _assignedEntityId != "")
               streamBuilderForSocialEntity(context, _socialEntity, (value){
                 setState(() {
                   _socialEntity = value;

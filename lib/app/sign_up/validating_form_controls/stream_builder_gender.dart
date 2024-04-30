@@ -44,8 +44,8 @@ Widget streamBuilder_Dropdown_Genders (BuildContext context, Gender? selectedGen
                 ),
               ),
               DropdownButtonFormField(
-                isDense: true,
                 value: selectedGender,
+                isExpanded: true,
                 items: genderItems,
                 onChanged: (value) => functionToWriteBackThings(value),
                 validator: (value) => selectedGender != null ? null : StringConst.FORM_GENDER_ERROR,

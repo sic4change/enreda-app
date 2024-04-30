@@ -38,7 +38,7 @@ class WebHome extends StatefulWidget {
       : super(key: key);
 
   static final SidebarXController controller = SidebarXController(selectedIndex: 0, extended: true);
-  static ValueNotifier<int> selectedIndex = ValueNotifier(0);
+  static ValueNotifier<int> selectedIndex = ValueNotifier(2);
   final ValueNotifier<bool> showChatNotifier;
 
   static goToControlPanel() {
@@ -61,8 +61,9 @@ class WebHome extends StatefulWidget {
 }
 
 class _WebHomeState extends State<WebHome> {
+  var bodyWidget = [];
   final _key = GlobalKey<ScaffoldState>();
-
+  var selectedIndexBodyWidget = 0;
   Color _underlineColor = Constants.lilac;
   late UserEnreda _userEnreda;
   String _userName = "";
@@ -70,7 +71,13 @@ class _WebHomeState extends State<WebHome> {
 
   @override
   void initState() {
-    WebHome.controller.selectIndex(0);
+    selectedIndexBodyWidget = 0;
+    WebHome.selectedIndex.value = 0;
+    bodyWidget = [
+      Container(),
+      ResourcesPage(),
+      CompetenciesPage(showChatNotifier: widget.showChatNotifier),
+    ];
     super.initState();
   }
 
@@ -164,6 +171,7 @@ class _WebHomeState extends State<WebHome> {
 
   Widget _buildContent(BuildContext context, UserEnreda user, String profilePic, String userName){
     final auth = Provider.of<AuthBase>(context, listen: false);
+    bool hasEntity = user.assignedEntityId == null || user.assignedEntityId == "" ? false : true;
     return ValueListenableBuilder<int>(
         valueListenable: WebHome.selectedIndex,
         builder: (context, selectedIndex, child) {
@@ -216,7 +224,7 @@ class _WebHomeState extends State<WebHome> {
                       decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
-                              color: selectedIndex == 8
+                              color: selectedIndexBodyWidget == 1
                                   ? _underlineColor
                                   : Colors.transparent,
                               width: 4.0,
@@ -225,7 +233,7 @@ class _WebHomeState extends State<WebHome> {
                       child: TextButton(
                         onPressed: () {
                           setState(() {
-                            WebHome.controller.selectIndex(8);
+                            selectedIndexBodyWidget = 1;
                             ResourcesPage.selectedIndex.value = 0;
                           });
                         },
@@ -243,7 +251,7 @@ class _WebHomeState extends State<WebHome> {
                       decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
-                              color: WebHome.selectedIndex.value == 9
+                              color: selectedIndexBodyWidget == 2
                                   ? _underlineColor
                                   : Colors.transparent,
                               width: 4.0,
@@ -252,7 +260,7 @@ class _WebHomeState extends State<WebHome> {
                       child: TextButton(
                         onPressed: () {
                           setState(() {
-                            WebHome.controller.selectIndex(9);
+                            selectedIndexBodyWidget = 2;
                           });
                         },
                         child: Text(
@@ -282,13 +290,15 @@ class _WebHomeState extends State<WebHome> {
                   tooltip: 'Cuenta',
                   onPressed: () {
                     setState(() {
+                      selectedIndexBodyWidget = 0;
                       WebHome.controller.selectIndex(0);
                     });
                   },
                 ) : Container(),
-                Responsive.isDesktop(context) ? InkWell(
+                !isSmallScreen ? InkWell(
                     onTap: () {
                       setState(() {
+                        selectedIndexBodyWidget = 0;
                         WebHome.controller.selectIndex(0);
                       });
                     },
@@ -317,29 +327,28 @@ class _WebHomeState extends State<WebHome> {
               ],
             ),
             drawer: SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,),
-            body: Container(
+            body: selectedIndexBodyWidget == 0 ? Container(
               width: MediaQuery.of(context).size.width,
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: 1600),
                 child: Padding(
-                  padding: WebHome.controller.selectedIndex == 8
-                      || WebHome.controller.selectedIndex == 9 || Responsive.isMobile(context) ?
+                  padding: WebHome.controller.selectedIndex == 6
+                      || WebHome.controller.selectedIndex == 7 || Responsive.isMobile(context) ?
                     const EdgeInsets.all(0) : const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble),
                   child: Row(
                     children: [
-                      !isSmallScreen && WebHome.controller.selectedIndex != 8 && WebHome.controller.selectedIndex != 9 ?
+                      !isSmallScreen && WebHome.controller.selectedIndex != 6 && WebHome.controller.selectedIndex != 7 ?
                         SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,) : Container(),
                       Expanded(child: Center(child: Padding(
                         padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 10) :
-                          WebHome.controller.selectedIndex != 8
-                              && WebHome.controller.selectedIndex != 9 ? EdgeInsets.only(top: 20) :
+                          WebHome.controller.selectedIndex != 6
+                              && WebHome.controller.selectedIndex != 7 ? EdgeInsets.only(top: 20) :
                           EdgeInsets.only(top: 0),
                         child: AnimatedBuilder(
                             animation: WebHome.controller,
                             builder: (context, child){
-                              bool hasEntity = user.assignedEntityId == null || user.assignedEntityId == "" ? false : true;
                               _key.currentState?.closeDrawer();
-                              if (!hasEntity && WebHome.controller.selectedIndex > 6) {
+                              if (hasEntity && !isSmallScreen && WebHome.controller.selectedIndex > 5) {
                                 WebHome.controller.selectIndex(WebHome.controller.selectedIndex + 2);
                               }
                               switch(WebHome.controller.selectedIndex){
@@ -354,16 +363,6 @@ class _WebHomeState extends State<WebHome> {
                                 case 4:
                                   return MyResourcesPage();
                                 case 5:
-                                  if (hasEntity) {
-                                    return EnredaContactPage();
-                                  }
-                                  break;
-                                case 6:
-                                  if (hasEntity) {
-                                    return ParticipantDocumentationPage(participantUser: user);
-                                  }
-                                  break;
-                                case 7:
                                   return GamificationPage(
                                     showChatNotifier: widget.showChatNotifier,
                                     goBackToCV: () => setState(() {
@@ -373,14 +372,17 @@ class _WebHomeState extends State<WebHome> {
                                       WebHome.controller.selectIndex(3);
                                     }),
                                   );
-                                case 8:
+                                case 6:
                                   return ResourcesPage();
-                                case 9:
+                                case 7:
                                   return CompetenciesPage(showChatNotifier: widget.showChatNotifier);
+                                case 8:
+                                    return EnredaContactPage();
+                                case 9:
+                                    return ParticipantDocumentationPage(participantUser: user);
                                 default:
-                                  return Container();
+                                  return ControlPanelPage(user: user,);
                               }
-                              return Container();
                             },
                           ),
                       ),))
@@ -388,11 +390,15 @@ class _WebHomeState extends State<WebHome> {
                   ),
                 ),
               ),
-            ),
+            ) : selectedIndexBodyWidget == 1 ?
+                ResourcesPage() : selectedIndexBodyWidget == 2 ?
+                CompetenciesPage(showChatNotifier: widget.showChatNotifier) : Container(),
           );
         });
 
   }
+
+
 
   Future<void> _confirmSignOut(BuildContext context) async {
     final auth = Provider.of<AuthBase>(context, listen: false);

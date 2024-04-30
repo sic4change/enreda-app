@@ -24,8 +24,7 @@ class GamificationSlider extends StatelessWidget {
         stream: database.gamificationFlagsStream(),
         builder: (context, gamificationSnapshot) {
           if (gamificationSnapshot.hasData) {
-            maxValue = gamificationSnapshot.data!.length - 2;
-            //maxValue = gamificationSnapshot.data!.length - 3;
+            maxValue = gamificationSnapshot.data!.length;
             sliderValue = value / maxValue!;
           }
 

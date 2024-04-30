@@ -1,5 +1,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/custom_sidebar_button.dart';
@@ -34,9 +35,9 @@ class SideBarWidget extends StatefulWidget {
 }
 
 class _SideBarWidgetState extends State<SideBarWidget> {
-  void _setSelectedIndexToOne() {
+  void _clearResourcesNavigation() {
     setState(() {
-      WebHome.selectedIndex.value = 2; // Select empty Container
+      ResourcesPage.selectedIndex.value = 0;
     });
   }
 
@@ -97,12 +98,12 @@ class _SideBarWidgetState extends State<SideBarWidget> {
           color: AppColors.white,
         ),
       ),
-      footerDivider: Divider(color: Colors.grey.withOpacity(0.5), height: 1),
+      //footerDivider: Divider(color: Colors.grey.withOpacity(0.5), height: 1),
       showToggleButton: false,
       headerBuilder: (context, extended) {
         final database = Provider.of<Database>(context, listen: false);
         return Container(
-          height: Responsive.isMobile(context) ? 250 : 250,
+          height: Responsive.isMobile(context) ? 250 : Responsive.isTablet(context) ? 300 : 260,
           child: Padding(
             padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 20.0, left: 0, right: 0) : EdgeInsets.only(top: 20),
             child: Column(
@@ -131,7 +132,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                       child: CustomTextBoldCenter(title: '${widget.user.firstName ?? ""} ${widget.user.lastName ?? ""}'),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10, top: 0.0, bottom: 20),
+                      padding: const EdgeInsets.only(left: 10.0, right: 10, top: 0.0, bottom: 10),
                       child: Container(
                         margin: EdgeInsets.symmetric(vertical: 0), // optional for spacing
                         height: 6, // Thickness of the 'divider'
@@ -150,16 +151,16 @@ class _SideBarWidgetState extends State<SideBarWidget> {
         );
       },
       items: [
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PANEL), width: 20,), label: 'Panel de control', onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_MY_CV_SIDEBAR), width: 20,), label: 'Mi curriculum', onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PERSONAL_DATA_SIDEBAR), width: 20,), label: 'Datos personales' , onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: 'Mis competencias' , onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: 'Mis recursos', onTap: _setSelectedIndexToOne),
-        if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_CONTACT_SIDEBAR), width: 20,), label: 'Contacto Enreda', onTap: _setSelectedIndexToOne),
-        if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_DOCUMENTS_SIDEBAR), width: 20,), label: 'Mis documentos', onTap: _setSelectedIndexToOne),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_GAMIFICATION_SIDEBAR), width: 20,), label: 'Gamificación', onTap: _setSelectedIndexToOne),
-        if(isSmallScreen) SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: 'Recursos', onTap: _setSelectedIndexToOne),
-        if(isSmallScreen) SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: 'Competencias', onTap: _setSelectedIndexToOne),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PANEL), width: 20,), label: 'Panel de control', onTap: _clearResourcesNavigation),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_MY_CV_SIDEBAR), width: 20,), label: 'Mi curriculum', onTap: _clearResourcesNavigation),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PERSONAL_DATA_SIDEBAR), width: 20,), label: 'Datos personales' , onTap: _clearResourcesNavigation),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: 'Mis competencias' , onTap: _clearResourcesNavigation),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: 'Mis recursos', onTap: _clearResourcesNavigation),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_GAMIFICATION_SIDEBAR), width: 20,), label: 'Gamificación', onTap: _clearResourcesNavigation),
+        if(isSmallScreen) SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: 'Recursos', onTap: _clearResourcesNavigation),
+        if(isSmallScreen) SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: 'Competencias', onTap: _clearResourcesNavigation),
+        if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_CONTACT_SIDEBAR), width: 20,), label: 'Contacto Enreda', onTap: _clearResourcesNavigation),
+        if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_DOCUMENTS_SIDEBAR), width: 20,), label: 'Mis documentos', onTap: _clearResourcesNavigation),
       ],
     );
   }

@@ -168,7 +168,7 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
           ),
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             IconButton(

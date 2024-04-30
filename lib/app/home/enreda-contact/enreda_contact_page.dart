@@ -173,11 +173,20 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                     description: StringConst.ASSIGNED_CONTACT_DESCRIPTION,
                     icon: InkWell(
                         onTap: (){
-                          kIsWeb ?
-                          sendWhatsAppWebMessage(socialEntity.contactMobilePhone!, StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2) :
-                          sendWhatsAppMessage(socialEntity.contactMobilePhone!, StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2);
+                          kIsWeb ? sendWhatsAppWebMessage(
+                              socialEntity.contactMobilePhone!,
+                              StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2) :
+                          Responsive.isMobile(context) ? openWhatsAppMobile(
+                              context, socialEntity.contactMobilePhone!,
+                              StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2) :
+                          sendWhatsAppWebMessage(
+                              socialEntity.contactMobilePhone!,
+                              StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2);
                         },
-                        child: Image.asset(ImagePath.WHATSAPP_ICON)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(ImagePath.WHATSAPP_ICON),
+                        )),
                   ),
                   ContactDetail(
                     widget: _buildMyUserPhoto(context, socialEntity.photo!),

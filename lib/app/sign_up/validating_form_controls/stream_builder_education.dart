@@ -43,6 +43,7 @@ Widget streamBuilderDropdownEducation (BuildContext context, Education? selected
               ),
               DropdownButtonFormField(
                 isDense: true,
+                isExpanded: true,
                 value: selectedEducation,
                 items: educationItems,
                 onChanged: (value) => functionToWriteBackThings(value),

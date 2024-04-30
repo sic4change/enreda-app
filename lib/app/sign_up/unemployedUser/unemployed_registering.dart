@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:enreda_app/app/anallytics/analytics.dart';
+import 'package:enreda_app/app/home/home_page.dart';
 import 'package:enreda_app/app/home/models/ability.dart';
 import 'package:enreda_app/app/home/models/addressUser.dart';
 import 'package:enreda_app/app/home/models/city.dart';
@@ -21,6 +22,7 @@ import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/unemployedUser.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/sign_in/access/access_page.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_page.dart';
 import 'package:enreda_app/app/sign_up/unemployedUser/unemployed_revision_form.dart';
@@ -302,8 +304,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           Navigator.of(this.context).push(
             MaterialPageRoute<void>(
               builder: ((context) {
-                //return EmailSignInPage();
-                return AccessPage();
+                return HomePage();
               }),
             ),
           )
@@ -1008,75 +1009,77 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
             children: [
               Center(
                 child:
-                    Column(
-                      children: [
-                        Container(
-                          height: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.height * 0.70,
-                          width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width * 0.70,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(Borders.kDefaultPaddingDouble / 2),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                spreadRadius: 2,
-                                blurRadius: 2,
-                                offset: Offset(0, 2), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: Stack(
-                            children: [
-                              Stepper(
-                                type: Responsive.isMobile(context) ? StepperType.vertical : StepperType.horizontal,
-                                steps: getSteps(),
-                                currentStep: currentStep,
-                                onStepContinue: onStepContinue,
-                                onStepTapped: (step) => goToStep(step),
-                                onStepCancel: onStepCancel,
-                                controlsBuilder: (context, _) {
-                                  return Container(
-                                    height: Borders.kDefaultPaddingDouble * 2,
-                                    margin: EdgeInsets.only(top: Borders.kDefaultPaddingDouble * 2),
-                                    padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble / 2),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        if(currentStep !=0)
-                                          EnredaButton(
-                                            buttonTitle: StringConst.FORM_BACK,
-                                            width: contactBtnWidth,
-                                            onPressed: onStepCancel,
-                                          ),
-                                        SizedBox(width: Borders.kDefaultPaddingDouble),
-                                        isLoading ? Center(child: CircularProgressIndicator(color: AppColors.primary300,)) :
-                                        EnredaButton(
-                                          buttonTitle: isLastStep ? StringConst.FORM_CONFIRM : StringConst.FORM_NEXT,
-                                          width: contactBtnWidth,
-                                          buttonColor: AppColors.primaryColor,
-                                          titleColor: AppColors.white,
-                                          onPressed: onStepContinue,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                              Responsive.isTablet(context) || Responsive.isMobile(context) ?
-                              Positioned(
-                                top: screenHeight * 0.45,
-                                left: -10,
-                                child: Container(
-                                  height: 300 * 0.50,
-                                  child: ClipRRect(
-                                    child: Image.asset(ImagePath.CHICA_LATERAL),
-                                  ),
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Container(
+                            height: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.height * 0.70,
+                            width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width * 0.70,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(Borders.kDefaultPaddingDouble / 2),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 2), // changes position of shadow
                                 ),
-                              ) : Container(),
-                            ],
+                              ],
+                            ),
+                            child: Stack(
+                              children: [
+                                Stepper(
+                                  type: Responsive.isMobile(context) ? StepperType.vertical : StepperType.horizontal,
+                                  steps: getSteps(),
+                                  currentStep: currentStep,
+                                  onStepContinue: onStepContinue,
+                                  onStepTapped: (step) => goToStep(step),
+                                  onStepCancel: onStepCancel,
+                                  controlsBuilder: (context, _) {
+                                    return Container(
+                                      height: Borders.kDefaultPaddingDouble * 2,
+                                      margin: EdgeInsets.only(top: Borders.kDefaultPaddingDouble * 2),
+                                      padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble / 2),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: <Widget>[
+                                          if(currentStep !=0)
+                                            EnredaButton(
+                                              buttonTitle: StringConst.FORM_BACK,
+                                              width: contactBtnWidth,
+                                              onPressed: onStepCancel,
+                                            ),
+                                          SizedBox(width: Borders.kDefaultPaddingDouble),
+                                          isLoading ? Center(child: CircularProgressIndicator(color: AppColors.primary300,)) :
+                                          EnredaButton(
+                                            buttonTitle: isLastStep ? StringConst.FORM_CONFIRM : StringConst.FORM_NEXT,
+                                            width: contactBtnWidth,
+                                            buttonColor: AppColors.primaryColor,
+                                            titleColor: AppColors.white,
+                                            onPressed: onStepContinue,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                                Responsive.isTablet(context) || Responsive.isMobile(context) ?
+                                Positioned(
+                                  top: screenHeight * 0.45,
+                                  left: -10,
+                                  child: Container(
+                                    height: 300 * 0.50,
+                                    child: ClipRRect(
+                                      child: Image.asset(ImagePath.CHICA_LATERAL),
+                                    ),
+                                  ),
+                                ) : Container(),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
 
               ),

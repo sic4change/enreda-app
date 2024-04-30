@@ -654,7 +654,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
             double? mainAxisExtentValue = Responsive.isMobile(context) ? 305 : Responsive.isDesktopS(context) ? 480 : 500;
             bool showDescription = true;
             if (snapshot.hasData && snapshot.data!.where((t) => t.description.isNotEmpty).length == 0) {
-              mainAxisExtentValue = Responsive.isMobile(context) ? 305 : Responsive.isDesktopS(context) ? 440 : 450;
+              mainAxisExtentValue = Responsive.isMobile(context) ? 305 : Responsive.isDesktopS(context) ? 400 : 450;
               showDescription = false;
             }
             return ListItemBuilderGrid<TrainingPill>(

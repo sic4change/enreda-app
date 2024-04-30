@@ -66,7 +66,7 @@ Widget buildShareButton(BuildContext context, Resource resource, Color color) {
               Text('Copiar enlace',
                   style: TextStyle(
                     color: Constants.textPrimary,
-                    fontSize: widthOfScreen(context) >= 1024 ? 16 : 12,
+                    fontSize: widthOfScreen(context) >= 1024 ? 16 : 14,
                   )),
             ],
           ),
@@ -157,7 +157,7 @@ Widget buildShare(BuildContext context, Resource resource, Color color) {
               Text('Copiar enlace',
                   style: TextStyle(
                     color: AppColors.greyTxtAlt,
-                    fontSize: widthOfScreen(context) >= 1024 ? 16 : 12,
+                    fontSize: widthOfScreen(context) >= 1024 ? 16 : 14,
                   )),
             ],
           ),

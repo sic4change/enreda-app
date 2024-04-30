@@ -88,7 +88,7 @@ class _ControlPanelPageState extends State<ControlPanelPage> {
                       ]
                   )),
                 Responsive.isDesktop(context) ? Positioned(
-                    right: Responsive.isDesktopS(context) ? 20: 200,
+                    right: Responsive.isDesktopS(context) ? 20 : 200,
                     top: -20,
                     bottom: -10,
                     child: Image.asset(ImagePath.CONTROL_PANEL, height: 300,)) : Container(),

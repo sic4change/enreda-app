@@ -73,6 +73,7 @@ class _AddEducationalLevelState extends State<AddEducationalLevel> {
                           hint: Text(StringConst.FORM_EDUCATION, maxLines: 2, overflow: TextOverflow.ellipsis),
                           value: selectedEducation,
                           items: educationItems,
+                          isExpanded: true,
                           onChanged: (value) => setState(() {
                             selectedEducation = value;
                           }),

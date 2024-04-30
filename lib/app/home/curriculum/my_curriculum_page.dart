@@ -502,9 +502,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              constraints: BoxConstraints(
-                minWidth: 300,
-              ),
+              width: Responsive.isDesktopS(context) ? 200.0 : 300.0,
               child: Text(
                 '${user?.firstName} ${user?.lastName}',
                 style: textTheme.bodyLarge?.copyWith(
@@ -514,66 +512,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               ),
             ),
             Spacer(),
-            InkWell(
-              onTap: () async {
-                final checkAgreeDownload = user?.checkAgreeCV ?? false;
-                if(!checkAgreeDownload){
-                  showAlertDialog(context,
-                      title: 'Error',
-                      content: 'Por favor, acepta las condiciones antes de continuar',
-                      defaultActionText: 'Ok'
-                  );
-                  return;
-                }
-                await _hasEnoughExperiences(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute( builder: (context) =>
-                      MyCvModelsPage(
-                        user: user!,
-                        city: city!,
-                        province: province!,
-                        country: country!,
-                        myCustomAboutMe: myCustomAboutMe,
-                        myCustomEmail: myCustomEmail,
-                        myCustomPhone: myCustomPhone,
-                        myExperiences: myExperiences!,
-                        myCustomExperiences: myCustomExperiences,
-                        mySelectedExperiences: mySelectedExperiences,
-                        myPersonalExperiences: myPersonalExperiences,
-                        myPersonalSelectedExperiences: myPersonalSelectedExperiences,
-                        myPersonalCustomExperiences: myPersonalCustomExperiences,
-                        myEducation: myEducation!,
-                        myCustomEducation: myCustomEducation,
-                        mySelectedEducation: mySelectedEducation,
-                        mySecondaryEducation: mySecondaryEducation,
-                        mySecondaryCustomEducation: mySecondaryCustomEducation,
-                        mySecondarySelectedEducation: mySecondarySelectedEducation,
-                        competenciesNames: competenciesNames,
-                        myCustomCompetencies: myCustomCompetencies,
-                        mySelectedCompetencies: mySelectedCompetencies,
-                        myCustomDataOfInterest: myCustomDataOfInterest,
-                        mySelectedDataOfInterest: mySelectedDataOfInterest,
-                        myCustomLanguages: myCustomLanguages,
-                        mySelectedLanguages: mySelectedLanguages,
-                        myCustomCity: myCustomCity,
-                        myCustomProvince: myCustomProvince,
-                        myCustomCountry: myCustomCountry,
-                        myReferences: myReferences!,
-                        myCustomReferences: myCustomReferences,
-                        mySelectedReferences: mySelectedReferences,
-                        myMaxEducation: myMaxEducation?.label??"",
-                      )),
-                );
-              },
-              child: Image.asset(
-                ImagePath.DOWNLOAD,
-                height:
-                Responsive.isTablet(context) || Responsive.isMobile(context)
-                    ? Sizes.ICON_SIZE_26
-                    : Sizes.ICON_SIZE_50,
-              ),
-            ),
+            _buildDownloadCV(),
             SpaceW8(),
           ],
         ),
@@ -586,6 +525,69 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildDownloadCV() {
+    return InkWell(
+      onTap: () async {
+        final checkAgreeDownload = user?.checkAgreeCV ?? false;
+        if(!checkAgreeDownload){
+          showAlertDialog(context,
+              title: 'Error',
+              content: 'Por favor, acepta las condiciones antes de continuar',
+              defaultActionText: 'Ok'
+          );
+          return;
+        }
+        await _hasEnoughExperiences(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute( builder: (context) =>
+              MyCvModelsPage(
+                user: user!,
+                city: city!,
+                province: province!,
+                country: country!,
+                myCustomAboutMe: myCustomAboutMe,
+                myCustomEmail: myCustomEmail,
+                myCustomPhone: myCustomPhone,
+                myExperiences: myExperiences!,
+                myCustomExperiences: myCustomExperiences,
+                mySelectedExperiences: mySelectedExperiences,
+                myPersonalExperiences: myPersonalExperiences,
+                myPersonalSelectedExperiences: myPersonalSelectedExperiences,
+                myPersonalCustomExperiences: myPersonalCustomExperiences,
+                myEducation: myEducation!,
+                myCustomEducation: myCustomEducation,
+                mySelectedEducation: mySelectedEducation,
+                mySecondaryEducation: mySecondaryEducation,
+                mySecondaryCustomEducation: mySecondaryCustomEducation,
+                mySecondarySelectedEducation: mySecondarySelectedEducation,
+                competenciesNames: competenciesNames,
+                myCustomCompetencies: myCustomCompetencies,
+                mySelectedCompetencies: mySelectedCompetencies,
+                myCustomDataOfInterest: myCustomDataOfInterest,
+                mySelectedDataOfInterest: mySelectedDataOfInterest,
+                myCustomLanguages: myCustomLanguages,
+                mySelectedLanguages: mySelectedLanguages,
+                myCustomCity: myCustomCity,
+                myCustomProvince: myCustomProvince,
+                myCustomCountry: myCustomCountry,
+                myReferences: myReferences!,
+                myCustomReferences: myCustomReferences,
+                mySelectedReferences: mySelectedReferences,
+                myMaxEducation: myMaxEducation?.label??"",
+              )),
+        );
+      },
+      child: Image.asset(
+        ImagePath.DOWNLOAD,
+        height:
+        Responsive.isTablet(context) || Responsive.isMobile(context)
+            ? Sizes.ICON_SIZE_40
+            : Sizes.ICON_SIZE_50,
+      ),
     );
   }
 
@@ -683,9 +685,16 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           Positioned(
             right: 10,
             top: 0,
-            child: PillTooltip(
-              title: StringConst.PILL_TRAVEL_BEGINS,
-              pillId: TrainingPill.TRAVEL_BEGINS_ID,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Responsive.isDesktop(context) ? Container() : _buildDownloadCV(),
+                Responsive.isDesktop(context) ? Container() : SpaceH50(),
+                PillTooltip(
+                  title: StringConst.PILL_TRAVEL_BEGINS,
+                  pillId: TrainingPill.TRAVEL_BEGINS_ID,
+                ),
+              ],
             ),
           ),
         ],
@@ -1812,6 +1821,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ),
         ),
         defaultActionText: StringConst.FORM_ACCEPT,
+        cancelActionText: StringConst.CANCEL,
+        dismissible: true,
         onDefaultActionPressed: (context) {
           if (currentText.isNotEmpty) {
             user!.dataOfInterest.remove(currentText);
@@ -1994,6 +2005,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           }
         ),
         defaultActionText: StringConst.FORM_ACCEPT,
+        cancelActionText: StringConst.CANCEL,
+        dismissible: true,
         onDefaultActionPressed: (context) {
 
       if (formKey.currentState!.validate()) {

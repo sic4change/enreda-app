@@ -111,7 +111,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
     return InkWell(
       onTap: () {
         setState(() {
-          WebHome.controller.selectIndex(7);
+          WebHome.controller.selectIndex(5);
         });
       },
       child: Column(
@@ -207,7 +207,9 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
     return InkWell(
       onTap: () {
         setState(() {
-          WebHome.controller.selectIndex(5);
+          Responsive.isMobile(context) ?
+          WebHome.controller.selectIndex(8) :
+          WebHome.controller.selectIndex(6);
         });
       },
       child: Container(

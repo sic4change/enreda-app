@@ -34,7 +34,9 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
     return InkWell(
       onTap: () {
         setState(() {
-          WebHome.controller.selectIndex(6);
+          Responsive.isMobile(context) ?
+          WebHome.controller.selectIndex(9) :
+          WebHome.controller.selectIndex(7);
         });
       },
       child: StreamBuilder<UserEnreda>(

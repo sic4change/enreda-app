@@ -46,6 +46,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
     TextTheme textTheme = Theme.of(context).textTheme;
     return SidebarX(
+      animationDuration: const Duration(milliseconds: 0),
       controller: widget._controller,
       theme: SidebarXTheme(
         margin: const EdgeInsets.all(10),
@@ -88,8 +89,8 @@ class _SideBarWidgetState extends State<SideBarWidget> {
           size: 20,
         ),
       ),
-      extendedTheme: const SidebarXTheme(
-        width: 210,
+      extendedTheme: SidebarXTheme(
+        width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.65 : 210,
         decoration: BoxDecoration(
           color: AppColors.white,
         ),

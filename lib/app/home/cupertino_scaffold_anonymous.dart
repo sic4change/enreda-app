@@ -1,4 +1,3 @@
-import 'package:enreda_app/app/home/account/account_page.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/tab_item.dart';

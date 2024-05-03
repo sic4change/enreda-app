@@ -1,6 +1,5 @@
 import 'package:chips_choice/chips_choice.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
-import 'package:enreda_app/app/home/curriculum/tooltip_video/training_tooltip_video.dart';
 import 'package:enreda_app/app/home/models/chatQuestion.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/question.dart';
@@ -14,7 +13,6 @@ import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -251,10 +249,10 @@ class _MessageTileState extends State<MessageTile> {
         if (val.length > widget.question.optionsToSelect!) {
           showAlertDialog(
             context,
-            title: 'Aviso',
+            title: StringConst.CHAT_TITLE_QUESTION,
             content:
-                'Número máximo de respuestas a seleccionar: ${widget.question.optionsToSelect!}',
-            defaultActionText: 'Ok',
+                StringConst.CHAT_MESSAGE_WARNING + '${widget.question.optionsToSelect!}',
+            defaultActionText: StringConst.OK,
           );
         }
         /*else if (val.length < minSelectedActivities &&

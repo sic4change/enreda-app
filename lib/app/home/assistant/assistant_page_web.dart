@@ -1,6 +1,4 @@
-import 'dart:collection';
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enreda_app/app/home/models/chatQuestion.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
@@ -89,17 +87,6 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
-                  /*appBar: AppBar(
-                  automaticallyImplyLeading: false,
-                  backgroundColor: Constants.white,
-                  elevation: 0.0,
-                  foregroundColor: Constants.blueDark,
-                  actions: [
-                    IconButton(
-                        onPressed: () => widget.onClose(false), icon: Icon(Icons.close))
-                  ],
-                ),*/
-                  //backgroundColor: Constants.white,
                   children: [
                     Container(
                       height: 60,
@@ -122,7 +109,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                               color: Constants.white, width: 30),
                           SpaceW20(),
                           Text(
-                            'Redas Chat',
+                            StringConst.CHAT_TITLE,
                             style: TextStyle(
                                 color: Constants.white,
                                 fontWeight: FontWeight.w500),
@@ -145,7 +132,6 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                       child: _buildIsWritingAnimation(),
                     ),
                     _buildWriteMessageContainer(database),
-                    /*if (widthOfScreen(context) < 1024) SpaceH50(),*/
                   ],
                 ),
               ),
@@ -161,7 +147,6 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
     return Container(
-        /*padding: EdgeInsets.only(top: 200),*/
         child: StreamBuilder<List<ChatQuestion>>(
       stream: database.chatQuestionsStream(auth.currentUser!.uid),
       builder: (context, snapshot) {
@@ -296,7 +281,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
                       ),
-                      hintText: 'Escribe algo...',
+                      hintText: StringConst.CHAT_WRITE,
                       hintStyle: TextStyle(
                         color: Colors.grey,
                       )),
@@ -326,9 +311,9 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                           });
                           showAlertDialog(
                             this.context,
-                            title: 'Aviso',
-                            content: 'No he entendido tu respuesta. Selecciona una de las posibles',
-                            defaultActionText: 'Ok',
+                            title: StringConst.CHAT_TITLE_QUESTION,
+                            content: StringConst.CHAT_SELECT,
+                            defaultActionText: StringConst.OK,
                           );
                           return;
                         }
@@ -337,9 +322,9 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                             messageEditingController.text.isEmpty) {
                           showAlertDialog(
                             this.context,
-                            title: 'Aviso',
-                            content: 'Escriba una respuesta',
-                            defaultActionText: 'Ok',
+                            title: StringConst.CHAT_TITLE_QUESTION,
+                            content: StringConst.CHAT_ANSWER_QUESTION,
+                            defaultActionText: StringConst.OK,
                           );
                           return;
                         }
@@ -350,10 +335,10 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                                 StringConst.ACTIVITIES_CHOICES) {
                           showAlertDialog(
                             context,
-                            title: 'Aviso',
+                            title: StringConst.CHAT_TITLE_QUESTION,
                             content:
-                                'Selecciona al menos $minSelectedActivities actividades',
-                            defaultActionText: 'Ok',
+                             StringConst.CHAT_SELECT1_QUESTION + '${minSelectedActivities}' + StringConst.CHAT_SELECT2_QUESTION,
+                            defaultActionText: StringConst.OK,
                           );
                           return;
                         }
@@ -395,7 +380,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
             controller: messageEditingController,
             focusNode: focusNode,
             onEditingComplete: onFieldSubmitted,
-            decoration: const InputDecoration(hintText: 'Busca por nombre'),
+            decoration: const InputDecoration(hintText: StringConst.CHAT_SEARCH),
           );
         },
             optionsViewBuilder: (BuildContext context,

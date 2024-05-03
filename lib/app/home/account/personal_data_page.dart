@@ -269,7 +269,7 @@ class _PersonalDataState extends State<PersonalData> {
 
   Widget _buildSaveDataButton(BuildContext context, UserEnreda userEnreda) {
     return CustomButton(
-      text: 'Actualizar mis datos',
+      text: StringConst.UPDATE_DATA,
       color: Constants.turquoise,
       onPressed: () => _submit(userEnreda),
     );
@@ -354,34 +354,34 @@ class _PersonalDataState extends State<PersonalData> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Parámetros de la cuenta',
+                StringConst.ACCOUNT_PARAMETERS,
                 style: textTheme.bodyLarge?.copyWith(color: AppColors.turquoiseBlue),
               ),
             ),
             _buildMyProfileRow(
-              text: 'Cambiar contraseña',
+              text: StringConst.CHANGE_PASSWORD,
               onTap: () => _confirmChangePassword(context),
             ),
             _buildMyProfileRow(
-              text: 'Política de privacidad',
+              text: StringConst.PRIVACY_POLICY,
               onTap: () => launchURL(StringConst.PRIVACY_URL),
             ),
             _buildMyProfileRow(
-              text: 'Condiciones de uso',
+              text: StringConst.USE_CONDITIONS,
               onTap: () => launchURL(StringConst.USE_CONDITIONS_URL),
             ),
             _buildMyProfileRow(
-              text: 'Ayúdanos a mejorar',
+              text: StringConst.SEND_FEEDBACK,
               onTap: () => _displayReportDialog(context),
             ),
             _buildMyProfileRow(
-              text: 'Cerrar sesión',
+              text: StringConst.SIGN_OUT,
               onTap: () {
                 _confirmSignOut(context);
               },
             ),
             _buildMyProfileRow(
-              text: 'Eliminar cuenta',
+              text: StringConst.DELETE_ACCOUNT,
               textStyle: textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Constants.deleteRed,
@@ -444,7 +444,7 @@ class _PersonalDataState extends State<PersonalData> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Intereses',
+            StringConst.FORM_INTERESTS,
             style: TextStyle(
               fontFamily: GoogleFonts.outfit().fontFamily,
                 fontWeight: FontWeight.w300,
@@ -462,9 +462,9 @@ class _PersonalDataState extends State<PersonalData> {
                       if (val.isEmpty) {
                         showAlertDialog(
                           context,
-                          title: 'Intereses',
-                          content: 'Debes seleccionar al menos un interés',
-                          defaultActionText: 'Ok',
+                          title: StringConst.FORM_INTERESTS,
+                          content: StringConst.FORM_SELECT_AT_LEAST_ONE,
+                          defaultActionText: StringConst.OK,
                         );
                       } else {
                         setState(() => _interestsSelected = val);
@@ -780,13 +780,13 @@ class _PersonalDataState extends State<PersonalData> {
         await database.setUserEnreda(updatedUserEnreda);
         showAlertDialog(
           context,
-          title: 'Actualizado',
-          content: 'Se han actualizado los datos de tu usuario',
-          defaultActionText: 'Ok',
+          title: StringConst.UPDATED_DATA_TITLE,
+          content: StringConst.UPDATED_DATA,
+          defaultActionText: StringConst.OK,
         );
       } on FirebaseException catch (e) {
         showExceptionAlertDialog(context,
-            title: 'Error al actualizar el recurso', exception: e);
+            title: StringConst.UPDATE_DATA_ERROR, exception: e);
       }
     }
   }
@@ -808,8 +808,8 @@ class _PersonalDataState extends State<PersonalData> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Ayudanos a mejorar',
-              style: textTheme.button?.copyWith(
+            title: Text(StringConst.SEND_FEEDBACK,
+              style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
                 color: AppColors.greyDark,
                 fontWeight: FontWeight.w700,
@@ -822,13 +822,13 @@ class _PersonalDataState extends State<PersonalData> {
               },
               controller: _textFieldController,
               decoration: InputDecoration(
-                hintText: "Escribe tus sugerencias",
-                hintStyle: textTheme.button?.copyWith(
+                hintText: StringConst.SEND_FEEDBACK_TITLE,
+                hintStyle: textTheme.bodySmall?.copyWith(
                   color: AppColors.greyDark,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
                 ),),
-              style: textTheme.button?.copyWith(
+              style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
                 color: AppColors.greyDark,
                 fontWeight: FontWeight.w400,),
@@ -847,7 +847,7 @@ class _PersonalDataState extends State<PersonalData> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: Text('Cancelar'),
+                  child: Text(StringConst.CANCEL),
                 ),
                 onPressed: () {
                   setState(() {
@@ -864,7 +864,7 @@ class _PersonalDataState extends State<PersonalData> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: Text('Enviar'),
+                  child: Text(StringConst.SEND),
                 ),
                 onPressed: () {
                   setState(() {
@@ -879,10 +879,10 @@ class _PersonalDataState extends State<PersonalData> {
                       database.addContact(contact);
                       showAlertDialog(
                         context,
-                        title: 'Mensaje ensaje enviado',
+                        title: StringConst.MESSAGE_SENT,
                         content:
-                        'Hemos recibido satistactoriamente tu sugerencia. ¡Muchas gracias por tu información!',
-                        defaultActionText: 'Aceptar',
+                        StringConst.MESSAGE_SENT_DESCRIPTION,
+                        defaultActionText: StringConst.FORM_ACCEPT,
                       ).then((value) => Navigator.pop(context));
                     }
                   });
@@ -897,10 +897,10 @@ class _PersonalDataState extends State<PersonalData> {
 
 Future<void> _confirmSignOut(BuildContext context) async {
   final didRequestSignOut = await showAlertDialog(context,
-      title: 'Cerrar sesión',
-      content: '¿Estás seguro que quieres cerrar sesión?',
-      cancelActionText: 'Cancelar',
-      defaultActionText: 'Cerrar');
+      title: StringConst.SIGN_OUT,
+      content: StringConst.SIGN_OUT_DESCRIPTION,
+      cancelActionText: StringConst.CANCEL,
+      defaultActionText: StringConst.CLOSE);
   if (didRequestSignOut == true) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     await auth.signOut();
@@ -909,11 +909,10 @@ Future<void> _confirmSignOut(BuildContext context) async {
 
 Future<void> _confirmChangePassword(BuildContext context) async {
   final didRequestSignOut = await showAlertDialog(context,
-      title: 'Cambiar contraseña',
-      content: 'Si pulsa en Aceptar se le envirá a su correo las acciones a '
-          'realizar para cambiar su contraseña. Si no aparece, revisa las carpetas de SPAM y Correo no deseado',
-      cancelActionText: 'Cancelar',
-      defaultActionText: 'Aceptar');
+      title: StringConst.CHANGE_PASSWORD,
+      content: StringConst.SIGN_OUT_INSTRUCTIONS,
+      cancelActionText: StringConst.CANCEL,
+      defaultActionText: StringConst.FORM_ACCEPT);
   if (didRequestSignOut == true) {
     _changePasword(context);
   }
@@ -921,12 +920,10 @@ Future<void> _confirmChangePassword(BuildContext context) async {
 
 Future<void> _confirmDeleteAccount(BuildContext context, UserEnreda userEnreda) async {
   final didRequestSignOut = await showAlertDialog(context,
-      title: 'Eliminar cuenta',
-      content: 'Si pulsa en Aceptar se procederá a la eliminación completa '
-          'de su cuenta, esta acción no se podrá deshacer, '
-          '¿Está seguro que quiere continuar?',
-      cancelActionText: 'Cancelar',
-      defaultActionText: 'Aceptar');
+      title: StringConst.DELETE_ACCOUNT,
+      content: StringConst.DELETE_ACCOUNT_INSTRUCTIONS,
+      cancelActionText: StringConst.CANCEL,
+      defaultActionText: StringConst.FORM_ACCEPT);
   if (didRequestSignOut == true) {
     _deleteAccount(context, userEnreda);
   }
@@ -952,13 +949,3 @@ Future<void> _deleteAccount(BuildContext context, UserEnreda userEnreda) async {
   }
 }
 
-
-
-Future<void> _signOut(BuildContext context) async {
-  try {
-    final auth = Provider.of<AuthBase>(context, listen: false);
-    await auth.signOut();
-  } catch (e) {
-    print(e.toString());
-  }
-}

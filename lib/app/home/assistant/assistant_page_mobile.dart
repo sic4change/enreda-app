@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enreda_app/app/home/assistant/simple_text_style.dart';
 import 'package:enreda_app/app/home/models/chatQuestion.dart';
@@ -21,7 +20,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import '../../anallytics/analytics.dart';
 import 'message_tile.dart';
 
@@ -122,7 +120,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                                 color: Constants.white, width: 30),
                             SpaceW20(),
                             Text(
-                              'Redas Chat',
+                              StringConst.CHAT_TITLE,
                               style: TextStyle(
                                   color: Constants.white,
                                   fontWeight: FontWeight.w500),
@@ -279,9 +277,9 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                             currentChoice.isEmpty) {
                           showAlertDialog(
                             this.context,
-                            title: 'Aviso',
-                            content: 'Seleccione una respuesta',
-                            defaultActionText: 'Ok',
+                            title: StringConst.CHAT_TITLE_QUESTION,
+                            content: StringConst.CHAT_CONTENT_QUESTION,
+                            defaultActionText: StringConst.OK,
                           );
                           return;
                         }
@@ -290,9 +288,9 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                             messageEditingController.text.isEmpty) {
                           showAlertDialog(
                             this.context,
-                            title: 'Aviso',
-                            content: 'Escriba una respuesta',
-                            defaultActionText: 'Ok',
+                            title: StringConst.CHAT_TITLE_QUESTION,
+                            content: StringConst.CHAT_ANSWER_QUESTION,
+                            defaultActionText: StringConst.OK,
                           );
                           return;
                         }
@@ -303,10 +301,10 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                                 StringConst.ACTIVITIES_CHOICES) {
                           showAlertDialog(
                             context,
-                            title: 'Aviso',
+                            title: StringConst.CHAT_TITLE_QUESTION,
                             content:
-                                'Selecciona al menos $minSelectedActivities actividades',
-                            defaultActionText: 'Ok',
+                            StringConst.CHAT_SELECT1_QUESTION + '${minSelectedActivities}' + StringConst.CHAT_SELECT2_QUESTION,
+                            defaultActionText: StringConst.OK,
                           );
                           return;
                         }

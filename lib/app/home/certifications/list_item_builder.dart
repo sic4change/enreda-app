@@ -1,5 +1,6 @@
 import 'package:enreda_app/app/home/resources/empty_content.dart';
 import 'package:enreda_app/utils/responsive.dart';
+import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(BuildContext context, T item);
@@ -29,7 +30,7 @@ class ListItemBuilder<T> extends StatelessWidget {
       }
     } else if (snapshot.hasError) {
       return EmptyContent(
-          title: 'Algo fue mal', message: 'No se pudo cargar los datos');
+          title: StringConst.SEARCH_WARNING, message: StringConst.SEARCH_WARNING_DESCRIPTION);
     }
     return Center(child: CircularProgressIndicator());
   }

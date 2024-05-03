@@ -77,36 +77,35 @@ class _HomePageState extends State<HomePage> {
         builder: (context, showChat, child) {
           return AnimatedPositioned(
             duration: Duration(seconds: 1),
-            right: Constants.mainPadding,
-            bottom: showChat ? 50 : -800,
-            child: Visibility(
-              visible: showChat,
-              maintainState: true,
-              maintainAnimation: true,
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                width: Responsive.isMobile(context) ? 300.0 : 400.0,
-                height: 500.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 4),
-                  ],
-                ),
-                child: showChat ? AssistantPageWeb(
-                  onClose: (showSuccessMessage, gamificationFlagName) {
+            child: Container(
+              clipBehavior: Clip.antiAlias,
+              width: Responsive.isMobile(context) ? 300.0 : 400.0,
+              height: 500.0,
+              child: showChat
+                  ? AssistantPageWeb(
+                onClose: (showSuccessMessage, gamificationFlagName) {
                     showChatNotifier.value = !showChatNotifier.value;
-                    if (gamificationFlagName.isNotEmpty) {
-                      setGamificationFlag(context: context, flagId: gamificationFlagName);
-                    }
-                  },
-                ) : SizedBox.shrink(),
+                  if (gamificationFlagName.isNotEmpty){
+                    setGamificationFlag(context: context, flagId: gamificationFlagName);
+                  }
+                },
+              )
+                  : Container(),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(15),
+                ),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.25), blurRadius: 4),
+                ],
               ),
             ),
+            right: Constants.mainPadding,
+            bottom: showChat ? 50 : -800,
           );
-        }
-    );
+        });
   }
   
 }

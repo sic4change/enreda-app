@@ -22,6 +22,7 @@ class StringConst {
   static const String FAVORITES = "Favoritos";
   static const String RECOMMENDED = "Recomendados";
 
+  //Competencies Section
   static const String MY_COMPETENCIES = "Mis Competencias";
   static const String ALL_COMPETENCIES = "Competencias";
   static const String MY_EXPERIENCES = "Mis Experiencias";
@@ -38,6 +39,23 @@ class StringConst {
   static const String DATA_OF_INTEREST = "Datos de interés";
   static const String LANGUAGES = "Idiomas";
   static const String EVALUATE_COMPETENCY = "Evaluar: ";
+  static const String CERTIFICATE_COMPETENCY = 'Solicitud de certificación de competencias';
+  static const String APPLICANT = 'Solicitante:';
+  static const String COMPETENCY = 'Competencia:';
+  static const String COMPETENCY_SELECT = 'Selecciona una opción:';
+  static const String COMPETENCY_APPROVED = 'Apto';
+  static const String COMPETENCY_NOT_APPROVED = 'No apto';
+  static const String COMPETENCY_CONTACT_INFO = '¿Puedo incluir tus datos de contacto en mi CV?';
+  static const String COMPETENCY_CONTACT_YES = 'Si';
+  static const String COMPETENCY_CONTACT_NO = 'No';
+  static const String COMPETENCY_CERTIFICATION = 'Certificar competencia';
+  static const String COMPETENCY_THANK_YOU = 'Muchas gracias por tu información.';
+  static const String COMPETENCY_CERTIFIED1 = '¡Competencia ';
+  static const String COMPETENCY_CERTIFIED2 = ' ha sido certificada con éxito!';
+  static const String COMPETENCY_ERROR = 'Error al enviar solicitud, intenta de nuevo.';
+  static const String COMPETENCY_SELECT_OPC = 'Debe seleccionar al menos una opción:';
+  static const String COMPETENCY_CONTACT_SHARE = '¿Apruebas compartir sus datos de contacto?';
+  static const String COMPETENCY_CERTIFICATION_RESULT = 'Apto o No Apto.';
 
   //Search Section
   static const String SEARCH = "Busca por área";
@@ -45,6 +63,8 @@ class StringConst {
   static const String PILLS_TITLE = "Píldoras formativas";
   static const String PILLS_SUBTITLE = "EnREDa te conecta con recursos educativos, actividades, empresas y empleabilidad.";
   static const String FUNDAULA_BUTTON = "Accede a la formación online que te acerca al mundo digital y al empleo desde enREDa";
+  static const String SEARCH_WARNING = 'Algo fue mal';
+  static const String SEARCH_WARNING_DESCRIPTION = 'No se pudo cargar los datos';
 
   //Header Section
   static const String FIRST_NAME = "";
@@ -80,7 +100,6 @@ class StringConst {
   static const String LET_US_GO = "¡Vamos allá!";
   static const String HAVE_ACCOUNT = "¿Ya tienes una cuenta?";
   static const String LOG_IN = "Entra aquí";
-
 
   //AboutMe Section
   static const String HI = "";
@@ -262,6 +281,8 @@ class StringConst {
   static const String INTERESTED = "Para completar su inscripción debe contactar con:";
   static const String HELLO_WP_MESSAGE1 = "Hola ";
   static const String HELLO_WP_MESSAGE2 = ", quisiera más información";
+  static const String MESSAGE_SENT = 'Mensaje enviado';
+  static const String MESSAGE_SENT_DESCRIPTION = 'Hemos recibido satistactoriamente tu sugerencia. ¡Muchas gracias por tu información!';
 
   //Stores
   static const String URL_GOOGLE_PLAY = "https://play.google.com/store/apps/details?id=org.sic4change.enreda_app&hl=es";
@@ -400,6 +421,7 @@ class StringConst {
   static const String FORM_ACCEPT = "Aceptar";
   static const String FORM_ERROR= "Error al crea la cuenta";
   static const String FORM_SELECT= "Seleccionar";
+  static const String FORM_SELECT_AT_LEAST_ONE = 'Debes seleccionar al menos un interés';
 
   static const List<String> RESOURCE_TYPES = [
     'Oferta de empleo',
@@ -434,6 +456,7 @@ class StringConst {
   static const String PATH_RESOURCES = "/resources";
   static const String PATH_TRAINING_PILLS = "/pills";
   static const String PATH_COMPETENCIES = "/competencies";
+
   //Assistant Chat
   static const String START_CHAT = '¡INICIA EL CHAT!';
   static const String USERNAME_PATTERN = '#name';
@@ -455,6 +478,17 @@ class StringConst {
   static const String BADGE_VALIDATED = 'validated';
   static const String BADGE_CERTIFIED = 'certified';
   static const String BADGE_PROCESSING = 'processing';
+  static const String CHAT_TITLE = 'Redas Chat';
+  static const String CHAT_TITLE_QUESTION = 'Aviso';
+  static const String CHAT_CONTENT_QUESTION = 'Seleccione una respuesta';
+  static const String CHAT_ANSWER_QUESTION = 'Escriba una respuesta';
+  static const String CHAT_SELECT1_QUESTION = 'Selecciona al menos ';
+  static const String CHAT_SELECT2_QUESTION = ' actividades';
+  static const String CHAT_WRITE = 'Escribe algo...';
+  static const String CHAT_SELECT = 'No he entendido tu respuesta. Selecciona una de las posibles';
+  static const String CHAT_SEARCH = 'Busca por nombre';
+  static const String CHAT_MESSAGE_WARNING = 'Número máximo de respuestas a seleccionar: ';
+
   // CV
   static const String DELETE = 'Eliminar';
   static const String NO_DATA_OF_INTEREST = 'Todavía no has añadido ningún dato de interés adicional';
@@ -500,6 +534,25 @@ class StringConst {
   static const String LOREM_IMPSUM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque, tortor amet, adipiscing felis nullam. Aliquet commodo est pretium vitae hendrerit fames vitae. Orci, feugiat consectetur aliquet sodales mus sodales a urna.\n\n'
       'Rhoncus id volutpat, diam adipiscing risus, enim cursus ac. Amet nunc nec eu diam. Tincidunt at vulputate arcu dis justo. Ut egestas ac rhoncus, sapien.';
   static const String GAMIFICATION_PHASE_COMPLETED = "¡Enhorabuena! ¡Has completado una Fase de la Gamificación!";
+  static const String UPDATE_DATA = 'Actualizar mis datos';
+  static const String ACCOUNT_PARAMETERS = 'Parámetros de la cuenta';
+  static const String CHANGE_PASSWORD = 'Cambiar contraseña';
+  static const String PRIVACY_POLICY = 'Política de privacidad';
+  static const String DELETE_ACCOUNT = 'Eliminar cuenta';
+  static const String USE_CONDITIONS = 'Condiciones de uso';
+  static const String SEND_FEEDBACK = 'Ayúdanos a mejorar';
+  static const String SIGN_OUT = 'Cerrar sesión';
+  static const String UPDATED_DATA_TITLE = 'Información actualizada';
+  static const String UPDATED_DATA = 'Se han actualizado los datos de tu usuario';
+  static const String UPDATE_DATA_ERROR = 'Error al actualizar el usuario';
+  static const String SEND_FEEDBACK_TITLE = "Escribe tus sugerencias";
+  static const String SIGN_OUT_DESCRIPTION = '¿Estás seguro que quieres cerrar sesión?';
+  static const String DELETE_ACCOUNT_INSTRUCTIONS = 'Si pulsa en Aceptar se procederá a la eliminación completa '
+      'de su cuenta, esta acción no se podrá deshacer, '
+      '¿Está seguro que quiere continuar?';
+  static const String SIGN_OUT_INSTRUCTIONS = 'Si pulsa en Aceptar se le envirá a su correo las acciones a '
+      'realizar para cambiar su contraseña. Si no aparece, revisa las carpetas de SPAM y Correo no deseado';
+
 
   //Gamification
   static const String BRONZE_STAR = 'Medalla de bronce';

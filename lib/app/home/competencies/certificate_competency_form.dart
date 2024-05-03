@@ -3,6 +3,7 @@ import 'package:enreda_app/common_widgets/custom_raised_button.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -145,9 +146,9 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
             children: [
               SpaceH20(),
               Text(
-                'Solicitud de certificación de competencias',
+                StringConst.CERTIFICATE_COMPETENCY,
                 textAlign: TextAlign.center,
-                style: textTheme.bodyText1?.copyWith(
+                style: textTheme.bodySmall?.copyWith(
                   color: AppColors.greyDark,
                   height: 1.5,
                   fontWeight: FontWeight.w800,
@@ -160,8 +161,8 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Solicitante:',
-                    style: textTheme.bodyText1?.copyWith(
+                    StringConst.APPLICANT,
+                    style: textTheme.bodySmall?.copyWith(
                       color: AppColors.greyDark,
                       height: 1.5,
                       fontWeight: FontWeight.w800,
@@ -171,7 +172,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                   SpaceW12(),
                   Text(
                     '${certificationRequest.unemployedRequesterName}',
-                    style: textTheme.bodyText1?.copyWith(
+                    style: textTheme.bodySmall?.copyWith(
                       color: AppColors.greyDark,
                       height: 1.5,
                       fontWeight: FontWeight.w800,
@@ -186,8 +187,8 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Competencia:',
-                    style: textTheme.bodyText1?.copyWith(
+                    StringConst.COMPETENCY,
+                    style: textTheme.bodySmall?.copyWith(
                       color: AppColors.greyDark,
                       height: 1.5,
                       fontWeight: FontWeight.w800,
@@ -200,8 +201,8 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
               ),
               SizedBox(height: Constants.mainPadding),
               Text(
-                'Selecciona una opción:',
-                style: textTheme.bodyText1?.copyWith(
+                StringConst.COMPETENCY_SELECT,
+                style: textTheme.bodySmall?.copyWith(
                   color: AppColors.greyDark,
                   height: 1.5,
                   fontWeight: FontWeight.w800,
@@ -230,8 +231,8 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
               childLeft: Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: ChoiceChip(
-                  label: Text('APTO',
-                    style: textTheme.bodyText1?.copyWith(
+                  label: Text(StringConst.COMPETENCY_APPROVED.toUpperCase(),
+                    style: textTheme.bodySmall?.copyWith(
                       color: _textColorOpc1,
                       height: 1.5,
                       fontWeight: FontWeight.w800,
@@ -254,8 +255,8 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
               childRight: Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: ChoiceChip(
-                  label: Text('NO APTO',
-                    style: textTheme.bodyText1?.copyWith(
+                  label: Text(StringConst.COMPETENCY_NOT_APPROVED,
+                    style: textTheme.bodySmall?.copyWith(
                       color: _textColorOpc2,
                       height: 1.5,
                       fontWeight: FontWeight.w800,
@@ -278,8 +279,8 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
           ),
           SizedBox(height: Constants.mainPadding),
           Text(
-            '¿Puedo incluir tus datos de contacto en mi CV?',
-            style: textTheme.bodyText1?.copyWith(
+            StringConst.COMPETENCY_CONTACT_INFO,
+            style: textTheme.bodySmall?.copyWith(
               color: AppColors.greyDark,
               height: 1.5,
               fontWeight: FontWeight.w800,
@@ -291,7 +292,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
             width: 400,
             child: CustomFlexRowColumn(
               childLeft: ChoiceChip(
-                label: CustomTextChip(text: 'SI', color: _textColorOne),
+                label: CustomTextChip(text: StringConst.COMPETENCY_CONTACT_YES.toUpperCase(), color: _textColorOne),
                 labelPadding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
                 selected: _selectedApprove == 0,
                 selectedColor: AppColors.greyViolet,
@@ -303,7 +304,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                 },
               ),
               childRight: ChoiceChip(
-                label: CustomTextChip(text: 'NO', color: _textColorTwo),
+                label: CustomTextChip(text: StringConst.COMPETENCY_CONTACT_NO.toUpperCase(), color: _textColorTwo),
                 labelPadding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
                 selected: _selectedApprove == 1,
                 selectedColor: AppColors.greyViolet,
@@ -322,7 +323,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
             child: Center(child: CircularProgressIndicator()),
           ) :
           CustomButton(
-              text: 'Certificar competencia',
+              text: StringConst.COMPETENCY_CERTIFICATION,
               color: _buttonColor,
               onPressed: _buttonDisabled == false ? () async {
                 if (_isSelected == true && _isSelectedData == true) {
@@ -340,19 +341,19 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                     });
                     showAlertDialog(
                       context,
-                      title: '¡Competencia ${certificationRequest.competencyName} ha sido certificada con éxito!',
-                      content: 'Muchas gracias por tu información.',
-                      defaultActionText: 'ACEPTAR',
+                      title: StringConst.COMPETENCY_CERTIFIED1 + '${certificationRequest.competencyName}' + StringConst.COMPETENCY_CERTIFIED2,
+                      content: StringConst.COMPETENCY_THANK_YOU,
+                      defaultActionText: StringConst.FORM_ACCEPT,
                     );
                   } on FirebaseException catch (e) {
                     showExceptionAlertDialog(context,
-                        title: 'Error al enviar solicitud, intenta de nuevo.', exception: e).then((value) => Navigator.pop(context));
+                        title: StringConst.COMPETENCY_ERROR, exception: e).then((value) => Navigator.pop(context));
                   }
                 } else {
                   showAlertDialog(context,
-                      title: 'Debe seleccionar al menos una opción:',
-                      content: _isSelected == true ? '¿Apruebas compartir sus datos de contacto?' : 'Apto o No Apto.',
-                      defaultActionText: 'ACEPTAR');
+                      title: StringConst.COMPETENCY_SELECT_OPC,
+                      content: _isSelected == true ? StringConst.COMPETENCY_CONTACT_SHARE : StringConst.COMPETENCY_CERTIFICATION_RESULT,
+                      defaultActionText: StringConst.FORM_ACCEPT);
                 }
               } : null
           ),

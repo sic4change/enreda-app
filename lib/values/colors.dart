@@ -1,13 +1,26 @@
 part of values;
 
 class AppColors {
+
   static const Color primaryColor = Color(0xFF00CCCC);
+
   //Shades of primary color
+  static const Color primary050 = Color(0xFFEDFAF9);
   static const Color primary100 = Color(0xFFA7E4E1);
   static const Color primary200 = Color(0xFF00CCCC);
   static const Color primary300 = Color(0xFF00CCCC);
+  static const Color primary400 = Color(0xFF00D0CE);
+  static const Color primary500 = Color(0xFF18C5C1);
+  static const Color primary600 = Color(0xFF0BCCC6);
+  static const Color primary060 = Color(0xFFB5F0F0);
+  static const Color primary040 = Color(0xFFCCFAF0);
+  static const Color primary030 = Color(0xFFDBF1F1);
+  static const Color primary020 = Color(0xFFCDDBDF);
+  static const Color primary010 = Color(0xFFEEFAFA);
+
+  //Shades of primary color
   static const Color secondaryColor = Color(0xfffcfcff);
-  static const Color primary050 = Color(0xFFEDFAF9);
+
 
   //accent Colors
   static const Color accentColor = Color(0xFFF7F7F7);
@@ -80,7 +93,6 @@ class AppColors {
   static const Color red = Color(0xFFF1291A);
   static const Color whiteAlt = Color(0xFFA0A5D200);
   static const Color lilacAlt = Color(0xFFCDCFE999);
-  static const Color turquoiseAlt = Color(0xFFCCFAF0);
   static const Color greyLightAlt = Color(0xFFF5F6F7);
   static const Color darkPurple = Color(0xFF460174);
   static const Color lightPurple = Color(0xFFA100FE);
@@ -98,13 +110,5 @@ class AppColors {
   //Violet
   static const Color violet = Color(0xFFE3E4F2);
   static const Color lightLilac = Color(0xFFF4F5FB);
-
-  //Turquoise
-  static const Color turquoiseUltraLight = Color(0xFFCDDBDF);
-  static const Color turquoise = Color(0xFF00D0CE);
-  static const Color turquoiseLight = Color(0xFFB5F0F0);
-  static const Color turquoiseSuperLight = Color(0xFFEEFAFA);
-  static const Color turquoiseButton = Color(0xFF00D0CE);
-  static const Color turquoiseButton2 = Color(0xFF18C5C1);
 
 }

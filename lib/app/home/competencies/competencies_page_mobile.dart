@@ -128,7 +128,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
       theme: ExpandableThemeData(iconColor: Constants.penBlue),
       header: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: Text('Niveles de cada competencia',
+        child: Text(StringConst.COMPETENCY_LEVELS,
             textAlign: TextAlign.start,
             style: textTheme.bodySmall?.copyWith(
               color: Constants.penBlue,
@@ -152,16 +152,16 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                   Expanded(
                     child: _buildBadgeInfo(
                         context: context,
-                        title: 'NO OBTENIDA',
+                        title: StringConst.COMPETENCY_NOT_OBTAINED.toUpperCase(),
                         badgeUrl: ImagePath.EMPTY_BADGE_SAMPLE,
                         description: ''),
                   ),
                   Expanded(
                     child: _buildBadgeInfo(
                         context: context,
-                        title: 'IDENTIFICADA',
+                        title: StringConst.COMPETENCY_IDENTIFIED.toUpperCase(),
                         badgeUrl: ImagePath.IDENTIFIED_BADGE_SAMPLE,
-                        description: 'A través del chat'),
+                        description: StringConst.COMPETENCY_CHAT),
                   ),
                 ],
               ),
@@ -171,16 +171,16 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                   Expanded(
                     child: _buildBadgeInfo(
                         context: context,
-                        title: 'EVALUADA',
+                        title: StringConst.COMPETENCY_EVALUATED.toUpperCase(),
                         badgeUrl: ImagePath.VALIDATED_BADGE_SAMPLE,
-                        description: 'A través de los microtests'),
+                        description: StringConst.COMPETENCY_MICRO_TESTS),
                   ),
                   Expanded(
                     child: _buildBadgeInfo(
                         context: context,
-                        title: 'CERTIFICADA',
+                        title: StringConst.COMPETENCY_CERTIFIED.toUpperCase(),
                         badgeUrl: ImagePath.CERTIFIED_BADGE_SAMPLE,
-                        description: 'Con referencias externas'),
+                        description: StringConst.COMPETENCY_REFERENCES),
                   ),
                 ],
               ),
@@ -200,7 +200,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
       theme: ExpandableThemeData(iconColor: Constants.penBlue),
       header: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text('¿Qué es una competencia?',
+        child: Text(StringConst.COMPETENCY_DEFINITION,
             textAlign: TextAlign.start,
             style: textTheme.bodySmall?.copyWith(
               color: Constants.penBlue,
@@ -342,15 +342,15 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Aún no has iniciado sesión',
-            style: textTheme.bodyText1?.copyWith(
+        title: Text(StringConst.NOT_LOGIN,
+            style: textTheme.bodySmall?.copyWith(
               color: Constants.grey,
               height: 1.5,
               fontWeight: FontWeight.w800,
               fontSize: fontSize + 2,
             )),
         content: Text(
-            'Sólo los usuarios registrados pueden acceder al chat. ¿Deseas entrar como usuario registrado?',
+            StringConst.ASK_LOGIN,
             style: textTheme.bodySmall?.copyWith(
                 color: Constants.grey,
                 height: 1.5,
@@ -361,7 +361,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
               onPressed: () => Navigator.of(context).pop((false)),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Cancelar',
+                child: Text(StringConst.CANCEL,
                     style: textTheme.bodySmall?.copyWith(
                         color: AppColors.white,
                         height: 1.5,
@@ -375,7 +375,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Entrar',
+                child: Text(StringConst.ENTER,
                     style: textTheme.bodySmall?.copyWith(
                         color: AppColors.white,
                         height: 1.5,

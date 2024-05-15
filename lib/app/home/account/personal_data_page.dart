@@ -13,6 +13,7 @@ import 'package:enreda_app/app/home/models/interest.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_city.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_country.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_education.dart';
@@ -101,6 +102,9 @@ class _PersonalDataState extends State<PersonalData> {
    context.dependOnInheritedWidgetOfExactType();
   }
 
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -276,6 +280,7 @@ class _PersonalDataState extends State<PersonalData> {
   }
 
   Widget _buildMainDataContainer(BuildContext context, UserEnreda userEnreda) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
     return RoundedContainer(
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
        const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
@@ -287,7 +292,18 @@ class _PersonalDataState extends State<PersonalData> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomTextMediumBold(text: StringConst.PERSONAL_DATA),
+            isSmallScreen ? InkWell(
+                onTap: () {
+                  setStateIfMounted(() {
+                    WebHome.controller.selectIndex(0);});
+                },
+                child: Row(
+                  children: [
+                    Image.asset(ImagePath.ARROW_B, height: 30),
+                    SpaceW12(),
+                    CustomTextMediumBold(text: StringConst.PERSONAL_DATA),
+                  ],
+                )) : CustomTextMediumBold(text: StringConst.PERSONAL_DATA),
             Container(
               margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble),
               padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble),
@@ -617,7 +633,7 @@ class _PersonalDataState extends State<PersonalData> {
                         countryFilter: const ['ES', 'PE', 'GT'],
                         showFlagDialog: true,
                       ),
-                      focusColor: AppColors.turquoise,
+                      focusColor: AppColors.primary400,
                       labelStyle: textTheme.bodySmall?.copyWith(
                         height: 1.5,
                         color: AppColors.greyDark,

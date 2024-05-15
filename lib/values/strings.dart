@@ -56,6 +56,21 @@ class StringConst {
   static const String COMPETENCY_SELECT_OPC = 'Debe seleccionar al menos una opción:';
   static const String COMPETENCY_CONTACT_SHARE = '¿Apruebas compartir sus datos de contacto?';
   static const String COMPETENCY_CERTIFICATION_RESULT = 'Apto o No Apto.';
+  static const String COMPETENCY_CERTIFICATION_TITLE = 'Certificación de competencias';
+  static const String COMPETENCY_INFORMATION = 'Ingrese los datos de quien certificará su competencia:';
+  static const String COMPETENCY_SEND_REQUEST = 'Enviar solicitud';
+  static const String COMPETENCY_REQUEST_TITLE = 'Solicitud de certificación de competencia: ';
+  static const String COMPETENCY_REQUEST_DESCRIPTION = 'Se ha enviado con éxito el correo de solicitud a su certificador(a).';
+  static const String COMPETENCY_REQUEST_ERROR = 'Error al enviar solicitud, intenta de nuevo.';
+  static const String COMPETENCY_DEFINITION = '¿Qué es una competencia?';
+  static const String COMPETENCY_LEVELS = 'Niveles de cada competencia';
+  static const String COMPETENCY_NOT_OBTAINED = 'No obtenida';
+  static const String COMPETENCY_IDENTIFIED = 'Identificada';
+  static const String COMPETENCY_EVALUATED = 'Evaluada';
+  static const String COMPETENCY_CERTIFIED = 'Certificada';
+  static const String COMPETENCY_CHAT = 'A través del chat';
+  static const String COMPETENCY_MICRO_TESTS = 'A través de los microtests';
+  static const String COMPETENCY_REFERENCES = 'Con referencias externas';
 
   //Search Section
   static const String SEARCH = "Busca por área";
@@ -227,6 +242,7 @@ class StringConst {
   static const String INITIAL_FORM = "Ficha de ingreso";
   static const String INITIAL_FORM_DATA = "Datos del formulario inicial";
   static const String RESOURCES_JOINED = "Te has inscrito en los siguientes recursos:";
+  static const String CONTROL_PANEL = "Panel de Control";
 
   //Footer Section
   static const String LETS_TALK = "¡Te escuchamos!";
@@ -422,6 +438,8 @@ class StringConst {
   static const String FORM_ERROR= "Error al crea la cuenta";
   static const String FORM_SELECT= "Seleccionar";
   static const String FORM_SELECT_AT_LEAST_ONE = 'Debes seleccionar al menos un interés';
+  static const String NOT_LOGIN = 'Aún no has iniciado sesión';
+  static const String ASK_LOGIN = 'Sólo los usuarios registrados pueden acceder al chat. ¿Deseas entrar como usuario registrado?';
 
   static const List<String> RESOURCE_TYPES = [
     'Oferta de empleo',
@@ -558,6 +576,9 @@ class StringConst {
   static const String BRONZE_STAR = 'Medalla de bronce';
   static const String SILVER_STAR = 'Medalla de plata';
   static const String GOLD_STAR = 'Medalla de oro';
+  static const String DOWNLOAD = "Descárgatelo";
+  static const String CONGRATS = '¡Felicidades!';
+  static const String SUCCESS = '¡Has conseguido tu certificado!';
 
   //Training Pills
   static const String PILL_TRAVEL_BEGINS = 'Comienza el viaje';

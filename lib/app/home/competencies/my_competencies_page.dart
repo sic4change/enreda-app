@@ -5,6 +5,7 @@ import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
@@ -30,6 +31,10 @@ class MyCompetenciesPage extends StatefulWidget {
 
 class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
 
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -43,10 +48,8 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
-    final textTheme = Theme
-        .of(context)
-        .textTheme;
-
+    final textTheme = Theme.of(context).textTheme;
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
     return RoundedContainer(
       height: MediaQuery.of(context).size.height,
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
@@ -62,7 +65,19 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CustomTextMediumBold(text: StringConst.MY_COMPETENCIES),
+                  isSmallScreen ? InkWell(
+                    onTap: () {
+                      setStateIfMounted(() {
+                        WebHome.controller.selectIndex(0);});
+                    },
+                    child: Row(
+                      children: [
+                        Image.asset(ImagePath.ARROW_B, height: 30),
+                        SpaceW12(),
+                        CustomTextMediumBold(text: StringConst.MY_COMPETENCIES),
+                      ],
+                    ),
+                  ) : CustomTextMediumBold(text: StringConst.MY_COMPETENCIES),
                   SpaceW8(),
                   Container(
                     width: 34,

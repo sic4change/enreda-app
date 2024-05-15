@@ -137,7 +137,7 @@ class _EmailSignInFormChangeNotifierState
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5.0),
           borderSide: BorderSide(
-            color: AppColors.turquoise,
+            color: AppColors.primary400,
           ),
         ),
         border: OutlineInputBorder(),

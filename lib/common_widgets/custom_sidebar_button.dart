@@ -61,7 +61,7 @@ class CustomSideBarButton extends StatelessWidget {
                 );
               }
               return BorderSide(
-                color: AppColors.turquoiseUltraLight, // Default color
+                color: AppColors.primary020, // Default color
                 width: 1.0,
               );
             },

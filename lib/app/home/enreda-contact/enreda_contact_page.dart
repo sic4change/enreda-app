@@ -5,6 +5,7 @@ import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/card_button_contact.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/custom_text_form_field_title.dart';
@@ -20,6 +21,7 @@ import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +36,10 @@ class EnredaContactPage extends StatefulWidget {
 class _EnredaContactPageState extends State<EnredaContactPage> {
   String? _assignedContactId;
   String? _assignedSocialEntity;
+
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,18 +132,35 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
   }
 
   Widget _buildContent(BuildContext context, UserEnreda user, SocialEntity socialEntity, String cityName, String countryName) {
-    final textTheme = Theme.of(context).textTheme;
     return Container(
       width: double.infinity,
       height: double.infinity,
       alignment: Alignment.center,
       child: SingleChildScrollView(
         child: MainContainer(
-          padding: const EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble * 2),
+          padding: Responsive.isMobile(context) ?
+            EdgeInsets.symmetric(vertical: 20, horizontal: 10 ) :
+            const EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble * 2),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: Responsive.isMobile(context) ? MainAxisAlignment.start
+                : MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Responsive.isMobile(context) ? InkWell(
+                onTap: () {
+                  setStateIfMounted(() {
+                    WebHome.controller.selectIndex(0);});
+                },
+                child: Row(
+                  children: [
+                    SizedBox(width: 10,),
+                    Image.asset(ImagePath.ARROW_B, height: 30),
+                    SpaceW12(),
+                    CustomTextMediumBold(text: StringConst.CONTACT),
+                  ],
+                ),
+              ) : Container(),
+              Responsive.isMobile(context) ? SpaceH12() : Container(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -250,7 +273,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: AppColors.turquoiseUltraLight,
+                      color: AppColors.primary020,
                     )
                 ),
                 child: PrecacheAvatarCard(

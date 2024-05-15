@@ -2,6 +2,7 @@ import 'package:enreda_app/app/home/documentation/pdf_preview.dart';
 import 'package:enreda_app/app/home/models/personalDocument.dart';
 import 'package:enreda_app/app/home/models/personalDocumentType.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/services/database.dart';
@@ -32,11 +33,15 @@ class ParticipantDocumentationPage extends StatefulWidget {
 class _ParticipantDocumentationPageState extends State<ParticipantDocumentationPage> {
   List<PersonalDocument> _userDocuments = [];
 
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
+
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
     late int documentsCount = 0;
-
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
     return RoundedContainer(
       height: MediaQuery.of(context).size.height,
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
@@ -46,7 +51,24 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
       EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       child: Stack(
         children: [
-          CustomTextMediumBold(text: StringConst.DOCUMENTATION),
+          isSmallScreen ? InkWell(
+            onTap: () {
+              setStateIfMounted(() {
+                WebHome.controller.selectIndex(0);});
+            },
+            child: Row(
+              children: [
+                Image.asset(ImagePath.ARROW_B, height: 30),
+                SpaceW12(),
+                CustomTextMediumBold(text: StringConst.DOCUMENTATION),
+              ],
+            ),
+          ) : Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CustomTextMediumBold(text: StringConst.DOCUMENTATION),
+            ],
+          ),
           StreamBuilder<UserEnreda>(
               stream: database.userEnredaStreamByUserId(widget.participantUser.userId),
               builder: (context, snapshot) {

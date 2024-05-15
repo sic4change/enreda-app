@@ -1,9 +1,11 @@
 import 'package:enreda_app/app/home/resources/pages/favorite_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/my_enrolled_resources_page.dart';
 import 'package:enreda_app/app/home/resources/resource_detail/resource_detail_page.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/custom_stepper_button.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
+import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
@@ -21,6 +23,10 @@ class MyResourcesPage extends StatefulWidget {
 
 class _MyResourcesPageState extends State<MyResourcesPage> {
   var bodyWidget = [];
+
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
 
   @override
   void initState() {
@@ -58,6 +64,13 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       InkWell(
+                          onTap: () {
+                            setStateIfMounted(() {
+                              WebHome.controller.selectIndex(0);});
+                          },
+                          child: Image.asset(ImagePath.ARROW_B, height: 30)),
+                      SpaceW12(),
+                      InkWell(
                           onTap: () => {
                             setState(() {
                               MyResourcesPage.selectedIndex.value = 1;
@@ -71,7 +84,7 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                 ),
                 selectedIndex == 1 || selectedIndex == 2 ?
                 Positioned(
-                  top: 50,
+                  top: 60,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,9 +97,9 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                           })
                         },
                         child: CustomStepperButton(
-                          child: CustomTextBold(title: StringConst.ENROLLED_RESOURCES, color: AppColors.turquoise,),
+                          child: CustomTextBold(title: StringConst.ENROLLED_RESOURCES, color: AppColors.primary400,),
                           icon: SizedBox(width: 21, child: Image.asset(ImagePath.ICON_RESOURCES_ENROLLED)),
-                          color: MyResourcesPage.selectedIndex.value == 1 ? AppColors.turquoiseSuperLight : AppColors.altWhite,
+                          color: MyResourcesPage.selectedIndex.value == 1 ? AppColors.primary010 : AppColors.altWhite,
                         ),
                       ),
                       SizedBox(width: 10,),
@@ -97,9 +110,9 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                           })
                         },
                         child: CustomStepperButton(
-                          child: CustomTextBold(title: StringConst.FAVORITES_RESOURCES, color: AppColors.turquoise,),
+                          child: CustomTextBold(title: StringConst.FAVORITES_RESOURCES, color: AppColors.primary400,),
                           icon: SizedBox(width: 21, child: Icon(Icons.favorite, color: AppColors.red,)),
-                          color: MyResourcesPage.selectedIndex.value == 2 ? AppColors.turquoiseSuperLight : AppColors.altWhite,
+                          color: MyResourcesPage.selectedIndex.value == 2 ? AppColors.primary010 : AppColors.altWhite,
                         ),
                       ),
                     ],

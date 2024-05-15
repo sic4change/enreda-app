@@ -6,6 +6,7 @@ import 'package:enreda_app/app/home/models/gamificationFlags.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/home/web_home_scafold.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
@@ -46,6 +47,10 @@ class _GamificationState extends State<GamificationPage> {
   late TextTheme textTheme;
   bool _allTasksDone = false;
   String userFullName = '';
+
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,11 +159,24 @@ class _GamificationState extends State<GamificationPage> {
   }
 
   Widget _gamificationMobile(){
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
     return SingleChildScrollView(
       controller: ScrollController(),
       child: Column(
         children: [
-          Row(
+          isSmallScreen ? InkWell(
+            onTap: () {
+              setStateIfMounted(() {
+                WebHome.controller.selectIndex(0);});
+            },
+            child: Row(
+              children: [
+                Image.asset(ImagePath.ARROW_B, height: 30),
+                SpaceW12(),
+                CustomTextMediumBold(text: StringConst.GAMIFICATION),
+              ],
+            ),
+          ) : Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               CustomTextMediumBold(text: StringConst.GAMIFICATION),
@@ -601,7 +619,7 @@ class _GamificationState extends State<GamificationPage> {
           SpaceH24(),
 
           EnredaButton(
-              buttonTitle: "Descárgatelo",
+              buttonTitle: StringConst.DOWNLOAD,
               width: 150,
               height: 35,
               borderRadius:
@@ -642,9 +660,8 @@ class _GamificationState extends State<GamificationPage> {
             children: [
               _getCertificateImage(),
               SpaceH20(),
-
               EnredaButton(
-                  buttonTitle: "Descárgatelo",
+                  buttonTitle: StringConst.DOWNLOAD,
                   width: width*0.85,
                   height: 70,
                   borderRadius:
@@ -682,7 +699,7 @@ class _GamificationState extends State<GamificationPage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text(
-              '¡Felicidades!',
+              StringConst.CONGRATS,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -691,7 +708,7 @@ class _GamificationState extends State<GamificationPage> {
             ),
 
             Text(
-              '¡Has conseguido tu certificado!',
+              StringConst.SUCCESS,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w400,

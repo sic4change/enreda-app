@@ -13,6 +13,7 @@ class ImagePath {
   static const String LOGO_MDPI = "$imageDir/enreda-mdpi.png";
   static const String LOGO_IC = "$imageDir/ic_enreda.png";
   static const String LOGO_FUNDAULA = '$imageDir/fundaula-logo.png';
+  static const String LOGO_ENREDA = '$imageDir/logo-enreda.png';
 
   // Stores
   static const String APP_STORE_BUTTON = "$imageDir/app_store_900x503.png";
@@ -29,6 +30,7 @@ class ImagePath {
   static const String LOGO_ALONE = '$imageDir/enreda-logo-alone.png';
   static const String LOGO_TEXT = '$imageDir/enreda-logo-text.png';
   static const String ARROW = '$imageDir/flecha.png';
+  static const String ARROW_B = '$imageDir/flecha-back.png';
   static const String USER_DEFAULT = '$imageDir/user_default.jpg';
   static const String IMAGE_DEFAULT = '$imageDir/placeholder-image.png';
 
@@ -76,7 +78,7 @@ class ImagePath {
   static const String ACCESS_PHOTO = "$imageDir/access-photo.png";
   static const String ACCESS_VECTOR = "$imageDir/vector-access.png";
   static const String LOGO_ENREDA_LIGHT = "$imageDir/logo-enreda-light.png";
-  static const String COMPETENCIES = "$imageDir/ilustracion-competencias.png";
+  static const String COMPETENCIES_ILLUSTRATION = "$imageDir/ilustracion-competencias.png";
   static const String FAVORITES_ILLUSTRATION = '$imageDir/favorites-illustration.png';
   static const String CLIP_CV = '$imageDir/clip-cv.png';
   static const String CHICA_LATERAL = '$imageDir/chica-lateral.png';
@@ -169,6 +171,12 @@ class ImagePath {
   static const String PARTICIPANT_DOCUMENTATION_ICON = '$imageDir/participant_documentation_icon.png';
   static const String CONTACT_ICON = '$imageDir/contacto-enreda.png';
   static const String WHATSAPP_ICON = '$imageDir/logos_whatsapp-icon.png';
+  static const String MY_CV = '$imageDir/my-cv.png';
+  static const String MY_RESOURCES = '$imageDir/my-resources.png';
+  static const String RESOURCES = '$imageDir/resources.png';
+  static const String MY_COMPETENCIES = '$imageDir/my-competencies.png';
+  static const String COMPETENCIES = '$imageDir/competencies.png';
+  static const String MY_DOCUMENTS = '$imageDir/my-documents.png';
 
   //Competencies Categories
   static const String COMPETENCIES_CATEGORIES_1 = '$imageDir/competencies-categories-1.png';

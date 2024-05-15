@@ -185,7 +185,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: AppColors.turquoiseUltraLight,
+                      color: AppColors.primary020,
                     )
                 ),
                 child: ClipRRect(
@@ -215,7 +215,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: AppColors.turquoiseUltraLight,
+                      color: AppColors.primary020,
                     )
                 ),
                 child: ClipRRect(

@@ -12,6 +12,7 @@ class StringConst {
   static const String WHO = "Nosotros";
   static const String HANDS = "De la mano de...";
   static const String CONTACT = "Contacto";
+  static const String ENREDA_CONTACT = "Contacto Enreda";
 
   static const String ACCESS = "Acceder";
   static const String DEV_EMAIL = "escuchamos@enredas.org";
@@ -543,6 +544,7 @@ class StringConst {
 
   // Profile
   static const String MY_PROFILE = 'Mi perfil';
+  static const String MY_ACCOUNT = 'Mi cuenta';
   static const String MY_CV = "Mi Currículum";
   static const String PERSONAL_DATA = 'Datos personales';
   static const String ABOUT_ME = "Un poco más sobre mí...";

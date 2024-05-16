@@ -134,7 +134,7 @@ class _WebHomeState extends State<WebHome> {
         });
   }
 
-  @override
+  /*@override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
@@ -185,9 +185,47 @@ class _WebHomeState extends State<WebHome> {
           }
           return CircularProgressIndicator();
         });
+  }*/
+  @override
+  Widget build(BuildContext context) {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    final database = Provider.of<Database>(context, listen: false);
+
+    return StreamBuilder<User?>(
+        stream: Provider.of<AuthBase>(context).authStateChanges(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return AccessPage();
+          if (snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.active) {
+            return StreamBuilder<UserEnreda>(
+              stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  UserEnreda _userEnreda;
+                  _userEnreda = snapshot.data!;
+                  if (_userEnreda.role != 'Desempleado') {
+                    Future.delayed(Duration.zero, () {
+                      _signOut(context);
+                      adminSignOut(context);
+                    });
+                    return Container();
+                  }
+                  var _photo = (_userEnreda.profilePic?.src == null || _userEnreda.profilePic?.src == ""
+                      ? "" : _userEnreda.profilePic?.src)!;
+                  var userName = '${_userEnreda.firstName ?? ""} ${_userEnreda.lastName ?? ""}';
+                  return _buildContent(context, _userEnreda, _photo, userName);
+                }
+                else {
+                  return Container();
+                }
+              },
+            );
+          }
+          return CircularProgressIndicator();
+        });
   }
 
-  Widget _buildContent(BuildContext context, UserEnreda user, String profilePic, String userName, SocialEntity socialEntity){
+  Widget _buildContent(BuildContext context, UserEnreda user, String profilePic, String userName){
     final auth = Provider.of<AuthBase>(context, listen: false);
     bool hasEntity = user.assignedEntityId == null || user.assignedEntityId == "" ? false : true;
     return ValueListenableBuilder<int>(
@@ -366,8 +404,8 @@ class _WebHomeState extends State<WebHome> {
                               switch(WebHome.controller.selectedIndex){
                                 case 0:
                                   return !isSmallScreen ? ControlPanelPage(user: user,) : hasEntity ?
-                                  ControlPanelMobileInterventionPage(user: user, socialEntity: socialEntity) :
-                                  ControlPanelMobileNoInterventionPage(user: user, socialEntity: socialEntity);
+                                  ControlPanelMobileInterventionPage(user: user) :
+                                  ControlPanelMobileNoInterventionPage(user: user);
                                 case 1:
                                   return MyCurriculumPage();
                                 case 2:
@@ -395,7 +433,7 @@ class _WebHomeState extends State<WebHome> {
                                 case 9:
                                     return ParticipantDocumentationPage(participantUser: user);
                                 default:
-                                  return ControlPanelPage(user: user,);
+                                  return ResourcesPage();
                               }
                             },
                           ),

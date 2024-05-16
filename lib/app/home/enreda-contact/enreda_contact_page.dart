@@ -8,7 +8,6 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/card_button_contact.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
-import 'package:enreda_app/common_widgets/custom_text_form_field_title.dart';
 import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';

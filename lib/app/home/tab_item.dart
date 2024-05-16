@@ -14,7 +14,7 @@ class TabItemData {
 
   static Map<TabItem, TabItemData> allTabs = {
     TabItem.resources: TabItemData(title: StringConst.RESOURCES, icon: CustomIcons.recursos),
-    TabItem.competencies: TabItemData(title: StringConst.COMPETENCIES, icon: CustomIcons.comp),
+    TabItem.competencies: TabItemData(title: StringConst.COMPETENCIES, icon: CustomIcons.icon_competencies),
     TabItem.chat: TabItemData(title: 'Chat', icon: CustomIcons.chat),
     TabItem.account: TabItemData(title: 'Cuenta', icon: CustomIcons.cuenta)
   };

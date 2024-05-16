@@ -13,7 +13,6 @@ import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
-import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -154,19 +153,19 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
             ],
           ),
         ),
-        // actions: <Widget>[
-        //   const SizedBox(width: 15),
-        //   SizedBox(
-        //     width: 35,
-        //     child: InkWell(
-        //       onTap: () => _confirmSignOut(context),
-        //       child: Image.asset(
-        //         ImagePath.LOGOUT,
-        //         height: Sizes.ICON_SIZE_30,
-        //       ),),
-        //   ),
-        //   const SizedBox(width: 10,)
-        // ],
+        actions: <Widget>[
+          const SizedBox(width: 15),
+          SizedBox(
+            width: 35,
+            child: InkWell(
+              onTap: () => _confirmSignOut(context),
+              child: Image.asset(
+                ImagePath.LOGOUT,
+                height: Sizes.ICON_SIZE_30,
+              ),),
+          ),
+          const SizedBox(width: 20,)
+        ],
       ),
       body: CupertinoTabScaffold(
         controller: CupertinoScaffold.controller,
@@ -181,6 +180,7 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
             height: TrainingPillsListTileMobile.isFullScreen.value == true ? 0 : 70,
             onTap: (index) {
               CupertinoScaffold.controller.index = index;
+              WebHome.controller.selectIndex(0);
               if(index == 0){
                 setState(() {
                   ResourcesPage.selectedIndex.value = 0;

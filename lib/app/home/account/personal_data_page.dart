@@ -337,15 +337,16 @@ class _PersonalDataState extends State<PersonalData> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 25),
-              child: _buildMyParameters(userEnreda),
+              child: _buildMyParameters(context, userEnreda),
             ),
+            Responsive.isMobile(context) ? SpaceH50() : Container(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMyParameters(UserEnreda userEnreda) {
+  Widget _buildMyParameters(BuildContext context, UserEnreda userEnreda) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
         padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble, horizontal: Sizes.kDefaultPaddingDouble),
@@ -390,12 +391,12 @@ class _PersonalDataState extends State<PersonalData> {
               text: StringConst.SEND_FEEDBACK,
               onTap: () => _displayReportDialog(context),
             ),
-            _buildMyProfileRow(
-              text: StringConst.SIGN_OUT,
-              onTap: () {
-                _confirmSignOut(context);
-              },
-            ),
+            // _buildMyProfileRow(
+            //   text: StringConst.SIGN_OUT,
+            //   onTap: () {
+            //     _confirmSignOut(context);
+            //   },
+            // ),
             _buildMyProfileRow(
               text: StringConst.DELETE_ACCOUNT,
               textStyle: textTheme.bodySmall?.copyWith(
@@ -406,6 +407,8 @@ class _PersonalDataState extends State<PersonalData> {
             ),
           ],
         ));
+
+
   }
 
   Widget _buildMyProfileRow(
@@ -866,9 +869,7 @@ class _PersonalDataState extends State<PersonalData> {
                   child: Text(StringConst.CANCEL),
                 ),
                 onPressed: () {
-                  setState(() {
                     Navigator.pop(context);
-                  });
                 },
               ),
               TextButton(
@@ -909,17 +910,16 @@ class _PersonalDataState extends State<PersonalData> {
         });
   }
 
-}
-
-Future<void> _confirmSignOut(BuildContext context) async {
-  final didRequestSignOut = await showAlertDialog(context,
-      title: StringConst.SIGN_OUT,
-      content: StringConst.SIGN_OUT_DESCRIPTION,
-      cancelActionText: StringConst.CANCEL,
-      defaultActionText: StringConst.CLOSE);
-  if (didRequestSignOut == true) {
-    final auth = Provider.of<AuthBase>(context, listen: false);
-    await auth.signOut();
+  Future<void> _confirmSignOut(BuildContext context) async {
+    final didRequestSignOut = await showAlertDialog(context,
+        title: StringConst.SIGN_OUT,
+        content: StringConst.SIGN_OUT_DESCRIPTION,
+        cancelActionText: StringConst.CANCEL,
+        defaultActionText: StringConst.CLOSE);
+    if (didRequestSignOut == true) {
+      final auth = Provider.of<AuthBase>(context, listen: false);
+      await auth.signOut();
+    }
   }
 }
 

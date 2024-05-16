@@ -1,7 +1,6 @@
 import 'package:enreda_app/app/home/control_panel/gamification-item.dart';
 import 'package:enreda_app/app/home/control_panel/gamification-slider.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
-import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/card_button_contact.dart';
@@ -18,10 +17,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ControlPanelMobileNoInterventionPage extends StatefulWidget {
-  const ControlPanelMobileNoInterventionPage({super.key, required this.user, required this.socialEntity});
+  const ControlPanelMobileNoInterventionPage({super.key, required this.user});
 
   final UserEnreda? user;
-  final SocialEntity socialEntity;
 
   @override
   State<ControlPanelMobileNoInterventionPage> createState() => _ControlPanelMobileNoInterventionPageState();
@@ -141,97 +139,117 @@ class _ControlPanelMobileNoInterventionPageState extends State<ControlPanelMobil
                     SpaceW12(),
                     Expanded(
                         flex: 1,
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              WebHome.controller.selectIndex(8);
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary100,
-                              shape: BoxShape.rectangle,
-                              border: Border.all(color: AppColors.primary100.withOpacity(0.3), width: 1),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CustomTextBoldTitle(title: StringConst.CONTACT),
-                                  SpaceH4(),
-                                  Image.asset(ImagePath.LOGO_ENREDA, height: 70),
-                                  SpaceH8(),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      CardButtonContact(
-                                        //title: StringConst.EMAIL,
-                                        title: '',
-                                        icon: Icon(Icons.email_outlined, color: AppColors.turquoiseBlue, size: 20,),
-                                        width: 60,
-                                        onTap: () {
-                                          sendEmail(
-                                            toEmail: widget.socialEntity.email!,
-                                            subject: StringConst.SUBJECT,
-                                            body: StringConst.BODY,
-                                          ).catchError((error) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(content: Text('Hubo un error al enviar el correo: $error')),
-                                            );
-                                          });
-                                        },
-                                      ),
-                                      SpaceW4(),
-                                      Container(
-                                          height: 15,
-                                          child: VerticalDivider(color: AppColors.white,)),
-                                      SpaceW4(),
-                                      CardButtonContact(
-                                        //title: StringConst.CALL,
-                                        title: '',
-                                        width: 60,
-                                        icon: Icon(Icons.phone, color: AppColors.turquoiseBlue, size: 20),
-                                        onTap: () {
-                                          kIsWeb ? showCustomDialog(
-                                            context,
-                                            content: Container(
-                                                height: 100,
-                                                width: 200,
-                                                child: Center(child:
-                                                Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: [
-                                                      SpaceH12(),
-                                                      CustomTextBold(title:StringConst.CALL_NUMBER),
-                                                      SpaceH12(),
-                                                      widget.socialEntity.entityPhone!.isNotEmpty ? Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Icon(Icons.local_phone, color: AppColors.turquoiseBlue, size: 20),
-                                                          CustomTextBold(title: widget.socialEntity.entityPhone!, color: AppColors.turquoiseBlue,),
-                                                        ],) : Container(),
-                                                      SpaceH8(),
-                                                      widget.socialEntity.entityMobilePhone!.isNotEmpty ? Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Icon(Icons.phone_android, color: AppColors.turquoiseBlue, size: 20),
-                                                          CustomTextBold(title: widget.socialEntity.entityMobilePhone!, color: AppColors.turquoiseBlue,),
-                                                        ],) : Container(),
-                                                    ]
-                                                ))),
-                                          ) : widget.socialEntity.entityMobilePhone!.isNotEmpty ?
-                                          makePhoneCall(widget.socialEntity.entityMobilePhone!) : null;
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ]
-                            ),
+                        child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary100,
+                            shape: BoxShape.rectangle,
+                            border: Border.all(color: AppColors.primary100.withOpacity(0.3), width: 1),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CustomTextBoldTitle(title: StringConst.ENREDA_CONTACT),
+                                SpaceH4(),
+                                Image.asset(ImagePath.LOGO_ENREDA, height: 50),
+                                SpaceH4(),
+                                CustomTextSmall(text: 'Sede SIC4Change'),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CardButtonContact(
+                                      //title: StringConst.EMAIL,
+                                      title: '',
+                                      icon: Icon(Icons.email_outlined, color: AppColors.turquoiseBlue, size: 20,),
+                                      width: 60,
+                                      onTap: () {
+                                        sendEmail(
+                                          toEmail: 'hello@sic4change.org',
+                                          subject: StringConst.SUBJECT,
+                                          body: StringConst.BODY,
+                                        ).catchError((error) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('Hubo un error al enviar el correo: $error')),
+                                          );
+                                        });
+                                      },
+                                    ),
+                                    SpaceW4(),
+                                    Container(
+                                        height: 15,
+                                        child: VerticalDivider(color: AppColors.white,)),
+                                    SpaceW4(),
+                                    CardButtonContact(
+                                      //title: StringConst.CALL,
+                                      title: '',
+                                      width: 60,
+                                      icon: Icon(Icons.phone, color: AppColors.turquoiseBlue, size: 20),
+                                      onTap: () {
+                                        kIsWeb ? showCustomDialog(
+                                          context,
+                                          content: Container(
+                                              height: 100,
+                                              width: 200,
+                                              child: Center(child:
+                                              Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    SpaceH12(),
+                                                    CustomTextBold(title:StringConst.CALL_NUMBER),
+                                                    SpaceH12(),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Icon(Icons.local_phone, color: AppColors.turquoiseBlue, size: 20),
+                                                      ],),
+                                                    SpaceH8(),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Icon(Icons.phone_android, color: AppColors.turquoiseBlue, size: 20),
+                                                      ],),
+                                                  ]
+                                              ))),
+                                        ) : makePhoneCall('123 123 112');
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ]
                           ),
                         )),
+                    // Expanded(
+                    //     flex: 1,
+                    //     child: InkWell(
+                    //       onTap: () {
+                    //         setState(() {
+                    //           WebHome.controller.selectIndex(8);
+                    //         });
+                    //       },
+                    //       child: Container(
+                    //         padding: const EdgeInsets.all(8.0),
+                    //         decoration: BoxDecoration(
+                    //           color: AppColors.primary100,
+                    //           shape: BoxShape.rectangle,
+                    //           border: Border.all(color: AppColors.primary100.withOpacity(0.3), width: 1),
+                    //           borderRadius: BorderRadius.circular(8.0),
+                    //         ),
+                    //         child: Column(
+                    //             crossAxisAlignment: CrossAxisAlignment.center,
+                    //             mainAxisAlignment: MainAxisAlignment.center,
+                    //             children: [
+                    //               CustomTextBoldTitle(title: StringConst.CONTACT),
+                    //               SpaceH4(),
+                    //               Image.asset(ImagePath.LOGO_ENREDA, height: 70),
+                    //               SpaceH8(),
+                    //
+                    //             ]
+                    //         ),
+                    //       ),
+                    //     )),
                   ],
               ),
             ),

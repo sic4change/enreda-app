@@ -63,13 +63,13 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InkWell(
+                      Responsive.isMobile(context) ? InkWell(
                           onTap: () {
                             setStateIfMounted(() {
                               WebHome.controller.selectIndex(0);});
                           },
-                          child: Image.asset(ImagePath.ARROW_B, height: 30)),
-                      SpaceW12(),
+                          child: Image.asset(ImagePath.ARROW_B, height: 30)) : Container(),
+                      Responsive.isMobile(context) ?SpaceW12() : Container(),
                       InkWell(
                           onTap: () => {
                             setState(() {

@@ -2,6 +2,7 @@ import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/empty_content.dart';
 import 'package:enreda_app/utils/responsive.dart';
+import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(BuildContext context, T item);
@@ -40,7 +41,7 @@ class CompetenciesItemBuilder<T> extends StatelessWidget {
       }
     } else if (snapshot.hasError) {
       return EmptyContent(
-          title: 'Algo fue mal', message: 'No se pudo cargar los datos');
+          title: StringConst.SOMETHING_WRONG, message: StringConst.CANNOT_LOAD_DATA);
     }
     return Center(child: CircularProgressIndicator());
   }

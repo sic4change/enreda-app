@@ -17,6 +17,7 @@ import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/delete_button.dart';
 import 'package:enreda_app/common_widgets/edit_button.dart';
 import 'package:enreda_app/common_widgets/main_container.dart';
@@ -93,6 +94,10 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   BuildContext? myContext;
   String _userId = '';
   String _photo = '';
+
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -178,8 +183,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
                 colors: [
-                  AppColors.turquoise.withOpacity(0.15),
-                  AppColors.turquoiseUltraLight.withOpacity(0.13)
+                  AppColors.primary400.withOpacity(0.15),
+                  AppColors.primary020.withOpacity(0.13)
                 ],
               )
           ),
@@ -308,8 +313,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                           colors: [
-                            AppColors.turquoise.withOpacity(0.15),
-                            AppColors.turquoiseUltraLight.withOpacity(0.13)
+                            AppColors.primary400.withOpacity(0.15),
+                            AppColors.primary020.withOpacity(0.13)
                           ],
                         )
                     ),
@@ -391,7 +396,20 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SpaceH12(),
+                  Responsive.isMobile(context) ? InkWell(
+                    onTap: () {
+                      setStateIfMounted(() {
+                        WebHome.controller.selectIndex(0);});
+                    },
+                    child: Row(
+                      children: [
+                        Image.asset(ImagePath.ARROW_B, height: 30),
+                        SpaceW12(),
+                        CustomTextMediumBold(text: StringConst.MY_CV),
+                      ],
+                    ),
+                  ) : Container(),
+                  Responsive.isMobile(context) ? Container() : SpaceH12(),
                   _buildMyProfilePhoto(user),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -468,8 +486,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     colors: [
-                      AppColors.turquoise.withOpacity(0.15),
-                      AppColors.turquoiseUltraLight.withOpacity(0.13)
+                      AppColors.primary400.withOpacity(0.15),
+                      AppColors.primary020.withOpacity(0.13)
                     ],
                   )
               ),

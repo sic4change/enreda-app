@@ -114,6 +114,29 @@ class CustomTextBold extends StatelessWidget {
   }
 }
 
+class CustomTextNormalSmall extends StatelessWidget {
+
+  CustomTextNormalSmall({ required this.title, this.color = AppColors.greyTxtAlt });
+  final String title;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    double fontSize = responsiveSize(context, 12, 15, md: 14);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Text(
+      title,
+      style: textTheme.bodySmall?.copyWith(
+          height: 1.5,
+          color: color,
+          fontSize: fontSize
+      ),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
+
 class CustomTextSmall extends StatelessWidget {
 
   CustomTextSmall({ required this.text });
@@ -189,8 +212,9 @@ class CustomTextBoldCenter extends StatelessWidget {
 
 class CustomTextBoldTitle extends StatelessWidget {
 
-  const CustomTextBoldTitle({super.key,  required this.title });
+  const CustomTextBoldTitle({super.key,  required this.title, this.color = AppColors.turquoiseBlue });
   final String title;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +225,7 @@ class CustomTextBoldTitle extends StatelessWidget {
       child: Text(
         title,
         style: textTheme.bodyLarge?.copyWith(
-          color: AppColors.turquoiseBlue,
+          color: color,
           height: 1.5,
           //fontWeight: FontWeight.w600,
           fontSize: fontSize,
@@ -215,8 +239,9 @@ class CustomTextBoldTitle extends StatelessWidget {
 
 class CustomTextMediumBold extends StatelessWidget {
 
-  const CustomTextMediumBold({super.key,  required this.text });
+  const CustomTextMediumBold({super.key,  required this.text, this.color = AppColors.turquoiseBlue });
   final String text;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +250,7 @@ class CustomTextMediumBold extends StatelessWidget {
     return Text(
       text,
       style: textTheme.titleMedium?.copyWith(
-        color: AppColors.turquoiseBlue,
+        color: color,
         height: 1.5,
         fontSize: fontSize,
       ),

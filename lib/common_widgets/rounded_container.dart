@@ -9,7 +9,7 @@ class RoundedContainer extends StatelessWidget {
     this.margin = const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble, right: Sizes.kDefaultPaddingDouble, bottom: Sizes.kDefaultPaddingDouble),
     this.width,
     this.height,
-    this.borderColor = AppColors.turquoiseUltraLight,
+    this.borderColor = AppColors.primary020,
     this.color = AppColors.altWhite,
     this.borderWith = 1.0,
   });

@@ -1,23 +1,14 @@
-import 'package:enreda_app/app/home/competencies/competencies_item_builder.dart';
 import 'package:enreda_app/app/home/competencies/competencies_item_builder_horizontal.dart';
 import 'package:enreda_app/app/home/competencies/expanded_competency_tile.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
-import 'package:enreda_app/app/home/competencies/expandable_competency_tile.dart';
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
 import 'package:enreda_app/app/home/models/competencySubCategory.dart';
-import 'package:enreda_app/app/home/models/trainingPill.dart';
-import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
-import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
-import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class CompetenciesSubcategoriesPageMobile extends StatelessWidget {

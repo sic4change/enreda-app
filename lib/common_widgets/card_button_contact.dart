@@ -7,12 +7,14 @@ class CardButtonContact extends StatelessWidget {
   final String title;
   final Widget icon;
   final VoidCallback onTap;
+  final double width;
 
   CardButtonContact({
     Key? key,
     required this.title,
     required this.icon,
-    required this.onTap
+    required this.onTap,
+    this.width = 100,
   }) : super(key: key);
 
   @override
@@ -20,7 +22,7 @@ class CardButtonContact extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        width: 100,
+        width: width,
         padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 10),
         margin: EdgeInsets.only(bottom: 5, top: 5),
         decoration: BoxDecoration(

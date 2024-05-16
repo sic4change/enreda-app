@@ -62,7 +62,7 @@ class BoxItem extends StatelessWidget {
             Text(
               contact,
               textAlign: TextAlign.start,
-              style: textTheme.bodySmall?.copyWith(height: 1, fontWeight: FontWeight.w500, color: AppColors.turquoiseButton2),
+              style: textTheme.bodySmall?.copyWith(height: 1, fontWeight: FontWeight.w500, color: AppColors.primary500),
             ),
           ],
         ),

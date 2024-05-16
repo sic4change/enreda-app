@@ -63,7 +63,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Certificación de competencias',
+          StringConst.COMPETENCY_CERTIFICATION_TITLE,
           textAlign: TextAlign.left,
           style: textTheme.bodySmall?.copyWith(
             color: Constants.white,
@@ -83,7 +83,6 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
     );
   }
 
-
   Widget _buildContent(BuildContext context, Competency competency) {
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 15, 18, md: 16);
@@ -92,7 +91,8 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.6,
+            width: Responsive.isMobile(context) || Responsive.isTablet(context) ?
+            MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.6,
             margin: EdgeInsets.only(top: Responsive.isMobile(context) ? 10 : 80),
             decoration: BoxDecoration(
                 color: Constants.white,
@@ -116,7 +116,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                   CustomTextTitle(title: competency.name.toUpperCase()),
                   SpaceH12(),
                   Text(
-                    'Ingrese los datos de quien certificará su competencia:',
+                    StringConst.COMPETENCY_INFORMATION,
                     textAlign: TextAlign.center,
                     style: textTheme.bodyLarge?.copyWith(
                       color: Constants.grey,
@@ -128,7 +128,6 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                   _buildForm(context),
                   SpaceH12(),
                   Divider(),
-
                 ],
               ),
             )
@@ -166,11 +165,20 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
             children: [
               SizedBox(height: Constants.mainPadding / 2),
               CustomFlexRowColumn(
-                childLeft: customTextFormFieldName(context, _certifierName!, StringConst.FORM_NAME_CERTIFIER, StringConst.NAME_ERROR, _certifierNameSetState),
-                childRight: customTextFormFieldName(context, _certifierCompany!, StringConst.FORM_COMPANY_CERTIFIER, StringConst.FORM_COMPANY_ERROR, _certifierCompanySetState),
+                childLeft: customTextFormFieldName(context, _certifierName!,
+                    StringConst.FORM_NAME_CERTIFIER,
+                    StringConst.NAME_ERROR,
+                    _certifierNameSetState),
+                childRight: customTextFormFieldName(context, _certifierCompany!,
+                    StringConst.FORM_COMPANY_CERTIFIER,
+                    StringConst.FORM_COMPANY_ERROR,
+                    _certifierCompanySetState),
               ),
               CustomFlexRowColumn(
-                childLeft: customTextFormFieldName(context, _certifierPosition!, StringConst.FORM_POSITION_CERTIFIER, StringConst.FORM_COMPANY_ERROR, _certifierPositionSetState),
+                childLeft: customTextFormFieldName(context, _certifierPosition!,
+                    StringConst.FORM_POSITION_CERTIFIER,
+                    StringConst.FORM_COMPANY_ERROR,
+                    _certifierPositionSetState),
                 childRight: TextFormField(
                   decoration: InputDecoration(
                     labelText: StringConst.FORM_EMAIL_CERTIFIER,
@@ -197,7 +205,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                   ),
                   initialValue: _email,
                   validator: (value) => EmailValidator.validate(value!) ? null
-                      : "El email no es válido",
+                      : StringConst.EMAIL_ERROR,
                   onSaved: (value) => _email = value,
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) => setState(() => this._email = value),
@@ -250,7 +258,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                   ],
-                  style: textTheme.bodyText1?.copyWith(
+                  style: textTheme.bodySmall?.copyWith(
                     height: 1.5,
                     color: AppColors.greyDark,
                     fontWeight: FontWeight.w400,
@@ -262,7 +270,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                 padding: const EdgeInsets.all(30.0),
                 child: Center(child: CircularProgressIndicator()),
               ) : CustomButton(
-                text: 'Enviar solicitud',
+                text: StringConst.COMPETENCY_SEND_REQUEST,
                 color: AppColors.primaryColor,
                 onPressed: _submit,
               ),
@@ -325,16 +333,16 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
         setState(() => isLoading = false);
         showAlertDialog(
           context,
-          title: 'Solicitud de certificación de competencia: ${widget.competency.name}',
-          content: 'Se ha enviado con éxito el correo de solicitud a su certificador(a).',
-          defaultActionText: 'Aceptar',
+          title: StringConst.COMPETENCY_REQUEST_TITLE + '${widget.competency.name}',
+          content: StringConst.COMPETENCY_REQUEST_DESCRIPTION,
+          defaultActionText: StringConst.FORM_ACCEPT,
         ).then((value) => {
           Navigator.pop(context)
         },
         );
       } on FirebaseException catch (e) {
         showExceptionAlertDialog(context,
-            title: 'Error al enviar solicitud, intenta de nuevo.', exception: e).then((value) => Navigator.pop(context));
+            title: StringConst.COMPETENCY_REQUEST_ERROR, exception: e).then((value) => Navigator.pop(context));
       }
     }
   }

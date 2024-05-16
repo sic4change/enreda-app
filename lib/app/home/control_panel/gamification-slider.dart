@@ -30,8 +30,8 @@ class GamificationSlider extends StatelessWidget {
 
           return SliderTheme(
             data: SliderTheme.of(context).copyWith(
-              disabledActiveTrackColor: AppColors.turquoise,
-              disabledInactiveTrackColor: AppColors.turquoiseLight,
+              disabledActiveTrackColor: AppColors.primary400,
+              disabledInactiveTrackColor: AppColors.primary060,
               trackShape: RoundedRectSliderTrackShape(),
               trackHeight: height,
               disabledThumbColor: AppColors.yellowDark,

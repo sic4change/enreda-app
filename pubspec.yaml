@@ -214,6 +214,12 @@ flutter:
     - images/empty-resources.png
     - images/vector-access.png
     - images/logo-enreda-light.png
+    - images/my-cv.png
+    - images/my-resources.png
+    - images/resources.png
+    - images/my-competencies.png
+    - images/my-documents.png
+    - images/competencies.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

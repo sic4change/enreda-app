@@ -195,22 +195,22 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   colors: [
                     AppColors.white.withOpacity(0.1),
                     AppColors.greyViolet.withOpacity(0.1),
-                    AppColors.turquoiseAlt,
+                    AppColors.primary040,
                   ],
                 ),
               ),
               child: Column(
                 children: [
-                  SpaceH50(),
+                  Responsive.isMobile(context) ? SpaceH12() : SpaceH50(),
                   Text( StringConst.SEARCH, style: textTheme.titleSmall?.copyWith(
                     color: AppColors.greyAlt,
                     height: 1.5,
                     letterSpacing: 0.5,
                     fontWeight: FontWeight.w700,
-                    fontSize: 25,
+                    fontSize: Responsive.isMobile(context) ? 20 : 25,
                     //fontSize: fontSize,
                   ),),
-                  SpaceH20(),
+                  Responsive.isMobile(context) ? SpaceH8() : SpaceH20(),
                   Container(
                     alignment: Alignment.center,
                     padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 30) : EdgeInsets.symmetric(horizontal: 100.0),

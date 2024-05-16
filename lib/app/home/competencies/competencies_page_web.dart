@@ -121,7 +121,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '¿Qué es una competencia?',
+                    StringConst.COMPETENCY_DEFINITION,
                     style: textTheme.bodySmall?.copyWith(
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold,
@@ -138,7 +138,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                   SpaceH20(),
                   Center(
                       child: Image.asset(
-                    ImagePath.COMPETENCIES,
+                    ImagePath.COMPETENCIES_ILLUSTRATION,
                     width: 340.0,
                   )),
                 ],
@@ -161,7 +161,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
               child: Column(
                 children: [
                   Text(
-                    'Niveles de cada competencia',
+                    StringConst.COMPETENCY_LEVELS,
                     style: textTheme.bodySmall?.copyWith(
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold,
@@ -182,16 +182,16 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                             Expanded(
                               child: _buildBadgeInfo(
                                   context: context,
-                                  title: 'NO OBTENIDA',
+                                  title: StringConst.COMPETENCY_NOT_OBTAINED,
                                   badgeUrl: ImagePath.EMPTY_BADGE_SAMPLE,
                                   description: ''),
                             ),
                             Expanded(
                               child: _buildBadgeInfo(
                                   context: context,
-                                  title: 'IDENTIFICADA',
+                                  title: StringConst.COMPETENCY_IDENTIFIED,
                                   badgeUrl: ImagePath.IDENTIFIED_BADGE_SAMPLE,
-                                  description: 'A través del chat'),
+                                  description: StringConst.COMPETENCY_CHAT),
                             ),
                           ],
                         ),
@@ -201,16 +201,16 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                             Expanded(
                               child: _buildBadgeInfo(
                                   context: context,
-                                  title: 'EVALUADA',
+                                  title: StringConst.COMPETENCY_EVALUATED,
                                   badgeUrl: ImagePath.VALIDATED_BADGE_SAMPLE,
-                                  description: 'A través de los microtests'),
+                                  description: StringConst.COMPETENCY_MICRO_TESTS),
                             ),
                             Expanded(
                               child: _buildBadgeInfo(
                                   context: context,
-                                  title: 'CERTIFICADA',
+                                  title: StringConst.COMPETENCY_CERTIFIED,
                                   badgeUrl: ImagePath.CERTIFIED_BADGE_SAMPLE,
-                                  description: 'Con referencias externas'),
+                                  description: StringConst.COMPETENCY_REFERENCES),
                             ),
                           ],
                         ),
@@ -297,11 +297,10 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
 
   _showAlertNullUser(BuildContext context) async {
     final didRequestSignOut = await showAlertDialog(context,
-        title: 'Aún no has iniciado sesión',
-        content:
-            'Sólo los usuarios registrados pueden acceder al chat. ¿Deseas entrar como usuario registrado?',
-        cancelActionText: 'Cancelar',
-        defaultActionText: 'Entrar');
+        title: StringConst.NOT_LOGIN,
+        content: StringConst.ASK_LOGIN,
+        cancelActionText: StringConst.CANCEL,
+        defaultActionText: StringConst.ENTER);
     if (didRequestSignOut == true) {
       context.push(StringConst.PATH_LOGIN);
     }

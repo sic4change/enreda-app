@@ -1,5 +1,6 @@
 import 'package:enreda_app/app/anallytics/analytics.dart';
 import 'package:enreda_app/app/home/assistant/assistant_page_web.dart';
+import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/utils/const.dart';
@@ -38,13 +39,15 @@ class _HomePageState extends State<HomePage> {
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
           return LayoutBuilder(builder: (context, constraints) {
+            final isBigScreen = constraints.maxWidth >= 600;
             return !snapshot.hasData && !kIsWeb
                 ? OnboardingCarrusel()
                 : Stack(
                   children: [
-                    WebHome(showChatNotifier: showChatNotifier),
-                    if (snapshot.hasData) _buildChatFAB(context),
-                    if (snapshot.hasData) _buildChatContainer(),
+                    isBigScreen ? WebHome(showChatNotifier: showChatNotifier)
+                    : CupertinoScaffold(showChatNotifier: showChatNotifier),
+                    if (snapshot.hasData && isBigScreen) _buildChatFAB(context),
+                    if (snapshot.hasData && isBigScreen) _buildChatContainer(),
                   ],
                 );
           });

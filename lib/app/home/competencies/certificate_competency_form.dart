@@ -124,7 +124,8 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
     double fontSize = responsiveSize(context, 14, 18, md: 15);
     double fontSizeTitle = responsiveSize(context, 16, 25, md: 20);
     return Container(
-        width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.6,
+        width: Responsive.isMobile(context) || Responsive.isTablet(context) ?
+          MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.6,
         margin: EdgeInsets.only(top: 120),
         decoration: BoxDecoration(
             color: Constants.white,

@@ -2,10 +2,13 @@ import 'package:enreda_app/app/home/account/gamification_page.dart';
 import 'package:enreda_app/app/home/account/personal_data_page.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/competencies/my_competencies_page.dart';
+import 'package:enreda_app/app/home/control_panel/control_panel_mobile_intervention.dart';
+import 'package:enreda_app/app/home/control_panel/control_panel_mobile_no_intervention.dart';
 import 'package:enreda_app/app/home/control_panel/control_panel_page.dart';
 import 'package:enreda_app/app/home/curriculum/my_curriculum_page.dart';
 import 'package:enreda_app/app/home/documentation/documentation_page.dart';
 import 'package:enreda_app/app/home/enreda-contact/enreda_contact_page.dart';
+import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
 import 'package:enreda_app/app/home/side_bar_widget.dart';
@@ -68,6 +71,7 @@ class _WebHomeState extends State<WebHome> {
   late UserEnreda _userEnreda;
   String _userName = "";
   late TextTheme textTheme;
+  String? _assignedSocialEntity;
 
   @override
   void initState() {
@@ -130,6 +134,58 @@ class _WebHomeState extends State<WebHome> {
         });
   }
 
+  /*@override
+  Widget build(BuildContext context) {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    final database = Provider.of<Database>(context, listen: false);
+
+    return StreamBuilder<User?>(
+        stream: Provider.of<AuthBase>(context).authStateChanges(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return AccessPage();
+          if (snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.active) {
+            return StreamBuilder<UserEnreda>(
+              stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  UserEnreda _userEnreda;
+                  _userEnreda = snapshot.data!;
+                  if (_userEnreda.role != 'Desempleado') {
+                    Future.delayed(Duration.zero, () {
+                      _signOut(context);
+                      adminSignOut(context);
+                    });
+                    return Container();
+                  }
+                  var _photo = (_userEnreda.profilePic?.src == null || _userEnreda.profilePic?.src == ""
+                      ? "" : _userEnreda.profilePic?.src)!;
+                  var userName = '${_userEnreda.firstName ?? ""} ${_userEnreda.lastName ?? ""}';
+                  _assignedSocialEntity = _userEnreda.assignedEntityId;
+                  return StreamBuilder<SocialEntity>(
+                    stream: database.socialEntityStream(
+                        _assignedSocialEntity!),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) return Container();
+                      if (snapshot.hasData) {
+                        final socialEntity = snapshot.data!;
+                        return _buildContent(context, _userEnreda, _photo, userName, socialEntity);
+                      } else {
+                        return Center(
+                            child: CircularProgressIndicator());
+                      }
+                    },
+                  );
+                }
+                else {
+                  return Container();
+                }
+              },
+            );
+          }
+          return CircularProgressIndicator();
+        });
+  }*/
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
@@ -178,7 +234,7 @@ class _WebHomeState extends State<WebHome> {
           final isSmallScreen = MediaQuery.of(context).size.width < 600;
           return Scaffold(
             key: _key,
-            appBar: AppBar(
+            appBar: isSmallScreen ? null : AppBar(
               toolbarHeight: !isSmallScreen ? 100 : 80,
               elevation: 1.0,
               backgroundColor: Colors.white,
@@ -189,14 +245,8 @@ class _WebHomeState extends State<WebHome> {
                     height: 1,
                     color: AppColors.grey100),
               ),
-              leading: isSmallScreen ? IconButton(
-                onPressed: () {
-                  _key.currentState?.openDrawer();
-                },
-                icon: const Icon(Icons.menu),
-              ) : Container(),
               title: Transform(
-                transform:  Responsive.isMobile(context) ? Matrix4.translationValues(0.0, 0.0, 0.0) : Matrix4.translationValues(-35.0, 0.0, 0.0),
+                transform:  Matrix4.translationValues(20.0, 0.0, 0.0),
                 child: Row(
                   children: [
                     Padding(
@@ -295,7 +345,7 @@ class _WebHomeState extends State<WebHome> {
                     });
                   },
                 ) : Container(),
-                !isSmallScreen ? InkWell(
+                MediaQuery.of(context).size.width > 1000 ? InkWell(
                     onTap: () {
                       setState(() {
                         selectedIndexBodyWidget = 0;
@@ -326,7 +376,7 @@ class _WebHomeState extends State<WebHome> {
                 ),
               ],
             ),
-            drawer: SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,),
+            //drawer: isSmallScreen ? null : SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,),
             body: selectedIndexBodyWidget == 0 ? Container(
               width: MediaQuery.of(context).size.width,
               child: ConstrainedBox(
@@ -353,7 +403,9 @@ class _WebHomeState extends State<WebHome> {
                               }
                               switch(WebHome.controller.selectedIndex){
                                 case 0:
-                                  return ControlPanelPage(user: user,);
+                                  return !isSmallScreen ? ControlPanelPage(user: user,) : hasEntity ?
+                                  ControlPanelMobileInterventionPage(user: user) :
+                                  ControlPanelMobileNoInterventionPage(user: user);
                                 case 1:
                                   return MyCurriculumPage();
                                 case 2:
@@ -381,7 +433,7 @@ class _WebHomeState extends State<WebHome> {
                                 case 9:
                                     return ParticipantDocumentationPage(participantUser: user);
                                 default:
-                                  return ControlPanelPage(user: user,);
+                                  return ResourcesPage();
                               }
                             },
                           ),

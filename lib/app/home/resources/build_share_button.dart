@@ -4,6 +4,7 @@ import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
@@ -185,18 +186,19 @@ Widget buildShare(BuildContext context, Resource resource, Color color) {
     },
     child: Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Responsive.isMobile(context) ? Colors.transparent : Colors.white,
         borderRadius: BorderRadius.circular(45.0),
       ),
-      margin: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 4.0),
+      margin: Responsive.isMobile(context) ? EdgeInsets.zero : EdgeInsets.symmetric(vertical: 16.0, horizontal: 4.0),
       child: EnredaButtonIcon(
         buttonColor: Colors.white,
         padding: const EdgeInsets.all(0),
-        width: 80,
+        width: Responsive.isMobile(context) ? 20 : 80,
         height: 10,
         widget: Icon(
           Icons.share_outlined,
-          color: AppColors.greyTxtAlt,
+          color: Responsive.isMobile(context) ? Colors.white : AppColors.greyTxtAlt,
+          size: 20,
         ),
 
       ),

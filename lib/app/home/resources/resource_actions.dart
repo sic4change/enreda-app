@@ -48,7 +48,7 @@ Future<void> addUserToResource(
   await database.setResource(resource);
   showToast(context,
       title: 'Se ha apuntado satisfactoriamente al recurso',
-      color: Constants.chatDarkBlue);
+      color: AppColors.primaryColor);
   sendResourceAnalyticsEvent(context, "enreda_app_subscribe_resource", resource.resourceTypeName!);
 }
 
@@ -62,7 +62,7 @@ Future<void> removeUserToResource(
   await database.setResource(resource);
   showToast(context,
       title: 'Ha sido eliminado satisfactoriamente al recurso',
-      color: Constants.chatDarkBlue);
+      color: AppColors.primaryColor);
 }
 
 Future<void> shareResource(Resource resource) async {

@@ -12,6 +12,7 @@ class RoundedContainer extends StatelessWidget {
     this.borderColor = AppColors.primary020,
     this.color = AppColors.altWhite,
     this.borderWith = 1.0,
+    this.radius = Sizes.kDefaultPaddingDouble,
   });
 
   final Widget? child;
@@ -19,6 +20,7 @@ class RoundedContainer extends StatelessWidget {
   final double? width, height, borderWith;
   final Color borderColor;
   final Color color;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class RoundedContainer extends StatelessWidget {
         width: width,
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(Sizes.kDefaultPaddingDouble),
+          borderRadius: BorderRadius.circular(radius),
           border: Border.all(color: borderColor, width: borderWith!,),
         ),
         child: child);

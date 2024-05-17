@@ -49,6 +49,9 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
         valueListenable: MyResourcesPage.selectedIndex,
         builder: (context, selectedIndex, child) {
           return RoundedContainer(
+            borderColor: Responsive.isMobile(context) ? Colors.transparent : AppColors.primary020,
+            borderWith: Responsive.isMobile(context) ? 0 : 1,
+            radius: Responsive.isMobile(context) ? 0 : Sizes.kDefaultPaddingDouble,
             height: MediaQuery.of(context).size.height,
             contentPadding: Responsive.isMobile(context) ?
               EdgeInsets.all(0.0) :
@@ -56,12 +59,14 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
             margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
               const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
             child: Stack(
+              alignment: Responsive.isMobile(context) ? Alignment.topCenter : Alignment.topLeft,
               children: [
                 Container(
                   height: 50,
-                  padding: Responsive.isMobile(context) ? EdgeInsets.only(left: 20, top: 20) : EdgeInsets.all(0),
+                  padding: Responsive.isMobile(context) ? EdgeInsets.only(left: 10, top: 0) : EdgeInsets.all(0),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Responsive.isMobile(context) ? InkWell(
                           onTap: () {
@@ -86,8 +91,6 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                 Positioned(
                   top: 60,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(width: 10,),
                       InkWell(
@@ -97,9 +100,9 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                           })
                         },
                         child: CustomStepperButton(
-                          child: CustomTextBold(title: StringConst.ENROLLED_RESOURCES, color: AppColors.primary400,),
-                          icon: SizedBox(width: 21, child: Image.asset(ImagePath.ICON_RESOURCES_ENROLLED)),
-                          color: MyResourcesPage.selectedIndex.value == 1 ? AppColors.primary010 : AppColors.altWhite,
+                          child: CustomTextBold(title: StringConst.ENROLLED_RESOURCES, color: MyResourcesPage.selectedIndex.value == 1 ? AppColors.white : AppColors.greyTxtAlt,),
+                          icon: SizedBox(width: 21, child: Icon(Icons.check, color: MyResourcesPage.selectedIndex.value == 1 ? AppColors.white : AppColors.greyTxtAlt,)),
+                          color: MyResourcesPage.selectedIndex.value == 1 ? AppColors.primaryColor : AppColors.greyUltraLight,
                         ),
                       ),
                       SizedBox(width: 10,),
@@ -110,9 +113,9 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                           })
                         },
                         child: CustomStepperButton(
-                          child: CustomTextBold(title: StringConst.FAVORITES_RESOURCES, color: AppColors.primary400,),
-                          icon: SizedBox(width: 21, child: Icon(Icons.favorite, color: AppColors.red,)),
-                          color: MyResourcesPage.selectedIndex.value == 2 ? AppColors.primary010 : AppColors.altWhite,
+                          child: CustomTextBold(title: StringConst.FAVORITES_RESOURCES, color: MyResourcesPage.selectedIndex.value == 2 ? AppColors.white : AppColors.greyTxtAlt,),
+                          icon: SizedBox(width: 21, child: Icon(Icons.favorite, color: MyResourcesPage.selectedIndex.value == 2 ? AppColors.white : AppColors.greyTxtAlt, size: 21,)),
+                          color: MyResourcesPage.selectedIndex.value == 2 ? AppColors.primaryColor : AppColors.greyUltraLight,
                         ),
                       ),
                     ],

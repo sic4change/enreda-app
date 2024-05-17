@@ -204,11 +204,17 @@ flutter:
     - images/background-recursos.png
     - images/document-icon.png
     - images/contract-icon.png
+    - images/contract-icon-yellow.png
     - images/currency-icon.png
+    - images/currency-icon-yellow.png
     - images/date-icon.png
+    - images/date-icon-yellow.png
     - images/modality-icon.png
+    - images/modality-icon-yellow.png
     - images/place-icon.png
+    - images/place-icon-yellow.png
     - images/seats-icon.png
+    - images/seats-icon-yellow.png
     - images/access-photo.png
     - images/empty-resources.png
     - images/empty-resources.png
@@ -220,6 +226,7 @@ flutter:
     - images/my-competencies.png
     - images/my-documents.png
     - images/competencies.png
+    - images/arrow_back_alt.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

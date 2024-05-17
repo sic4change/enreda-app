@@ -24,6 +24,7 @@ import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -119,7 +120,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                               builder: (context, snapshot) {
                                 final city = snapshot.data;
                                 resource.cityName = city == null ? '' : city.name;
-                                return _buildResourceDetail(context, resource);
+                                return Responsive.isMobile(context) ? _buildResourceDetailMobile(context, resource)
+                                    : _buildResourceDetailWeb(context, resource);
                               });
                         },
                       );
@@ -131,7 +133,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         });
   }
 
-  Widget _buildResourceDetail(BuildContext context, Resource resource) {
+  Widget _buildResourceDetailWeb(BuildContext context, Resource resource) {
     final auth = Provider.of<AuthBase>(context);
     final userId = auth.currentUser?.uid ?? '';
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -165,14 +167,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               child: Column(
                   children: [
                     Responsive.isMobile(context) ? SpaceH8() : SpaceH20(),
-                    resource.organizerImage == null || resource.organizerImage!.isEmpty ? Row(
-                      children: [
-                        Spacer(),
-                        Container(
-                            width: 60,
-                            child: _buildMenuButton(context, resource))
-                      ],
-                    ) :
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -180,17 +174,18 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                         Spacer(),
                         Align(
                           alignment: Alignment.topCenter,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 1.0, color: AppColors.greyLight),
-                                borderRadius: BorderRadius.circular(100,),
-                                color: AppColors.greyLight),
-                            child: CircleAvatar(
-                              radius: Responsive.isMobile(context) ? 28 : 40,
-                              backgroundColor: AppColors.white,
-                              backgroundImage: NetworkImage(resource.organizerImage!),
+                          child: resource.organizerImage == null || resource.organizerImage!.isEmpty ? Container() :
+                            Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(width: 1.0, color: AppColors.greyLight),
+                                  borderRadius: BorderRadius.circular(100,),
+                                  color: AppColors.greyLight),
+                              child: CircleAvatar(
+                                radius: Responsive.isMobile(context) ? 28 : 40,
+                                backgroundColor: AppColors.white,
+                                backgroundImage: NetworkImage(resource.organizerImage!),
+                              ),
                             ),
-                          ),
                         ),
                         Spacer(),
                         Container(
@@ -280,6 +275,180 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     );
   }
 
+  Widget _buildResourceDetailMobile(BuildContext context, Resource resource) {
+    final auth = Provider.of<AuthBase>(context);
+    final userId = auth.currentUser?.uid ?? '';
+    TextTheme textTheme = Theme.of(context).textTheme;
+    double fontSizeTitle = responsiveSize(context, 14, 22, md: 18);
+    double fontSizePromotor = responsiveSize(context, 12, 16, md: 14);
+    return SingleChildScrollView(
+      child: Container(
+        margin: MediaQuery.of(context).size.width >= 1200 ?
+        EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1) : EdgeInsets.zero,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.rectangle,
+          border: Border.all(
+              color: Responsive.isMobile(context) ? Colors.transparent :AppColors.greyLight2.withOpacity(0.2),
+              width: Responsive.isMobile(context) ? 0 : 1),
+          borderRadius: BorderRadius.circular(Sizes.MARGIN_16),
+        ),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(ImagePath.RECTANGLE_RESOURCE),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Spacer(),
+                        Container(
+                          width: 150,
+                          height: 50,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              buildShare(context, resource, AppColors.darkGray),
+                              IconButton(
+                                icon: (resource.likes.contains(userId))
+                                    ? FaIcon(FontAwesomeIcons.solidHeart) : FaIcon(FontAwesomeIcons.heart),
+                                tooltip: 'Me gusta',
+                                color: (resource.likes.contains(userId))
+                                    ? AppColors.red : AppColors.white,
+                                iconSize: 20,
+                                onPressed: () {
+                                  auth.currentUser == null
+                                      ? showAlertNullUser(context)
+                                      : resource.likes.contains(userId)
+                                      ? removeUserToLike(
+                                      context: context,
+                                      userId: userId,
+                                      resource: resource)
+                                      : addUserToLike(
+                                      context: context,
+                                      userId: userId,
+                                      resource: resource);
+                                },
+                              ),
+                              SpaceW4(),
+                              _buildMenuButton(context, resource),
+                            ],
+                          ))
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Spacer(),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: resource.organizerImage == null || resource.organizerImage!.isEmpty ? Container() :
+                          Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 1.0, color: AppColors.greyLight),
+                                borderRadius: BorderRadius.circular(100,),
+                                color: AppColors.greyLight),
+                            child: CircleAvatar(
+                              radius: Responsive.isMobile(context) ? 28 : 40,
+                              backgroundColor: AppColors.white,
+                              backgroundImage: NetworkImage(resource.organizerImage!),
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, right: 30.0, left: 30.0),
+                      child: Text(
+                        resource.title.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        maxLines:
+                        Responsive.isMobile(context) ? 2 : 1,
+                        style: textTheme.bodySmall?.copyWith(
+                          letterSpacing: 1.2,
+                          color: AppColors.white,
+                          height: 1.5,
+                          fontWeight: FontWeight.w300,
+                          fontSize: fontSizeTitle,
+                        ),
+                      ),
+                    ),
+                    SpaceH4(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          resource.promotor != null
+                              ? resource.promotor != ""
+                              ? resource.promotor!
+                              : resource.organizerName!
+                              : resource.organizerName!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            letterSpacing: 1.2,
+                            fontSize: fontSizePromotor,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Responsive.isMobile(context) ? Container() : Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        buildShare(context, resource, AppColors.darkGray),
+                        SpaceW8(),
+                        IconButton(
+                          icon: (resource.likes.contains(userId))
+                              ? FaIcon(FontAwesomeIcons.solidHeart) : FaIcon(FontAwesomeIcons.heart),
+                          tooltip: 'Me gusta',
+                          color: (resource.likes.contains(userId))
+                              ? AppColors.red : AppColors.white,
+                          iconSize: 30,
+                          onPressed: () {
+                            auth.currentUser == null
+                                ? showAlertNullUser(context)
+                                : resource.likes.contains(userId)
+                                ? removeUserToLike(
+                                context: context,
+                                userId: userId,
+                                resource: resource)
+                                : addUserToLike(
+                                context: context,
+                                userId: userId,
+                                resource: resource);
+                          },
+                        ),
+                        SpaceW16(),
+                      ],
+                    ),
+                    SpaceH20(),
+                    _buildBoxes(resource),
+                    Responsive.isMobile(context)  ? _buildButton(context, resource) : Container(),
+                    SpaceH20(),
+                  ]
+              ),
+            ),
+            Responsive.isMobile(context) ? Container() : Padding(
+              padding: Responsive.isMobile(context) ? const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0) :
+              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: _buildBoxes(resource),
+            ),
+            _buildDetailResource(context, resource),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildDetailResource(BuildContext context, Resource resource) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Padding(
@@ -314,8 +483,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   }
 
   Widget _buildInformationResource(BuildContext context, Resource resource) {
-    final auth = Provider.of<AuthBase>(context);
-    final userId = auth.currentUser?.uid ?? '';
     final textTheme = Theme.of(context).textTheme;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -383,50 +550,57 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               ],
             )),
         const SizedBox(height: 30,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: () {
-                if (auth.currentUser == null) {
-                  showAlertNullUser(context);
-                } else if (resource.participants.contains(userId)) {
-                  removeUserToResource(context: context, userId: userId, resource: resource);
-                } else if ((resource.link == null || resource.link!.isEmpty) &&
-                    (resource.contactEmail == null || resource.contactEmail!.isEmpty) &&
-                    (resource.contactPhone == null || resource.contactPhone!.isEmpty)) {
-                  addUserToResource(context: context, userId: userId, resource: resource);
-                  setGamificationFlag(context: context, flagId: UserEnreda.FLAG_JOIN_RESOURCE);
-                } else if (resource.link != null) {
-                  launchURL(resource.link!);
-                } else {
-                  showContactDialog(context: context, resource: resource);
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Text(
-                  resource.participants.contains(userId)
-                      ? StringConst.QUIT_RESOURCE
-                      : StringConst.JOIN_RESOURCE,
-                  style: textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Constants.white,
-                  ),
-                ),
+        _buildButton(context, resource),
+        Responsive.isMobile(context) ?  SizedBox(height: 50,) : Container(),
+      ],
+    );
+  }
+
+  Widget _buildButton(BuildContext context, Resource resource) {
+    final auth = Provider.of<AuthBase>(context);
+    final userId = auth.currentUser?.uid ?? '';
+    final textTheme = Theme.of(context).textTheme;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextButton(
+          onPressed: () {
+            if (auth.currentUser == null) {
+              showAlertNullUser(context);
+            } else if (resource.participants.contains(userId)) {
+              removeUserToResource(context: context, userId: userId, resource: resource);
+            } else if ((resource.link == null || resource.link!.isEmpty) &&
+                (resource.contactEmail == null || resource.contactEmail!.isEmpty) &&
+                (resource.contactPhone == null || resource.contactPhone!.isEmpty)) {
+              addUserToResource(context: context, userId: userId, resource: resource);
+              setGamificationFlag(context: context, flagId: UserEnreda.FLAG_JOIN_RESOURCE);
+            } else if (resource.link != null) {
+              launchURL(resource.link!);
+            } else {
+              showContactDialog(context: context, resource: resource);
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Text(
+              resource.participants.contains(userId)
+                  ? StringConst.QUIT_RESOURCE
+                  : StringConst.JOIN_RESOURCE,
+              style: textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: resource.participants.contains(userId) ? Constants.darkGray : Constants.white,
               ),
-              style: ButtonStyle(
-                  backgroundColor:
-                  MaterialStateProperty.all(resource.participants.contains(userId)
-                      ? Constants.chatDarkBlue : Constants.turquoise),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ))),
             ),
-          ],
+          ),
+          style: ButtonStyle(
+              backgroundColor:
+              MaterialStateProperty.all(resource.participants.contains(userId)
+                  ? AppColors.grey70 : Constants.turquoise),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ))),
         ),
-        Responsive.isMobile(context) ?  SizedBox(height: 30,) : Container(),
       ],
     );
   }
@@ -434,42 +608,50 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   Widget _buildBoxes(Resource resource) {
     List<BoxItemData> boxItemData = [
       BoxItemData(
-          icon: Image.asset(ImagePath.ICON_MODALITY),
+          icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_MODALITY_YELLOW
+              : ImagePath.ICON_MODALITY),
           title: StringConst.RESOURCE_TYPE,
           contact: '${resource.resourceCategoryName}'
       ),
       BoxItemData(
-        icon: Image.asset(ImagePath.ICON_PLACE),
+        icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_PLACE_YELLOW
+            : ImagePath.ICON_PLACE),
         title: StringConst.LOCATION,
         contact: '${resource.countryName}',
       ),
       BoxItemData(
-        icon: Image.asset(ImagePath.ICON_MODALITY),
+        icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_MODALITY_YELLOW
+            : ImagePath.ICON_MODALITY),
         title: StringConst.MODALITY,
         contact: '${resource.modality}',
       ),
       BoxItemData(
-        icon: Image.asset(ImagePath.ICON_SEATS),
+        icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_SEATS_YELLOW
+            : ImagePath.ICON_SEATS),
         title: StringConst.CAPACITY,
         contact: '${resource.capacity}',
       ),
       BoxItemData(
-        icon: Image.asset(ImagePath.ICON_DATE),
+        icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_DATE_YELLOW
+            : ImagePath.ICON_DATE),
         title: StringConst.DATE,
         contact: '${DateFormat('dd/MM/yyyy').format(resource.start)} - ${DateFormat('dd/MM/yyyy').format(resource.end)}',
       ),
       BoxItemData(
-        icon: Image.asset(ImagePath.ICON_CONTRACT),
+        icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_CONTRACT_YELLOW
+            : ImagePath.ICON_CONTRACT),
         title: StringConst.CONTRACT_TYPE,
         contact: resource.contractType != null && resource.contractType != ''  ? '${resource.contractType}' : 'Sin especificar',
       ),
       BoxItemData(
-        icon: Image.asset(ImagePath.ICON_CONTRACT),
+        icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_CONTRACT_YELLOW
+            : ImagePath.ICON_CONTRACT),
         title: StringConst.FORM_SCHEDULE,
         contact: resource.temporality != null && resource.temporality != ''  ? '${resource.temporality}' :  'Sin especificar',
       ),
       BoxItemData(
-        icon: Image.asset(ImagePath.ICON_CURRENCY),
+        icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_CURRENCY_YELLOW
+            : ImagePath.ICON_CURRENCY),
         title: StringConst.SALARY,
         contact: resource.salary != null && resource.salary != ''  ? '${resource.salary}' :  'Sin especificar',
       ),
@@ -483,25 +665,40 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     int rowCount = (boxItemData.length / crossAxisCount).ceil();
     double gridHeight = rowCount * mainAxisExtent + (rowCount - 1) * mainAxisSpacing;
     double gridHeightD = rowCount * mainAxisExtent + (rowCount - 15) * mainAxisSpacing;
-    return SizedBox(
-      height: Responsive.isDesktop(context) ? gridHeightD : gridHeight,
-      child: GridView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: maxCrossAxisExtent,
-              mainAxisExtent: mainAxisExtent,
-              childAspectRatio: childAspectRatio,
-              crossAxisSpacing: crossAxisSpacing,
-              mainAxisSpacing: mainAxisSpacing),
-          itemCount: boxItemData.length,
-          itemBuilder: (BuildContext context, index) {
-            return BoxItem(
-              icon: boxItemData[index].icon,
-              title: boxItemData[index].title,
-              contact: boxItemData[index].contact,
-            );
-          }),
-    );
+    return Responsive.isMobile(context) ?
+      SizedBox(
+        height: gridHeight * 0.85,
+        child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            itemCount: boxItemData.length,
+            itemBuilder: (BuildContext context, index) {
+              return BoxItem(
+                icon: boxItemData[index].icon,
+                title: boxItemData[index].title,
+                contact: boxItemData[index].contact,
+              );
+            }),
+      ) :
+      SizedBox(
+        height: Responsive.isDesktop(context) ? gridHeightD : gridHeight,
+        child: GridView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: maxCrossAxisExtent,
+                mainAxisExtent: mainAxisExtent,
+                childAspectRatio: childAspectRatio,
+                crossAxisSpacing: crossAxisSpacing,
+                mainAxisSpacing: mainAxisSpacing),
+            itemCount: boxItemData.length,
+            itemBuilder: (BuildContext context, index) {
+              return BoxItem(
+                icon: boxItemData[index].icon,
+                title: boxItemData[index].title,
+                contact: boxItemData[index].contact,
+              );
+            }),
+      );
   }
 
   Widget _buildMenuButton(BuildContext context, Resource resource) {
@@ -529,7 +726,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
       child: Icon(
         Icons.more_vert,
         color: Constants.white,
-        size: 30.0,
+        size: Responsive.isMobile(context) ? 23.0 : 30.0,
       ),
     );
   }

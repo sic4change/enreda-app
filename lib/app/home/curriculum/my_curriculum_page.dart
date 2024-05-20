@@ -167,7 +167,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
 
   Widget _myCurriculumMini(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames){
     final textTheme = Theme.of(context).textTheme;
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -381,17 +380,12 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     final textTheme = Theme.of(context).textTheme;
     return SingleChildScrollView(
       child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Constants.lightGray, width: 1),
-          borderRadius: BorderRadius.all(Radius.circular(40.0)),
-          color: Colors.white,
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.all(Constants.mainPadding),
+              padding: EdgeInsets.symmetric(horizontal: Constants.mainPadding),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,10 +396,13 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                         WebHome.controller.selectIndex(0);});
                     },
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(ImagePath.ARROW_B, height: 30),
-                        SpaceW12(),
+                        Spacer(),
                         CustomTextMediumBold(text: StringConst.MY_CV),
+                        Spacer(),
+                        SizedBox(width: 30),
                       ],
                     ),
                   ) : Container(),
@@ -419,7 +416,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                         '${user?.firstName} ${user?.lastName}',
                         style: textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.bold,
-                            fontSize: 30,
+                            fontSize: 20,
                             color: AppColors.turquoiseBlue),
                         textAlign: TextAlign.center,
                       ),

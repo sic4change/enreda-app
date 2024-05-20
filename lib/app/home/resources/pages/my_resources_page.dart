@@ -53,8 +53,8 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
             borderWith: Responsive.isMobile(context) ? 0 : 1,
             radius: Responsive.isMobile(context) ? 0 : Sizes.kDefaultPaddingDouble,
             height: MediaQuery.of(context).size.height,
-            contentPadding: Responsive.isMobile(context) ?
-              EdgeInsets.all(0.0) :
+            contentPadding: Responsive.isMobile(context) && MyResourcesPage.selectedIndex.value == 3 ?
+              EdgeInsets.zero : Responsive.isMobile(context) ? EdgeInsets.symmetric(horizontal: 10) :
               EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
             margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
               const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
@@ -71,7 +71,9 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                       Responsive.isMobile(context) ? InkWell(
                           onTap: () {
                             setStateIfMounted(() {
-                              WebHome.controller.selectIndex(0);});
+                              WebHome.controller.selectIndex(0);
+                              MyResourcesPage.selectedIndex.value = 1;
+                            });
                           },
                           child: Image.asset(ImagePath.ARROW_B, height: 30)) : Container(),
                       Responsive.isMobile(context) ?SpaceW12() : Container(),

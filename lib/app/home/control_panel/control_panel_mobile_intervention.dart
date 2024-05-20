@@ -1,7 +1,6 @@
 import 'package:enreda_app/app/home/control_panel/gamification-item.dart';
 import 'package:enreda_app/app/home/control_panel/gamification-slider.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
-import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
@@ -101,7 +100,7 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                       child: InkWell(
                         onTap: () {
                           setState(() {
-                            WebHome.controller.selectIndex(9);
+                            WebHome.controller.selectIndex(7);
                           });
                         },
                         child: Container(
@@ -170,13 +169,13 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
             InkWell(
               onTap: () {
                 setState(() {
-                  WebHome.controller.selectIndex(8);
+                  WebHome.controller.selectIndex(6);
                 });
               },
               child: Container(
                 height: 70,
                 margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
                 decoration: BoxDecoration(
                   color: AppColors.turquoiseBlue,
                   shape: BoxShape.rectangle,
@@ -185,19 +184,9 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                 ),
                 child: Row(
                     children: [
-                      StreamBuilder<UserEnreda>(
-                        stream: database.enredaUserStream(widget.user!.assignedById!),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) return Container();
-                          if (snapshot.hasData) {
-                            final assignedUser = snapshot.data!;
-                            return _buildAssistant(context, assignedUser);
-                          } else {
-                            return Center(child: CircularProgressIndicator());
-                          }
-                        },),
+                      CustomTextBoldTitle(title: StringConst.CONTACT, color: Colors.white,),
                       Spacer(),
-                      Image.asset(ImagePath.WHATSAPP_ICON, height: 30),
+                      Image.asset(ImagePath.CONTACT_ICON, fit: BoxFit.fitHeight, height: 60,)
                     ]
                 ),
               ),
@@ -206,82 +195,6 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildAssistant(BuildContext context, UserEnreda user) {
-    return Row(
-      children: [
-        _buildMyUserPhoto(context, user.profilePic!.src),
-        SpaceW12(),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomTextBoldTitle(title: '${user.firstName} ${user.lastName}', color: Colors.white,),
-            CustomTextNormalSmall(title: StringConst.ASSIGNED_CONTACT_DESCRIPTION, color: Colors.white,),
-          ],
-        ),
-
-      ],
-    );
-  }
-
-  Widget _buildMyUserPhoto(BuildContext context, String profilePic) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            !kIsWeb ?
-            ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(60)),
-              child:
-              Center(
-                child:
-                profilePic == "" ?
-                Container(
-                  color:  Colors.transparent,
-                  height: 40,
-                  width: 40,
-                  child: Image.asset(ImagePath.USER_DEFAULT),
-                ) :
-                Image.network(
-                  profilePic,
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.center,
-                ),
-              ),
-            ) :
-            ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(60)),
-              child:
-              profilePic == "" ?
-              Container(
-                color:  Colors.transparent,
-                height: 40,
-                width: 40,
-                child: Image.asset(ImagePath.USER_DEFAULT),
-              ) :
-              Container(
-                child: FadeInImage.assetNetwork(
-                  image: profilePic,
-                  placeholder: ImagePath.USER_DEFAULT,
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.center,
-                ),
-              ),
-            )
-          ],
-        ),
-      ],
     );
   }
 

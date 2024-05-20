@@ -1,8 +1,12 @@
+import 'package:enreda_app/app/home/trainingPills/training_list_tile_mobile.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/tab_item.dart';
 import 'package:enreda_app/common_widgets/background_mobile.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/functions.dart';
+import 'package:enreda_app/values/strings.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'resources/pages/resources_page.dart';
@@ -50,15 +54,39 @@ class _CupertinoScaffoldAnonymousState extends State<CupertinoScaffoldAnonymous>
     };
 
     return Scaffold(
+      appBar: AppBar(
+      toolbarHeight: 70,
+      elevation: 0.4,
+      shadowColor: AppColors.bluePetrol,
+      backgroundColor: AppColors.white,
+      title: Padding(
+        padding: const EdgeInsets.only(left: 10),
+        child: Row(
+          children: [
+            InkWell(
+              onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
+              child: Image.asset(
+                ImagePath.LOGO,
+                height: 55,
+                width: 85,
+              ),
+            ),
+          ],
+        ),
+      ),
+      ),
       body: CupertinoTabScaffold(
         backgroundColor: Colors.transparent,
         controller: CupertinoScaffoldAnonymous.controller,
         tabBar: CupertinoTabBar(
+            inactiveColor: Constants.chatDarkGray,
+            backgroundColor: AppColors.altWhite,
             items: [
               _buildItem(TabItem.resources),
               _buildItem(TabItem.competencies),
               _buildItem(TabItem.account),
             ],
+            height: TrainingPillsListTileMobile.isFullScreen.value == true ? 0 : 70,
             onTap: (index) {
               CupertinoScaffoldAnonymous.controller.index = index;
               if(index == 0){

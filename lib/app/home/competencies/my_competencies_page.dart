@@ -55,30 +55,37 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
         const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
       contentPadding: Responsive.isMobile(context) ?
-        EdgeInsets.all(Sizes.mainPadding) :
+        EdgeInsets.symmetric(horizontal: Constants.mainPadding) :
         EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       child: SingleChildScrollView(
         child: Stack(
           children: [
             Container(
               height: 34,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  isSmallScreen ? InkWell(
-                    onTap: () {
-                      setStateIfMounted(() {
-                        WebHome.controller.selectIndex(0);});
-                    },
-                    child: Row(
-                      children: [
-                        Image.asset(ImagePath.ARROW_B, height: 30),
-                        SpaceW12(),
-                        CustomTextMediumBold(text: StringConst.MY_COMPETENCIES),
-                      ],
+              child: isSmallScreen ? InkWell(
+                onTap: () {
+                  setStateIfMounted(() {
+                    WebHome.controller.selectIndex(0);});
+                },
+                child: Row(
+                  children: [
+                    Image.asset(ImagePath.ARROW_B, height: 30),
+                    Spacer(),
+                    CustomTextMediumBold(text: StringConst.MY_COMPETENCIES),
+                    Container(
+                      width: 34,
+                      child: PillTooltip(
+                        title: StringConst.PILL_COMPETENCIES,
+                        pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
+                      ),
                     ),
-                  ) : CustomTextMediumBold(text: StringConst.MY_COMPETENCIES),
-                  SpaceW8(),
+                    Spacer(),
+                    SizedBox(width: 30),
+                  ],
+                ),
+              ) : Row(
+                children: [
+                  CustomTextMediumBold(text: StringConst.MY_COMPETENCIES),
                   Container(
                     width: 34,
                     child: PillTooltip(
@@ -91,8 +98,7 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
             ),
             MainContainer(
               margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5, left: 1, right: 1, bottom: Sizes.kDefaultPaddingDouble),
-              padding: Responsive.isMobile(context) ?
-              EdgeInsets.symmetric(horizontal: Sizes.kDefaultPaddingDouble, vertical: Sizes.kDefaultPaddingDouble) :
+              padding: Responsive.isMobile(context) ? EdgeInsets.only(bottom: Sizes.kDefaultPaddingDouble * 3) :
               EdgeInsets.only(left: Sizes.kDefaultPaddingDouble * 3, right: Sizes.kDefaultPaddingDouble * 3, top: Sizes.kDefaultPaddingDouble * 2),
               child: StreamBuilder<User?>(
                   stream: Provider.of<AuthBase>(context).authStateChanges(),

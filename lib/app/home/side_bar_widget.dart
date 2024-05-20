@@ -154,8 +154,6 @@ class _SideBarWidgetState extends State<SideBarWidget> {
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: 'Mis competencias' , onTap: _clearResourcesNavigation),
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: 'Mis recursos', onTap: _clearResourcesNavigation),
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_GAMIFICATION_SIDEBAR), width: 20,), label: 'Gamificación', onTap: _clearResourcesNavigation),
-        if(isSmallScreen) SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: 'Recursos', onTap: _clearResourcesNavigation),
-        if(isSmallScreen) SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: 'Competencias', onTap: _clearResourcesNavigation),
         if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_CONTACT_SIDEBAR), width: 20,), label: 'Contacto Enreda', onTap: _clearResourcesNavigation),
         if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_DOCUMENTS_SIDEBAR), width: 20,), label: 'Mis documentos', onTap: _clearResourcesNavigation),
       ],

@@ -2,6 +2,7 @@ import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/home/assistant/assistant_page_mobile.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
@@ -141,7 +142,7 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
     return Scaffold(
       key: _key,
       appBar: AppBar(
-        toolbarHeight: 80,
+        toolbarHeight: 70,
         elevation: 0.4,
         shadowColor: AppColors.bluePetrol,
         backgroundColor: AppColors.white,
@@ -171,6 +172,7 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
         controller: CupertinoScaffold.controller,
         tabBar: CupertinoTabBar(
             inactiveColor: Constants.chatDarkGray,
+            backgroundColor: AppColors.altWhite,
             items: [
               _buildItem(TabItem.resources),
               _buildItem(TabItem.competencies),
@@ -184,6 +186,7 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
               if(index == 0){
                 setState(() {
                   ResourcesPage.selectedIndex.value = 0;
+                  MyResourcesPage.selectedIndex.value = 1;
                 });
               }
             }),
@@ -313,7 +316,7 @@ Widget _buildMyLocation(BuildContext context, UserEnreda? user) {
                           size: 16,
                         ),
                         SpaceW4(),
-                        CustomTextNormalSmall(title: province ?? ''),
+                        CustomTextNormalSmall(title: province ?? '', color: AppColors.primaryText2,),
                       ],
                     );
                   });

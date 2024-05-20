@@ -306,16 +306,27 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                   }),
                 );
               }),
-              child: MainContainer(
+              child: Container(
                 width: (MediaQuery.of(context).size.width/2) - 40,
                 height: 180.0,
-                shadowColor: Colors.black.withOpacity(0.4),
+                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.4),
+                        offset: Offset(0, 1), //(x,y)
+                        blurRadius: 4.0,
+                        spreadRadius: 1.0),
+                  ],
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  color: AppColors.white,
+                ),
                 child: Column(
                   children: [
                     Image.asset(
-                      c.order == 1? ImagePath.COMPETENCIES_CATEGORIES_1:
-                      c.order == 2? ImagePath.COMPETENCIES_CATEGORIES_2:
-                      c.order == 3? ImagePath.COMPETENCIES_CATEGORIES_3:
+                      c.order == 1 ? ImagePath.COMPETENCIES_CATEGORIES_1:
+                      c.order == 2 ? ImagePath.COMPETENCIES_CATEGORIES_2:
+                      c.order == 3 ? ImagePath.COMPETENCIES_CATEGORIES_3:
                       ImagePath.COMPETENCIES_CATEGORIES_1,
                       width: 100.0,
                     ),

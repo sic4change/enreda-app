@@ -19,12 +19,17 @@ class ContactDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RoundedContainer(
+    return Container(
       margin: Responsive.isMobile(context) ? const EdgeInsets.only(left: 0, bottom: Sizes.kDefaultPaddingDouble) :
         const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble, bottom: Sizes.kDefaultPaddingDouble),
-      contentPadding: const EdgeInsets.only(top: Sizes.kDefaultPaddingDouble),
+      padding: const EdgeInsets.only(top: Sizes.kDefaultPaddingDouble),
       width: 260,
       height: Responsive.isMobile(context) ? 220 : 253,
+      decoration: BoxDecoration(
+        color: AppColors.altWhite,
+        borderRadius: BorderRadius.circular(Sizes.kDefaultPaddingDouble),
+        border: Border.all(color: AppColors.primary020, width: 1,),
+      ),
       child: Column(
         children: [
           widget,

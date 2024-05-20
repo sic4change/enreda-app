@@ -1,6 +1,7 @@
 import 'package:enreda_app/app/anallytics/analytics.dart';
 import 'package:enreda_app/app/home/assistant/assistant_page_web.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
+import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/utils/const.dart';
@@ -45,7 +46,11 @@ class _HomePageState extends State<HomePage> {
                 : Stack(
                   children: [
                     isBigScreen ? WebHome(showChatNotifier: showChatNotifier)
-                    : CupertinoScaffold(showChatNotifier: showChatNotifier),
+                    : snapshot.hasData
+                        ? CupertinoScaffold(
+                        showChatNotifier: showChatNotifier)
+                        : CupertinoScaffoldAnonymous(
+                        showChatNotifier: showChatNotifier),
                     if (snapshot.hasData && isBigScreen) _buildChatFAB(context),
                     if (snapshot.hasData && isBigScreen) _buildChatContainer(),
                   ],

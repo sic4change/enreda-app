@@ -1,4 +1,5 @@
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +29,7 @@ class MainContainer extends StatelessWidget {
       width: width,
       padding: padding,
       margin: margin,
-      decoration: BoxDecoration(
+      decoration: Responsive.isMobile(context) ? null : BoxDecoration(
         boxShadow: [
           BoxShadow(
               color: shadowColor ?? Colors.black.withOpacity(0.15),

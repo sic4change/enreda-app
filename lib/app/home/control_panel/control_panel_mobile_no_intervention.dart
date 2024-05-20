@@ -35,226 +35,200 @@ class _ControlPanelMobileNoInterventionPageState extends State<ControlPanelMobil
     return Container(
       height: double.infinity,
       child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            InkWell(
-              onTap: () {
-                setState(() {
-                  WebHome.controller.selectIndex(1);
-                });
-              },
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                decoration: BoxDecoration(
-                  color: AppColors.primary600,
-                  shape: BoxShape.rectangle,
-                  border: Border.all(color: AppColors.primary600.withOpacity(0.3), width: 1),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Row(
-                  children: [
-                    CustomTextBoldTitle(title: StringConst.MY_CV, color: Colors.white,),
-                    Spacer(),
-                    Image.asset(ImagePath.MY_CV, height: 60),
-                  ]
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  WebHome.controller.selectIndex(4);
-                });
-              },
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                decoration: BoxDecoration(
-                  color: AppColors.turquoiseBlue,
-                  shape: BoxShape.rectangle,
-                  border: Border.all(color: AppColors.turquoiseBlue.withOpacity(0.3), width: 1),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Row(
-                    children: [
-                      CustomTextBoldTitle(title: StringConst.MY_RESOURCES, color: Colors.white,),
-                      Spacer(),
-                      Image.asset(ImagePath.MY_RESOURCES, height: 60),
-                    ]
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  WebHome.controller.selectIndex(5);
-                });
-              },
-              child: Container(
+        child: Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              InkWell(
+                onTap: () {
+                  setState(() {
+                    WebHome.controller.selectIndex(1);
+                  });
+                },
+                child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
                   decoration: BoxDecoration(
-                    color: AppColors.primary030,
+                    color: AppColors.primary600,
                     shape: BoxShape.rectangle,
-                    border: Border.all(color: AppColors.primary030.withOpacity(0.3), width: 1),
+                    border: Border.all(color: AppColors.primary600.withOpacity(0.3), width: 1),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  child: _buildGamificationSection(context)),
-            ),
-            Container(
-              height: 170,
-              margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              child: Flex(
-                  direction: Axis.horizontal,
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              WebHome.controller.selectIndex(3);
-                            });
-                          },
+                  child: Row(
+                    children: [
+                      CustomTextBoldTitle(title: StringConst.MY_CV, color: Colors.white,),
+                      Spacer(),
+                      Image.asset(ImagePath.MY_CV, height: 60),
+                    ]
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  setState(() {
+                    WebHome.controller.selectIndex(4);
+                  });
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
+                  decoration: BoxDecoration(
+                    color: AppColors.turquoiseBlue,
+                    shape: BoxShape.rectangle,
+                    border: Border.all(color: AppColors.turquoiseBlue.withOpacity(0.3), width: 1),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Row(
+                      children: [
+                        CustomTextBoldTitle(title: StringConst.MY_RESOURCES, color: Colors.white,),
+                        Spacer(),
+                        Image.asset(ImagePath.MY_RESOURCES, height: 60),
+                      ]
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  setState(() {
+                    WebHome.controller.selectIndex(5);
+                  });
+                },
+                child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary030,
+                      shape: BoxShape.rectangle,
+                      border: Border.all(color: AppColors.primary030.withOpacity(0.3), width: 1),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: _buildGamificationSection(context)),
+              ),
+              Container(
+                height: 170,
+                margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                child: Flex(
+                    direction: Axis.horizontal,
+                    children: [
+                      Expanded(
+                          flex: 1,
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                WebHome.controller.selectIndex(3);
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                color: AppColors.yellowDark,
+                                shape: BoxShape.rectangle,
+                                border: Border.all(color: AppColors.yellowDark.withOpacity(0.3), width: 1),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CustomTextBoldTitle(title: StringConst.MY_COMPETENCIES),
+                                  SpaceH4(),
+                                  Image.asset(ImagePath.MY_COMPETENCIES, height: 110),
+                                ]
+                              ),
+                            ),
+                          )),
+                      SpaceW12(),
+                      Expanded(
+                          flex: 1,
                           child: Container(
                             padding: const EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
-                              color: AppColors.yellowDark,
+                              color: AppColors.primary100,
                               shape: BoxShape.rectangle,
-                              border: Border.all(color: AppColors.yellowDark.withOpacity(0.3), width: 1),
+                              border: Border.all(color: AppColors.primary100.withOpacity(0.3), width: 1),
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomTextBoldTitle(title: StringConst.MY_COMPETENCIES),
-                                SpaceH4(),
-                                Image.asset(ImagePath.MY_COMPETENCIES, height: 110),
-                              ]
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CustomTextBoldTitle(title: StringConst.ENREDA_CONTACT),
+                                  SpaceH4(),
+                                  Image.asset(ImagePath.LOGO_ENREDA, height: 50),
+                                  SpaceH4(),
+                                  CustomTextSmall(text: 'Sede SIC4Change'),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      CardButtonContact(
+                                        //title: StringConst.EMAIL,
+                                        title: '',
+                                        icon: Icon(Icons.email_outlined, color: AppColors.turquoiseBlue, size: 20,),
+                                        width: 60,
+                                        onTap: () {
+                                          sendEmail(
+                                            toEmail: 'hello@sic4change.org',
+                                            subject: StringConst.SUBJECT,
+                                            body: StringConst.BODY,
+                                          ).catchError((error) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(content: Text('Hubo un error al enviar el correo: $error')),
+                                            );
+                                          });
+                                        },
+                                      ),
+                                      SpaceW4(),
+                                      Container(
+                                          height: 15,
+                                          child: VerticalDivider(color: AppColors.white,)),
+                                      SpaceW4(),
+                                      CardButtonContact(
+                                        //title: StringConst.CALL,
+                                        title: '',
+                                        width: 60,
+                                        icon: Icon(Icons.phone, color: AppColors.turquoiseBlue, size: 20),
+                                        onTap: () {
+                                          kIsWeb ? showCustomDialog(
+                                            context,
+                                            content: Container(
+                                                height: 100,
+                                                width: 200,
+                                                child: Center(child:
+                                                Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      SpaceH12(),
+                                                      CustomTextBold(title:StringConst.CALL_NUMBER),
+                                                      SpaceH12(),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Icon(Icons.local_phone, color: AppColors.turquoiseBlue, size: 20),
+                                                        ],),
+                                                      SpaceH8(),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Icon(Icons.phone_android, color: AppColors.turquoiseBlue, size: 20),
+                                                        ],),
+                                                    ]
+                                                ))),
+                                          ) : makePhoneCall('123 123 112');
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ]
                             ),
-                          ),
-                        )),
-                    SpaceW12(),
-                    Expanded(
-                        flex: 1,
-                        child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary100,
-                            shape: BoxShape.rectangle,
-                            border: Border.all(color: AppColors.primary100.withOpacity(0.3), width: 1),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomTextBoldTitle(title: StringConst.ENREDA_CONTACT),
-                                SpaceH4(),
-                                Image.asset(ImagePath.LOGO_ENREDA, height: 50),
-                                SpaceH4(),
-                                CustomTextSmall(text: 'Sede SIC4Change'),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    CardButtonContact(
-                                      //title: StringConst.EMAIL,
-                                      title: '',
-                                      icon: Icon(Icons.email_outlined, color: AppColors.turquoiseBlue, size: 20,),
-                                      width: 60,
-                                      onTap: () {
-                                        sendEmail(
-                                          toEmail: 'hello@sic4change.org',
-                                          subject: StringConst.SUBJECT,
-                                          body: StringConst.BODY,
-                                        ).catchError((error) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(content: Text('Hubo un error al enviar el correo: $error')),
-                                          );
-                                        });
-                                      },
-                                    ),
-                                    SpaceW4(),
-                                    Container(
-                                        height: 15,
-                                        child: VerticalDivider(color: AppColors.white,)),
-                                    SpaceW4(),
-                                    CardButtonContact(
-                                      //title: StringConst.CALL,
-                                      title: '',
-                                      width: 60,
-                                      icon: Icon(Icons.phone, color: AppColors.turquoiseBlue, size: 20),
-                                      onTap: () {
-                                        kIsWeb ? showCustomDialog(
-                                          context,
-                                          content: Container(
-                                              height: 100,
-                                              width: 200,
-                                              child: Center(child:
-                                              Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    SpaceH12(),
-                                                    CustomTextBold(title:StringConst.CALL_NUMBER),
-                                                    SpaceH12(),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Icon(Icons.local_phone, color: AppColors.turquoiseBlue, size: 20),
-                                                      ],),
-                                                    SpaceH8(),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Icon(Icons.phone_android, color: AppColors.turquoiseBlue, size: 20),
-                                                      ],),
-                                                  ]
-                                              ))),
-                                        ) : makePhoneCall('123 123 112');
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ]
-                          ),
-                        )),
-                    // Expanded(
-                    //     flex: 1,
-                    //     child: InkWell(
-                    //       onTap: () {
-                    //         setState(() {
-                    //           WebHome.controller.selectIndex(8);
-                    //         });
-                    //       },
-                    //       child: Container(
-                    //         padding: const EdgeInsets.all(8.0),
-                    //         decoration: BoxDecoration(
-                    //           color: AppColors.primary100,
-                    //           shape: BoxShape.rectangle,
-                    //           border: Border.all(color: AppColors.primary100.withOpacity(0.3), width: 1),
-                    //           borderRadius: BorderRadius.circular(8.0),
-                    //         ),
-                    //         child: Column(
-                    //             crossAxisAlignment: CrossAxisAlignment.center,
-                    //             mainAxisAlignment: MainAxisAlignment.center,
-                    //             children: [
-                    //               CustomTextBoldTitle(title: StringConst.CONTACT),
-                    //               SpaceH4(),
-                    //               Image.asset(ImagePath.LOGO_ENREDA, height: 70),
-                    //               SpaceH8(),
-                    //
-                    //             ]
-                    //         ),
-                    //       ),
-                    //     )),
-                  ],
+                          )),
+                    ],
+                ),
               ),
-            ),
-            SizedBox(height: 80),
-          ],
+              SizedBox(height: 80),
+            ],
+          ),
         ),
       ),
     );

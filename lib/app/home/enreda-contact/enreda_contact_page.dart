@@ -134,11 +134,11 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      alignment: Alignment.center,
+      alignment: Responsive.isMobile(context) ? Alignment.topCenter : Alignment.center,
       child: SingleChildScrollView(
         child: MainContainer(
           padding: Responsive.isMobile(context) ?
-            EdgeInsets.symmetric(vertical: 20, horizontal: 10 ) :
+            EdgeInsets.symmetric(vertical: 0, horizontal: 10 ) :
             const EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble * 2),
           child: Column(
             mainAxisAlignment: Responsive.isMobile(context) ? MainAxisAlignment.start
@@ -151,16 +151,19 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                     WebHome.controller.selectIndex(0);});
                 },
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(width: 10,),
                     Image.asset(ImagePath.ARROW_B, height: 30),
-                    SpaceW12(),
+                    Spacer(),
                     CustomTextMediumBold(text: StringConst.CONTACT),
+                    Spacer(),
+                    SizedBox(width: 40,),
                   ],
                 ),
               ) : Container(),
               Responsive.isMobile(context) ? SpaceH12() : Container(),
-              Row(
+              Responsive.isMobile(context) ? Container() : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CustomTextTitle(title: StringConst.ASSIGNED_USER),
@@ -169,7 +172,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                 ],
               ),
               SpaceH20(),
-              Column(
+              Responsive.isMobile(context) ? Container() : Column(
                 children: [
                   Container(
                       constraints: BoxConstraints(

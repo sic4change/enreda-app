@@ -50,7 +50,7 @@ class _ExpandableCompetencyTileState extends State<ExpandableCompetencyTile> {
           Stack(
             children: [
               Container(
-                width: Responsive.isMobile(context) ? 135.0 : 220.0,
+                width: Responsive.isMobile(context) ? 150.0 : 220.0,
                 margin: Responsive.isMobile(context) ? EdgeInsets.only(bottom: imageSize) : EdgeInsets.only(
                     top: 4.0, left: 4.0, right: 4.0, bottom: imageSize),
                 padding: Responsive.isMobile(context) ? EdgeInsets.all(8.0) : EdgeInsets.all(20.0),

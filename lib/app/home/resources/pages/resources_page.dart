@@ -1051,14 +1051,14 @@ class _ResourcesPageState extends State<ResourcesPage> {
   }
 
   Widget _buildResourceDetail(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: Responsive.isMobile(context) ? EdgeInsets.symmetric(horizontal: 0, vertical: 10)
+      padding: Responsive.isMobile(context) ? EdgeInsets.symmetric(horizontal: 0, vertical: 0)
           : Responsive.isDesktopS(context) ? EdgeInsets.symmetric(horizontal: 30, vertical: 20)
           : EdgeInsets.symmetric(horizontal: 100, vertical: 20),
       child: SingleChildScrollView(
-        child: Column(
+        child: Stack(
           children: [
+            ResourceDetailPage(),
             InkWell(
               onTap: () {
                 _loadScrollPosition();
@@ -1067,22 +1067,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   _clearFilter();
                 });
               },
-              child: Row(
-                children: [
-                  Icon(Icons.arrow_back, color: AppColors.primaryColor),
-                  SpaceW12(),
-                  Text(_categoryName, style: textTheme.titleSmall?.copyWith(
-                    color: AppColors.greyAlt,
-                    height: 1.5,
-                    letterSpacing: 0.2,
-                    fontWeight: FontWeight.w700,
-                    //fontSize: fontSize,
-                  ),),
-                ],
+              child: Padding(
+                padding: MediaQuery.of(context).size.width >= 1200 || Responsive.isMobile(context) ? EdgeInsets.all(10.0)
+                    : EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
+                child: Image.asset(ImagePath.ARROW_BACK_SHADOW, scale: 1.2, height: 40,),
               ),
             ),
             Responsive.isMobile(context) || Responsive.isTablet(context) ? SpaceH8() : SpaceH4(),
-            ResourceDetailPage(),
             SpaceH50(),
           ],
         ),

@@ -234,7 +234,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        buildShare(context, resource, AppColors.darkGray),
+                        buildShare(context, resource, AppColors.darkGray, AppColors.white),
                         SpaceW8(),
                         IconButton(
                           icon: (resource.likes.contains(userId))
@@ -313,7 +313,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              buildShare(context, resource, AppColors.darkGray),
+                              buildShare(context, resource, AppColors.darkGray, AppColors.white),
                               IconButton(
                                 icon: (resource.likes.contains(userId))
                                     ? FaIcon(FontAwesomeIcons.solidHeart) : FaIcon(FontAwesomeIcons.heart),
@@ -404,7 +404,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                     Responsive.isMobile(context) ? Container() : Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        buildShare(context, resource, AppColors.darkGray),
+                        buildShare(context, resource, AppColors.darkGray, AppColors.white),
                         SpaceW8(),
                         IconButton(
                           icon: (resource.likes.contains(userId))
@@ -581,12 +581,12 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
             }
           },
           child: Padding(
-            padding: const EdgeInsets.all(18.0),
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
             child: Text(
               resource.participants.contains(userId)
                   ? StringConst.QUIT_RESOURCE
                   : StringConst.JOIN_RESOURCE,
-              style: textTheme.bodySmall?.copyWith(
+              style: textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: resource.participants.contains(userId) ? Constants.darkGray : Constants.white,
               ),
@@ -598,7 +598,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   ? AppColors.grey70 : Constants.turquoise),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(30.0),
                   ))),
         ),
       ],

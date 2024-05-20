@@ -285,7 +285,7 @@ class _PersonalDataState extends State<PersonalData> {
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
        const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
       contentPadding: Responsive.isMobile(context) ?
-        EdgeInsets.all(Sizes.mainPadding) :
+        EdgeInsets.symmetric(horizontal: Sizes.mainPadding) :
         EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       child: SingleChildScrollView(
         child: Column(
@@ -300,8 +300,10 @@ class _PersonalDataState extends State<PersonalData> {
                 child: Row(
                   children: [
                     Image.asset(ImagePath.ARROW_B, height: 30),
-                    SpaceW12(),
+                    Spacer(),
                     CustomTextMediumBold(text: StringConst.PERSONAL_DATA),
+                    Spacer(),
+                    SizedBox(width: 30),
                   ],
                 )) : CustomTextMediumBold(text: StringConst.PERSONAL_DATA),
             Container(

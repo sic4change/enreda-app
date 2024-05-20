@@ -61,7 +61,7 @@ class _GamificationState extends State<GamificationPage> {
     return RoundedContainer(
       height: MediaQuery.of(context).size.height,
       contentPadding: Responsive.isMobile(context) ?
-        EdgeInsets.all(Sizes.mainPadding) :
+        EdgeInsets.symmetric(horizontal:Sizes.mainPadding) :
         EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
         const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
@@ -170,10 +170,13 @@ class _GamificationState extends State<GamificationPage> {
                 WebHome.controller.selectIndex(0);});
             },
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(ImagePath.ARROW_B, height: 30),
-                SpaceW12(),
+                Spacer(),
                 CustomTextMediumBold(text: StringConst.GAMIFICATION),
+                Spacer(),
+                SizedBox(width: 30),
               ],
             ),
           ) : Row(
@@ -199,6 +202,7 @@ class _GamificationState extends State<GamificationPage> {
           for(var item in _gamificationValues) _getStepTileMobile(item),
           SpaceH12(),
           _allTasksDone ? _getCertificateButtonMobile(userFullName) : Container(),
+          SpaceH80()
         ],
       ),
     );

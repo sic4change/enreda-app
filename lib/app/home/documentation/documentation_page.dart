@@ -46,9 +46,8 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
       height: MediaQuery.of(context).size.height,
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
         const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-      contentPadding: Responsive.isMobile(context) ?
-      EdgeInsets.all(Sizes.mainPadding) :
-      EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+      contentPadding: Responsive.isMobile(context) ? EdgeInsets.only(bottom: Sizes.mainPadding) :
+        EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       child: Stack(
         children: [
           isSmallScreen ? InkWell(
@@ -57,16 +56,20 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
                 WebHome.controller.selectIndex(0);});
             },
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SpaceW15(),
                 Image.asset(ImagePath.ARROW_B, height: 30),
-                SpaceW12(),
-                CustomTextMediumBold(text: StringConst.DOCUMENTATION),
+                Spacer(),
+                CustomTextMediumBold(text: StringConst.MY_DOCUMENTS),
+                Spacer(),
+                SizedBox(width: 30,)
               ],
             ),
           ) : Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              CustomTextMediumBold(text: StringConst.DOCUMENTATION),
+              CustomTextMediumBold(text: StringConst.MY_DOCUMENTS),
             ],
           ),
           StreamBuilder<UserEnreda>(
@@ -100,8 +103,9 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
 
                       }
                       return Container(
-                        margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5),
-                        decoration: BoxDecoration(
+                        margin: Responsive.isMobile(context) ? EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 1.5) :
+                          EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5),
+                        decoration: Responsive.isMobile(context) ? null : BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(color: AppColors.greyBorder)
                         ),
@@ -182,8 +186,6 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomTextBoldTitle(title: StringConst.PERSONAL_DOCUMENTATION.toUpperCase()),
-              SpaceH8(),
               InkWell(
                 child: Row(
                   children: [
@@ -197,8 +199,7 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
                       child: Text(
                         StringConst.ADD_DOCUMENTS,
                         style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: GoogleFonts.outfit().fontFamily,
+                          fontSize: 15,
                           fontWeight: FontWeight.w300,
                         ),
                       ),
@@ -313,11 +314,17 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
           TextEditingController newDocument = TextEditingController();
           GlobalKey<FormState> addDocumentKey = GlobalKey<FormState>();
           return AlertDialog(
-            title: Text(StringConst.SET_DOCUMENT_NAME),
+            title: CustomTextBoldTitle(title: StringConst.SET_DOCUMENT_NAME),
             content: Form(
               key: addDocumentKey,
               child: TextFormField(
                   controller: newDocument,
+                  style: TextStyle(
+                      fontFamily: GoogleFonts.inter().fontFamily,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: AppColors.chatDarkGray
+                  ),
                   validator: (value){
                     bool used = false;
                     if(value!.isEmpty) return StringConst.FORM_GENERIC_ERROR;

@@ -199,6 +199,15 @@ class SpaceW12 extends StatelessWidget {
   }
 }
 
+class SpaceW15 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 15.0,
+    );
+  }
+}
+
 class SpaceW16 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

@@ -49,7 +49,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
     final auth = Provider.of<AuthBase>(context, listen: false);
 
     TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 12, 13, md: 12);
+    double fontSize = responsiveSize(context, 14, 15, md: 14);
     double sidePadding = responsiveSize(context, 15, 20, md: 17);
 
     return Scaffold(
@@ -61,7 +61,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
             onTap: widget.onTap,
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.greyBorder, width: 1),
+                border: Border.all(color: AppColors.blue050, width: 1),
                 borderRadius: BorderRadius.all(Radius.circular(15)),
                 color: Constants.white,
                 boxShadow: [
@@ -172,7 +172,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                               value: 1,
                                               child:
                                                   Text('Denunciar el recurso',
-                                                    style: textTheme.button?.copyWith(
+                                                    style: textTheme.bodySmall?.copyWith(
                                                       height: 1.5,
                                                       color: AppColors.red,
                                                       fontWeight: FontWeight.w700,
@@ -215,7 +215,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                       letterSpacing: 1,
                                       fontSize: fontSize,
                                       fontWeight: FontWeight.bold,
-                                      color: Constants.lilac),
+                                      color: AppColors.primaryColor),
                                 ),
                               ),
                               SpaceH4(),
@@ -230,7 +230,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                     letterSpacing: 1,
                                     fontSize: fontSize,
                                     fontWeight: FontWeight.bold,
-                                    color: Constants.penBlue,
+                                    color: AppColors.turquoiseBlue,
                                   ),
                                 ),
                               ),
@@ -251,7 +251,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                             decoration: BoxDecoration(
-                              border: Border.all(color: AppColors.greyTxtAlt, width: 1),
+                              border: Border.all(color: AppColors.grey350, width: 1),
                               borderRadius: BorderRadius.all(Radius.circular(20)),
                               color: Constants.white
                             ),
@@ -265,12 +265,12 @@ class _ResourceListTileState extends State<ResourceListTile> {
                             )
                           ),
                           Spacer(),
-                          buildShareButton(
-                              context, widget.resource, Constants.grey),
+                          buildShare(
+                              context, widget.resource, Constants.grey, AppColors.greyTxtAlt),
                           SpaceW4(),
                           auth.currentUser == null
                             ? IconButton(
-                                icon: FaIcon(FontAwesomeIcons.heart),
+                                icon: FaIcon(FontAwesomeIcons.heart, color: AppColors.red),
                                 tooltip: 'Me gusta',
                                 color: Constants.darkGray,
                                 iconSize: 20,
@@ -289,7 +289,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                     },
                                   )
                                 : IconButton(
-                                    icon: FaIcon(FontAwesomeIcons.heart),
+                                    icon: FaIcon(FontAwesomeIcons.heart, color: AppColors.red),
                                     tooltip: 'Me gusta',
                                     color: Constants.darkGray,
                                     onPressed: () {

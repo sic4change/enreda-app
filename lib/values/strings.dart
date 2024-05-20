@@ -331,8 +331,8 @@ class StringConst {
   static const String MODALITY = 'Modalidad';
   static String SHARE_TEXT(String title, String resourceId) => 'El recurso "$title" podría interesarte.\n\nhttps://enredawebapp.web.app/resources/$resourceId';
   static String SHARE_TEXT_PILLS(String title, String trainingPillId) => 'La píldora formativa: "$title" podría interesarte.\n\nhttps://enredawebapp.web.app/pills/$trainingPillId';
-  static const String JOIN_RESOURCE = 'ME INTERESA PARTICIPAR';
-  static const String QUIT_RESOURCE = 'NO ME INTERESA PARTICIPAR';
+  static const String JOIN_RESOURCE = 'Me interesa participar';
+  static const String QUIT_RESOURCE = 'No me interesa participar';
   static const String ENTER = 'Entrar';
   static const String CANCEL = 'Cancelar';
   static const String CLOSE = 'Cerrar';

@@ -21,13 +21,10 @@ import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:enreda_app/app/home/models/competency.dart';
-import 'package:enreda_app/app/home/models/interest.dart';
 import 'package:enreda_app/app/home/resources/resource_detail/box_item_data.dart';
 import 'package:enreda_app/app/home/resources/streams/competencies_by_resource.dart';
 import 'package:enreda_app/app/home/resources/streams/interests_by_resource.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:enreda_app/app/home/resources/global.dart' as globals;
 
 import '../../../../common_widgets/show_alert_dialog.dart';
 import '../../../../common_widgets/show_back_icon.dart';
@@ -255,7 +252,7 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            buildShare(context, resource, AppColors.darkGray),
+                            buildShare(context, resource, AppColors.darkGray, AppColors.white),
                             SpaceW8(),
                             IconButton(
                               icon: (resource.likes.contains(userId))

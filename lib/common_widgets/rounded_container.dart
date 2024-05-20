@@ -1,3 +1,4 @@
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 
@@ -30,9 +31,9 @@ class RoundedContainer extends StatelessWidget {
         height: height,
         width: width,
         decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(radius),
-          border: Border.all(color: borderColor, width: borderWith!,),
+          color: Responsive.isMobile(context) ? Colors.transparent : color,
+          borderRadius: Responsive.isMobile(context) ? BorderRadius.zero : BorderRadius.circular(radius),
+          border: Responsive.isMobile(context) ? null : Border.all(color: borderColor, width: borderWith!,),
         ),
         child: child);
   }

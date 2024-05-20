@@ -41,23 +41,23 @@ class WebHome extends StatefulWidget {
       : super(key: key);
 
   static final SidebarXController controller = SidebarXController(selectedIndex: 0, extended: true);
-  static ValueNotifier<int> selectedIndex = ValueNotifier(2);
+  static ValueNotifier<int> selectedIndex = ValueNotifier(0);
   final ValueNotifier<bool> showChatNotifier;
 
-  static goToControlPanel() {
-    WebHome.selectedIndex.value = 2;
-    WebHome.controller.selectIndex(0);
-  }
-
-  static goToParticipants() {
-    WebHome.selectedIndex.value = 2;
-    WebHome.controller.selectIndex(1);
-  }
-
-  static goResources() {
-    WebHome.selectedIndex.value = 2;
-    WebHome.controller.selectIndex(2);
-  }
+  // static goToControlPanel() {
+  //   WebHome.selectedIndex.value = 2;
+  //   WebHome.controller.selectIndex(0);
+  // }
+  //
+  // static goToParticipants() {
+  //   WebHome.selectedIndex.value = 2;
+  //   WebHome.controller.selectIndex(1);
+  // }
+  //
+  // static goResources() {
+  //   WebHome.selectedIndex.value = 2;
+  //   WebHome.controller.selectIndex(2);
+  // }
 
   @override
   State<WebHome> createState() => _WebHomeState();
@@ -134,58 +134,6 @@ class _WebHomeState extends State<WebHome> {
         });
   }
 
-  /*@override
-  Widget build(BuildContext context) {
-    final auth = Provider.of<AuthBase>(context, listen: false);
-    final database = Provider.of<Database>(context, listen: false);
-
-    return StreamBuilder<User?>(
-        stream: Provider.of<AuthBase>(context).authStateChanges(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return AccessPage();
-          if (snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.active) {
-            return StreamBuilder<UserEnreda>(
-              stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  UserEnreda _userEnreda;
-                  _userEnreda = snapshot.data!;
-                  if (_userEnreda.role != 'Desempleado') {
-                    Future.delayed(Duration.zero, () {
-                      _signOut(context);
-                      adminSignOut(context);
-                    });
-                    return Container();
-                  }
-                  var _photo = (_userEnreda.profilePic?.src == null || _userEnreda.profilePic?.src == ""
-                      ? "" : _userEnreda.profilePic?.src)!;
-                  var userName = '${_userEnreda.firstName ?? ""} ${_userEnreda.lastName ?? ""}';
-                  _assignedSocialEntity = _userEnreda.assignedEntityId;
-                  return StreamBuilder<SocialEntity>(
-                    stream: database.socialEntityStream(
-                        _assignedSocialEntity!),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) return Container();
-                      if (snapshot.hasData) {
-                        final socialEntity = snapshot.data!;
-                        return _buildContent(context, _userEnreda, _photo, userName, socialEntity);
-                      } else {
-                        return Center(
-                            child: CircularProgressIndicator());
-                      }
-                    },
-                  );
-                }
-                else {
-                  return Container();
-                }
-              },
-            );
-          }
-          return CircularProgressIndicator();
-        });
-  }*/
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
@@ -282,8 +230,8 @@ class _WebHomeState extends State<WebHome> {
                           )),
                       child: TextButton(
                         onPressed: () {
+                          selectedIndexBodyWidget = 1;
                           setState(() {
-                            selectedIndexBodyWidget = 1;
                             ResourcesPage.selectedIndex.value = 0;
                           });
                         },
@@ -309,8 +257,9 @@ class _WebHomeState extends State<WebHome> {
                           )),
                       child: TextButton(
                         onPressed: () {
+                          selectedIndexBodyWidget = 2;
                           setState(() {
-                            selectedIndexBodyWidget = 2;
+                            ResourcesPage.selectedIndex.value = 0;
                           });
                         },
                         child: Text(
@@ -339,16 +288,16 @@ class _WebHomeState extends State<WebHome> {
                   ),
                   tooltip: 'Cuenta',
                   onPressed: () {
+                    selectedIndexBodyWidget = 0;
                     setState(() {
-                      selectedIndexBodyWidget = 0;
                       WebHome.controller.selectIndex(0);
                     });
                   },
                 ) : Container(),
                 MediaQuery.of(context).size.width > 1000 ? InkWell(
                     onTap: () {
+                      selectedIndexBodyWidget = 0;
                       setState(() {
-                        selectedIndexBodyWidget = 0;
                         WebHome.controller.selectIndex(0);
                       });
                     },
@@ -376,75 +325,64 @@ class _WebHomeState extends State<WebHome> {
                 ),
               ],
             ),
-            //drawer: isSmallScreen ? null : SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,),
-            body: selectedIndexBodyWidget == 0 ? Container(
-              width: MediaQuery.of(context).size.width,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 1600),
-                child: Padding(
-                  padding: WebHome.controller.selectedIndex == 6
-                      || WebHome.controller.selectedIndex == 7 || Responsive.isMobile(context) ?
-                    const EdgeInsets.all(0) : const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble),
-                  child: Row(
-                    children: [
-                      !isSmallScreen && WebHome.controller.selectedIndex != 6 && WebHome.controller.selectedIndex != 7 ?
-                        SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,) : Container(),
-                      Expanded(child: Center(child: Padding(
-                        padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 10) :
-                          WebHome.controller.selectedIndex != 6
-                              && WebHome.controller.selectedIndex != 7 ? EdgeInsets.only(top: 20) :
-                          EdgeInsets.only(top: 0),
-                        child: AnimatedBuilder(
-                            animation: WebHome.controller,
-                            builder: (context, child){
-                              _key.currentState?.closeDrawer();
-                              if (hasEntity && !isSmallScreen && WebHome.controller.selectedIndex > 5) {
-                                WebHome.controller.selectIndex(WebHome.controller.selectedIndex + 2);
-                              }
-                              switch(WebHome.controller.selectedIndex){
-                                case 0:
-                                  return !isSmallScreen ? ControlPanelPage(user: user,) : hasEntity ?
-                                  ControlPanelMobileInterventionPage(user: user) :
-                                  ControlPanelMobileNoInterventionPage(user: user);
-                                case 1:
-                                  return MyCurriculumPage();
-                                case 2:
-                                  return PersonalData();
-                                case 3:
-                                  return MyCompetenciesPage();
-                                case 4:
-                                  return MyResourcesPage();
-                                case 5:
-                                  return GamificationPage(
-                                    showChatNotifier: widget.showChatNotifier,
-                                    goBackToCV: () => setState(() {
-                                      WebHome.controller.selectIndex(1);
-                                    }),
-                                    goBackToCompetencies: () => setState(() {
-                                      WebHome.controller.selectIndex(3);
-                                    }),
-                                  );
-                                case 6:
-                                  return ResourcesPage();
-                                case 7:
-                                  return CompetenciesPage(showChatNotifier: widget.showChatNotifier);
-                                case 8:
-                                    return EnredaContactPage();
-                                case 9:
-                                    return ParticipantDocumentationPage(participantUser: user);
-                                default:
-                                  return ResourcesPage();
-                              }
-                            },
-                          ),
-                      ),))
-                    ],
+            body: selectedIndexBodyWidget == 1 ? ResourcesPage() : selectedIndexBodyWidget == 2 ?
+                  CompetenciesPage(showChatNotifier: widget.showChatNotifier) :
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 1600),
+                      child: Padding(
+                        padding: !isSmallScreen ? const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble) : EdgeInsets.zero,
+                        child: Row(
+                          children: [
+                            !isSmallScreen ? SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,) : Container(),
+                            Expanded(child: Center(child: Padding(
+                              padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 10) : EdgeInsets.only(top: 0),
+                              child: AnimatedBuilder(
+                                animation: WebHome.controller,
+                                builder: (context, child){
+                                  _key.currentState?.closeDrawer();
+                                 /* if (hasEntity && !isSmallScreen && WebHome.controller.selectedIndex > 5) {
+                                    WebHome.controller.selectIndex(WebHome.controller.selectedIndex + 2);
+                                  }*/
+                                  switch(WebHome.controller.selectedIndex){
+                                    case 0:
+                                      return !isSmallScreen ? ControlPanelPage(user: user,) : hasEntity ?
+                                      ControlPanelMobileInterventionPage(user: user) :
+                                      ControlPanelMobileNoInterventionPage(user: user);
+                                    case 1:
+                                      return MyCurriculumPage();
+                                    case 2:
+                                      return PersonalData();
+                                    case 3:
+                                      return MyCompetenciesPage();
+                                    case 4:
+                                      return MyResourcesPage();
+                                    case 5:
+                                      return GamificationPage(
+                                        showChatNotifier: widget.showChatNotifier,
+                                        goBackToCV: () => setState(() {
+                                          WebHome.controller.selectIndex(1);
+                                        }),
+                                        goBackToCompetencies: () => setState(() {
+                                          WebHome.controller.selectIndex(3);
+                                        }),
+                                      );
+                                    case 6:
+                                      return EnredaContactPage();
+                                    case 7:
+                                      return ParticipantDocumentationPage(participantUser: user);
+                                    default:
+                                      return ResourcesPage();
+                                  }
+                                },
+                              ),
+                            ),))
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ) : selectedIndexBodyWidget == 1 ?
-                ResourcesPage() : selectedIndexBodyWidget == 2 ?
-                CompetenciesPage(showChatNotifier: widget.showChatNotifier) : Container(),
           );
         });
 

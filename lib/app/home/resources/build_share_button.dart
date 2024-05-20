@@ -82,7 +82,7 @@ Widget buildShareButton(BuildContext context, Resource resource, Color color) {
               ),
               SpaceW16(),
               Text('Compartir',
-                style: textTheme.bodyText1?.copyWith(
+                style: textTheme.bodySmall?.copyWith(
                   color: Constants.grey,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
@@ -103,7 +103,7 @@ Widget buildShareButton(BuildContext context, Resource resource, Color color) {
   );
 }
 
-Widget buildShare(BuildContext context, Resource resource, Color color) {
+Widget buildShare(BuildContext context, Resource resource, Color color, Color iconColor) {
   showToast() {
     FToast fToast = FToast().init(context);
 
@@ -197,7 +197,7 @@ Widget buildShare(BuildContext context, Resource resource, Color color) {
         height: 10,
         widget: Icon(
           Icons.share_outlined,
-          color: Responsive.isMobile(context) ? Colors.white : AppColors.greyTxtAlt,
+          color: iconColor,
           size: 20,
         ),
 

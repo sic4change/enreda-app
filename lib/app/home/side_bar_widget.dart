@@ -1,17 +1,11 @@
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
-import 'package:enreda_app/common_widgets/custom_sidebar_button.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
-import 'package:enreda_app/common_widgets/precached_avatar.dart';
-import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/responsive.dart';
-import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,11 +16,9 @@ class SideBarWidget extends StatefulWidget {
   const SideBarWidget({
     Key? key,
     required SidebarXController controller,
-    required this.profilePic,
     required this.user,
     required this.keyWebHome}) : _controller = controller, super(key: key);
   final SidebarXController _controller;
-  final String profilePic;
   final UserEnreda user;
   final GlobalKey<ScaffoldState> keyWebHome;
 

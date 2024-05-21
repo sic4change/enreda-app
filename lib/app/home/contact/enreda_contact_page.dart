@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:enreda_app/app/home/enreda-contact/enreda_contact_detail.dart';
+import 'package:enreda_app/app/home/contact/enreda_contact_detail.dart';
 import 'package:enreda_app/app/home/models/addressUser.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/country.dart';
@@ -196,28 +196,13 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                     widget: _buildMyUserPhoto(context, user.profilePic!.src),
                     title: '${user.firstName} ${user.lastName}',
                     description: StringConst.ASSIGNED_CONTACT_DESCRIPTION,
-                    icon: InkWell(
-                        onTap: (){
-                          kIsWeb ? sendWhatsAppWebMessage(
-                              socialEntity.contactMobilePhone!,
-                              StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2) :
-                          Responsive.isMobile(context) ? openWhatsAppMobile(
-                              context, socialEntity.contactMobilePhone!,
-                              StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2) :
-                          sendWhatsAppWebMessage(
-                              socialEntity.contactMobilePhone!,
-                              StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(ImagePath.WHATSAPP_ICON),
-                        )),
+                    icon: _buildEntityActionsContact(context, user, socialEntity),
                   ),
                   ContactDetail(
                     widget: _buildMyUserPhoto(context, socialEntity.photo!),
                     title: '${socialEntity.name}',
                     description: '$cityName, $countryName',
-                    icon: _buildEntityActions(context, socialEntity),
+                    icon: _buildEntityActionsEntity(context, socialEntity),
                   ),
                 ],
               ),
@@ -291,7 +276,56 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
     );
   }
 
-  Widget _buildEntityActions(BuildContext context, SocialEntity socialEntity) {
+  Widget _buildEntityActionsContact(BuildContext context, UserEnreda user, SocialEntity socialEntity) {
+    return Container(
+      height: 40,
+      width: double.infinity,
+      padding: EdgeInsets.all(4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CardButtonContact(
+            title: StringConst.EMAIL,
+            icon: Icon(Icons.email_outlined, color: AppColors.turquoiseBlue, size: 20,),
+            onTap: () {
+              sendEmail(
+                toEmail: socialEntity.contactEmail!,
+                subject: StringConst.SUBJECT,
+                body: StringConst.BODY,
+              ).catchError((error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Hubo un error al enviar el correo: $error')),
+                );
+              });
+            },
+          ),
+          SpaceW4(),
+          Container(
+              height: 15,
+              child: VerticalDivider(color: AppColors.white,)),
+          SpaceW4(),
+          CardButtonContact(
+            title: '',
+            icon: Image.asset(ImagePath.WHATSAPP_ICON, width: 30,),
+            color: Colors.transparent,
+            onTap: (){
+              kIsWeb ? sendWhatsAppWebMessage(
+                  socialEntity.contactMobilePhone!,
+                  StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2) :
+              Responsive.isMobile(context) ? openWhatsAppMobile(
+                  context, socialEntity.contactMobilePhone!,
+                  StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2) :
+              sendWhatsAppWebMessage(
+                  socialEntity.contactMobilePhone!,
+                  StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEntityActionsEntity(BuildContext context, SocialEntity socialEntity) {
     return Container(
       height: 40,
       width: double.infinity,

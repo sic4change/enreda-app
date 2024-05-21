@@ -97,9 +97,9 @@ class _GamificationState extends State<GamificationPage> {
                       _allTasksDone = true;
                     }
 
-                    return Responsive.isDesktop(context)
-                        ? _gamificationWeb()
-                        : _gamificationMobile();
+                    return Responsive.isMobile(context) || Responsive.isTablet(context)
+                        ? _gamificationMobile()
+                        : _gamificationWeb();
                   }
                   else{
                     return Container();
@@ -348,8 +348,8 @@ class _GamificationState extends State<GamificationPage> {
         }
     }
     return Container(
-      width: 120,
-      height: 120,
+      width: 100,
+      height: 100,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           color: AppColors.starsBackgroundColor,
@@ -359,8 +359,8 @@ class _GamificationState extends State<GamificationPage> {
           Padding(
             padding: const EdgeInsets.only(top: 12, bottom: 2),
             child: Container(
-              height: 60,
-              width: 60,
+              height: 40,
+              width: 40,
               decoration: ShapeDecoration(
                 color: completedStars == 5 ? colorStar : Colors.transparent,
                 shape: StarBorder(
@@ -388,8 +388,8 @@ class _GamificationState extends State<GamificationPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   child: Container(
-                    height: 18,
-                    width: 18,
+                    height: 13,
+                    width: 13,
                     decoration: ShapeDecoration(
                       color: completedStars >= index ? colorStar : Colors.transparent,
                       shape: StarBorder(

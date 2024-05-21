@@ -38,7 +38,7 @@ class CompetenciesItemBuilderHorizontal<T> extends StatelessWidget {
   Widget _build(List<T> items, BuildContext context) {
     return ListView.builder(
       controller: scrollController,
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 4.0),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 4.0),
       itemCount: items.length,
       scrollDirection: Axis.horizontal,
       physics: AlwaysScrollableScrollPhysics(),

@@ -1,6 +1,6 @@
-import 'package:enreda_app/app/home/enreda-contact/menu_item.dart';
-import 'package:enreda_app/app/home/enreda-contact/menu_items.dart';
-import 'package:enreda_app/app/home/enreda-contact/on_selected.dart';
+import 'package:enreda_app/app/home/contact/menu_item.dart';
+import 'package:enreda_app/app/home/contact/menu_items.dart';
+import 'package:enreda_app/app/home/contact/on_selected.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';

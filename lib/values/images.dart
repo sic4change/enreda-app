@@ -11,6 +11,7 @@ class ImagePath {
   static const String LOGO = "$imageDir/enreda-logo.png";
   static const String LOGO_WHITE = "$imageDir/logo-enreda-blanco.png";
   static const String LOGO_MDPI = "$imageDir/enreda-mdpi.png";
+  static const String LOGO_WHITE_CHAT = "$imageDir/logo-white-chat.png";
   static const String LOGO_IC = "$imageDir/ic_enreda.png";
   static const String LOGO_FUNDAULA = '$imageDir/fundaula-logo.png';
   static const String LOGO_ENREDA = '$imageDir/logo-enreda.png';

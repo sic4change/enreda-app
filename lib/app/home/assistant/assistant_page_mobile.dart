@@ -7,6 +7,7 @@ import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/question.dart';
 import 'package:enreda_app/app/home/assistant/list_item_builder.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_competencies.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -88,6 +89,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
               },
               child:*/ SafeArea(
                 child: Container(
+                  margin: EdgeInsets.only(top: 10),
                   decoration: BoxDecoration(
                     color: Constants.white,
                     borderRadius: BorderRadius.only(
@@ -105,8 +107,8 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                               colors: [
-                                Constants.penLightBlue,
-                                Constants.penBlue,
+                                AppColors.greenCheckIcon,
+                                AppColors.turquoiseBlue,
                               ],
                               begin: const FractionalOffset(0.0, 0.0),
                               end: const FractionalOffset(0.5, 0.0),
@@ -116,15 +118,10 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                         child: Row(
                           children: [
                             SpaceW20(),
-                            Image.asset(ImagePath.LOGO_MDPI,
+                            Image.asset(ImagePath.LOGO_WHITE_CHAT,
                                 color: Constants.white, width: 30),
-                            SpaceW20(),
-                            Text(
-                              StringConst.CHAT_TITLE,
-                              style: TextStyle(
-                                  color: Constants.white,
-                                  fontWeight: FontWeight.w500),
-                            ),
+                            SpaceW12(),
+                            CustomTextMediumBold(text: StringConst.CHAT_TITLE, color: Colors.white,),
                           ],
                         ),
                       ),
@@ -205,9 +202,9 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                   child: LoadingIndicator(
                     indicatorType: Indicator.ballPulse /*Indicator.pacman*/,
                     colors: [
-                      Constants.chatLightBlue,
-                      Constants.penLightBlue,
-                      Constants.penBlue,
+                      AppColors.primary100,
+                      AppColors.primary500,
+                      AppColors.turquoiseBlue,
                     ],
                     backgroundColor: Constants.white,
                   ),
@@ -221,107 +218,109 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
 
   Widget _buildWriteMessageContainer(Database database) {
     return Container(
-      height: 80.0,
+      height: 60.0,
       color: Constants.chatLightGray,
-      padding: EdgeInsets.all(Constants.mainPadding),
-      child: Row(
-        children: [
-          ValueListenableBuilder<bool>(
-              valueListenable: isWritingNotifier,
-              builder: (context, isWriting, child) {
-                return Container(
-                    padding: EdgeInsets.only(
-                      right: Constants.mainPadding,
-                    ),
-                    child: IconButton(
-                      icon: Icon(Icons.backspace_outlined),
-                      color: AppColors.blueAlt,
-                      onPressed: () => isWriting ? {} : _editLastResponse(),
-                    ));
-              }),
-          ValueListenableBuilder<bool>(
-              valueListenable: isTextEnabledNotifier,
-              builder: (context, isTextEnabled, child) {
-                return Expanded(
-                    child: TextField(
-                  enabled: isTextEnabled,
-                  controller: messageEditingController,
-                  style: simpleTextStyle(),
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(10.0, 1.0, 5.0, 10.0),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
+        child: Row(
+          children: [
+            ValueListenableBuilder<bool>(
+                valueListenable: isWritingNotifier,
+                builder: (context, isWriting, child) {
+                  return Container(
+                      padding: EdgeInsets.only(
+                        right: Constants.mainPadding,
                       ),
-                      hintText: 'Escribe algo...',
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                      )),
-                ));
-              }),
-          ValueListenableBuilder<List<Choice>>(
-              valueListenable: currentChoicesNotifier,
-              builder: (context, currentChoice, child) {
-                return Container(
-                  margin: EdgeInsets.only(left: Constants.mainPadding),
-                  child: IconButton(
-                      hoverColor: Colors.transparent,
-                      icon: Icon(Icons.send),
-                      color: AppColors.blueAlt,
-                      onPressed: () {
-                        final question = questions.firstWhere((element) =>
-                            element.id == _currentChatQuestion.questionId);
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back),
+                        color: AppColors.primary500,
+                        onPressed: () => isWriting ? {} : _editLastResponse(),
+                      ));
+                }),
+            ValueListenableBuilder<bool>(
+                valueListenable: isTextEnabledNotifier,
+                builder: (context, isTextEnabled, child) {
+                  return Expanded(
+                      child: TextField(
+                    enabled: isTextEnabled,
+                    controller: messageEditingController,
+                    style: simpleTextStyle(),
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(10.0, 1.0, 5.0, 10.0),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                        ),
+                        hintText: 'Escribe algo...',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                        )),
+                  ));
+                }),
+            ValueListenableBuilder<List<Choice>>(
+                valueListenable: currentChoicesNotifier,
+                builder: (context, currentChoice, child) {
+                  return Container(
+                    margin: EdgeInsets.only(left: Constants.mainPadding),
+                    child: IconButton(
+                        hoverColor: Colors.transparent,
+                        icon: Icon(Icons.send),
+                        color: AppColors.primary500,
+                        onPressed: () {
+                          final question = questions.firstWhere((element) =>
+                              element.id == _currentChatQuestion.questionId);
 
-                        if ((question.type == StringConst.YES_NO_QUESTION ||
-                                question.type ==
-                                    StringConst.MULTICHOICE_QUESTION) &&
-                            currentChoice.isEmpty) {
-                          showAlertDialog(
-                            this.context,
-                            title: StringConst.CHAT_TITLE_QUESTION,
-                            content: StringConst.CHAT_CONTENT_QUESTION,
-                            defaultActionText: StringConst.OK,
-                          );
-                          return;
-                        }
+                          if ((question.type == StringConst.YES_NO_QUESTION ||
+                                  question.type ==
+                                      StringConst.MULTICHOICE_QUESTION) &&
+                              currentChoice.isEmpty) {
+                            showAlertDialog(
+                              this.context,
+                              title: StringConst.CHAT_TITLE_QUESTION,
+                              content: StringConst.CHAT_CONTENT_QUESTION,
+                              defaultActionText: StringConst.OK,
+                            );
+                            return;
+                          }
 
-                        if (question.type == StringConst.TEXT_QUESTION &&
-                            messageEditingController.text.isEmpty) {
-                          showAlertDialog(
-                            this.context,
-                            title: StringConst.CHAT_TITLE_QUESTION,
-                            content: StringConst.CHAT_ANSWER_QUESTION,
-                            defaultActionText: StringConst.OK,
-                          );
-                          return;
-                        }
+                          if (question.type == StringConst.TEXT_QUESTION &&
+                              messageEditingController.text.isEmpty) {
+                            showAlertDialog(
+                              this.context,
+                              title: StringConst.CHAT_TITLE_QUESTION,
+                              content: StringConst.CHAT_ANSWER_QUESTION,
+                              defaultActionText: StringConst.OK,
+                            );
+                            return;
+                          }
 
-                        final minSelectedActivities = 3;
-                        if (currentChoice.length < minSelectedActivities &&
-                            question.choicesCollection ==
-                                StringConst.ACTIVITIES_CHOICES) {
-                          showAlertDialog(
-                            context,
-                            title: StringConst.CHAT_TITLE_QUESTION,
-                            content:
-                            StringConst.CHAT_SELECT1_QUESTION + '${minSelectedActivities}' + StringConst.CHAT_SELECT2_QUESTION,
-                            defaultActionText: StringConst.OK,
-                          );
-                          return;
-                        }
+                          final minSelectedActivities = 3;
+                          if (currentChoice.length < minSelectedActivities &&
+                              question.choicesCollection ==
+                                  StringConst.ACTIVITIES_CHOICES) {
+                            showAlertDialog(
+                              context,
+                              title: StringConst.CHAT_TITLE_QUESTION,
+                              content:
+                              StringConst.CHAT_SELECT1_QUESTION + '${minSelectedActivities}' + StringConst.CHAT_SELECT2_QUESTION,
+                              defaultActionText: StringConst.OK,
+                            );
+                            return;
+                          }
 
-                        _saveUserResponse(question, database, currentChoice);
+                          _saveUserResponse(question, database, currentChoice);
 
-                        if (question.isLastQuestion != null &&
-                            question.isLastQuestion!) {
-                          _addExperience();
-                        } else {
-                          _showNextChatQuestion(
-                              question, currentChoice, database);
-                        }
-                      }),
-                );
-              }),
-        ],
+                          if (question.isLastQuestion != null &&
+                              question.isLastQuestion!) {
+                            _addExperience();
+                          } else {
+                            _showNextChatQuestion(
+                                question, currentChoice, database);
+                          }
+                        }),
+                  );
+                }),
+          ],
+        ),
       ),
     );
   }

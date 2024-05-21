@@ -40,20 +40,17 @@ class _ExpandedCompetencyTileState extends State<ExpandedCompetencyTile> {
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
-      height: 464.0,
-      width: Responsive.isMobile(context) ? 135.0 : 260.0,
-      padding: EdgeInsets.all(20.0),
+      height: Responsive.isMobile(context) ? 315.0 : 464.0,
+      width: Responsive.isMobile(context) ? 150.0 : 260.0,
+      padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.altWhite,
           shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(20.0),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 4.0,
-              offset: Offset(0.0, 1.0),
-            ),
-          ]),
+          borderRadius: BorderRadius.circular(10.0),
+          border: Border.all(
+            color: AppColors.blue050,
+          ) ,
+          ),
       child: Column(
         children: [
           CompetencyTile(
@@ -65,7 +62,7 @@ class _ExpandedCompetencyTileState extends State<ExpandedCompetencyTile> {
             child: Text(
               widget.competency.description,
               textAlign: TextAlign.center,
-              style: textTheme.bodyText1?.copyWith(
+              style: textTheme.bodySmall?.copyWith(
                 fontSize: Responsive.isMobile(context) ? 10.0 : 14.0,
               ),
             ),

@@ -5,6 +5,7 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
@@ -42,7 +43,7 @@ class _ChatPillVideoState extends State<ChatPillVideo> {
           child: EnredaButton(
               height: 30.0,
               buttonTitle: "Ver vídeo",
-              buttonColor: Constants.chatDarkBlue,
+              buttonColor: AppColors.turquoiseBlue,
               titleStyle: textTheme.titleSmall?.copyWith(
                   color: Colors.white
               ),

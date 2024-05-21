@@ -18,6 +18,7 @@ import 'package:enreda_app/app/home/trainingPills/training_list_tile_mobile.dart
 import 'package:enreda_app/app/home/trainingPills/training_list_tile.dart';
 import 'package:enreda_app/app/sign_in/sign_out_admin.dart';
 import 'package:enreda_app/common_widgets/custom_person_pill_image.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -377,18 +378,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
           margin: const EdgeInsets.only(top: 20.0),
           child: Column(
             children: [
-              FilterTextFieldRow(
-                  searchTextController: _searchTextController,
-                  onPressed: () => setStateIfMounted(() {
-                    filterResource.searchText = _searchTextController.text;
-                  }),
-                  onFieldSubmitted: (value) => setStateIfMounted(() {
-                    filterResource.searchText = _searchTextController.text;
-                  }),
-                  clearFilter: () => _clearFilter(),
-                  hintText: 'Nombre del recurso, organizador, país...',
-              ),
-              SpaceH20(),
               Padding(
                 padding: Responsive.isMobile(context)
                     ? EdgeInsets.symmetric(horizontal: 15)
@@ -405,19 +394,26 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   },
                   child: Row(
                     children: [
-                      Icon(Icons.arrow_back, color: AppColors.primaryColor),
-                      SpaceW12(),
-                      Text(_categoryName, style: textTheme.titleSmall?.copyWith(
-                        color: AppColors.greyAlt,
-                        height: 1.5,
-                        letterSpacing: 0.2,
-                        fontWeight: FontWeight.w700,
-                        fontSize:  isBigScreen ? 25 : 20,
-                        //fontSize: fontSize,
-                      ),),
+                      Image.asset(ImagePath.ARROW_B, height: 30),
+                      Spacer(),
+                      CustomTextMediumBold(text: _categoryName),
+                      Spacer(),
+                      SizedBox(width: 30),
                     ],
                   ),
                 ),
+              ),
+              SpaceH12(),
+              FilterTextFieldRow(
+                searchTextController: _searchTextController,
+                onPressed: () => setStateIfMounted(() {
+                  filterResource.searchText = _searchTextController.text;
+                }),
+                onFieldSubmitted: (value) => setStateIfMounted(() {
+                  filterResource.searchText = _searchTextController.text;
+                }),
+                clearFilter: () => _clearFilter(),
+                hintText: 'Nombre del recurso, organizador, país...',
               ),
               SpaceH20(),
               _categoryFormationId == "6ag9Px7zkFpHgRe17PQk" ?
@@ -514,18 +510,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
           margin: const EdgeInsets.only(top: 20.0),
           child: Column(
             children: [
-              FilterTextFieldRow(
-                  searchTextController: _searchTextController,
-                  onPressed: () => setStateIfMounted(() {
-                    filterTrainingPill.searchText = _searchTextController.text;
-                  }),
-                  onFieldSubmitted: (value) => setStateIfMounted(() {
-                    filterTrainingPill.searchText = _searchTextController.text;
-                  }),
-                  clearFilter: () => _clearFilter(),
-                  hintText: 'Nombre del video, categoría...',
-              ),
-              SpaceH20(),
               Padding(
                 padding: Responsive.isMobile(context)
                     ? EdgeInsets.symmetric(horizontal: 15)
@@ -541,19 +525,26 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   },
                   child: Row(
                     children: [
-                      Icon(Icons.arrow_back, color: AppColors.primaryColor),
-                      SpaceW12(),
-                      Text('Píldoras formativas', style: textTheme.titleSmall?.copyWith(
-                        color: AppColors.greyAlt,
-                        height: 1.5,
-                        letterSpacing: 0.2,
-                        fontWeight: FontWeight.w700,
-                        fontSize:  isBigScreen ? 25 : 20,
-                        //fontSize: fontSize,
-                      ),),
+                      Image.asset(ImagePath.ARROW_B, height: 30),
+                      Spacer(),
+                      CustomTextMediumBold(text: 'Píldoras formativas'),
+                      Spacer(),
+                      SizedBox(width: 30),
                     ],
                   ),
                 ),
+              ),
+              SpaceH12(),
+              FilterTextFieldRow(
+                searchTextController: _searchTextController,
+                onPressed: () => setStateIfMounted(() {
+                  filterTrainingPill.searchText = _searchTextController.text;
+                }),
+                onFieldSubmitted: (value) => setStateIfMounted(() {
+                  filterTrainingPill.searchText = _searchTextController.text;
+                }),
+                clearFilter: () => _clearFilter(),
+                hintText: 'Nombre del video, categoría...',
               ),
             ],
           ),
@@ -702,7 +693,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Divider(thickness: 1.5),
+                            child: Divider(thickness: 1.5, color: AppColors.grey120,),
                           ),
                         ],
                       ),

@@ -116,7 +116,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                           resource.provinceName = province == null ? '' : province.name;
                           return StreamBuilder<City>(
                               stream: database
-                                  .cityStream(resource.city),
+                                  .cityStream(resource.city!),
                               builder: (context, snapshot) {
                                 final city = snapshot.data;
                                 resource.cityName = city == null ? '' : city.name;

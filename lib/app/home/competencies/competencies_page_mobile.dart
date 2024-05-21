@@ -6,6 +6,7 @@ import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -41,7 +42,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
 
     return Container(
       padding: EdgeInsets.only(
-          top: 30, left: 10, right: 10, bottom: 50),
+          top: 10, left: 0, right: 0, bottom: 0),
       child: StreamBuilder<User?>(
           stream: Provider.of<AuthBase>(context).authStateChanges(),
           builder: (context, snapshot) {
@@ -51,7 +52,6 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                   if (snapshot.hasData && !showingSubCategoriesPage)
                     bodyWidget = _buildCompetenciesCategories(context, snapshot);
                   return SingleChildScrollView(
-                    padding: const EdgeInsets.all(4.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,8 +59,9 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                         _buildHeader(context),
                         SpaceH20(),
                         Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: snapshot.hasData? bodyWidget: Center(child: CircularProgressIndicator(),),
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                          child: snapshot.hasData? bodyWidget :
+                          Center(child: CircularProgressIndicator(),),
                         ),
                       ],
                     ),
@@ -71,22 +72,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
-
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: Constants.mainPadding / 2),
-      padding: const EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              offset: Offset(0, 1), //(x,y)
-              blurRadius: 4.0,
-              spreadRadius: 1.0),
-        ],
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-        color: Constants.white,
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -96,13 +82,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    StringConst.COMPETENCIES.toUpperCase(),
-                    style: textTheme.bodySmall?.copyWith(
-                        fontSize: 18.0,
-                        color: Constants.penBlue,
-                        fontWeight: FontWeight.w400),
-                  ),
+                  CustomTextBoldTitle(title: StringConst.COMPETENCIES),
                   SpaceW8(),
                   PillTooltip(
                     title: StringConst.PILL_COMPETENCIES,
@@ -112,10 +92,13 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
               ),
             ),
           ),
-          Divider(),
-          _buildCompetenciesDefinitionPanel(context),
-          Divider(),
-          _buildCompetenciesLevelsPanel(context),
+          Container(
+              color: AppColors.primary030,
+              child: _buildCompetenciesDefinitionPanel(context)),
+          SizedBox(height: 10),
+          Container(
+              color: AppColors.primary030,
+              child: _buildCompetenciesLevelsPanel(context)),
         ],
       ),
     );
@@ -123,70 +106,62 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
 
   Widget _buildCompetenciesLevelsPanel(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-
     return ExpandablePanel(
-      theme: ExpandableThemeData(iconColor: Constants.penBlue),
+      theme: ExpandableThemeData(iconColor: AppColors.turquoiseBlue,
+          expandIcon: Icons.expand_circle_down_outlined,
+          collapseIcon: Icons.expand_less_outlined, iconSize: 30),
       header: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Text(StringConst.COMPETENCY_LEVELS,
-            textAlign: TextAlign.start,
-            style: textTheme.bodySmall?.copyWith(
-              color: Constants.penBlue,
-              fontWeight: FontWeight.bold,
-              fontSize: 18.0,
-            )),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+        child: CustomTextBoldTitle(title: StringConst.COMPETENCY_LEVELS),
       ),
-      expanded: Column(
-        children: [
-          Text(
-            StringConst.COMPETENCIES_LEVEL_INFO,
-            style: textTheme.bodySmall?.copyWith(
-              color: Constants.darkGray,
+      expanded: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+        child: Column(
+          children: [
+            Text(
+              StringConst.COMPETENCIES_LEVEL_INFO,
+              style: textTheme.bodySmall?.copyWith(
+                color: Constants.darkGray,
+              ),
             ),
-          ),
-          SpaceH20(),
-          Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildBadgeInfo(
+            SpaceH20(),
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildBadgeInfo(
                         context: context,
                         title: StringConst.COMPETENCY_NOT_OBTAINED.toUpperCase(),
                         badgeUrl: ImagePath.EMPTY_BADGE_SAMPLE,
                         description: ''),
-                  ),
-                  Expanded(
-                    child: _buildBadgeInfo(
+                    _buildBadgeInfo(
                         context: context,
                         title: StringConst.COMPETENCY_IDENTIFIED.toUpperCase(),
                         badgeUrl: ImagePath.IDENTIFIED_BADGE_SAMPLE,
                         description: StringConst.COMPETENCY_CHAT),
-                  ),
-                ],
-              ),
-              SpaceH20(),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildBadgeInfo(
+                  ],
+                ),
+                SpaceH20(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildBadgeInfo(
                         context: context,
                         title: StringConst.COMPETENCY_EVALUATED.toUpperCase(),
                         badgeUrl: ImagePath.VALIDATED_BADGE_SAMPLE,
                         description: StringConst.COMPETENCY_MICRO_TESTS),
-                  ),
-                  Expanded(
-                    child: _buildBadgeInfo(
+                    _buildBadgeInfo(
                         context: context,
                         title: StringConst.COMPETENCY_CERTIFIED.toUpperCase(),
                         badgeUrl: ImagePath.CERTIFIED_BADGE_SAMPLE,
                         description: StringConst.COMPETENCY_REFERENCES),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
       collapsed: Container(),
     );
@@ -195,21 +170,16 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
   Widget _buildCompetenciesDefinitionPanel(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     TextTheme textTheme = Theme.of(context).textTheme;
-
     return ExpandablePanel(
-      theme: ExpandableThemeData(iconColor: Constants.penBlue),
+      theme: ExpandableThemeData(iconColor: AppColors.turquoiseBlue,
+          expandIcon: Icons.expand_circle_down_outlined,
+          collapseIcon: Icons.expand_less_outlined, iconSize: 30),
       header: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(StringConst.COMPETENCY_DEFINITION,
-            textAlign: TextAlign.start,
-            style: textTheme.bodySmall?.copyWith(
-              color: Constants.penBlue,
-              fontWeight: FontWeight.bold,
-              fontSize: 18.0,
-            )),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+        child: CustomTextBoldTitle(title: StringConst.COMPETENCY_DEFINITION),
       ),
       expanded: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
         child: Column(
           children: [
             Text(StringConst.COMPETENCIES_INFO,
@@ -224,7 +194,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                     ? _showAlertNullUser(context)
                     : CupertinoScaffold.controller.index = 2,
                 child: Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -243,7 +213,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                         MaterialStateProperty.all(Constants.turquoise),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(30.0),
                     ))),
               ),
             ),
@@ -307,35 +277,40 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                 );
               }),
               child: Container(
-                width: (MediaQuery.of(context).size.width/2) - 40,
-                height: 180.0,
+                width: double.infinity,
+                height: 100.0,
                 padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
                 decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.4),
-                        offset: Offset(0, 1), //(x,y)
-                        blurRadius: 4.0,
-                        spreadRadius: 1.0),
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  border: Border.all(
+                    color: AppColors.blue050,
+                  ) ,
                   color: AppColors.white,
                 ),
-                child: Column(
+                child: Row(
                   children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 180,
+                          child: Text(
+                            c.name.toUpperCase(),
+                            style: textTheme.titleSmall?.copyWith(
+                              fontSize: 12.0
+                            ),
+                          ),
+                        ),
+                        SpaceH4(),
+                        CustomTextNormalSmall(title: 'Ver más')
+                      ],
+                    ),
                     Image.asset(
                       c.order == 1 ? ImagePath.COMPETENCIES_CATEGORIES_1:
                       c.order == 2 ? ImagePath.COMPETENCIES_CATEGORIES_2:
                       c.order == 3 ? ImagePath.COMPETENCIES_CATEGORIES_3:
                       ImagePath.COMPETENCIES_CATEGORIES_1,
-                      width: 100.0,
-                    ),
-                    SpaceH20(),
-                    Text(
-                      c.name.toUpperCase(),
-                      style: textTheme.titleSmall?.copyWith(
-                        fontSize: 12.0
-                      ),
                     ),
                   ],
                 ),

@@ -497,7 +497,7 @@ class StringConst {
   static const String BADGE_VALIDATED = 'validated';
   static const String BADGE_CERTIFIED = 'certified';
   static const String BADGE_PROCESSING = 'processing';
-  static const String CHAT_TITLE = 'Redas Chat';
+  static const String CHAT_TITLE = 'Chat de Enreda';
   static const String CHAT_TITLE_QUESTION = 'Aviso';
   static const String CHAT_CONTENT_QUESTION = 'Seleccione una respuesta';
   static const String CHAT_ANSWER_QUESTION = 'Escriba una respuesta';

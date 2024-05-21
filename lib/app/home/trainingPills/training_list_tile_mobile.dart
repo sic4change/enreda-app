@@ -60,7 +60,7 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
                           width: 150,
                           margin: const EdgeInsets.only(right: 8.0),
                           child: videoThumbnailArea(idYoutubeVideo)),
-                      Expanded(child: videoDescription(Constants.lilac, AppColors.greyTxtAlt)),
+                      Expanded(child: videoDescription(AppColors.blue100, AppColors.greyTxtAlt)),
                     ]
                 ),
               ),

@@ -8,6 +8,7 @@ class CardButtonContact extends StatelessWidget {
   final Widget icon;
   final VoidCallback onTap;
   final double width;
+  final Color color;
 
   CardButtonContact({
     Key? key,
@@ -15,6 +16,7 @@ class CardButtonContact extends StatelessWidget {
     required this.icon,
     required this.onTap,
     this.width = 100,
+    this.color = AppColors.white
   }) : super(key: key);
 
   @override
@@ -23,11 +25,11 @@ class CardButtonContact extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: width,
-        padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 10),
+        padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
         margin: EdgeInsets.only(bottom: 5, top: 5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30.0),
-          color: AppColors.white,
+          color: color,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

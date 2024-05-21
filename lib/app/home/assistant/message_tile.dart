@@ -13,6 +13,7 @@ import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -184,7 +185,7 @@ class _MessageTileState extends State<MessageTile> {
       child: Container(
         padding: EdgeInsets.all(Constants.mainPadding),
         decoration: BoxDecoration(
-          color: Constants.chatLightBlue,
+          color: AppColors.primary050,
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(23),
               topRight: Radius.circular(23),
@@ -212,9 +213,9 @@ class _MessageTileState extends State<MessageTile> {
       choiceBuilder: (item, i) => CustomChip(
         label: item.label,
         borderRadius: 7.0,
-        backgroundColor: Constants.chatLightBlue,
-        selectedBackgroundColor: Constants.chatDarkBlue,
-        textColor: Constants.chatDarkGray,
+        backgroundColor: AppColors.primary010,
+        selectedBackgroundColor: AppColors.primary500,
+        textColor: AppColors.turquoiseBlue,
         selected: item.selected,
         onSelect: item.select!,
       ),
@@ -229,7 +230,6 @@ class _MessageTileState extends State<MessageTile> {
 
   Widget _buildMultiChoiceResponse(BuildContext context) {
     //final minSelectedActivities = 3;
-
     return ChipsChoice<String>.multiple(
       choiceItems: C2Choice.listFrom<String, String>(
         source: _choices.map((e) => e.name).toList(),
@@ -239,9 +239,9 @@ class _MessageTileState extends State<MessageTile> {
       choiceBuilder: (item, i) => CustomChip(
         label: item.label,
         borderRadius: 7.0,
-        backgroundColor: Constants.chatLightBlue,
-        selectedBackgroundColor: Constants.chatDarkBlue,
-        textColor: Constants.chatDarkGray,
+        backgroundColor: AppColors.primary010,
+        selectedBackgroundColor: AppColors.primary500,
+        textColor: AppColors.turquoiseBlue,
         selected: item.selected,
         onSelect: item.select!,
       ),
@@ -358,7 +358,7 @@ class _MessageTileState extends State<MessageTile> {
             left: Constants.mainPadding,
             right: Constants.mainPadding),
         decoration: BoxDecoration(
-          color: Constants.chatDarkBlue,
+          color: AppColors.primaryColor,
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(23),
               topRight: Radius.circular(23),

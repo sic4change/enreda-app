@@ -7,8 +7,7 @@ import 'package:enreda_app/app/home/control_panel/control_panel_mobile_no_interv
 import 'package:enreda_app/app/home/control_panel/control_panel_page.dart';
 import 'package:enreda_app/app/home/curriculum/my_curriculum_page.dart';
 import 'package:enreda_app/app/home/documentation/documentation_page.dart';
-import 'package:enreda_app/app/home/enreda-contact/enreda_contact_page.dart';
-import 'package:enreda_app/app/home/models/socialEntity.dart';
+import 'package:enreda_app/app/home/contact/enreda_contact_page.dart';
 import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
 import 'package:enreda_app/app/home/side_bar_widget.dart';
@@ -71,7 +70,6 @@ class _WebHomeState extends State<WebHome> {
   late UserEnreda _userEnreda;
   String _userName = "";
   late TextTheme textTheme;
-  String? _assignedSocialEntity;
 
   @override
   void initState() {
@@ -143,8 +141,7 @@ class _WebHomeState extends State<WebHome> {
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return AccessPage();
-          if (snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.active) {
+          if (snapshot.hasData) {
             return StreamBuilder<UserEnreda>(
               stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
               builder: (context, snapshot) {
@@ -158,10 +155,7 @@ class _WebHomeState extends State<WebHome> {
                     });
                     return Container();
                   }
-                  var _photo = (_userEnreda.profilePic?.src == null || _userEnreda.profilePic?.src == ""
-                      ? "" : _userEnreda.profilePic?.src)!;
-                  var userName = '${_userEnreda.firstName ?? ""} ${_userEnreda.lastName ?? ""}';
-                  return _buildContent(context, _userEnreda, _photo, userName);
+                  return _buildContent(context, _userEnreda);
                 }
                 else {
                   return Container();
@@ -173,7 +167,7 @@ class _WebHomeState extends State<WebHome> {
         });
   }
 
-  Widget _buildContent(BuildContext context, UserEnreda user, String profilePic, String userName){
+  Widget _buildContent(BuildContext context, UserEnreda user){
     final auth = Provider.of<AuthBase>(context, listen: false);
     bool hasEntity = user.assignedEntityId == null || user.assignedEntityId == "" ? false : true;
     return ValueListenableBuilder<int>(
@@ -335,16 +329,13 @@ class _WebHomeState extends State<WebHome> {
                         padding: !isSmallScreen ? const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble) : EdgeInsets.zero,
                         child: Row(
                           children: [
-                            !isSmallScreen ? SideBarWidget(controller: WebHome.controller, profilePic: profilePic, user: user, keyWebHome: _key,) : Container(),
+                            !isSmallScreen ? SideBarWidget(controller: WebHome.controller, user: user, keyWebHome: _key,) : Container(),
                             Expanded(child: Center(child: Padding(
                               padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 10) : EdgeInsets.only(top: 0),
                               child: AnimatedBuilder(
                                 animation: WebHome.controller,
                                 builder: (context, child){
                                   _key.currentState?.closeDrawer();
-                                 /* if (hasEntity && !isSmallScreen && WebHome.controller.selectedIndex > 5) {
-                                    WebHome.controller.selectIndex(WebHome.controller.selectedIndex + 2);
-                                  }*/
                                   switch(WebHome.controller.selectedIndex){
                                     case 0:
                                       return !isSmallScreen ? ControlPanelPage(user: user,) : hasEntity ?

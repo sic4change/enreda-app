@@ -9,6 +9,7 @@ class SocialEntity {
     this.email,
     this.contactPhone,
     this.contactMobilePhone,
+    this.contactEmail,
     this.entityPhone,
     this.entityMobilePhone,
     this.address,
@@ -28,6 +29,7 @@ class SocialEntity {
   final String? email;
   final String? contactPhone;
   final String? contactMobilePhone;
+  final String? contactEmail;
   final String? entityPhone;
   final String? entityMobilePhone;
   final String? country;
@@ -56,6 +58,7 @@ class SocialEntity {
 
     final String contactPhone = data['contactPhone']??"";
     final String contactMobilePhone = data['contactMobilePhone']??"";
+    final String contactEmail = data['contactEmail']??"";
     final String entityPhone = data['entityPhone']??"";
     final String entityMobilePhone = data['entityMobilePhone']??"";
 
@@ -79,6 +82,7 @@ class SocialEntity {
         email: email,
         contactPhone: contactPhone,
         contactMobilePhone: contactMobilePhone,
+        contactEmail: contactEmail,
         entityPhone: entityPhone,
         entityMobilePhone: entityMobilePhone,
         address: address,
@@ -103,6 +107,7 @@ class SocialEntity {
       'email': email,
       'contactPhone': contactPhone,
       'contactMobilePhone': contactMobilePhone,
+      'contactEmail': contactEmail,
       'entityPhone': entityPhone,
       'entityMobilePhone': entityMobilePhone,
       'address': address?.toMap(),

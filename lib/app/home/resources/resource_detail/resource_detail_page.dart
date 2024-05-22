@@ -105,26 +105,46 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                 return StreamBuilder<Country>(
                     stream: database.countryStream(resource.country),
                     builder: (context, snapshot) {
-                      final country = snapshot.data;
-                      resource.countryName = country == null ? '' : country.name;
-                      resource.province ?? "";
-                      resource.city ?? "";
-                      return StreamBuilder<Province>(
-                        stream: database.provinceStream(resource.province),
-                        builder: (context, snapshot) {
-                          final province = snapshot.data;
-                          resource.provinceName = province == null ? '' : province.name;
-                          return StreamBuilder<City>(
-                              stream: database
-                                  .cityStream(resource.city!),
-                              builder: (context, snapshot) {
-                                final city = snapshot.data;
-                                resource.cityName = city == null ? '' : city.name;
-                                return Responsive.isMobile(context) ? _buildResourceDetailMobile(context, resource)
-                                    : _buildResourceDetailWeb(context, resource);
-                              });
-                        },
-                      );
+                      if (!snapshot.hasData) {
+                        return const Center(
+                            child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasData) {
+                        final country = snapshot.data;
+                        resource.countryName = country == null ? '' : country.name;
+                        resource.province ?? "";
+                        resource.city ?? "";
+                        return StreamBuilder<Province>(
+                          stream: database.provinceStream(resource.province),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
+                            if (snapshot.hasData) {
+                              final province = snapshot.data;
+                              resource.provinceName = province == null ? '' : province.name;
+                              return StreamBuilder<City>(
+                                stream: database.cityStream(resource.city!),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  }
+                                  if (snapshot.hasData) {
+                                    final city = snapshot.data;
+                                    resource.cityName = city == null ? '' : city.name;
+                                    return Responsive.isMobile(context) ? _buildResourceDetailMobile(context, resource)
+                                        : _buildResourceDetailWeb(context, resource);
+                                  }
+                                  return Container();
+                                },
+                              );
+                            }
+                            return Container();
+                          },
+                        );
+                      }
+                      return Container();
                     });
               },
             );
@@ -234,7 +254,9 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        buildShare(context, resource, AppColors.darkGray, AppColors.white),
+                        buildShare(context, resource, AppColors.darkGray,
+                            Responsive.isDesktopS(context) ? Colors.white : AppColors.darkGray,
+                            Responsive.isDesktopS(context) ? Colors.transparent : Colors.white),
                         SpaceW8(),
                         IconButton(
                           icon: (resource.likes.contains(userId))
@@ -313,7 +335,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              buildShare(context, resource, AppColors.darkGray, AppColors.white),
+                              buildShare(context, resource, AppColors.darkGray, AppColors.white, Colors.transparent),
                               IconButton(
                                 icon: (resource.likes.contains(userId))
                                     ? FaIcon(FontAwesomeIcons.solidHeart) : FaIcon(FontAwesomeIcons.heart),
@@ -404,7 +426,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                     Responsive.isMobile(context) ? Container() : Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        buildShare(context, resource, AppColors.darkGray, AppColors.white),
+                        buildShare(context, resource, AppColors.darkGray, AppColors.white, Colors.transparent),
                         SpaceW8(),
                         IconButton(
                           icon: (resource.likes.contains(userId))

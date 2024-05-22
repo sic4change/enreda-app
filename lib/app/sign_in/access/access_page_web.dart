@@ -221,7 +221,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
           ),
         ),
         Positioned(
-          top: Responsive.isDesktopS(context) ? 70 : 35,
+          top: 70,
           left: 0,
           right: 0,
           child: Center(

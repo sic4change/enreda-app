@@ -103,7 +103,7 @@ Widget buildShareButton(BuildContext context, Resource resource, Color color) {
   );
 }
 
-Widget buildShare(BuildContext context, Resource resource, Color color, Color iconColor) {
+Widget buildShare(BuildContext context, Resource resource, Color color, Color iconColor, Color buttonColor) {
   showToast() {
     FToast fToast = FToast().init(context);
 
@@ -186,7 +186,7 @@ Widget buildShare(BuildContext context, Resource resource, Color color, Color ic
     },
     child: Container(
       decoration: BoxDecoration(
-        color: Responsive.isMobile(context) ? Colors.transparent : Colors.white,
+        color: buttonColor,
         borderRadius: BorderRadius.circular(45.0),
       ),
       margin: Responsive.isMobile(context) ? EdgeInsets.zero : EdgeInsets.symmetric(vertical: 16.0, horizontal: 4.0),

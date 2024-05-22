@@ -266,7 +266,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                           ),
                           Spacer(),
                           buildShare(
-                              context, widget.resource, Constants.grey, AppColors.greyTxtAlt),
+                              context, widget.resource, Constants.grey, AppColors.greyTxtAlt, Colors.transparent),
                           SpaceW4(),
                           auth.currentUser == null
                             ? IconButton(

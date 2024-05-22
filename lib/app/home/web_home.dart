@@ -53,10 +53,10 @@ class WebHome extends StatefulWidget {
   //   WebHome.controller.selectIndex(1);
   // }
   //
-  // static goResources() {
-  //   WebHome.selectedIndex.value = 2;
-  //   WebHome.controller.selectIndex(2);
-  // }
+  static goResources() {
+    WebHome.controller.selectIndex(1);
+    ResourcesPage.selectedIndex.value = 0;
+  }
 
   @override
   State<WebHome> createState() => _WebHomeState();
@@ -140,7 +140,7 @@ class _WebHomeState extends State<WebHome> {
     return StreamBuilder<User?>(
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return AccessPage();
+          if (!snapshot.hasData) return _buildContentAnonymous(context);
           if (snapshot.hasData) {
             return StreamBuilder<UserEnreda>(
               stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
@@ -338,7 +338,7 @@ class _WebHomeState extends State<WebHome> {
                                   _key.currentState?.closeDrawer();
                                   switch(WebHome.controller.selectedIndex){
                                     case 0:
-                                      return !isSmallScreen ? ControlPanelPage(user: user,) : hasEntity ?
+                                      return auth.currentUser == null ? AccessPage() : !isSmallScreen ? ControlPanelPage(user: user,) : hasEntity ?
                                       ControlPanelMobileInterventionPage(user: user) :
                                       ControlPanelMobileNoInterventionPage(user: user);
                                     case 1:
@@ -379,6 +379,143 @@ class _WebHomeState extends State<WebHome> {
 
   }
 
+  Widget _buildContentAnonymous(BuildContext context){
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    return ValueListenableBuilder<int>(
+        valueListenable: WebHome.selectedIndex,
+        builder: (context, selectedIndex, child) {
+          final isSmallScreen = MediaQuery.of(context).size.width < 600;
+          return Scaffold(
+            key: _key,
+            appBar: isSmallScreen ? null : AppBar(
+              toolbarHeight: !isSmallScreen ? 100 : 80,
+              elevation: 1.0,
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.transparent,
+              bottom: const PreferredSize(
+                preferredSize: Size.fromHeight(1),
+                child: Divider(
+                    height: 1,
+                    color: AppColors.grey100),
+              ),
+              title: Transform(
+                transform:  Matrix4.translationValues(20.0, 0.0, 0.0),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: Responsive.isMobile(context)
+                          ? EdgeInsets.only(right: 30)
+                          : Responsive.isDesktopS(context)
+                          ? EdgeInsets.only(right: 30)
+                          : EdgeInsets.only(right: 50),
+                      child: InkWell(
+                        onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
+                        child: Image.asset(
+                          ImagePath.LOGO,
+                          height: 55,
+                          width: !isSmallScreen ? 125 : 85,
+                        ),
+                      ),
+                    ),
+                    !isSmallScreen ? Container(
+                      width: 1,
+                      height: 120,
+                      color: AppColors.grey100,
+                    ) : Container(),
+                    SpaceW24(),
+                    !isSmallScreen ? Container(
+                      decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: selectedIndexBodyWidget == 1
+                                  ? _underlineColor
+                                  : Colors.transparent,
+                              width: 4.0,
+                            ),
+                          )),
+                      child: TextButton(
+                        onPressed: () {
+                          selectedIndexBodyWidget = 1;
+                          setState(() {
+                            ResourcesPage.selectedIndex.value = 0;
+                          });
+                        },
+                        child: Text(
+                          StringConst.RESOURCES,
+                          style: GoogleFonts.ibmPlexMono(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ) : Container(),
+                    SpaceW24(),
+                    !isSmallScreen ? Container(
+                      decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: selectedIndexBodyWidget == 2
+                                  ? _underlineColor
+                                  : Colors.transparent,
+                              width: 4.0,
+                            ),
+                          )),
+                      child: TextButton(
+                        onPressed: () {
+                          selectedIndexBodyWidget = 2;
+                          setState(() {
+                            ResourcesPage.selectedIndex.value = 0;
+                          });
+                        },
+                        child: Text(
+                          StringConst.COMPETENCIES,
+                          style: GoogleFonts.ibmPlexMono(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ) : Container(),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                if (!auth.isNullUser && !isSmallScreen)
+                  Container(
+                    width: 1,
+                    height: 120,
+                    color: AppColors.grey100,
+                  ),
+                SizedBox(width: 20),
+                !isSmallScreen ? IconButton(
+                  icon: const Icon(
+                    CustomIcons.cuenta,
+                    color: AppColors.bluePetrol,
+                    size: 30,
+                  ),
+                  tooltip: 'Cuenta',
+                  onPressed: () {
+                    selectedIndexBodyWidget = 0;
+                    setState(() {
+                      WebHome.controller.selectIndex(0);
+                    });
+                  },
+                ) : Container(),
+                Padding(
+                  padding: Responsive.isMobile(context)
+                      ? EdgeInsets.only(right: 20)
+                      : Responsive.isDesktopS(context)
+                      ? EdgeInsets.only(right: 20)
+                      : EdgeInsets.only(right: 30),
+                  child: SizedBox(),
+                ),
+              ],
+            ),
+            body: selectedIndexBodyWidget == 1 ? ResourcesPage() : selectedIndexBodyWidget == 2 ?
+            CompetenciesPage(showChatNotifier: widget.showChatNotifier) :
+            AccessPage(),
+          );
+        });
+
+  }
 
 
   Future<void> _confirmSignOut(BuildContext context) async {

@@ -160,12 +160,12 @@ flutter:
     - images/cv-dots-2.svg
     - images/cv-dots-3.svg
     - images/icon-share.png
-    - images/background-otros-2X.png
-    - images/background-empleo-2X.png
-    - images/background-formacion-2X.png
-    - images/background-ocio-2X.png
-    - images/background-practicas-2X.png
-    - images/background-voluntariado-2X.png
+    - images/desktop-background-otros.png
+    - images/desktop-background-empleo.png
+    - images/desktop-background-formacion.png
+    - images/desktop-background-ocio.png
+    - images/desktop-background-practicas.png
+    - images/desktop-background-voluntariado.png
     - images/icon-click-fundaula.png
     - images/person-empleo.png
     - images/person-formacion.png
@@ -176,7 +176,7 @@ flutter:
     - images/person-pildoras-1.png
     - images/person-pildoras-2.png
     - images/person-pildoras-3.png
-    - images/background-pildoras.png
+    - images/desktop-background-pildoras.png
     - images/fundaula-logo.png
     - images/placeholder_video.png
     - images/info_icon.png

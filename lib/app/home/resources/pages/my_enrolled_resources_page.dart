@@ -10,6 +10,7 @@ import 'package:enreda_app/app/home/resources/pages/no_resources_ilustration.dar
 import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../values/values.dart';
@@ -103,10 +104,10 @@ class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
               },
               emptyTitle: 'Sin recursos',
               emptyMessage: 'No estás inscrito a ningún recurso',
-            )
-                : snapshot.connectionState == ConnectionState.active
-                ? NoResourcesIlustration(title: '¡Todavía no te has inscrito a ningún recurso!', imagePath: ImagePath.LEARNING_GIRL,)
-                : Center(child: CircularProgressIndicator());
+            ) : NoResourcesIlustration(
+                title: StringConst.NO_RESOURCES_TITLE,
+                subtitle: StringConst.NO_RESOURCES_SUBTITLE,
+                imagePath: ImagePath.NO_RESOURCES,);
           }),
     );
   }

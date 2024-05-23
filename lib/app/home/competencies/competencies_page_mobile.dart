@@ -306,6 +306,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                         CustomTextNormalSmall(title: 'Ver más')
                       ],
                     ),
+                    Spacer(),
                     Image.asset(
                       c.order == 1 ? ImagePath.COMPETENCIES_CATEGORIES_1:
                       c.order == 2 ? ImagePath.COMPETENCIES_CATEGORIES_2:

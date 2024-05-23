@@ -76,6 +76,8 @@ class ImagePath {
 
   // Ilustrations
   static const String LEARNING_GIRL = "$imageDir/empty-resources.png";
+  static const String NO_RESOURCES = "$imageDir/no-resources.png";
+  static const String NO_COMPETENCIES = "$imageDir/no-competencies.png";
   static const String ACCESS_PHOTO = "$imageDir/access-photo.png";
   static const String ACCESS_VECTOR = "$imageDir/vector-access.png";
   static const String LOGO_ENREDA_LIGHT = "$imageDir/logo-enreda-light.png";

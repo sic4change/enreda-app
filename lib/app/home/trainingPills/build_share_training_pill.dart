@@ -99,7 +99,7 @@ Widget buildShareTrainingPill(BuildContext context, TrainingPill trainingPill, C
       children: [
         Icon(
           Icons.share,
-          color: AppColors.primaryText2,
+          color: Responsive.isMobile(context) || Responsive.isMobileHorizontal(context) ? AppColors.primaryText2 : AppColors.white,
           size: 20,
         ),
         Responsive.isMobile(context) ? SizedBox(width: 0) : SizedBox(width: 10),

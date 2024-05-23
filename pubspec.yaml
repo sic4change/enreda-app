@@ -217,7 +217,8 @@ flutter:
     - images/seats-icon-yellow.png
     - images/access-photo.png
     - images/empty-resources.png
-    - images/empty-resources.png
+    - images/no-resources.png
+    - images/no-competencies.png
     - images/vector-access.png
     - images/logo-enreda-light.png
     - images/my-cv.png

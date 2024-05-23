@@ -49,7 +49,7 @@ class ListItemBuilderGrid<T> extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       return GridView.builder(
         controller: scrollController,
-        shrinkWrap: constraints.maxWidth < 550 ? true : false,
+        shrinkWrap: constraints.maxWidth < 300 ? true : false,
         padding: EdgeInsets.all(4.0),
         itemCount: items.length,
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(

@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:enreda_app/app/home/assistant/simple_text_style.dart';
 import 'package:enreda_app/app/home/models/chatQuestion.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
@@ -94,8 +95,8 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                             colors: [
-                              Constants.penLightBlue,
-                              Constants.penBlue,
+                              AppColors.greenCheckIcon,
+                              AppColors.turquoiseBlue,
                             ],
                             begin: const FractionalOffset(0.0, 0.0),
                             end: const FractionalOffset(0.5, 0.0),
@@ -105,7 +106,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                       child: Row(
                         children: [
                           SpaceW20(),
-                          Image.asset(ImagePath.LOGO_MDPI,
+                          Image.asset(ImagePath.LOGO_WHITE_CHAT,
                               color: Constants.white, width: 30),
                           SpaceW20(),
                           Text(
@@ -202,9 +203,9 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                   child: LoadingIndicator(
                     indicatorType: Indicator.ballPulse /*Indicator.pacman*/,
                     colors: [
-                      Constants.chatLightBlue,
-                      Constants.penLightBlue,
-                      Constants.penBlue,
+                      AppColors.primary100,
+                      AppColors.primary500,
+                      AppColors.turquoiseBlue,
                     ],
                     backgroundColor: Constants.white,
                   ),
@@ -218,9 +219,9 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
 
   Widget _buildWriteMessageContainer(Database database) {
     return Container(
-      height: 80.0,
+      height: 60.0,
       color: Constants.chatLightGray,
-      padding: EdgeInsets.all(Constants.mainPadding),
+      padding: EdgeInsets.symmetric(horizontal:Constants.mainPadding),
       child: Row(
         children: [
           ValueListenableBuilder<bool>(
@@ -232,7 +233,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                     ),
                     child: IconButton(
                       icon: Icon(Icons.backspace_outlined),
-                      color: AppColors.blueAlt,
+                      color: AppColors.primary500,
                       onPressed: () => isWriting ? {} : _editLastResponse(),
                     ));
               }),
@@ -275,7 +276,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                     : TextField(
                   enabled: isTextEnabled == 'text',
                   controller: messageEditingController,
-                  //style: simpleTextStyle(),
+                  style: simpleTextStyle(),
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(10.0, 1.0, 5.0, 10.0),
                       border: OutlineInputBorder(
@@ -296,7 +297,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                   child: IconButton(
                       hoverColor: Colors.transparent,
                       icon: Icon(Icons.send),
-                      color: AppColors.blueAlt,
+                      color: AppColors.primary500,
                       onPressed: () {
                         final question = questions.firstWhere((element) =>
                             element.id == _currentChatQuestion.questionId);

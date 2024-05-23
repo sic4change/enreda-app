@@ -65,7 +65,7 @@ class CompetenciesSubcategoriesPageWeb extends StatelessWidget {
                                       return Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          SpaceH40(),
+                                          SpaceH20(),
                                           Row(
                                             children: [
                                               Expanded(
@@ -107,9 +107,8 @@ class CompetenciesSubcategoriesPageWeb extends StatelessWidget {
                                               ),
                                             ],
                                           ),
-                                          SpaceH40(),
                                           Container(
-                                            height: 464.0,
+                                            height: 410.0,
                                             child: CompetenciesItemBuilderHorizontal<Competency>(
                                               scrollController: controller,
                                               snapshot: snapshotCompetencies,

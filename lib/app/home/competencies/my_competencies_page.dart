@@ -4,12 +4,12 @@ import 'package:enreda_app/app/home/curriculum/validate_competency_button.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/resources/pages/no_resources_ilustration.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
-import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
@@ -18,7 +18,6 @@ import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -54,7 +53,7 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
       height: MediaQuery.of(context).size.height,
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
         const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-      contentPadding: Responsive.isMobile(context) ?
+          contentPadding: Responsive.isMobile(context) ?
         EdgeInsets.symmetric(horizontal: Constants.mainPadding) :
         EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       child: SingleChildScrollView(
@@ -106,90 +105,88 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
                     return StreamBuilder<List<UserEnreda>>(
                         stream: database.userStream(auth.currentUser?.email ?? ''),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.active) {
-                            UserEnreda? user =
-                            snapshot.data != null && snapshot.data!.isNotEmpty
-                                ? snapshot.data!.first
-                                : null;
-                            return StreamBuilder<List<Competency>>(
-                                stream: database.competenciesStream(),
-                                builder: (context, snapshot) {
-                                  return CompetenciesItemBuilder<Competency>(
-                                    user: user,
-                                    snapshot: snapshot,
-                                    fitSmallerLayout: true,
-                                    emptyMessage:
-                                    'Todavía no hemos identificado ninguna competencia, ¡chatea con nuestro asistente para identificarlas!',
-                                    itemBuilder: (context, competency) {
-                                      final status =
-                                          user?.competencies[competency.id] ??
-                                              StringConst.BADGE_EMPTY;
-
-                                      return Container(
-                                        child: Column(
-                                          children: [
-                                            ExpandableCompetencyTile(
-                                              competency: competency,
-                                              status: status,
+                          UserEnreda? user =
+                          snapshot.data != null && snapshot.data!.isNotEmpty
+                              ? snapshot.data!.first
+                              : null;
+                          return StreamBuilder<List<Competency>>(
+                              stream: database.competenciesStream(),
+                              builder: (context, snapshot) {
+                                return snapshot.hasData && snapshot.data!.isNotEmpty
+                                    ? CompetenciesItemBuilder<Competency>(
+                                  user: user,
+                                  snapshot: snapshot,
+                                  fitSmallerLayout: true,
+                                  itemBuilder: (context, competency) {
+                                    final status =
+                                        user?.competencies[competency.id] ??
+                                            StringConst.BADGE_EMPTY;
+                                    return Container(
+                                      child: Column(
+                                        children: [
+                                          ExpandableCompetencyTile(
+                                            competency: competency,
+                                            status: status,
+                                          ),
+                                          if (status ==
+                                              StringConst.BADGE_IDENTIFIED)
+                                            ValidateCompetencyButton(
+                                                competency: competency,
+                                                database: database,
+                                                auth: auth,
+                                                onComingBack: () => setGamificationFlag(context: context, flagId: UserEnreda.FLAG_EVALUATE_COMPETENCY)
                                             ),
-                                            if (status ==
-                                                StringConst.BADGE_IDENTIFIED)
-                                              ValidateCompetencyButton(
-                                                  competency: competency,
-                                                  database: database,
-                                                  auth: auth,
-                                                  onComingBack: () => setGamificationFlag(context: context, flagId: UserEnreda.FLAG_EVALUATE_COMPETENCY)
-                                              ),
-                                            if (status ==
-                                                StringConst.BADGE_VALIDATED ||
-                                                status == StringConst.BADGE_CERTIFIED)
-                                              Text(
-                                                  status ==
-                                                      StringConst.BADGE_VALIDATED
-                                                      ? 'EVALUADA'
-                                                      : 'CERTIFICADA',
-                                                  style: textTheme.bodySmall
-                                                      ?.copyWith(
-                                                      fontSize: 14.0,
-                                                      fontWeight: FontWeight.w500,
-                                                      color:
-                                                      Constants.turquoise)),
+                                          if (status ==
+                                              StringConst.BADGE_VALIDATED ||
+                                              status == StringConst.BADGE_CERTIFIED)
+                                            Text(
+                                                status ==
+                                                    StringConst.BADGE_VALIDATED
+                                                    ? 'EVALUADA'
+                                                    : 'CERTIFICADA',
+                                                style: textTheme.bodySmall
+                                                    ?.copyWith(
+                                                    fontSize: 14.0,
+                                                    fontWeight: FontWeight.w500,
+                                                    color:
+                                                    Constants.turquoise)),
 
-                                            if (status == StringConst.BADGE_VALIDATED)
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              CompetencyDetailPage(competency: competency, user: user!)),
-                                                    );
-                                                  },
-                                                  child: Text('CERTIFICAR',
-                                                      style: textTheme.bodySmall
-                                                      ?.copyWith(
-                                                      fontSize: 14.0,
-                                                      fontWeight: FontWeight.w500,
-                                                      color:
-                                                      Constants.salmonDark))
-                                              ),
-                                            if (status == StringConst.BADGE_PROCESSING)
-                                              Text('EN PROCESO',
-                                                  style: textTheme.bodySmall
-                                                      ?.copyWith(
-                                                      fontSize: 14.0,
-                                                      fontWeight: FontWeight.w500,
-                                                      color:
-                                                      Constants.grey)),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
-                                });
-                          } else {
-                            return Center(child: CircularProgressIndicator());
-                          }
+                                          if (status == StringConst.BADGE_VALIDATED)
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            CompetencyDetailPage(competency: competency, user: user!)),
+                                                  );
+                                                },
+                                                child: Text('CERTIFICAR',
+                                                    style: textTheme.bodySmall
+                                                        ?.copyWith(
+                                                        fontSize: 14.0,
+                                                        fontWeight: FontWeight.w500,
+                                                        color:
+                                                        Constants.salmonDark))
+                                            ),
+                                          if (status == StringConst.BADGE_PROCESSING)
+                                            Text('EN PROCESO',
+                                                style: textTheme.bodySmall
+                                                    ?.copyWith(
+                                                    fontSize: 14.0,
+                                                    fontWeight: FontWeight.w500,
+                                                    color:
+                                                    Constants.grey)),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ) :
+                                NoResourcesIlustration(
+                                  title: StringConst.NO_COMPETENCIES_TITLE,
+                                  subtitle: StringConst.NO_COMPETENCIES_SUBTITLE,
+                                  imagePath: ImagePath.NO_COMPETENCIES,);
+                              });
                         });
                   }),
             ),

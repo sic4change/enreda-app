@@ -2,6 +2,7 @@ import 'package:enreda_app/app/home/competencies/competencies_subcategories_page
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -32,8 +33,6 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-    final textTheme = Theme.of(context).textTheme;
-
     return Container(
       padding: EdgeInsets.only(
           top: 30, left: 50, right: 50, bottom: 50),
@@ -66,14 +65,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Text(
-                                                StringConst.COMPETENCIES.toUpperCase(),
-                                                style: textTheme.bodySmall?.copyWith(
-                                                  color: Constants.penBlue,
-                                                  fontSize: 18.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
+                                              CustomTextMediumBold(text: StringConst.COMPETENCIES),
                                               SpaceW8(),
                                               Container(
                                                 width: 34,
@@ -139,8 +131,9 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                   Center(
                       child: Image.asset(
                     ImagePath.COMPETENCIES_ILLUSTRATION,
-                    width: 340.0,
+                    width: 280.0,
                   )),
+                  SpaceH20(),
                 ],
               ),
             ),
@@ -243,7 +236,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
             children: [
               Text(
                 StringConst.START_CHAT,
-                style: textTheme.bodySmall?.copyWith(
+                style: textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: Constants.white,
                 ),
@@ -257,7 +250,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
             backgroundColor: MaterialStateProperty.all(Constants.turquoise),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.circular(30.0),
             ))),
       ),
     );
@@ -340,7 +333,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                             ),
                           ),
                         ),
-                        SpaceW8(),
+                        Spacer(),
                         Expanded(
                           flex: Responsive.isDesktopS(context)? 3: 5,
                           child: Image.asset(
@@ -348,8 +341,8 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                             c.order == 2? ImagePath.COMPETENCIES_CATEGORIES_2:
                             c.order == 3? ImagePath.COMPETENCIES_CATEGORIES_3:
                             ImagePath.COMPETENCIES_CATEGORIES_1,
-                            height: 150,
-                            width: 150,
+                            height: 120,
+                            width: 120,
                           ),
                         ),
                       ],

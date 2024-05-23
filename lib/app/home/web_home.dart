@@ -44,17 +44,12 @@ class WebHome extends StatefulWidget {
   final ValueNotifier<bool> showChatNotifier;
 
   // static goToControlPanel() {
-  //   WebHome.selectedIndex.value = 2;
+  //   WebHome.selectedIndex.value = 0;
   //   WebHome.controller.selectIndex(0);
   // }
-  //
-  // static goToParticipants() {
-  //   WebHome.selectedIndex.value = 2;
-  //   WebHome.controller.selectIndex(1);
-  // }
-  //
+
   static goResources() {
-    WebHome.controller.selectIndex(1);
+    WebHome.selectedIndex.value = 1;
     ResourcesPage.selectedIndex.value = 0;
   }
 
@@ -65,7 +60,6 @@ class WebHome extends StatefulWidget {
 class _WebHomeState extends State<WebHome> {
   var bodyWidget = [];
   final _key = GlobalKey<ScaffoldState>();
-  var selectedIndexBodyWidget = 0;
   Color _underlineColor = Constants.lilac;
   late UserEnreda _userEnreda;
   String _userName = "";
@@ -73,7 +67,6 @@ class _WebHomeState extends State<WebHome> {
 
   @override
   void initState() {
-    selectedIndexBodyWidget = 0;
     WebHome.selectedIndex.value = 0;
     bodyWidget = [
       Container(),
@@ -216,7 +209,7 @@ class _WebHomeState extends State<WebHome> {
                       decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
-                              color: selectedIndexBodyWidget == 1
+                              color: WebHome.selectedIndex.value == 1
                                   ? _underlineColor
                                   : Colors.transparent,
                               width: 4.0,
@@ -224,8 +217,8 @@ class _WebHomeState extends State<WebHome> {
                           )),
                       child: TextButton(
                         onPressed: () {
-                          selectedIndexBodyWidget = 1;
                           setState(() {
+                            WebHome.selectedIndex.value = 1;
                             ResourcesPage.selectedIndex.value = 0;
                           });
                         },
@@ -243,7 +236,7 @@ class _WebHomeState extends State<WebHome> {
                       decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
-                              color: selectedIndexBodyWidget == 2
+                              color: WebHome.selectedIndex.value == 2
                                   ? _underlineColor
                                   : Colors.transparent,
                               width: 4.0,
@@ -251,8 +244,8 @@ class _WebHomeState extends State<WebHome> {
                           )),
                       child: TextButton(
                         onPressed: () {
-                          selectedIndexBodyWidget = 2;
                           setState(() {
+                            WebHome.selectedIndex.value = 2;
                             ResourcesPage.selectedIndex.value = 0;
                           });
                         },
@@ -282,16 +275,16 @@ class _WebHomeState extends State<WebHome> {
                   ),
                   tooltip: 'Cuenta',
                   onPressed: () {
-                    selectedIndexBodyWidget = 0;
                     setState(() {
+                      WebHome.selectedIndex.value = 0;
                       WebHome.controller.selectIndex(0);
                     });
                   },
                 ) : Container(),
                 MediaQuery.of(context).size.width > 1000 ? InkWell(
                     onTap: () {
-                      selectedIndexBodyWidget = 0;
                       setState(() {
+                        WebHome.selectedIndex.value = 0;
                         WebHome.controller.selectIndex(0);
                       });
                     },
@@ -319,8 +312,8 @@ class _WebHomeState extends State<WebHome> {
                 ),
               ],
             ),
-            body: selectedIndexBodyWidget == 1 ? ResourcesPage() : selectedIndexBodyWidget == 2 ?
-                  CompetenciesPage(showChatNotifier: widget.showChatNotifier) :
+            body: WebHome.selectedIndex.value == 1 ? bodyWidget[1] :
+                  WebHome.selectedIndex.value == 2 ? bodyWidget[2] :
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: ConstrainedBox(
@@ -427,7 +420,7 @@ class _WebHomeState extends State<WebHome> {
                       decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
-                              color: selectedIndexBodyWidget == 1
+                              color: WebHome.selectedIndex.value == 1
                                   ? _underlineColor
                                   : Colors.transparent,
                               width: 4.0,
@@ -435,8 +428,8 @@ class _WebHomeState extends State<WebHome> {
                           )),
                       child: TextButton(
                         onPressed: () {
-                          selectedIndexBodyWidget = 1;
                           setState(() {
+                            WebHome.selectedIndex.value = 1;
                             ResourcesPage.selectedIndex.value = 0;
                           });
                         },
@@ -454,7 +447,7 @@ class _WebHomeState extends State<WebHome> {
                       decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
-                              color: selectedIndexBodyWidget == 2
+                              color: WebHome.selectedIndex.value == 2
                                   ? _underlineColor
                                   : Colors.transparent,
                               width: 4.0,
@@ -462,8 +455,8 @@ class _WebHomeState extends State<WebHome> {
                           )),
                       child: TextButton(
                         onPressed: () {
-                          selectedIndexBodyWidget = 2;
                           setState(() {
+                            WebHome.selectedIndex.value = 2;
                             ResourcesPage.selectedIndex.value = 0;
                           });
                         },
@@ -493,8 +486,8 @@ class _WebHomeState extends State<WebHome> {
                   ),
                   tooltip: 'Cuenta',
                   onPressed: () {
-                    selectedIndexBodyWidget = 0;
                     setState(() {
+                      WebHome.selectedIndex.value = 0;
                       WebHome.controller.selectIndex(0);
                     });
                   },
@@ -509,9 +502,8 @@ class _WebHomeState extends State<WebHome> {
                 ),
               ],
             ),
-            body: selectedIndexBodyWidget == 1 ? ResourcesPage() : selectedIndexBodyWidget == 2 ?
-            CompetenciesPage(showChatNotifier: widget.showChatNotifier) :
-            AccessPage(),
+            body: WebHome.selectedIndex.value == 1 ? bodyWidget[1]
+                : WebHome.selectedIndex.value == 2 ? bodyWidget[2] : AccessPage(),
           );
         });
 

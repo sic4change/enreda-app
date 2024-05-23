@@ -84,8 +84,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               Padding(
-                                padding: Responsive.isMobile(context) ? EdgeInsets.all(8.0)
-                                    : EdgeInsets.symmetric(horizontal: sidePadding, vertical: sidePadding / 2),
+                                padding: EdgeInsets.symmetric(horizontal: sidePadding, vertical: 0),
                                 child: Text(
                                   widget.trainingPill.trainingPillCategoryName!,
                                   textAlign: TextAlign.left,
@@ -100,9 +99,8 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                                 ),
                               ),
                               Padding(
-                                padding: Responsive.isMobile(context) ? EdgeInsets.symmetric(horizontal: 8.0)
-                                    : EdgeInsets.only(right: sidePadding, left: sidePadding,
-                                    bottom: sidePadding / 2),
+                                padding: EdgeInsets.only(right: sidePadding, left: sidePadding,
+                                    bottom: 0),
                                 child: Text(
                                   widget.trainingPill.title.toUpperCase(),
                                   textAlign: TextAlign.left,
@@ -140,10 +138,9 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
                     Spacer(),
                     Container(
                       child: Padding(
-                        padding: Responsive.isMobile(context) ? EdgeInsets.all(8) :
-                        EdgeInsets.symmetric(horizontal: sidePadding, vertical: sidePadding),
+                        padding: EdgeInsets.symmetric(horizontal: sidePadding, vertical: 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Spacer(),

@@ -108,9 +108,10 @@ class _FavoriteResourcesPageState extends State<FavoriteResourcesPage> {
                 },
                 emptyTitle: 'Sin recursos',
                 emptyMessage: 'No tienes recursos en favoritos',
-              ): snapshot.connectionState == ConnectionState.active
-                  ? NoResourcesIlustration(title: '¡No tienes ningún recurso en favoritos!', imagePath: ImagePath.FAVORITES_ILLUSTRATION,)
-                  : Center(child: CircularProgressIndicator());;
+              ) : NoResourcesIlustration(
+                  title: StringConst.NO_FAVORITES_TITLE,
+                  subtitle: StringConst.NO_RESOURCES_SUBTITLE,
+                  imagePath: ImagePath.LEARNING_GIRL,);
             }),
     );
   }

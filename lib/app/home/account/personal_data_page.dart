@@ -1,14 +1,11 @@
 import 'package:chips_choice/chips_choice.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/models/addressUser.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/contact.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/education.dart';
-import 'package:enreda_app/app/home/models/gender.dart';
 import 'package:enreda_app/app/home/models/interest.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/socialEntity.dart';
@@ -23,7 +20,6 @@ import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_p
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_social_entity.dart';
 import 'package:enreda_app/common_widgets/custom_chip.dart';
 import 'package:enreda_app/common_widgets/custom_date_picker_title.dart';
-import 'package:enreda_app/common_widgets/custom_phone_form_field_title.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/custom_text_form_field_title.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';

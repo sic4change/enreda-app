@@ -71,7 +71,7 @@ class CustomButton extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 18.0, horizontal: Responsive.isDesktop(context)? 30.0 : 18.0),
               child: Text(
-                text.toUpperCase(),
+                text,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
@@ -85,7 +85,7 @@ class CustomButton extends StatelessWidget {
                 backgroundColor: MaterialStateProperty.all(color),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(30.0),
                     ))),
           ),
         ],

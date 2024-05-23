@@ -351,6 +351,12 @@ class StringConst {
   static const String AVAILABLE = "Disponibilidad";
   static const String SUBJECT = "Participante Enreda";
   static const String BODY = "Hola! Quisiera más información";
+  static const String NO_RESOURCES_SUBTITLE = "Descubre aquello que te hace diferente y ponlo en valor a la hora de buscar empleo";
+  static const String NO_FAVORITES_TITLE = "¡Todavía no tienes ningún recuso favorito!";
+  static const String NO_RESOURCES_TITLE = "¡Todavía no te has inscrito a ningún recuso!";
+  static const String NO_COMPETENCIES_TITLE = "¡Todavía no has conseguido ninguna competencia!";
+  static const String NO_COMPETENCIES_SUBTITLE = "¿No sabes por dónde empezar con tu búsqueda de empleo?";
+
 
   //Resource modalities
   static const String FACE_TO_FACE = 'Presencial';
@@ -477,7 +483,7 @@ class StringConst {
   static const String PATH_COMPETENCIES = "/competencies";
 
   //Assistant Chat
-  static const String START_CHAT = '¡INICIA EL CHAT!';
+  static const String START_CHAT = '¡Inicia el chat!';
   static const String USERNAME_PATTERN = '#name';
   static const String ACTIVITY_CHOICES = 'activityChoices';
   static const String ACTIVITY_ROLE_CHOICES = 'activityRoleChoices';

@@ -89,12 +89,8 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
               },
               child:*/ SafeArea(
                 child: Container(
-                  margin: EdgeInsets.only(top: 10),
                   decoration: BoxDecoration(
                     color: Constants.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15.0),
-                        topRight: Radius.circular(15.0)),
                   ),
                   clipBehavior: Clip.hardEdge,
                   child: Column(
@@ -217,9 +213,10 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
   }
 
   Widget _buildWriteMessageContainer(Database database) {
+    TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
       height: 60.0,
-      color: Constants.chatLightGray,
+      color: AppColors.primary050,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.0),
         child: Row(
@@ -251,9 +248,13 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                           borderSide: BorderSide.none,
                         ),
                         hintText: 'Escribe algo...',
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                        )),
+                        hintStyle: textTheme.bodySmall?.copyWith(
+                          color: AppColors.primaryText1,
+                          height: 1.5,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        ),
+                    ),
                   ));
                 }),
             ValueListenableBuilder<List<Choice>>(

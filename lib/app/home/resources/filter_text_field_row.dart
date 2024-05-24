@@ -95,12 +95,18 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
                       focusNode: _focusNode,
                       decoration: InputDecoration(
                         hintText: widget.hintText,
+                        hintStyle:  textTheme.bodySmall?.copyWith(
+                          color: AppColors.turquoiseBlue,
+                          height: 1.5,
+                          fontWeight: FontWeight.w500,
+                          fontSize: fontSize,
+                        ),
                         border: InputBorder.none,
                       ),
                       controller: widget.searchTextController,
                       keyboardType: TextInputType.text,
                       style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.greyAlt,
+                        color: AppColors.turquoiseBlue,
                         height: 1.5,
                         fontWeight: FontWeight.w500,
                         fontSize: fontSize,
@@ -110,13 +116,13 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
                 if (_isClearTextVisible)
                   IconButton(
                     padding: EdgeInsets.only(bottom: 2),
-                    icon: Icon(Icons.clear, color: Constants.darkGray),
+                    icon: Icon(Icons.clear, color: AppColors.turquoiseBlue),
                     onPressed: widget.clearFilter,
                   ),
                 if (!_isClearTextVisible)
                 IconButton(
                   padding: EdgeInsets.only(bottom: 2),
-                  icon: Icon(Icons.search, color: Constants.darkGray),
+                  icon: Icon(Icons.search, color: AppColors.turquoiseBlue),
                   onPressed: widget.onPressed,
                 ),
               ]),

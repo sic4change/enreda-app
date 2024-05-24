@@ -51,7 +51,7 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
-    double fontSizeTitle = responsiveSize(context, 22, 32, md: 30);
+    double fontSizeTitle = responsiveSize(context, 20, 32, md: 30);
     double fontSizeDescription = responsiveSize(context, 17, 21, md: 20);
     double maxWidth = responsiveSize(context, 320, 700, md: 600);
     return Stack(
@@ -130,7 +130,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline6
+                                    .bodyMedium
                                     ?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   fontSize: fontSizeTitle,
@@ -145,7 +145,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText1
+                                  .bodySmall
                                   ?.copyWith(
                                 color: Colors.white,
                                 fontSize: fontSizeDescription,
@@ -162,7 +162,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
                     child: EnredaButton(
-                        buttonTitle: widget.buttonText!.toUpperCase(),
+                        buttonTitle: widget.buttonText!,
                         buttonColor: AppColors.primaryColor,
                         titleColor: AppColors.white,
                         onPressed: () => {
@@ -182,7 +182,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1
+                              .bodySmall
                               ?.copyWith(
                             color: Colors.white,
                             fontSize: fontSizeDescription,
@@ -196,7 +196,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText1
+                                  .bodySmall
                                   ?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w800,

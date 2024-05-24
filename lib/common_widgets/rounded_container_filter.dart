@@ -1,4 +1,5 @@
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 
 class RoundedContainerFilter extends StatelessWidget {
@@ -21,7 +22,7 @@ class RoundedContainerFilter extends StatelessWidget {
       height: height,
       margin: margin,
       decoration: BoxDecoration(
-          color: Constants.lightTurquoise,
+          color: AppColors.primary030,
           borderRadius: BorderRadius.all(Radius.circular(20))),
       child: Padding(
         padding: padding,

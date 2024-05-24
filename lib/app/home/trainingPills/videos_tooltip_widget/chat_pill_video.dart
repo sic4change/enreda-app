@@ -41,12 +41,16 @@ class _ChatPillVideoState extends State<ChatPillVideo> {
       children: [
         Expanded(
           child: EnredaButton(
-              height: 30.0,
+              height: 45.0,
               buttonTitle: "Ver vídeo",
               buttonColor: AppColors.turquoiseBlue,
-              titleStyle: textTheme.titleSmall?.copyWith(
-                  color: Colors.white
+              borderRadius: const BorderRadius.all(Radius.circular(Sizes.RADIUS_18),),
+              titleStyle: textTheme.bodySmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0
               ),
+              padding: EdgeInsets.zero,
               onPressed: () {
                 setState(() {
                   _isVideoVisible = !_isVideoVisible;
@@ -72,11 +76,15 @@ class _ChatPillVideoState extends State<ChatPillVideo> {
         SpaceW12(),
         Expanded(
           child: !Responsive.isMobile(context) && !Responsive.isTablet(context) && !_hasContinued? EnredaButton(
-              height: 30.0,
+              height: 45.0,
               buttonTitle: "Omitir",
-              buttonColor:  Constants.chatBlue,
-              titleStyle: textTheme.titleSmall?.copyWith(
-                  color: Colors.white
+              buttonColor:  AppColors.blue050,
+              padding: EdgeInsets.zero,
+              borderRadius: const BorderRadius.all(Radius.circular(Sizes.RADIUS_18),),
+              titleStyle: textTheme.bodySmall?.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.0
               ),
               onPressed: () {
                 setState(() {
@@ -110,9 +118,11 @@ class _ChatPillVideoState extends State<ChatPillVideo> {
             child: EnredaButton(
                 height: 30.0,
                 buttonTitle: "Seguir",
-                buttonColor: Constants.chatDarkBlue,
-                titleStyle: textTheme.titleSmall?.copyWith(
-                    color: Colors.white
+                buttonColor: AppColors.blue100,
+                titleStyle: textTheme.bodySmall?.copyWith(
+                    color: AppColors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14.0
                 ),
                 onPressed: () {
                   setState(() {

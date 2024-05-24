@@ -218,9 +218,10 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
   }
 
   Widget _buildWriteMessageContainer(Database database) {
+    TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
       height: 60.0,
-      color: Constants.chatLightGray,
+      color: AppColors.primary050,
       padding: EdgeInsets.symmetric(horizontal:Constants.mainPadding),
       child: Row(
         children: [
@@ -232,7 +233,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                       right: Constants.mainPadding,
                     ),
                     child: IconButton(
-                      icon: Icon(Icons.backspace_outlined),
+                      icon: Icon(Icons.arrow_back),
                       color: AppColors.primary500,
                       onPressed: () => isWriting ? {} : _editLastResponse(),
                     ));
@@ -283,9 +284,13 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                         borderSide: BorderSide.none,
                       ),
                       hintText: StringConst.CHAT_WRITE,
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                      )),
+                      hintStyle: textTheme.bodySmall?.copyWith(
+                        color: AppColors.primaryText1,
+                        height: 1.5,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                  ),
                 )
                 );
               }),
@@ -362,6 +367,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
   }
 
   Widget _autocompleteTextField(Function(String) onChanged, Database database, TextEditingController messageEditingController) {
+    TextTheme textTheme = Theme.of(context).textTheme;
     return ValueListenableBuilder(
       valueListenable: sourceAutoCompleteNotifier,
       builder: (context, source, child) {
@@ -381,7 +387,21 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
             controller: messageEditingController,
             focusNode: focusNode,
             onEditingComplete: onFieldSubmitted,
-            decoration: const InputDecoration(hintText: StringConst.CHAT_SEARCH),
+            style: textTheme.bodySmall?.copyWith(
+              color: AppColors.primaryText1,
+              height: 1.5,
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+            ),
+            decoration: InputDecoration(
+                hintText: StringConst.CHAT_SEARCH,
+                hintStyle: textTheme.bodySmall?.copyWith(
+                  color: AppColors.primaryText1,
+                  height: 1.5,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),
+            ),
           );
         },
             optionsViewBuilder: (BuildContext context,
@@ -407,7 +427,8 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                         height: 40,
                         child: ListTile(
                           title:
-                            Text(option, style: Theme.of(context).textTheme.bodyLarge),
+                            Text(option,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.primaryText1)),
                           //visualDensity: VisualDensity(vertical: -2),
                         ),
                       ),

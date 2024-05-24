@@ -32,7 +32,7 @@ class Data {
     ),
     OnboardingPageData(
       logoWithTextImagePath: ImagePath.LOGO,
-      mainImagePath: ImagePath.PAGE_1,
+      mainImagePath: ImagePath.NO_RESOURCES,
       titleText: StringConst.ONBOARDING_TITLE,
       descriptionText: StringConst.ONBOARDING_DESC,
       circleImagePath: ImagePath.BLOB_2,

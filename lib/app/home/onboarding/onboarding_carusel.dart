@@ -31,8 +31,8 @@ class _OnboardingCarruselState extends State<OnboardingCarrusel> {
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
             colors: [
-              AppColors.blueDark.withOpacity(0.9844),
-              AppColors.blueLight.withOpacity(0.5104),
+              AppColors.turquoiseBlue.withOpacity(0.9844),
+              AppColors.blueDarker.withOpacity(0.5104),
             ],
           )
       ),
@@ -96,7 +96,7 @@ class _OnboardingCarruselState extends State<OnboardingCarrusel> {
                             textAlign: TextAlign.center,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText1
+                                .bodySmall
                                 ?.copyWith(
                               color: Colors.white,
                               fontSize: fontSizeDescription,

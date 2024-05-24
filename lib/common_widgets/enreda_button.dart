@@ -15,7 +15,7 @@ class EnredaButton extends StatelessWidget {
     this.onPressed,
     this.padding = const EdgeInsets.all(Sizes.PADDING_8),
     this.borderRadius = const BorderRadius.all(
-      Radius.circular(Sizes.RADIUS_4),
+      Radius.circular(Sizes.RADIUS_30),
     ),
     this.opensUrl = false,
     this.url = "",
@@ -56,14 +56,14 @@ class EnredaButton extends StatelessWidget {
     TextTheme textTheme = Theme.of(context).textTheme;
     double? textSize = responsiveSize(
       context,
-      Sizes.TEXT_SIZE_14,
-      Sizes.TEXT_SIZE_16,
-      md: Sizes.TEXT_SIZE_15,
+      Sizes.TEXT_SIZE_18,
+      Sizes.TEXT_SIZE_18,
+      md: Sizes.TEXT_SIZE_18,
     );
       return Text(
         buttonTitle,
         style: titleStyle ??
-            textTheme.button?.copyWith(
+            textTheme.bodySmall?.copyWith(
               color: titleColor,
               fontSize: textSize,
               letterSpacing: 1.1,
@@ -138,7 +138,7 @@ class EnredaButtonIcon extends StatelessWidget {
         Text(
           buttonTitle,
           style: titleStyle ??
-              textTheme.button?.copyWith(
+              textTheme.bodySmall?.copyWith(
                 color: titleColor,
                 fontSize: textSize,
                 letterSpacing: 1.1,

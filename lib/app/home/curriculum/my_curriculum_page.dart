@@ -1233,6 +1233,28 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            CustomTextTitle(title: StringConst.EDUCATIONAL_LEVEL.toUpperCase()),
+            SpaceW8(),
+            _addButton(() {
+              showDialog(
+                useRootNavigator: false,
+                barrierDismissible: dismissible,
+                context: context,
+                builder: (context) => AddEducationalLevel(
+                  selectedEducation: myMaxEducation,
+                  onSaved: (selectedEducation) {
+                    database.setUserEnreda(user!.copyWith(educationId: selectedEducation?.educationId??""));
+                  },
+                ),
+              );},
+            ),
+          ],
+        ),
+        _buildMyCareer(context),
+        SpaceH20(),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             CustomTextTitle(title: StringConst.EDUCATION.toUpperCase(), color: AppColors.turquoiseBlue,),
             SpaceW8(),
             _addButton(() {
@@ -1249,28 +1271,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             },)
           ],
         ),
-        SpaceH4(),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CustomTextSubTitle(title: StringConst.EDUCATIONAL_LEVEL.toUpperCase()),
-            SpaceW8(),
-            _addButton(() {
-              showDialog(
-                  useRootNavigator: false,
-                  barrierDismissible: dismissible,
-                  context: context,
-                  builder: (context) => AddEducationalLevel(
-                    selectedEducation: myMaxEducation,
-                    onSaved: (selectedEducation) {
-                      database.setUserEnreda(user!.copyWith(educationId: selectedEducation?.educationId??""));
-                    },
-                  ),
-              );},
-            ),
-          ],
-        ),
-        _buildMyCareer(context),
         SpaceH4(),
         StreamBuilder<List<Experience>>(
             stream: database.myExperiencesStream(user?.userId ?? ''),

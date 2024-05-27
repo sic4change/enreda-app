@@ -138,21 +138,21 @@ class _FormationFormState extends State<FormationForm> {
               ),
             ),
 
-        !widget.isMainEducation ? Container() :
-        formFieldCustom(
-          DropdownButtonFormField<Education>(
-            hint: Text(StringConst.EDUCATIONAL_LEVEL, maxLines: 2, overflow: TextOverflow.ellipsis),
-            isExpanded: true,
-            isDense: false,
-            value: _selectedEducation,
-            items: educationItems,
-            validator: (value) => _selectedEducation != null ? null : StringConst.FORM_MOTIVATION_ERROR,
-            onChanged: (value) => setState(() {
-              _selectedEducation = value;
-            }),
-            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-          ),
-        ),
+        // !widget.isMainEducation ? Container() :
+        // formFieldCustom(
+        //   DropdownButtonFormField<Education>(
+        //     hint: Text(StringConst.EDUCATIONAL_LEVEL, maxLines: 2, overflow: TextOverflow.ellipsis),
+        //     isExpanded: true,
+        //     isDense: false,
+        //     value: _selectedEducation,
+        //     items: educationItems,
+        //     validator: (value) => _selectedEducation != null ? null : StringConst.FORM_MOTIVATION_ERROR,
+        //     onChanged: (value) => setState(() {
+        //       _selectedEducation = value;
+        //     }),
+        //     style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+        //   ),
+        // ),
 
             formFieldCustom(
               DropdownButtonFormField<String>(
@@ -365,7 +365,8 @@ class _FormationFormState extends State<FormationForm> {
           position: '',
           professionActivitiesText: '',
           nameFormation: _nameFormationController.text,
-          education: widget.isMainEducation ? _selectedEducation!.label : '',
+          //education: widget.isMainEducation ? _selectedEducation!.label : '',
+          education: '',
           institution: _institution,
           extraData: _extraDataController.text,
 

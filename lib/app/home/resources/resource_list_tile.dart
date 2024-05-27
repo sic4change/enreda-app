@@ -87,22 +87,21 @@ class _ResourceListTileState extends State<ResourceListTile> {
                           height: 60,
                           child: Padding(
                             padding: EdgeInsets.only(
-                                left: sidePadding, right: sidePadding, top: 10),
+                                left: widget.resource.organizerImage == null ||
+                                    widget.resource.organizerImage!.isEmpty
+                                    ? sidePadding : sidePadding / 2, right: sidePadding, top: 10),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 widget.resource.organizerImage == null ||
                                         widget.resource.organizerImage!.isEmpty
                                     ? Container()
-                                    : LayoutBuilder(
-                                        builder: (context, constraints) {
-                                        return CircleAvatar(
-                                          radius: 15,
-                                          backgroundColor: Constants.white,
-                                          backgroundImage: NetworkImage(
-                                              widget.resource.organizerImage!),
-                                        );
-                                      }),
+                                    : CircleAvatar(
+                                      radius: 25,
+                                      backgroundColor: Constants.white,
+                                      backgroundImage: NetworkImage(
+                                          widget.resource.organizerImage!),
+                                    ),
                                 widget.resource.organizerImage == null ||
                                         widget.resource.organizerImage!.isEmpty
                                     ? Container()

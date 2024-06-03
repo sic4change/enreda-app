@@ -5,6 +5,7 @@ import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ControlPanelPage extends StatefulWidget {
   const ControlPanelPage({super.key, required this.user});
@@ -92,7 +93,6 @@ class _ControlPanelPageState extends State<ControlPanelPage> {
                     top: -20,
                     bottom: -10,
                     child: Image.asset(ImagePath.CONTROL_PANEL, height: 300,)) : Container(),
-
               ],
             ),
             ParticipantControlPanelPage(participantUser: widget.user!),

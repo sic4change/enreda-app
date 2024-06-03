@@ -234,7 +234,7 @@ class StringConst {
   static const String BLOGGING = "";
 
   //Control Panel Section
-  static const String WELCOME_COMPANY = "Bienvenida a Enreda";
+  static const String WELCOME_COMPANY = "Te damos la bienvenida";
   static const String WELCOME_TEXT = "Desde aquí puedes gestionar tu búsqueda de empleo. \nInscribirte a recursos, visualizar videos prácticos y formativos, y crear tu currículum. \nAprovecha todas las herramientas disponibles para avanzar en tu camino hacia la inserción laboral.";
   static const String GAMIFICATION = "Gamificación";
   static const String NO_COMPETENCIES = "Aquí aparecerán las competencias evaluadas a través de los microtests";

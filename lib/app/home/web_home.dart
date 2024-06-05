@@ -63,7 +63,6 @@ class _WebHomeState extends State<WebHome> {
   Color _underlineColor = Constants.lilac;
   late UserEnreda _userEnreda;
   String _userName = "";
-  late TextTheme textTheme;
 
   @override
   void initState() {
@@ -79,7 +78,7 @@ class _WebHomeState extends State<WebHome> {
   Widget _buildMyUserName(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
-    textTheme = Theme.of(context).textTheme;
+    TextTheme textTheme = Theme.of(context).textTheme;
     return StreamBuilder<User?>(
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
@@ -163,6 +162,7 @@ class _WebHomeState extends State<WebHome> {
   Widget _buildContent(BuildContext context, UserEnreda user){
     final auth = Provider.of<AuthBase>(context, listen: false);
     bool hasEntity = user.assignedEntityId == null || user.assignedEntityId == "" ? false : true;
+    TextTheme textTheme = Theme.of(context).textTheme;
     return ValueListenableBuilder<int>(
         valueListenable: WebHome.selectedIndex,
         builder: (context, selectedIndex, child) {
@@ -224,9 +224,8 @@ class _WebHomeState extends State<WebHome> {
                         },
                         child: Text(
                           StringConst.RESOURCES,
-                          style: GoogleFonts.ibmPlexMono(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                          style: textTheme.bodyMedium?.copyWith(
+                            fontSize: 16.0,
                           ),
                         ),
                       ),
@@ -251,8 +250,9 @@ class _WebHomeState extends State<WebHome> {
                         },
                         child: Text(
                           StringConst.COMPETENCIES,
-                          style: GoogleFonts.ibmPlexMono(
-                              color: Colors.black, fontWeight: FontWeight.bold),
+                          style: textTheme.bodyMedium?.copyWith(
+                            fontSize: 16.0,
+                          ),
                         ),
                       ),
                     ) : Container(),
@@ -374,6 +374,7 @@ class _WebHomeState extends State<WebHome> {
 
   Widget _buildContentAnonymous(BuildContext context){
     final auth = Provider.of<AuthBase>(context, listen: false);
+    TextTheme textTheme = Theme.of(context).textTheme;
     return ValueListenableBuilder<int>(
         valueListenable: WebHome.selectedIndex,
         builder: (context, selectedIndex, child) {
@@ -435,9 +436,8 @@ class _WebHomeState extends State<WebHome> {
                         },
                         child: Text(
                           StringConst.RESOURCES,
-                          style: GoogleFonts.ibmPlexMono(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                          style: textTheme.bodyMedium?.copyWith(
+                            fontSize: 16.0,
                           ),
                         ),
                       ),
@@ -462,8 +462,9 @@ class _WebHomeState extends State<WebHome> {
                         },
                         child: Text(
                           StringConst.COMPETENCIES,
-                          style: GoogleFonts.ibmPlexMono(
-                              color: Colors.black, fontWeight: FontWeight.bold),
+                          style: textTheme.bodyMedium?.copyWith(
+                            fontSize: 16.0,
+                          ),
                         ),
                       ),
                     ) : Container(),

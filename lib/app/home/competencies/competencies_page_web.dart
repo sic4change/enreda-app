@@ -308,6 +308,7 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
         children: competenciesCategories.map((c) =>
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 InkWell(
                   onTap: () => setState(() {
@@ -325,17 +326,29 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                     child: Row(
                       children: [
                         Expanded(
-                          flex: Responsive.isDesktopS(context)? 7: 5,
-                          child: Text(
-                            c.name.toUpperCase(),
-                            style: textTheme.titleLarge?.copyWith(
-                              fontSize: Responsive.isDesktopS(context)? 16.0: 20.0,
-                            ),
+                          flex: Responsive.isDesktopS(context)? 7 : 5,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(StringConst.COMPETENCIES.toUpperCase(),
+                                style: textTheme.bodySmall?.copyWith(
+                                    fontSize: Responsive.isDesktopS(context)? 16.0: 20.0,
+                                ),
+                              ),
+                              Text(
+                                c.name.toUpperCase(),
+                                style: textTheme.titleLarge?.copyWith(
+                                  fontSize: Responsive.isDesktopS(context)? 16.0: 20.0,
+                                ),
+                              ),
+                              CustomTextNormalSmall(title: 'Ver más'),
+                            ],
                           ),
                         ),
                         Spacer(),
                         Expanded(
-                          flex: Responsive.isDesktopS(context)? 3: 5,
+                          flex: Responsive.isDesktopS(context)? 3 : 5,
                           child: Image.asset(
                             c.order == 1? ImagePath.COMPETENCIES_CATEGORIES_1:
                             c.order == 2? ImagePath.COMPETENCIES_CATEGORIES_2:

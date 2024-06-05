@@ -19,7 +19,7 @@ class CustomChip extends StatelessWidget {
     required this.onSelect,
     this.borderRadius = 20,
     this.backgroundColor = const Color(0xFFF5F5F5),
-    this.selectedBackgroundColor = const Color(0xFF486581),
+    this.selectedBackgroundColor = const Color(0xFF054D5E),
     this.textColor = const Color(0xFF486581),
 
   }) : super(key: key);

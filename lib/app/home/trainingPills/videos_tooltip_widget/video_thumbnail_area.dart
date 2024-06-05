@@ -12,7 +12,7 @@ Widget videoThumbnailArea(String idYoutubeVideo) {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
-              border: Border.all(color: AppColors.primaryText1.withOpacity(0.6), width: 1.0),
+              border: Border.all(color: AppColors.blue050, width: 1.0),
               image: DecorationImage(
                 image: NetworkImage(
                   YoutubePlayerController.getThumbnail(

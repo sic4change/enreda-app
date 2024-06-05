@@ -216,8 +216,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     alignment: Alignment.center,
                     padding: Responsive.isMobile(context) ?  EdgeInsets.symmetric(horizontal: 30) : EdgeInsets.symmetric(horizontal: 100.0),
                     child: Text(
-                      Responsive.isMobile(context) ? StringConst.PILLS_SUBTITLE : StringConst.SEARCH_SUBTITLE,
-                      textAlign: TextAlign.center, style: TextStyle(fontSize: 15,),)),
+                      Responsive.isMobile(context) ? StringConst.SEARCH_SUBTITLE_MOBILE : StringConst.SEARCH_SUBTITLE,
+                      textAlign: TextAlign.center,
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontSize: Responsive.isMobile(context) ? 13.0 : 16.0,
+                      ),
+                    ),
+                  ),
                   SpaceH20(),
                   _buildCategories(context, resourceCategoriesList),
                   SpaceH30(),
@@ -695,7 +700,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Divider(thickness: 1.5, color: AppColors.grey120,),
+                            child: Divider(thickness: 1, color: AppColors.blue050,),
                           ),
                         ],
                       ),

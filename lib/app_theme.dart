@@ -105,10 +105,10 @@ class AppTheme {
       fontWeight: _bold,
       fontStyle: FontStyle.normal,
     ),
-    titleSmall: GoogleFonts.ibmPlexMono(
+    titleSmall: GoogleFonts.outfit(
       fontSize: Sizes.TEXT_SIZE_14,
       color: AppColors.black,
-      fontWeight: _bold,
+      fontWeight: FontWeight.w600,
       fontStyle: FontStyle.normal,
     ),
     bodyLarge: GoogleFonts.outfit(
@@ -118,7 +118,7 @@ class AppTheme {
     ),
     bodyMedium: GoogleFonts.outfit(
       fontSize: Sizes.TEXT_SIZE_14,
-      color: AppColors.black,
+      color: AppColors.greyTxtAlt,
       fontStyle: FontStyle.normal,
     ),
     headlineLarge: GoogleFonts.inter(

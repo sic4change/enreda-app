@@ -471,8 +471,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   _buildMyExperiences(context, user),
                   SpaceH24(),
                   _buildMyCompetencies(context, user),
-                  SpaceH24(),
-                  _buildFinalCheck(context, user),
                 ],
               ),
             ),
@@ -498,7 +496,9 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   _buildMyLanguages(context),
                   SpaceH24(),
                   _buildMyReferences(context, user),
-                  SpaceH50(),
+                  SpaceH24(),
+                  _buildFinalCheck(context, user),
+                  SpaceH24(),
                 ],
               ),
             ),
@@ -1203,20 +1203,20 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     return Row(
       children: [
         IconButton(
-            icon: Icon(checkFinal ? Icons.check_box : Icons.crop_square),
-        color: Constants.darkGray,
-        iconSize: 20.0,
-        onPressed: (){
-          database.setUserEnreda(
-              user!.copyWith(checkAgreeCV: !checkFinal));
-            }),
+          icon: Icon(checkFinal ? Icons.check_box : Icons.crop_square),
+          color: Constants.darkGray,
+          iconSize: 20.0,
+          onPressed: (){
+            database.setUserEnreda(
+                user!.copyWith(checkAgreeCV: !checkFinal));
+              }),
         Expanded(
           child: Text(
             StringConst.PERSONAL_DATA_LAW,
             maxLines: 5,
             softWrap: true,
-            style: textTheme.bodyLarge?.copyWith(
-              fontSize: Responsive.isDesktop(context) ? 12 : 10,
+            style: textTheme.titleMedium?.copyWith(
+              fontSize: Responsive.isDesktop(context) ? 13 : 12,
               color: Constants.darkGray),
           ),
         ),

@@ -1,24 +1,18 @@
-import 'package:enreda_app/app/home/competencies/competencies_item_builder.dart';
 import 'package:enreda_app/app/home/competencies/competencies_subcategories_page_mobile.dart';
-import 'package:enreda_app/app/home/competencies/expandable_competency_tile.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
-import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
-import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
-import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:expandable/expandable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -278,7 +272,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
               }),
               child: Container(
                 width: double.infinity,
-                height: 100.0,
+                height: 120.0,
                 padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -294,12 +288,23 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          width: 180,
-                          child: Text(
-                            c.name.toUpperCase(),
-                            style: textTheme.titleSmall?.copyWith(
-                              fontSize: 12.0
-                            ),
+                          width: 140,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(StringConst.COMPETENCIES.toUpperCase(),
+                                style: textTheme.bodySmall?.copyWith(
+                                    fontSize: 12.0
+                                ),
+                              ),
+                              Text(
+                                c.name.toUpperCase(),
+                                style: textTheme.titleSmall?.copyWith(
+                                  fontSize: 12.0
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         SpaceH4(),

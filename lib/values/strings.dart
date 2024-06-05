@@ -1,11 +1,11 @@
 class StringConst {
   //strings
-  static const String APP_NAME = "enREDa";
+  static const String APP_NAME = "Enreda";
 
   //Nav Section
   static const String NAME_ABBREV = "CA";
-  static const String HOME = "Sobre enREDA";
-  static const String ABOUT = "Sobre enREDa";
+  static const String HOME = "Sobre Enreda";
+  static const String ABOUT = "Sobre Enreda";
   static const String RESOURCES = "Recursos";
   static const String RESULTS = "Resultados";
   static const String EMPTY = "";
@@ -18,15 +18,15 @@ class StringConst {
   static const String DEV_EMAIL = "escuchamos@enredas.org";
   static const String EMAIL_URL = "mailto:<$DEV_EMAIL>?subject=&body=";
 
-  static const String MY_RESOURCES = "Mis Recursos";
-  static const String MY_RESOURCES_SPACE = "Mis Recursos ";
+  static const String MY_RESOURCES = "Mis recursos";
+  static const String MY_RESOURCES_SPACE = "Mis recursos ";
   static const String FAVORITES = "Favoritos";
   static const String RECOMMENDED = "Recomendados";
 
   //Competencies Section
-  static const String MY_COMPETENCIES = "Mis Competencias";
+  static const String MY_COMPETENCIES = "Mis competencias";
   static const String ALL_COMPETENCIES = "Competencias";
-  static const String MY_EXPERIENCES = "Mis Experiencias";
+  static const String MY_EXPERIENCES = "Mis experiencias";
   static const String MY_PERSONAL_EXPERIENCES = "Mis experiencias personales";
   static const String MY_PROFESIONAL_EXPERIENCES = "Mis experiencias profesionales";
   static const String MY_DOCUMENTS = "Mis documentos";
@@ -75,10 +75,11 @@ class StringConst {
 
   //Search Section
   static const String SEARCH = "Busca por área";
-  static const String SEARCH_SUBTITLE = "EnREDa te conecta con recursos educativos, actividades, empresas y pleabilidad y construir tu camino vital. Porque las oportunidades no se compran, se crean.";
+  static const String SEARCH_SUBTITLE = "Enreda te conecta con recursos educativos, actividades, empresas y pleabilidad y construir tu camino vital. Porque las oportunidades no se compran, se crean.";
+  static const String SEARCH_SUBTITLE_MOBILE = "¡ Hemos recopilado todo este contenido para tí !";
   static const String PILLS_TITLE = "Píldoras formativas";
-  static const String PILLS_SUBTITLE = "EnREDa te conecta con recursos educativos, actividades, empresas y empleabilidad.";
-  static const String FUNDAULA_BUTTON = "Accede a la formación online que te acerca al mundo digital y al empleo desde enREDa";
+  static const String PILLS_SUBTITLE = "Explora nuestros vídeos de dos minutos con consejos prácticos para tu currículum, entrevistas y motivación.";
+  static const String FUNDAULA_BUTTON = "Accede a la formación online que te acerca al mundo digital y al empleo desde Enreda";
   static const String SEARCH_WARNING = 'Algo fue mal';
   static const String SEARCH_WARNING_DESCRIPTION = 'No se pudo cargar los datos';
 
@@ -88,7 +89,7 @@ class StringConst {
   static const String POSITION = "construir tu futuro.";
   static const String ABOUT_DEV =
       "Una iniciativa alternativa e innovadora de activación y mejora de la empleabilidad juvenil con un enfoque territorial, afincándose en el territorio como una iniciativa comunitaria para y desde los/as jóvenes. "
-      "\n\nenREDa combina tecnología y acción comunitaria para activar y mejorar la empleabilidad juvenil; conecta a los actores y recursos del territorio vinculados con el empleo juvenil (jóvenes, administración, empresas y entidades sociales), al tiempo que dinamiza el desarrollo local. ";
+      "\n\nEnreda combina tecnología y acción comunitaria para activar y mejorar la empleabilidad juvenil; conecta a los actores y recursos del territorio vinculados con el empleo juvenil (jóvenes, administración, empresas y entidades sociales), al tiempo que dinamiza el desarrollo local. ";
   static const String APP_STORE = "App Store";
   static const String DEV_EMAIL_2 = "escuchamos@enredas.org";
   static const String GOOGLE_PLAY = "Google Play";
@@ -141,19 +142,19 @@ class StringConst {
   static const String YOUNGS = "Jóvenes";
   static const String YOUNG_1_DESC = "¿No sabes por dónde tirar?";
   static const String YOUNG_2_DESC =
-      "EnREDa te conecta con recursos educativos, actividades, empresas y personas de tu comunidad para que puedas mejorar empleabilidad y construir tu camino vital. Porque las oportunidades no se compran, se crean.";
+      "Enreda te conecta con recursos educativos, actividades, empresas y personas de tu comunidad para que puedas mejorar empleabilidad y construir tu camino vital. Porque las oportunidades no se compran, se crean.";
   static const String INSTITUTIONS = "Instituciones";
   static const String INSTITUTIONS_1_DESC = "¿Quieres que tus programas y recursos lleguen más lejos?";
   static const String INSTITUTIONS_2_DESC =
-      "EnREDa te acercará al colectivo joven haciendo que tus programas y recursos lleguen a más gente. Puedes darte de alta como entidad colaboradora de enREDa y subir tus vacantes de empleo, formación o voluntariado inmediatamente.";
+      "Enreda te acercará al colectivo joven haciendo que tus programas y recursos lleguen a más gente. Puedes darte de alta como entidad colaboradora de Enreda y subir tus vacantes de empleo, formación o voluntariado inmediatamente.";
   static const String COMPANIES = "Empresas";
   static const String COMPANIES_1_DESC = "¿Qué buscas en tu plantilla?";
   static const String COMPANIES_2_DESC =
-      "EnREDa conecta a tu empresa con jóvenes del territorio motivados/as y comprometidos/as, que cumplirán con tus expectativas y tus necesidades. Te permite una selección ágil, no solo basada en conocimientos, sino también en capacidades y actitud. Contribuye a la estabilidad y fidelización de la plantilla, así como al reconocimiento social y la imagen positiva de la empresa entre sus clientes y stakeholders.";
+      "Enreda conecta a tu empresa con jóvenes del territorio motivados/as y comprometidos/as, que cumplirán con tus expectativas y tus necesidades. Te permite una selección ágil, no solo basada en conocimientos, sino también en capacidades y actitud. Contribuye a la estabilidad y fidelización de la plantilla, así como al reconocimiento social y la imagen positiva de la empresa entre sus clientes y stakeholders.";
   static const String CITIZENS = "Ciudadanía";
   static const String CITIZENS_1_DESC = "¿Quieres compartir tus conocimientos y experiencia vital con la juventud?";
   static const String CITIZENS_2_DESC =
-      "El empleo juvenil es un bien de la comunidad que contribuye a todos y todas; por eso, es también responsabilidad de toda la comunidad. Si quieres apoyar a los/as jóvenes en su camino vital, enREDa es también tu proyecto. Hazte mentor/a y transmite a las nuevas generaciones el conocimiento que has atesorado gracias a tu propia experiencia de vida y trabajo. Es así como la sociedad aprende y avanza.";
+      "El empleo juvenil es un bien de la comunidad que contribuye a todos y todas; por eso, es también responsabilidad de toda la comunidad. Si quieres apoyar a los/as jóvenes en su camino vital, Enreda es también tu proyecto. Hazte mentor/a y transmite a las nuevas generaciones el conocimiento que has atesorado gracias a tu propia experiencia de vida y trabajo. Es así como la sociedad aprende y avanza.";
 
   //Stats Section
   static const String DAYS_CHANGIN = "Días transformando la realidad social";
@@ -185,14 +186,14 @@ class StringConst {
   //Awards & Section
   static const String MY = "My";
   static const String CV = "Mi curriculum";
-  static const String TAG_ENREDA = "¿Qué es enREDa?";
-  static const String WHAT_ENREDA_TITLE = "Ya somos muchos, ¿y tú? ¿te enREDas?";
+  static const String TAG_ENREDA = "¿Qué es Enreda?";
+  static const String WHAT_ENREDA_TITLE = "Ya somos muchos, ¿y tú? ¿te Enredas?";
   static const String AWARDS_DESC =
       "Estamos construyendo presente y futuro para la juventud.";
   static const String DIAGNOSIS_TITLE = "Diagnósticos";
-  static const String DIAGNOSIS_1 = "enREDando el Norte, Gran Canaria";
+  static const String DIAGNOSIS_1 = "Enredando el Norte, Gran Canaria";
   static const String DIAGNOSIS_WEB_1 = "https://firebasestorage.googleapis.com/v0/b/enreda-d3b41.appspot.com/o/Diagno%CC%81sticoFinalEnREDa.pdf?alt=media&token=96818023-da40-44ce-a45b-48bf5ae67da5";
-  static const String DIAGNOSIS_2 = "enREDa La Sagra, Toledo";
+  static const String DIAGNOSIS_2 = "Enreda La Sagra, Toledo";
   static const String DIAGNOSIS_WEB_2 = "https://firebasestorage.googleapis.com/v0/b/enreda-d3b41.appspot.com/o/DiagnosticoEmpleoJuvenilEnREDaLaSagraComprimido.pdf?alt=media&token=f91969bb-be7f-4d2f-b861-bdb819088cef";
 
   //Brands Section
@@ -227,7 +228,7 @@ class StringConst {
   static const String POSITION_PERSON_1 = "Co-Director";
   static const String POSITION_PERSON_2 = "Co-Directora";
   static const String POSITION_PERSON_3 = "Coordinador desarrollo software";
-  static const String POSITION_PERSON_4 = "Coordinadora del programa enREDa";
+  static const String POSITION_PERSON_4 = "Coordinadora del programa Enreda";
   static const String POSITION_PERSON_5 = "Técnico de alianzas";
   static const String POSITION_PERSON_6 = "Técnico de integración laboral";
   static const String READ_MORE = "Read More";
@@ -307,7 +308,7 @@ class StringConst {
 
   //Access Page
   static const String LOOKING_FOR_JOB = '¿Buscas empleo o recursos?';
-  static const String BETTER_FROM_APPS = 'enREDa es mejor desde nuestras Apps';
+  static const String BETTER_FROM_APPS = 'Enreda es mejor desde nuestras Apps';
   static const String ACCESS_FROM_BROWSER = 'Acceder desde el navegador';
   static const String ARENT_YOU_PARTICIPANT = '¿No eres usuario participante?';
   static const String GO_ADMIN_WEB = 'Ir a la web de administración';
@@ -551,7 +552,7 @@ class StringConst {
   // Profile
   static const String MY_PROFILE = 'Mi perfil';
   static const String MY_ACCOUNT = 'Mi cuenta';
-  static const String MY_CV = "Mi Currículum";
+  static const String MY_CV = "Mi currículum";
   static const String PERSONAL_DATA = 'Datos personales';
   static const String ABOUT_ME = "Un poco más sobre mí...";
   static const String PROFILE = "Carrera";

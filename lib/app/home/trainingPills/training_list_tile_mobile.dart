@@ -13,7 +13,9 @@ import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/values.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
@@ -52,15 +54,17 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
             children: [
               if (!_isVideoVisible) Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Row(
+                child: Flex(
+                    direction: Axis.horizontal,
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                          width: 150,
-                          margin: const EdgeInsets.only(right: 8.0),
+                      Expanded(
+                          flex: 1,
                           child: videoThumbnailArea(idYoutubeVideo)),
-                      Expanded(child: videoDescription(AppColors.blue100, AppColors.greyTxtAlt)),
+                      Expanded(
+                          flex: 1,
+                          child: videoDescription(AppColors.turquoiseBlue, AppColors.blue400)),
                     ]
                 ),
               ),
@@ -132,131 +136,141 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
 
   Widget videoDescription(Color? colorTitle, Color? colorText) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 12, 13, md: 12);
+    double fontSize = responsiveSize(context, 13, 14, md: 13);
     final auth = Provider.of<AuthBase>(context, listen: false);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start, 
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text(
-            widget.trainingPill.trainingPillCategoryName!.toUpperCase(),
-            textAlign: TextAlign.left,
-            maxLines: 1,
-            style: textTheme.titleSmall?.copyWith(
-              height: 1.5,
-              fontWeight: FontWeight.normal,
-              fontSize:  13,
-              color: colorTitle,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text(
-            widget.trainingPill.title,
-            textAlign: TextAlign.left,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
-            style: TextStyle(
-              letterSpacing: 1,
-              fontSize: fontSize,
-              fontWeight: FontWeight.w700,
-              color: colorText,
-            ),
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.center,
+    return Container(
+      height: 105,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                switch (widget.trainingPill.id){
-                  case TrainingPill.WHAT_IS_ENREDA_ID:
-                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_WHAT_IS_ENREDA);
-                    break;
-                  /*
-                  case TrainingPill.TRAVEL_BEGINS_ID:
-                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_TRAVEL_BEGINS);
-                    break;
-                  */
-                  case TrainingPill.WHAT_ARE_COMPETENCIES_ID:
-                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
-                    break;
-                  case TrainingPill.CV_COMPETENCIES_ID:
-                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_CV_COMPETENCIES);
-                    break;
-                  case TrainingPill.HOW_TO_DO_CV_ID:
-                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_HOW_TO_DO_CV);
-                    break;
-                  default:
-                    break;
-                }
-                setState(() {
-                  _isVideoVisible = !_isVideoVisible;
-                  _initializeVideo(idYoutubeVideo);
-                });
-              },
-              icon: const Icon(
-                Icons.play_circle_fill_outlined,
-                color: Constants.chatButtonsGray, size: 30,),),
-            Text(
-              '${widget.trainingPill.duration} min',
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              style: TextStyle(
-                letterSpacing: 1,
-                fontSize: fontSize,
-                fontWeight: FontWeight.w700,
-                color: colorText,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                widget.trainingPill.trainingPillCategoryName!.toUpperCase(),
+                textAlign: TextAlign.left,
+                maxLines: 1,
+                style: textTheme.titleSmall?.copyWith(
+                  height: 1.5,
+                  fontWeight: FontWeight.normal,
+                  fontSize:  13,
+                  color: colorTitle,
+                ),
               ),
             ),
-            SizedBox(width: 18,),
-            buildShareTrainingPill(context, widget.trainingPill, Constants.grey),
-            SizedBox(width: 0,),
-            auth.currentUser == null
-                  ? IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: FaIcon(FontAwesomeIcons.heart),
-                      tooltip: 'Me gusta',
-                      color: Constants.darkGray,
-                      iconSize: 15,
-                      onPressed: () => showAlertNullUser(context),
-                    )
-                  : widget.trainingPill.likes.contains(auth.currentUser!.uid)
+            Container(
+              width: 155,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  widget.trainingPill.title,
+                  textAlign: TextAlign.left,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: textTheme.titleSmall?.copyWith(
+                    height: 1.2,
+                    fontWeight: FontWeight.w400,
+                    fontSize:  fontSize,
+                    color: colorText,
+                  ),
+                ),
+              ),
+            ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    switch (widget.trainingPill.id){
+                      case TrainingPill.WHAT_IS_ENREDA_ID:
+                        setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_WHAT_IS_ENREDA);
+                        break;
+                      /*
+                      case TrainingPill.TRAVEL_BEGINS_ID:
+                        setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_TRAVEL_BEGINS);
+                        break;
+                      */
+                      case TrainingPill.WHAT_ARE_COMPETENCIES_ID:
+                        setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
+                        break;
+                      case TrainingPill.CV_COMPETENCIES_ID:
+                        setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_CV_COMPETENCIES);
+                        break;
+                      case TrainingPill.HOW_TO_DO_CV_ID:
+                        setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_HOW_TO_DO_CV);
+                        break;
+                      default:
+                        break;
+                    }
+                    setState(() {
+                      _isVideoVisible = !_isVideoVisible;
+                      _initializeVideo(idYoutubeVideo);
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.play_circle_filled_rounded,
+                    color: AppColors.blue400, size: 30,),),
+                Text(
+                  '${widget.trainingPill.duration} min',
+                  textAlign: TextAlign.left,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: textTheme.bodySmall?.copyWith(
+                    height: 1.5,
+                    fontWeight: FontWeight.normal,
+                    fontSize:  fontSize,
+                    color: colorText,
+                  ),
+                ),
+                SizedBox(width: 18,),
+                buildShareTrainingPill(context, widget.trainingPill, Constants.grey),
+                SizedBox(width: 0,),
+                auth.currentUser == null
                       ? IconButton(
-                          padding: EdgeInsets.zero,
-                          icon: FaIcon(FontAwesomeIcons.solidHeart),
-                          tooltip: 'Me gusta',
-                          color: AppColors.red,
-                          iconSize: 15,
-                          onPressed: () {
-                            removeUserToLikeTrainingPill(
-                                context: context,
-                                trainingPill: widget.trainingPill,
-                                userId: auth.currentUser!.uid);
-                          },
-                        )
-                      : IconButton(
                           padding: EdgeInsets.zero,
                           icon: FaIcon(FontAwesomeIcons.heart),
                           tooltip: 'Me gusta',
                           color: Constants.darkGray,
                           iconSize: 15,
-                          onPressed: () {
-                            addUserToLikeTrainingPill(
-                                context: context,
-                                trainingPill: widget.trainingPill,
-                                userId: auth.currentUser!.uid);
-                          },
+                          onPressed: () => showAlertNullUser(context),
                         )
-            ],
+                      : widget.trainingPill.likes.contains(auth.currentUser!.uid)
+                          ? IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: FaIcon(FontAwesomeIcons.solidHeart),
+                              tooltip: 'Me gusta',
+                              color: AppColors.red,
+                              iconSize: 15,
+                              onPressed: () {
+                                removeUserToLikeTrainingPill(
+                                    context: context,
+                                    trainingPill: widget.trainingPill,
+                                    userId: auth.currentUser!.uid);
+                              },
+                            )
+                          : IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: FaIcon(FontAwesomeIcons.heart),
+                              tooltip: 'Me gusta',
+                              color: Constants.darkGray,
+                              iconSize: 15,
+                              onPressed: () {
+                                addUserToLikeTrainingPill(
+                                    context: context,
+                                    trainingPill: widget.trainingPill,
+                                    userId: auth.currentUser!.uid);
+                              },
+                            )
+                ],
+            ),
+          ]
         ),
-      ]
+      ),
     );
   }
 

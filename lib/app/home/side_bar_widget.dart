@@ -5,6 +5,7 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/responsive.dart';
+import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -140,12 +141,12 @@ class _SideBarWidgetState extends State<SideBarWidget> {
         );
       },
       items: [
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PANEL), width: 20,), label: 'Panel de control', onTap: _clearResourcesNavigation),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_MY_CV_SIDEBAR), width: 20,), label: 'Mi curriculum', onTap: _clearResourcesNavigation),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PERSONAL_DATA_SIDEBAR), width: 20,), label: 'Datos personales' , onTap: _clearResourcesNavigation),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: 'Mis competencias' , onTap: _clearResourcesNavigation),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: 'Mis recursos', onTap: _clearResourcesNavigation),
-        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_GAMIFICATION_SIDEBAR), width: 20,), label: 'Gamificación', onTap: _clearResourcesNavigation),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PANEL), width: 20,), label: StringConst.CONTROL_PANEL, onTap: _clearResourcesNavigation),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_MY_CV_SIDEBAR), width: 20,), label: StringConst.MY_CV, onTap: _clearResourcesNavigation),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_PERSONAL_DATA_SIDEBAR), width: 20,), label: StringConst.PERSONAL_DATA , onTap: _clearResourcesNavigation),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_COMPETENCIES_SIDEBAR), width: 20,), label: StringConst.MY_COMPETENCIES , onTap: _clearResourcesNavigation),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_RESOURCES_SIDEBAR), width: 20,), label: StringConst.MY_RESOURCES, onTap: _clearResourcesNavigation),
+        SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_GAMIFICATION_SIDEBAR), width: 20,), label: StringConst.GAMIFICATION, onTap: _clearResourcesNavigation),
         if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_CONTACT_SIDEBAR), width: 20,), label: 'Contacto Enreda', onTap: _clearResourcesNavigation),
         if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_DOCUMENTS_SIDEBAR), width: 20,), label: 'Mis documentos', onTap: _clearResourcesNavigation),
       ],

@@ -626,12 +626,13 @@ class _PersonalDataState extends State<PersonalData> {
                       labelText: StringConst.FORM_PHONE,
                       prefixIcon: CountryCodePicker(
                         onChanged: _onCountryChange,
+                        dialogSize: Size(350.0, MediaQuery.of(context).size.height * 0.6),
                         initialSelection: _phoneCode == '+34'
                             ? 'ES'
                             : _phoneCode == '+51'
                             ? 'PE'
                             : 'GT',
-                        countryFilter: const ['ES', 'PE', 'GT'],
+                        //countryFilter: const ['ES', 'PE', 'GT'],
                         showFlagDialog: true,
                       ),
                       focusColor: AppColors.primary400,

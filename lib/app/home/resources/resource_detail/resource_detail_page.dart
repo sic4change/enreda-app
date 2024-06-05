@@ -608,8 +608,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               resource.participants.contains(userId)
                   ? StringConst.QUIT_RESOURCE
                   : StringConst.JOIN_RESOURCE,
-              style: textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w600,
+              style: textTheme.bodyMedium?.copyWith(
+                fontSize: 16,
                 color: resource.participants.contains(userId) ? Constants.darkGray : Constants.white,
               ),
             ),

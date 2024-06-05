@@ -113,16 +113,15 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
                         SingleChildScrollView(
                           child: Column(
                               children: [
-                                if (Responsive.isDesktop(context) && !Responsive.isDesktopS(context))
-                                  _buildHeaderDesktop(() => _showSaveDialog(documentsCount++)),
+                                // if (Responsive.isDesktop(context) && !Responsive.isDesktopS(context))
+                                //   _buildHeaderDesktop(() => _showSaveDialog(documentsCount++)),
+                                // if (!Responsive.isDesktop(context) || Responsive.isDesktopS(context))
+                                //   _buildHeaderMobile(() => _showSaveDialog(documentsCount++)),
                                 if (!Responsive.isDesktop(context) || Responsive.isDesktopS(context))
-                                  _buildHeaderMobile(() => _showSaveDialog(documentsCount++)),
-                                Divider(
-                                  color: AppColors.greyBorder,
-                                  height: 0,
-                                ),
+                                SpaceH16(),
                                 Column(
                                     children: [
+                                      Responsive.isMobile(context) ? Container() : SpaceH16(),
                                       for( var document in _userDocuments)
                                         _documentTile(context, document, widget.participantUser),
                                     ]
@@ -221,9 +220,6 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
       height: 50,
       decoration: BoxDecoration(
         color: paridad ? AppColors.greySearch : AppColors.white,
-        borderRadius: _userDocuments.indexOf(document) == _userDocuments.length-1 ?
-        BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)) :
-        BorderRadius.all(Radius.circular(0)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

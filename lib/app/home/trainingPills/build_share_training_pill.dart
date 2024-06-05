@@ -66,10 +66,13 @@ Widget buildShareTrainingPill(BuildContext context, TrainingPill trainingPill, C
               ),
               SpaceW16(),
               Text('Copiar enlace',
-                  style: TextStyle(
-                    color: Constants.textPrimary,
-                    fontSize: widthOfScreen(context) >= 1024 ? 16 : 12,
-                  )),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: AppColors.bluePetrol,
+                    height: 1.5,
+                    fontWeight: FontWeight.w400,
+                    fontSize: fontSize,
+                  ),
+              ),
             ],
           ),
         ),
@@ -78,7 +81,7 @@ Widget buildShareTrainingPill(BuildContext context, TrainingPill trainingPill, C
           child: Row(
             children: [
               Icon(
-                Icons.share,
+                Icons.share_outlined,
                 color: AppColors.bluePetrol,
               ),
               SpaceW16(),
@@ -98,8 +101,9 @@ Widget buildShareTrainingPill(BuildContext context, TrainingPill trainingPill, C
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
-          Icons.share,
-          color: Responsive.isMobile(context) || Responsive.isMobileHorizontal(context) ? AppColors.primaryText2 : AppColors.white,
+          Icons.share_outlined,
+          color: Responsive.isMobile(context) || Responsive.isMobileHorizontal(context)
+              ? AppColors.blue400 : AppColors.white,
           size: 20,
         ),
         Responsive.isMobile(context) ? SizedBox(width: 0) : SizedBox(width: 10),

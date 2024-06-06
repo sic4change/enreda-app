@@ -1,7 +1,9 @@
 import 'package:enreda_app/app/home/competencies/competencies_subcategories_page_web.dart';
+import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
@@ -223,35 +225,37 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
     final auth = Provider.of<AuthBase>(context, listen: false);
     TextTheme textTheme = Theme.of(context).textTheme;
 
-    return Container(
-      width: double.infinity,
-      child: TextButton(
-        onPressed: () => auth.isNullUser
-            ? _showAlertNullUser(context)
-            : widget.showChatNotifier.value = !widget.showChatNotifier.value,
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                StringConst.START_CHAT,
-                style: textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Constants.white,
+    return Center(
+      child: Container(
+        width: 250.0,
+        child: TextButton(
+          onPressed: () => auth.isNullUser
+              ? _showAlertNullUser(context)
+              : widget.showChatNotifier.value = !widget.showChatNotifier.value,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  StringConst.START_CHAT,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: Constants.white,
+                    fontSize: 16.0,
+                  ),
                 ),
-              ),
-              SpaceW20(),
-              Image.asset(ImagePath.CHAT_ICON, width: 44.0),
-            ],
+                SpaceW20(),
+                Image.asset(ImagePath.CHAT_ICON, width: 44.0),
+              ],
+            ),
           ),
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Constants.turquoise),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ))),
         ),
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Constants.turquoise),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
-            ))),
       ),
     );
   }
@@ -289,13 +293,19 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
   }
 
   _showAlertNullUser(BuildContext context) async {
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
     final didRequestSignOut = await showAlertDialog(context,
         title: StringConst.NOT_LOGIN,
         content: StringConst.ASK_LOGIN,
         cancelActionText: StringConst.CANCEL,
         defaultActionText: StringConst.ENTER);
     if (didRequestSignOut == true) {
-      context.push(StringConst.PATH_LOGIN);
+      if(!isSmallScreen) {
+        WebHome.selectedIndex.value = 0;
+      }
+      if(isSmallScreen) {
+        CupertinoScaffoldAnonymous.controller.index = 2;
+      }
     }
   }
 

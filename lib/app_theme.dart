@@ -123,7 +123,7 @@ class AppTheme {
     ),
     headlineLarge: GoogleFonts.inter(
       fontSize: Sizes.TEXT_SIZE_18,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w300,
       color: AppColors.primaryText2,
     ),
     labelLarge: GoogleFonts.lato(

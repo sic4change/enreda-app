@@ -402,26 +402,29 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                       ),
                     ),
                     SpaceH4(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          resource.promotor != null
-                              ? resource.promotor != ""
-                              ? resource.promotor!
-                              : resource.organizerName!
-                              : resource.organizerName!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            letterSpacing: 1.2,
-                            fontSize: fontSizePromotor,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.white,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            resource.promotor != null
+                                ? resource.promotor != ""
+                                ? resource.promotor!
+                                : resource.organizerName!
+                                : resource.organizerName!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              letterSpacing: 1.2,
+                              fontSize: fontSizePromotor,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.white,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     Responsive.isMobile(context) ? Container() : Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -474,7 +477,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   Widget _buildDetailResource(BuildContext context, Resource resource) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -659,19 +662,19 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         title: StringConst.DATE,
         contact: '${DateFormat('dd/MM/yyyy').format(resource.start)} - ${DateFormat('dd/MM/yyyy').format(resource.end)}',
       ),
-      BoxItemData(
+      if (resource.contractType != null && resource.contractType != '') BoxItemData(
         icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_CONTRACT_YELLOW
             : ImagePath.ICON_CONTRACT),
         title: StringConst.CONTRACT_TYPE,
         contact: resource.contractType != null && resource.contractType != ''  ? '${resource.contractType}' : 'Sin especificar',
       ),
-      BoxItemData(
+      if (resource.temporality != null && resource.temporality != '') BoxItemData(
         icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_CONTRACT_YELLOW
             : ImagePath.ICON_CONTRACT),
         title: StringConst.FORM_SCHEDULE,
         contact: resource.temporality != null && resource.temporality != ''  ? '${resource.temporality}' :  'Sin especificar',
       ),
-      BoxItemData(
+      if (resource.salary != null && resource.salary != '') BoxItemData(
         icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_CURRENCY_YELLOW
             : ImagePath.ICON_CURRENCY),
         title: StringConst.SALARY,
@@ -686,7 +689,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     const double mainAxisSpacing = 10;
     int rowCount = (boxItemData.length / crossAxisCount).ceil();
     double gridHeight = rowCount * mainAxisExtent + (rowCount - 1) * mainAxisSpacing;
-    double gridHeightD = rowCount * mainAxisExtent + (rowCount - 15) * mainAxisSpacing;
+    double gridHeightD = rowCount * mainAxisExtent + (rowCount - 9) * mainAxisSpacing;
     return Responsive.isMobile(context) ?
       SizedBox(
         height: gridHeight * 0.85,

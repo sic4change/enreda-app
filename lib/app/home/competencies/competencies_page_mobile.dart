@@ -1,14 +1,18 @@
 import 'package:enreda_app/app/home/competencies/competencies_subcategories_page_mobile.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
+import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
+import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:expandable/expandable.dart';
@@ -180,9 +184,9 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                 style: textTheme.bodySmall?.copyWith(
                   color: Constants.darkGray,
                 )),
-            SpaceH30(),
+            SpaceH20(),
             Container(
-              width: double.infinity,
+              width: 210,
               child: TextButton(
                 onPressed: () => auth.isNullUser
                     ? _showAlertNullUser(context)
@@ -198,7 +202,10 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                             color: Constants.white,
                           )),
                       SpaceW20(),
-                      Image.asset(ImagePath.CHAT_ICON, width: 44.0),
+                      Padding(
+                        padding: Responsive.isMobile(context) ? const EdgeInsets.symmetric(vertical: 10.0) : const EdgeInsets.all(0),
+                        child: Image.asset(ImagePath.CHAT_ICON, width: Responsive.isMobile(context) ? 30.0 : 44.0),
+                      ),
                     ],
                   ),
                 ),
@@ -211,6 +218,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                     ))),
               ),
             ),
+            SpaceH12(),
           ],
         ),
       ),
@@ -327,55 +335,21 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
     );
   }
 
-  _showAlertNullUser(BuildContext context) async {
-    TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 14, 18, md: 15);
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(StringConst.NOT_LOGIN,
-            style: textTheme.bodySmall?.copyWith(
-              color: Constants.grey,
-              height: 1.5,
-              fontWeight: FontWeight.w800,
-              fontSize: fontSize + 2,
-            )),
-        content: Text(
-            StringConst.ASK_LOGIN,
-            style: textTheme.bodySmall?.copyWith(
-                color: Constants.grey,
-                height: 1.5,
-                fontWeight: FontWeight.w400,
-                fontSize: fontSize)),
-        actions: <Widget>[
-          ElevatedButton(
-              onPressed: () => Navigator.of(context).pop((false)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(StringConst.CANCEL,
-                    style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.white,
-                        height: 1.5,
-                        fontWeight: FontWeight.w400,
-                        fontSize: fontSize)),
-              )),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop((false));
-                context.push(StringConst.PATH_LOGIN);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(StringConst.ENTER,
-                    style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.white,
-                        height: 1.5,
-                        fontWeight: FontWeight.w400,
-                        fontSize: fontSize)),
-              )),
-        ],
-      ),
-    );
+  void _showAlertNullUser(BuildContext context) async {
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+    final signIn = await showAlertDialog(context,
+        title: StringConst.NOT_LOGIN,
+        content: StringConst.ASK_LOGIN,
+        cancelActionText: StringConst.CANCEL,
+        defaultActionText: StringConst.ENTER);
+    if (signIn == true) {
+      if(!isSmallScreen) {
+        WebHome.selectedIndex.value = 0;
+      }
+      if(isSmallScreen) {
+        CupertinoScaffoldAnonymous.controller.index = 2;
+      }
+    }
   }
+
 }

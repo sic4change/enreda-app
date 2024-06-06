@@ -60,7 +60,7 @@ class WebHome extends StatefulWidget {
 class _WebHomeState extends State<WebHome> {
   var bodyWidget = [];
   final _key = GlobalKey<ScaffoldState>();
-  Color _underlineColor = Constants.lilac;
+  Color _underlineColor = AppColors.primary500;
   late UserEnreda _userEnreda;
   String _userName = "";
 

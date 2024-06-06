@@ -1,5 +1,8 @@
+import 'package:enreda_app/app/home/cupertino_scaffold.dart';
+import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/show_toast.dart';
@@ -73,14 +76,20 @@ Future<void> shareResource(Resource resource) async {
 }
 
 void showAlertNullUser(BuildContext context) async {
+  final isSmallScreen = MediaQuery.of(context).size.width < 600;
   final signIn = await showAlertDialog(context,
-      title: '¿Te interesa el recurso?',
+      title: '¿Te interesa este recurso?',
       content:
           'Solo los usuarios registrados pueden acceder a los recursos internos. ¿Deseas entrar como usuario registrado?',
       cancelActionText: 'Cancelar',
       defaultActionText: 'Entrar');
   if (signIn == true) {
-    GoRouter.of(context).go(StringConst.PATH_LOGIN);
+    if(!isSmallScreen) {
+      WebHome.selectedIndex.value = 0;
+    }
+    if(isSmallScreen) {
+      CupertinoScaffoldAnonymous.controller.index = 2;
+    }
   }
 }
 

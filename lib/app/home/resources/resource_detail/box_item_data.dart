@@ -48,10 +48,13 @@ class BoxItem extends StatelessWidget {
                 children: [
                   SizedBox(child: icon, width: 18),
                   SizedBox(width: 10),
-                  Text(
-                    contact,
-                    textAlign: TextAlign.start,
-                    style: textTheme.bodySmall?.copyWith(height: 1, fontWeight: FontWeight.w500, color: AppColors.white),
+                  Container(
+                    width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.60 : 150,
+                    child: Text(
+                      contact,
+                      textAlign: TextAlign.start,
+                      style: textTheme.bodySmall?.copyWith(height: 1, fontWeight: FontWeight.w500, color: AppColors.white),
+                    ),
                   ),
                 ],
               ),
@@ -77,7 +80,7 @@ class BoxItem extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  SizedBox(child: icon, width: 18),
+                  SizedBox(child: icon, height: 17),
                   SizedBox(width: 5),
                   Text(
                     title,
@@ -87,10 +90,21 @@ class BoxItem extends StatelessWidget {
                 ],
               ),
               SpaceH4(),
-              Text(
-                contact,
-                textAlign: TextAlign.start,
-                style: textTheme.bodySmall?.copyWith(height: 1, fontWeight: FontWeight.w500, color: AppColors.primary500),
+              Container(
+                height: 28,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      contact,
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      style: textTheme.bodySmall?.copyWith(height: 1, fontWeight: FontWeight.w500, color: AppColors.primary500),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

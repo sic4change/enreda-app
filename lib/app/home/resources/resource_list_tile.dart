@@ -6,6 +6,7 @@ import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -355,11 +356,19 @@ class _ResourceListTileState extends State<ResourceListTile> {
 
   Future<void> _displayReportDialogVisitor(
       BuildContext context, Resource resource) async {
+    final textTheme = Theme.of(context).textTheme;
+    double fontSize = responsiveSize(context, 13, 20, md: 16);
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Denunciar recurso'),
+            backgroundColor: AppColors.primary050,
+            title: Text('Denunciar recurso',
+                style: textTheme.titleLarge?.copyWith(
+                  color: AppColors.turquoiseBlue,
+                  fontSize: fontSize,
+                  height: 1.5,
+                )),
             content: _buildForm(context, resource),
           );
         });
@@ -371,8 +380,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          width: 500,
-          height: 350,
+          width: Responsive.isMobile(context) ? 300 : 500,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
@@ -386,55 +394,80 @@ class _ResourceListTileState extends State<ResourceListTile> {
 
   List<Widget> _buildFormChildren(BuildContext context, Resource resource) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 14, 16, md: 15);
+    double fontSize = responsiveSize(context, 12, 15, md: 13);
+    double fontSizeButton = responsiveSize(context, 12, 15, md: 13);
     return [
       Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
-                decoration: InputDecoration(labelText: 'Nombre'),
-                initialValue: '',
-                validator: (value) =>
-                value!.isNotEmpty ? null : 'El nombre no puede estar vacío',
-                onSaved: (value) => _name = value,
-                textCapitalization: TextCapitalization.sentences,
-                keyboardType: TextInputType.name,
-                style: textTheme.button?.copyWith(
-                  height: 1.5,
-                  color: AppColors.greyDark,
-                  fontWeight: FontWeight.w400,
-                  fontSize: fontSize,
-                ),
+              decoration: InputDecoration(
+                  labelText: 'Nombre',
+                  labelStyle: textTheme.bodySmall?.copyWith(
+                    color: AppColors.turquoiseBlue,
+                    height: 1.5,
+                    fontWeight: FontWeight.w400,
+                    fontSize: fontSize,
+                  )
+              ),
+              initialValue: '',
+              validator: (value) =>
+              value!.isNotEmpty ? null : 'El nombre no puede estar vacío',
+              onSaved: (value) => _name = value,
+              textCapitalization: TextCapitalization.sentences,
+              keyboardType: TextInputType.name,
+              style: textTheme.bodySmall?.copyWith(
+                height: 1.5,
+                color: AppColors.turquoiseBlue,
+                fontWeight: FontWeight.w400,
+                fontSize: fontSize,
+              ),
             ),
             TextFormField(
-                decoration: InputDecoration(labelText: 'Email'),
-                initialValue: _email,
-                validator: (value) => EmailValidator.validate(value!) ? null : "El email no es válido",
-                onSaved: (value) => _email = value,
-                keyboardType: TextInputType.emailAddress,
-                style: textTheme.button?.copyWith(
-                  height: 1.5,
-                  color: AppColors.greyDark,
-                  fontWeight: FontWeight.w400,
-                  fontSize: fontSize,
-                ),
+              decoration: InputDecoration(
+                  labelText: 'Email',
+                  labelStyle: textTheme.bodySmall?.copyWith(
+                    color: AppColors.turquoiseBlue,
+                    height: 1.5,
+                    fontWeight: FontWeight.w400,
+                    fontSize: fontSize,
+                  )
+              ),
+              initialValue: _email,
+              validator: (value) => EmailValidator.validate(value!) ? null : "El email no es válido",
+              onSaved: (value) => _email = value,
+              keyboardType: TextInputType.emailAddress,
+              style: textTheme.bodySmall?.copyWith(
+                height: 1.5,
+                color: AppColors.turquoiseBlue,
+                fontWeight: FontWeight.w400,
+                fontSize: fontSize,
+              ),
             ),
             TextFormField(
-                decoration: InputDecoration(labelText: 'Descripción de la denuncia'),
-                initialValue: _text,
-                validator: (value) =>
-                value!.isNotEmpty ? null : 'La descripción no puede estar vacía',
-                onSaved: (value) => _text = value,
-                minLines: 4,
-                maxLines: 4,
-                textCapitalization: TextCapitalization.sentences,
-                keyboardType: TextInputType.multiline,
-                style: textTheme.button?.copyWith(
-                  height: 1.5,
-                  color: AppColors.greyDark,
-                  fontWeight: FontWeight.w400,
-                  fontSize: fontSize,
-                ),
+              decoration: InputDecoration(
+                  labelText: 'Descripción de la denuncia',
+                  labelStyle: textTheme.bodySmall?.copyWith(
+                    color: AppColors.turquoiseBlue,
+                    height: 1.5,
+                    fontWeight: FontWeight.w400,
+                    fontSize: fontSize,
+                  )
+              ),
+              initialValue: _text,
+              validator: (value) =>
+              value!.isNotEmpty ? null : 'La descripción no puede estar vacía',
+              onSaved: (value) => _text = value,
+              minLines: 4,
+              maxLines: 4,
+              textCapitalization: TextCapitalization.sentences,
+              keyboardType: TextInputType.multiline,
+              style: textTheme.bodySmall?.copyWith(
+                height: 1.5,
+                color: AppColors.turquoiseBlue,
+                fontWeight: FontWeight.w400,
+                fontSize: fontSize,
+              ),
             ),
             SizedBox(height: 40),
             Row(
@@ -446,13 +479,14 @@ class _ResourceListTileState extends State<ResourceListTile> {
                       backgroundColor: Constants.turquoise,
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(StringConst.CANCEL.toUpperCase(),
-                        style: textTheme.button?.copyWith(
+                      padding: Responsive.isMobile(context) ?
+                      const EdgeInsets.symmetric(horizontal: 0, vertical: 5.0) : const EdgeInsets.all(10.0),
+                      child: Text(StringConst.CANCEL,
+                        style: textTheme.bodySmall?.copyWith(
                           height: 1.5,
                           color: AppColors.white,
                           fontWeight: FontWeight.w700,
-                          fontSize: fontSize,
+                          fontSize: fontSizeButton,
                         ),
                       ),
                     ),
@@ -467,14 +501,15 @@ class _ResourceListTileState extends State<ResourceListTile> {
                       backgroundColor: Constants.turquoise,
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(StringConst.SEND.toUpperCase(),
-                        style: textTheme.button?.copyWith(
-                        height: 1.5,
-                        color: AppColors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: fontSize,
-                      ),
+                      padding: Responsive.isMobile(context) ?
+                      const EdgeInsets.symmetric(horizontal: 0, vertical: 5.0) : const EdgeInsets.all(10.0),
+                      child: Text(StringConst.SEND,
+                        style: textTheme.bodySmall?.copyWith(
+                          height: 1.5,
+                          color: AppColors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: fontSizeButton,
+                        ),
                       ),
                     ),
                     onPressed: () => _submit(resource),
@@ -504,7 +539,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
         email: _email!,
         name: _name!,
         text:
-            'Tenemos una queja de este recurso: ${resource.title}.  ${_text!}',
+        'Tenemos una queja de este recurso: ${resource.title}.  ${_text!}',
       );
       try {
         final database = Provider.of<Database>(context, listen: false);
@@ -513,15 +548,113 @@ class _ResourceListTileState extends State<ResourceListTile> {
           context,
           title: 'Mensaje ensaje enviado',
           content:
-              'Hemos recibido satisfactoriamente tu mensaje, nos comunicaremos contigo a la brevedad.',
-          defaultActionText: 'Aceptar',
+          'Hemos recibido satisfactoriamente tu mensaje, nos comunicaremos contigo a la brevedad.',
+          defaultActionText: 'Ok',
         ).then((value) => Navigator.pop(context));
       } on FirebaseException catch (e) {
         showExceptionAlertDialog(context,
-                title: 'Error al enviar contacto', exception: e)
+            title: 'Error al enviar contacto', exception: e)
             .then((value) => Navigator.pop(context));
+        ;
       }
     }
+  }
+
+  Future<void> _displayReportDialog(BuildContext context, Resource resource) async {
+    final database = Provider.of<Database>(context, listen: false);
+    final textTheme = Theme.of(context).textTheme;
+    double fontSize = responsiveSize(context, 13, 20, md: 16);
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: AppColors.primary050,
+            title: Text('Denunciar recurso',
+                style: textTheme.titleLarge?.copyWith(
+                  color: AppColors.turquoiseBlue,
+                  fontSize: fontSize,
+                  height: 1.5,
+                )),
+            content: TextField(
+              onChanged: (value) {
+                setState(() {
+                  valueText = value;
+                });
+              },
+              controller: _textFieldController,
+              decoration: InputDecoration(
+                  hintText: "Escribe la queja",
+                  labelStyle: textTheme.bodySmall?.copyWith(
+                    color: AppColors.turquoiseBlue,
+                    height: 1.5,
+                    fontWeight: FontWeight.w400,
+                    fontSize: fontSize,
+                  )
+              ),
+              style: textTheme.bodySmall?.copyWith(
+                height: 1.5,
+                color: AppColors.turquoiseBlue,
+                fontWeight: FontWeight.w400,),
+              minLines: 4,
+              maxLines: 4,
+              textCapitalization: TextCapitalization.sentences,
+              keyboardType: TextInputType.multiline,
+            ),
+            actions: <Widget>[
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                ),
+                child: Padding(
+                  padding: Responsive.isMobile(context) ?
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 5.0) : const EdgeInsets.all(10.0),
+                  child: Text(
+                    'Cancelar',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                ),
+                child: Padding(
+                  padding: Responsive.isMobile(context) ?
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 5.0) : const EdgeInsets.all(10.0),
+                  child: Text(
+                    'Enviar',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    codeDialog = valueText;
+                    if (valueText != null && valueText!.isNotEmpty) {
+                      final auth =
+                      Provider.of<AuthBase>(context, listen: false);
+                      final contact = Contact(
+                          email: auth.currentUser?.email ?? '',
+                          name: auth.currentUser?.displayName ?? '',
+                          text:
+                          'Tenemos una queja de este recurso: ${resource.title}.  ${valueText}');
+                      database.addContact(contact);
+                      showAlertDialog(
+                        context,
+                        title: 'Mensaje ensaje enviado',
+                        content:
+                        'Hemos recibido satisfactoriamente tu mensaje, nos comunicaremos contigo a la brevedad.',
+                        defaultActionText: 'Aceptar',
+                      ).then((value) => Navigator.pop(context));
+                    }
+                  });
+                },
+              ),
+            ],
+          );
+        });
   }
 
   Future<void> _addUserToLike(Resource resource) async {
@@ -577,100 +710,5 @@ class _ResourceListTileState extends State<ResourceListTile> {
     } catch (e) {
       print(e.toString());
     }
-  }
-
-  Future<void> _displayReportDialog(
-    BuildContext context, Resource resource) async {
-    TextTheme textTheme = Theme.of(context).textTheme;
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Denunciar recurso',
-            style: textTheme.button?.copyWith(
-            height: 1.5,
-            color: AppColors.greyDark,
-            fontWeight: FontWeight.w700,
-            ), ),
-            content: TextField(
-              onChanged: (value) {
-                setState(() {
-                  valueText = value;
-                });
-              },
-              controller: _textFieldController,
-              decoration: InputDecoration(
-                hintText: "Escribe la queja",
-                hintStyle: textTheme.button?.copyWith(
-                color: AppColors.greyDark,
-                height: 1.5,
-                fontWeight: FontWeight.w400,
-              ),),
-              style: textTheme.button?.copyWith(
-              height: 1.5,
-              color: AppColors.greyDark,
-              fontWeight: FontWeight.w400,),
-              minLines: 4,
-              maxLines: 4,
-              textCapitalization: TextCapitalization.sentences,
-              keyboardType: TextInputType.multiline,
-            ),
-            actions: <Widget>[
-              TextButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white),
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(AppColors.primaryColor),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text('Cancelar'),
-                ),
-                onPressed: () {
-                  setState(() {
-                    Navigator.pop(context);
-                  });
-                },
-              ),
-              TextButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white),
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(AppColors.primaryColor),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text('Enviar'),
-                ),
-                onPressed: () {
-                  setState(() {
-                    codeDialog = valueText;
-                    if (valueText != null && valueText!.isNotEmpty) {
-                      final auth =
-                          Provider.of<AuthBase>(context, listen: false);
-                      final contact = Contact(
-                          email: auth.currentUser!.email ?? '',
-                          name: auth.currentUser!.displayName ?? '',
-                          text:
-                              'Tenemos una queja de este recurso: ${resource.title}.  ${valueText}');
-                      final database =
-                          Provider.of<Database>(context, listen: false);
-                      database.addContact(contact);
-                      showAlertDialog(
-                        context,
-                        title: 'Mensaje ensaje enviado',
-                        content:
-                        'Hemos recibido satisfactoriamente tu mensaje, nos comunicaremos contigo a la brevedad.',
-                        defaultActionText: 'Aceptar',
-                      ).then((value) => Navigator.pop(context));
-                    }
-                  });
-                },
-              ),
-            ],
-          );
-        });
   }
 }

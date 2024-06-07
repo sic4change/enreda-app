@@ -229,6 +229,9 @@ flutter:
     - images/competencies.png
     - images/arrow_back_alt.png
     - images/logo-white-chat.png
+    - images/icon-arrow-down.png
+    - images/icon-arrow-up.png
+    - images/icon-play-pildoras.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

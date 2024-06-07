@@ -13,9 +13,10 @@ Future showAlertDialog(
   String? cancelActionText,
 }) {
   final textTheme = Theme.of(context).textTheme;
-
+  double fontSize = responsiveSize(context, 13, 20, md: 16);
+  double fontSizeSubTitle = responsiveSize(context, 14, 18, md: 15);
+  double fontSizeButton = responsiveSize(context, 12, 15, md: 13);
   try {
-    double fontSize = responsiveSize(context, 13, 20, md: 16);
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -41,7 +42,7 @@ Future showAlertDialog(
             style: textTheme.headlineLarge?.copyWith(
                 color: AppColors.turquoiseBlue,
                 height: 1.5,
-                fontSize: fontSize - 1)),
+                fontSize: fontSizeSubTitle)),
         actions: <Widget>[
           if (cancelActionText != null)
             // ignore: deprecated_member_use
@@ -62,7 +63,8 @@ Future showAlertDialog(
                                 color: AppColors.white,
                                 height: 1.5,
                                 fontWeight: FontWeight.w400,
-                                fontSize: fontSize - 2)),
+                                fontSize: fontSizeButton
+                            )),
                       )),
                   Responsive.isMobile(context) ? SizedBox(width: 10,) : SizedBox(width: 30,),
                   ElevatedButton(
@@ -77,7 +79,7 @@ Future showAlertDialog(
                                 color: AppColors.white,
                                 height: 1.5,
                                 fontWeight: FontWeight.w400,
-                                fontSize: fontSize - 2)),
+                                fontSize: fontSizeButton)),
                       )),
                 ],
               ),
@@ -87,24 +89,20 @@ Future showAlertDialog(
     );
   } catch (e) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 14, 18, md: 15);
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(title,
-            style: textTheme.bodySmall?.copyWith(
-              color: Constants.grey,
+            style: textTheme.titleLarge?.copyWith(
+              color: AppColors.turquoiseBlue,
+              fontSize: fontSize,
               height: 1.5,
-              fontWeight: FontWeight.w800,
-              fontSize: fontSize + 2,
             )),
         content: Text(content,
-            style: textTheme.bodySmall?.copyWith(
-              color: Constants.grey,
-              height: 1.5,
-              fontWeight: FontWeight.w400,
-              fontSize: fontSize,
-            )),
+            style: textTheme.headlineLarge?.copyWith(
+                color: AppColors.turquoiseBlue,
+                height: 1.5,
+                fontSize: fontSizeSubTitle)),
         actions: <Widget>[
           if (cancelActionText != null)
             // ignore: deprecated_member_use
@@ -120,7 +118,7 @@ Future showAlertDialog(
                           color: AppColors.white,
                           height: 1.5,
                           fontWeight: FontWeight.w400,
-                          fontSize: fontSize)),
+                          fontSize: fontSizeButton)),
                 )),
           ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -134,7 +132,7 @@ Future showAlertDialog(
                         color: Constants.grey,
                         height: 1.5,
                         fontWeight: FontWeight.w400,
-                        fontSize: fontSize)),
+                        fontSize: fontSizeButton)),
               )),
         ],
       ),

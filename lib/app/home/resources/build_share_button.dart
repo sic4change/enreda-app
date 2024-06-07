@@ -111,7 +111,7 @@ Widget buildShare(BuildContext context, Resource resource, Color color, Color ic
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25.0),
-        color: AppColors.blueDark.withOpacity(0.8),
+        color: AppColors.turquoiseBlue.withOpacity(0.8),
       ),
       child: const Text(
         "Enlace copiado en el portapapeles",
@@ -122,7 +122,7 @@ Widget buildShare(BuildContext context, Resource resource, Color color, Color ic
     fToast.showToast(
       child: toast,
       gravity: widthOfScreen(context) >= 1024
-          ? ToastGravity.BOTTOM_LEFT
+          ? ToastGravity.BOTTOM
           : ToastGravity.SNACKBAR,
       toastDuration: const Duration(seconds: 2),
     );
@@ -152,12 +152,12 @@ Widget buildShare(BuildContext context, Resource resource, Color color, Color ic
             children: [
               const Icon(
                 Icons.copy,
-                color: AppColors.greyTxtAlt,
+                color: AppColors.turquoiseBlue,
               ),
               SpaceW16(),
               Text('Copiar enlace',
                   style: TextStyle(
-                    color: AppColors.greyTxtAlt,
+                    color: AppColors.turquoiseBlue,
                     fontSize: widthOfScreen(context) >= 1024 ? 16 : 14,
                   )),
             ],
@@ -169,12 +169,12 @@ Widget buildShare(BuildContext context, Resource resource, Color color, Color ic
             children: [
               const Icon(
                 Icons.share_outlined,
-                color: AppColors.greyDark,
+                color: AppColors.turquoiseBlue,
               ),
               SpaceW16(),
               Text('Compartir',
                 style: textTheme.bodySmall?.copyWith(
-                  color: AppColors.greyDark,
+                  color: AppColors.turquoiseBlue,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
                   fontSize: fontSize,
@@ -193,7 +193,7 @@ Widget buildShare(BuildContext context, Resource resource, Color color, Color ic
       child: EnredaButtonIcon(
         buttonColor: Colors.white,
         padding: const EdgeInsets.all(0),
-        width: Responsive.isMobile(context) ? 20 : 80,
+        width: Responsive.isMobile(context) ? 20 : 60,
         height: 10,
         widget: Icon(
           Icons.share_outlined,

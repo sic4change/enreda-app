@@ -6,6 +6,7 @@ import 'package:enreda_app/app/home/models/competencySubCategory.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -71,9 +72,12 @@ class CompetenciesSubcategoriesPageWeb extends StatelessWidget {
                                               Expanded(
                                                 child: Text(
                                                   subCategory.name.toUpperCase(),
-                                                  style: textTheme.bodyLarge?.copyWith(
-                                                      fontSize: 20.0
-                                                  ),
+                                                  style: textTheme.bodySmall?.copyWith(
+                                                      overflow: TextOverflow.ellipsis,
+                                                      fontSize: 16.0,
+                                                      height: 1.2,
+                                                      fontWeight: FontWeight.normal,
+                                                      color: Constants.darkGray),
                                                 ),
                                               ),
                                               InkWell(

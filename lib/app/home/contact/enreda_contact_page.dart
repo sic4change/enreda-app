@@ -187,7 +187,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                       )),
                 ],
               ),
-              SpaceH30(),
+              Responsive.isMobile(context) ? Container() : SpaceH30(),
               Flex(
                 direction: Responsive.isMobile(context) || Responsive.isDesktopS(context) ? Axis.vertical : Axis.horizontal,
                 mainAxisAlignment: MainAxisAlignment.center,

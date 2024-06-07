@@ -137,6 +137,9 @@ class ImagePath {
   static const String ICON_PLACE_YELLOW = '$imageDir/place-icon-yellow.png';
   static const String ICON_SEATS = '$imageDir/seats-icon.png';
   static const String ICON_SEATS_YELLOW = '$imageDir/seats-icon-yellow.png';
+  static const String ICON_ARROW_UP = '$imageDir/icon-arrow_up.png';
+  static const String ICON_ARROW_DOWN = '$imageDir/icon-arrow_down.png';
+  static const String ICON_PLAY = '$imageDir/icon-play-pildoras.png';
 
   //Resources
   static const String BACKGROUND_1 = '$imageDir/desktop-background-empleo.png';

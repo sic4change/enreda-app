@@ -7,6 +7,7 @@ import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,7 +29,7 @@ class CompetenciesSubcategoriesPageMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-
+    final textTheme = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -67,7 +68,13 @@ class CompetenciesSubcategoriesPageMobile extends StatelessWidget {
                                       SpaceH12(),
                                       Row(
                                         children: [
-                                          CustomTextBoldTitle(title: subCategory.name.toUpperCase()),
+                                          Text(subCategory.name.toUpperCase(),
+                                              style: textTheme.bodySmall?.copyWith(
+                                                  overflow: TextOverflow.ellipsis,
+                                                  fontSize: 14.0,
+                                                  height: 1.2,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Constants.darkGray)),
                                           Spacer(),
                                           InkWell(
                                             onTap: () {

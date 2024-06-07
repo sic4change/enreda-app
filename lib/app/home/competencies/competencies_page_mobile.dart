@@ -10,7 +10,6 @@ import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
-import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
@@ -18,7 +17,6 @@ import 'package:enreda_app/values/values.dart';
 import 'package:expandable/expandable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class CompetenciesPageMobile extends StatefulWidget {
@@ -106,7 +104,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
     TextTheme textTheme = Theme.of(context).textTheme;
     return ExpandablePanel(
       theme: ExpandableThemeData(iconColor: AppColors.turquoiseBlue,
-          expandIcon: Icons.expand_circle_down_outlined,
+          expandIcon: Icons.keyboard_arrow_down_rounded,
           collapseIcon: Icons.expand_less_outlined, iconSize: 30),
       header: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
@@ -169,9 +167,11 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
     final auth = Provider.of<AuthBase>(context, listen: false);
     TextTheme textTheme = Theme.of(context).textTheme;
     return ExpandablePanel(
-      theme: ExpandableThemeData(iconColor: AppColors.turquoiseBlue,
-          expandIcon: Icons.expand_circle_down_outlined,
-          collapseIcon: Icons.expand_less_outlined, iconSize: 30),
+      theme: ExpandableThemeData(
+          iconColor: AppColors.turquoiseBlue,
+          expandIcon: Icons.keyboard_arrow_down_rounded,
+          collapseIcon: Icons.expand_less_outlined,
+          iconSize: 30),
       header: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
         child: CustomTextBoldTitle(title: StringConst.COMPETENCY_DEFINITION),
@@ -202,10 +202,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                             color: Constants.white,
                           )),
                       SpaceW20(),
-                      Padding(
-                        padding: Responsive.isMobile(context) ? const EdgeInsets.symmetric(vertical: 10.0) : const EdgeInsets.all(0),
-                        child: Image.asset(ImagePath.CHAT_ICON, width: Responsive.isMobile(context) ? 30.0 : 44.0),
-                      ),
+                      Image.asset(ImagePath.CHAT_ICON, width: 35),
                     ],
                   ),
                 ),

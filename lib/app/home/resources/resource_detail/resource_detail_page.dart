@@ -576,7 +576,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
             )),
         const SizedBox(height: 30,),
         _buildButton(context, resource),
-        Responsive.isMobile(context) ?  SizedBox(height: 50,) : Container(),
+        Responsive.isMobile(context) ?  SizedBox(height: 50,) : SizedBox(height: 30,),
       ],
     );
   }
@@ -740,7 +740,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
           return PopupMenuItem(
             value: 1,
             child: Text('Denunciar el recurso',
-              style: textTheme.bodySmall?.copyWith(
+              style: textTheme.bodyMedium?.copyWith(
                 height: 1.5,
                 color: AppColors.red,
                 fontWeight: FontWeight.w700,
@@ -757,12 +757,20 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   }
 
   Future<void> _displayReportDialogVisitor(
-      BuildContext context, Resource resource) async {
+    BuildContext context, Resource resource) async {
+    final textTheme = Theme.of(context).textTheme;
+    double fontSize = responsiveSize(context, 13, 20, md: 16);
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Denunciar recurso'),
+            backgroundColor: AppColors.primary050,
+            title: Text('Denunciar recurso',
+                style: textTheme.titleLarge?.copyWith(
+                  color: AppColors.turquoiseBlue,
+                  fontSize: fontSize,
+                  height: 1.5,
+                )),
             content: _buildForm(context, resource),
           );
         });
@@ -774,8 +782,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          width: 500,
-          height: 350,
+          width: Responsive.isMobile(context) ? 300 : 500,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
@@ -789,13 +796,22 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   List<Widget> _buildFormChildren(BuildContext context, Resource resource) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 14, 16, md: 15);
+    double fontSize = responsiveSize(context, 12, 15, md: 13);
+    double fontSizeButton = responsiveSize(context, 12, 15, md: 13);
     return [
       Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
-              decoration: InputDecoration(labelText: 'Nombre'),
+              decoration: InputDecoration(
+                labelText: 'Nombre',
+                labelStyle: textTheme.bodySmall?.copyWith(
+                  color: AppColors.turquoiseBlue,
+                  height: 1.5,
+                  fontWeight: FontWeight.w400,
+                  fontSize: fontSize,
+                )
+              ),
               initialValue: '',
               validator: (value) =>
               value!.isNotEmpty ? null : 'El nombre no puede estar vacío',
@@ -804,26 +820,42 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               keyboardType: TextInputType.name,
               style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
-                color: AppColors.greyDark,
+                color: AppColors.turquoiseBlue,
                 fontWeight: FontWeight.w400,
                 fontSize: fontSize,
               ),
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                labelText: 'Email',
+                labelStyle: textTheme.bodySmall?.copyWith(
+                  color: AppColors.turquoiseBlue,
+                  height: 1.5,
+                  fontWeight: FontWeight.w400,
+                  fontSize: fontSize,
+                )
+              ),
               initialValue: _email,
               validator: (value) => EmailValidator.validate(value!) ? null : "El email no es válido",
               onSaved: (value) => _email = value,
               keyboardType: TextInputType.emailAddress,
               style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
-                color: AppColors.greyDark,
+                color: AppColors.turquoiseBlue,
                 fontWeight: FontWeight.w400,
                 fontSize: fontSize,
               ),
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: 'Descripción de la denuncia'),
+              decoration: InputDecoration(
+                labelText: 'Descripción de la denuncia',
+                labelStyle: textTheme.bodySmall?.copyWith(
+                  color: AppColors.turquoiseBlue,
+                  height: 1.5,
+                  fontWeight: FontWeight.w400,
+                  fontSize: fontSize,
+                )
+              ),
               initialValue: _text,
               validator: (value) =>
               value!.isNotEmpty ? null : 'La descripción no puede estar vacía',
@@ -834,7 +866,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               keyboardType: TextInputType.multiline,
               style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
-                color: AppColors.greyDark,
+                color: AppColors.turquoiseBlue,
                 fontWeight: FontWeight.w400,
                 fontSize: fontSize,
               ),
@@ -849,13 +881,14 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                       backgroundColor: Constants.turquoise,
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(StringConst.CANCEL.toUpperCase(),
+                      padding: Responsive.isMobile(context) ?
+                      const EdgeInsets.symmetric(horizontal: 0, vertical: 10.0) : const EdgeInsets.all(10.0),
+                      child: Text(StringConst.CANCEL,
                         style: textTheme.bodySmall?.copyWith(
                           height: 1.5,
                           color: AppColors.white,
                           fontWeight: FontWeight.w700,
-                          fontSize: fontSize,
+                          fontSize: fontSizeButton,
                         ),
                       ),
                     ),
@@ -870,13 +903,14 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                       backgroundColor: Constants.turquoise,
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(StringConst.SEND.toUpperCase(),
+                      padding: Responsive.isMobile(context) ?
+                      const EdgeInsets.symmetric(horizontal: 0, vertical: 10.0) : const EdgeInsets.all(10.0),
+                      child: Text(StringConst.SEND,
                         style: textTheme.bodySmall?.copyWith(
                           height: 1.5,
                           color: AppColors.white,
                           fontWeight: FontWeight.w700,
-                          fontSize: fontSize,
+                          fontSize: fontSizeButton,
                         ),
                       ),
                     ),
@@ -930,17 +964,19 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   Future<void> _displayReportDialog(BuildContext context, Resource resource) async {
     final database = Provider.of<Database>(context, listen: false);
-    TextTheme textTheme = Theme.of(context).textTheme;
+    final textTheme = Theme.of(context).textTheme;
+    double fontSize = responsiveSize(context, 13, 20, md: 16);
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
+            backgroundColor: AppColors.primary050,
             title: Text('Denunciar recurso',
-              style: textTheme.button?.copyWith(
-                height: 1.5,
-                color: AppColors.greyDark,
-                fontWeight: FontWeight.w700,
-              ), ),
+                style: textTheme.titleLarge?.copyWith(
+                  color: AppColors.turquoiseBlue,
+                  fontSize: fontSize,
+                  height: 1.5,
+                )),
             content: TextField(
               onChanged: (value) {
                 setState(() {
@@ -950,15 +986,16 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               controller: _textFieldController,
               decoration: InputDecoration(
                 hintText: "Escribe la queja",
-                hintStyle: textTheme.button?.copyWith(
-                  color: AppColors.greyDark,
+                labelStyle: textTheme.bodySmall?.copyWith(
+                  color: AppColors.turquoiseBlue,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
-                ),
+                  fontSize: fontSize,
+                )
               ),
-              style: textTheme.button?.copyWith(
+              style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
-                color: AppColors.greyDark,
+                color: AppColors.turquoiseBlue,
                 fontWeight: FontWeight.w400,),
               minLines: 4,
               maxLines: 4,
@@ -971,7 +1008,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   backgroundColor: AppColors.primaryColor,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: Responsive.isMobile(context) ?
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 5.0) : const EdgeInsets.all(10.0),
                   child: Text(
                     'Cancelar',
                     style: TextStyle(
@@ -986,7 +1024,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   backgroundColor: AppColors.primaryColor,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: Responsive.isMobile(context) ?
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 5.0) : const EdgeInsets.all(10.0),
                   child: Text(
                     'Enviar',
                     style: TextStyle(color: Colors.white),

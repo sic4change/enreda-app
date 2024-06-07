@@ -183,38 +183,38 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () {
-                    switch (widget.trainingPill.id){
-                      case TrainingPill.WHAT_IS_ENREDA_ID:
-                        setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_WHAT_IS_ENREDA);
-                        break;
+                SizedBox(width: 10,),
+                InkWell(
+                    onTap: () {
+                      switch (widget.trainingPill.id){
+                        case TrainingPill.WHAT_IS_ENREDA_ID:
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_WHAT_IS_ENREDA);
+                          break;
                       /*
-                      case TrainingPill.TRAVEL_BEGINS_ID:
-                        setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_TRAVEL_BEGINS);
-                        break;
-                      */
-                      case TrainingPill.WHAT_ARE_COMPETENCIES_ID:
-                        setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
-                        break;
-                      case TrainingPill.CV_COMPETENCIES_ID:
-                        setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_CV_COMPETENCIES);
-                        break;
-                      case TrainingPill.HOW_TO_DO_CV_ID:
-                        setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_HOW_TO_DO_CV);
-                        break;
-                      default:
-                        break;
-                    }
-                    setState(() {
-                      _isVideoVisible = !_isVideoVisible;
-                      _initializeVideo(idYoutubeVideo);
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.play_circle_filled_rounded,
-                    color: AppColors.blue400, size: 30,),),
+                    case TrainingPill.TRAVEL_BEGINS_ID:
+                      setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_TRAVEL_BEGINS);
+                      break;
+                    */
+                        case TrainingPill.WHAT_ARE_COMPETENCIES_ID:
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
+                          break;
+                        case TrainingPill.CV_COMPETENCIES_ID:
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_CV_COMPETENCIES);
+                          break;
+                        case TrainingPill.HOW_TO_DO_CV_ID:
+                          setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_HOW_TO_DO_CV);
+                          break;
+                        default:
+                          break;
+                      }
+                      setState(() {
+                        _isVideoVisible = !_isVideoVisible;
+                        _initializeVideo(idYoutubeVideo);
+                      });
+                    },
+                    child: Image.asset(ImagePath.ICON_PLAY, width: 30, height: 30,)
+                ),
+                SizedBox(width: 12,),
                 Text(
                   '${widget.trainingPill.duration} min',
                   textAlign: TextAlign.left,
@@ -227,7 +227,7 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
                     color: colorText,
                   ),
                 ),
-                SizedBox(width: 18,),
+                SizedBox(width: 12,),
                 buildShareTrainingPill(context, widget.trainingPill, Constants.grey),
                 SizedBox(width: 0,),
                 auth.currentUser == null

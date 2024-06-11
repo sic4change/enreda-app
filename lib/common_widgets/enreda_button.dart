@@ -56,9 +56,9 @@ class EnredaButton extends StatelessWidget {
     TextTheme textTheme = Theme.of(context).textTheme;
     double? textSize = responsiveSize(
       context,
+      Sizes.TEXT_SIZE_14,
       Sizes.TEXT_SIZE_18,
-      Sizes.TEXT_SIZE_18,
-      md: Sizes.TEXT_SIZE_18,
+      md: Sizes.TEXT_SIZE_16,
     );
       return Text(
         buttonTitle,

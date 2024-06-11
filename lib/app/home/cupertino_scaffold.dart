@@ -179,7 +179,7 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
               _buildItem(TabItem.chat),
               _buildItem(TabItem.account),
             ],
-            height: TrainingPillsListTileMobile.isFullScreen.value == true ? 0 : 70,
+            height: 70,
             onTap: (index) {
               CupertinoScaffold.controller.index = index;
               WebHome.controller.selectIndex(0);

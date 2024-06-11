@@ -105,46 +105,24 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                 return StreamBuilder<Country>(
                     stream: database.countryStream(resource.country),
                     builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(
-                            child: CircularProgressIndicator());
-                      }
-                      if (snapshot.hasData) {
-                        final country = snapshot.data;
-                        resource.countryName = country == null ? '' : country.name;
-                        resource.province ?? "";
-                        resource.city ?? "";
-                        return StreamBuilder<Province>(
-                          stream: database.provinceStream(resource.province),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                            if (snapshot.hasData) {
-                              final province = snapshot.data;
-                              resource.provinceName = province == null ? '' : province.name;
-                              return StreamBuilder<City>(
-                                stream: database.cityStream(resource.city!),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return const Center(child: CircularProgressIndicator());
-                                  }
-                                  if (snapshot.hasData) {
-                                    final city = snapshot.data;
-                                    resource.cityName = city == null ? '' : city.name;
-                                    return Responsive.isMobile(context) ? _buildResourceDetailMobile(context, resource)
-                                        : _buildResourceDetailWeb(context, resource);
-                                  }
-                                  return Container();
-                                },
-                              );
-                            }
-                            return Container();
-                          },
-                        );
-                      }
-                      return Container();
+                      final country = snapshot.data;
+                      resource.countryName = country == null ? '' : country.name;
+                      return StreamBuilder<Province>(
+                        stream: database.provinceStream(resource.province),
+                        builder: (context, snapshot) {
+                          final province = snapshot.data;
+                          resource.provinceName = province == null ? '' : province.name;
+                          return StreamBuilder<City>(
+                            stream: database.cityStream(resource.city!),
+                            builder: (context, snapshot) {
+                              final city = snapshot.data;
+                              resource.cityName = city == null ? '' : city.name;
+                              return Responsive.isMobile(context) ? _buildResourceDetailMobile(context, resource)
+                                  : _buildResourceDetailWeb(context, resource);
+                            },
+                          );
+                        },
+                      );
                     });
               },
             );
@@ -642,7 +620,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_PLACE_YELLOW
             : ImagePath.ICON_PLACE),
         title: StringConst.LOCATION,
-        contact: '${resource.countryName}',
+        contact: _getLocationText(resource),
       ),
       BoxItemData(
         icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_MODALITY_YELLOW
@@ -1065,6 +1043,51 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     if (auth.currentUser != null) {
       final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
       database.setUserEnreda(user.copyWith(resourcesAccessCount: user.resourcesAccessCount! + 1));
+    }
+  }
+
+  String _getLocationText(Resource resource) {
+    switch (resource.modality) {
+      case StringConst.FACE_TO_FACE:
+      case StringConst.BLENDED:
+        {
+          if (resource.cityName != null) {
+            return '${resource.cityName}, ${resource.provinceName}, ${resource.countryName}';
+          }
+
+          if (resource.cityName == null && resource.provinceName != null) {
+            return '${resource.provinceName}, ${resource.countryName}';
+          }
+
+          if (resource.provinceName == null && resource.countryName != null) {
+            return resource.countryName!;
+          }
+
+          if (resource.provinceName != null) {
+            return resource.provinceName!;
+          } else if (resource.countryName != null) {
+            return resource.countryName!;
+          }
+          return resource.modality;
+        }
+
+      case StringConst.ONLINE_FOR_COUNTRY:
+        return StringConst.ONLINE_FOR_COUNTRY
+            .replaceAll('país', resource.countryName!);
+
+      case StringConst.ONLINE_FOR_PROVINCE:
+        return StringConst.ONLINE_FOR_PROVINCE.replaceAll(
+            'provincia', '${resource.provinceName!}, ${resource.countryName!}');
+
+      case StringConst.ONLINE_FOR_CITY:
+        return StringConst.ONLINE_FOR_CITY.replaceAll('ciudad',
+            '${resource.cityName!}, ${resource.provinceName!}, ${resource.countryName!}');
+
+      case StringConst.ONLINE:
+        return StringConst.ONLINE;
+
+      default:
+        return resource.modality;
     }
   }
 

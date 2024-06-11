@@ -620,7 +620,8 @@ class _PersonalDataState extends State<PersonalData> {
                     }
                 ),
                 childRight: Padding(
-                  padding: Responsive.isMobile(context) || Responsive.isDesktopS(context) ? EdgeInsets.zero : EdgeInsets.only(left: Sizes.kDefaultPaddingDouble / 2),
+                  padding: Responsive.isMobile(context) ? EdgeInsets.zero : Responsive.isTablet(context) ?
+                  EdgeInsets.only(left: Sizes.kDefaultPaddingDouble) : EdgeInsets.only(left: Sizes.kDefaultPaddingDouble / 2),
                   child: TextFormField(
                     decoration: InputDecoration(
                       labelText: StringConst.FORM_PHONE,

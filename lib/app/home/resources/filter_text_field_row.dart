@@ -83,7 +83,8 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
           Expanded(
             child: RoundedContainerFilter(
               height: Responsive.isMobile(context) ? 40 : 45,
-              padding: Responsive.isMobile(context) ? EdgeInsets.all(0) : EdgeInsets.all(8),
+              padding: Responsive.isMobile(context) ? EdgeInsets.all(0)
+                  : Responsive.isDesktop(context) ? EdgeInsets.only(bottom: 8) : EdgeInsets.only(bottom: 2),
               margin: EdgeInsets.only(left: 5, right: 5),
               child: Row(children: [
                 SpaceW16(),
@@ -115,13 +116,13 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
                 ),
                 if (_isClearTextVisible)
                   IconButton(
-                    padding: EdgeInsets.only(bottom: 2),
+                    padding: Responsive.isDesktop(context) ? EdgeInsets.only(top: 10, right: 10) : EdgeInsets.only(bottom: 2),
                     icon: Icon(Icons.clear, color: AppColors.turquoiseBlue),
                     onPressed: widget.clearFilter,
                   ),
                 if (!_isClearTextVisible)
                 IconButton(
-                  padding: EdgeInsets.only(bottom: 2),
+                  padding: Responsive.isDesktop(context) ? EdgeInsets.only(top: 10, right: 10) : EdgeInsets.only(bottom: 2),
                   icon: Icon(Icons.search, color: AppColors.turquoiseBlue),
                   onPressed: widget.onPressed,
                 ),

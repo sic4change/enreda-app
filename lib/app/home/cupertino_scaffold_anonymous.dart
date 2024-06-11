@@ -86,7 +86,7 @@ class _CupertinoScaffoldAnonymousState extends State<CupertinoScaffoldAnonymous>
               _buildItem(TabItem.competencies),
               _buildItem(TabItem.account),
             ],
-            height: TrainingPillsListTileMobile.isFullScreen.value == true ? 0 : 70,
+            height: 70,
             onTap: (index) {
               CupertinoScaffoldAnonymous.controller.index = index;
               if(index == 0){

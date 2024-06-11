@@ -303,25 +303,6 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
       _controller = controller;
       _isVideoVisible = true;
     });
-    _controller..setFullScreenListener(
-          (_) async {
-        final videoData = await _controller.videoData;
-        final startSeconds = await _controller.currentTime;
-        TrainingPillsListTileMobile.isFullScreen.value = true;
-        final currentTime =
-        await FullscreenYoutubePlayer.launch(
-          context,
-          videoId: videoData.videoId,
-          startSeconds: startSeconds,
-        );
-        if (currentTime != null) {
-          _controller.seekTo(seconds: currentTime);
-        }
-        TrainingPillsListTileMobile.isFullScreen.value = false;
-        _controller.seekTo(seconds: currentTime!);
-      },
-    );
-
   }
 
 }

@@ -760,27 +760,22 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                       builder: (context, snapshot) {
                                         final city = snapshot.data;
                                         resource.cityName = city == null ? '' : city.name;
-                                        return StreamBuilder<ResourcePicture?>(
-                                            stream: database.resourcePictureStream(resource.resourcePictureId),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.hasData) resource.resourcePhoto = snapshot.data!.resourcePhoto;
-                                              return Container(
-                                                key: Key(
-                                                    'resource-${resource.resourceId}'),
-                                                child: ResourceListTile(
-                                                  resource: resource,
-                                                  onTap: () {
-                                                    _saveScrollPosition();
-                                                    setState(() {
-                                                      globals.currentResource = resource;
-                                                      ResourcesPage.selectedIndex.value = 3;
-                                                    });
-                                                  },
-                                                  // onTap: () => context.push(
-                                                  //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                                ),
-                                              );
-                                            });
+                                        return Container(
+                                          key: Key(
+                                              'resource-${resource.resourceId}'),
+                                          child: ResourceListTile(
+                                            resource: resource,
+                                            onTap: () {
+                                              _saveScrollPosition();
+                                              setState(() {
+                                                globals.currentResource = resource;
+                                                ResourcesPage.selectedIndex.value = 3;
+                                              });
+                                            },
+                                            // onTap: () => context.push(
+                                            //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                          ),
+                                        );
                                       });
                                 },
                               );
@@ -819,29 +814,22 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                         final city = snapshot.data;
                                         resource.cityName =
                                             city == null ? '' : city.name;
-                                        return StreamBuilder<ResourcePicture?>(
-                                            stream:
-                                                database.resourcePictureStream(
-                                                    resource.resourcePictureId),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.hasData) resource.resourcePhoto = snapshot.data!.resourcePhoto;
-                                              return Container(
-                                                key: Key(
-                                                    'resource-${resource.resourceId}'),
-                                                child: ResourceListTile(
-                                                  resource: resource,
-                                                  onTap: () {
-                                                    _saveScrollPosition();
-                                                    setState(() {
-                                                      globals.currentResource = resource;
-                                                      ResourcesPage.selectedIndex.value = 3;
-                                                    });
-                                                  },
-                                                  // onTap: () => context.push(
-                                                  //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                                ),
-                                              );
-                                            });
+                                        return Container(
+                                          key: Key(
+                                              'resource-${resource.resourceId}'),
+                                          child: ResourceListTile(
+                                            resource: resource,
+                                            onTap: () {
+                                              _saveScrollPosition();
+                                              setState(() {
+                                                globals.currentResource = resource;
+                                                ResourcesPage.selectedIndex.value = 3;
+                                              });
+                                            },
+                                            // onTap: () => context.push(
+                                            //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                          ),
+                                        );
                                       });
                                 },
                               );
@@ -927,31 +915,22 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                               final city = snapshot.data;
                                               resource.cityName =
                                                   city == null ? '' : city.name;
-                                              return StreamBuilder<
-                                                      ResourcePicture>(
-                                                  stream: database
-                                                      .resourcePictureStream(
-                                                          resource
-                                                              .resourcePictureId),
-                                                  builder: (context, snapshot) {
-                                                    if (snapshot.hasData) resource.resourcePhoto = snapshot.data!.resourcePhoto;
-                                                    return Container(
-                                                      key: Key(
-                                                          'resource-${resource.resourceId}'),
-                                                      child: ResourceListTile(
-                                                        resource: resource,
-                                                        onTap: () {
-                                                          _saveScrollPosition();
-                                                          setState(() {
-                                                            globals.currentResource = resource;
-                                                            ResourcesPage.selectedIndex.value = 3;
-                                                          });
-                                                        },
-                                                        // onTap: () => context.push(
-                                                        //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                                      ),
-                                                    );
-                                                  });
+                                              return Container(
+                                                key: Key(
+                                                    'resource-${resource.resourceId}'),
+                                                child: ResourceListTile(
+                                                  resource: resource,
+                                                  onTap: () {
+                                                    _saveScrollPosition();
+                                                    setState(() {
+                                                      globals.currentResource = resource;
+                                                      ResourcesPage.selectedIndex.value = 3;
+                                                    });
+                                                  },
+                                                  // onTap: () => context.push(
+                                                  //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                                ),
+                                              );
                                             });
                                       },
                                     );
@@ -992,27 +971,22 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                               final city = snapshot.data;
                                               resource.cityName =
                                                   city == null ? '' : city.name;
-                                              return StreamBuilder<ResourcePicture>(
-                                                  stream: database.resourcePictureStream(resource.resourcePictureId),
-                                                  builder: (context, snapshot) {
-                                                    if (snapshot.hasData) resource.resourcePhoto = snapshot.data!.resourcePhoto;
-                                                    return Container(
-                                                      key: Key(
-                                                          'resource-${resource.resourceId}'),
-                                                      child: ResourceListTile(
-                                                        resource: resource,
-                                                        onTap: () {
-                                                          _saveScrollPosition();
-                                                          setState(() {
-                                                              globals.currentResource = resource;
-                                                              ResourcesPage.selectedIndex.value = 3;
-                                                            });
-                                                        },
-                                                        // onTap: () => context.push(
-                                                        //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                                      ),
-                                                    );
-                                                  });
+                                              return Container(
+                                                key: Key(
+                                                    'resource-${resource.resourceId}'),
+                                                child: ResourceListTile(
+                                                  resource: resource,
+                                                  onTap: () {
+                                                    _saveScrollPosition();
+                                                    setState(() {
+                                                      globals.currentResource = resource;
+                                                      ResourcesPage.selectedIndex.value = 3;
+                                                    });
+                                                  },
+                                                  // onTap: () => context.push(
+                                                  //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                                                ),
+                                              );
                                             });
                                       },
                                     );

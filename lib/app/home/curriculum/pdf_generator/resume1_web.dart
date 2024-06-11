@@ -237,7 +237,10 @@ Future<Uint8List> generateResume1(
                                 .where((item) => item.isNotEmpty) // Filter out empty items.
                                 .map((item) => '• $item')         // Prefix each item with a bullet point.
                                 .join('\n') :
-                                ''
+                            experience.professionActivities
+                                .where((item) => item.isNotEmpty) // Filter out empty items.
+                                .map((item) => '• $item')         // Prefix each item with a bullet point.
+                                .join('\n')
                           ),
                         pw.SizedBox(height: 5),
 

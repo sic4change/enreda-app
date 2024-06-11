@@ -296,7 +296,7 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
       params: const YoutubePlayerParams(
         showControls: true,
         mute: false,
-        showFullscreenButton: true,
+        showFullscreenButton: false,
       ),
     );
     setState(() {

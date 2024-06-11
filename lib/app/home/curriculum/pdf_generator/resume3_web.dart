@@ -253,12 +253,16 @@ Future<Uint8List> generateResume3(
                             descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate())
                                 : '-'} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
                             descriptionPlace: '${experience.location}',
-                              descriptionActivities: experience.professionActivitiesText != null ? experience.professionActivitiesText!
-                                  .split(' / ')
-                                  .where((item) => item.isNotEmpty) // Filter out empty items.
-                                  .map((item) => '• $item')         // Prefix each item with a bullet point.
-                                  .join('\n') :
-                              ''
+                            descriptionActivities:
+                            experience.professionActivitiesText != null ? experience.professionActivitiesText!
+                                .split(' / ')
+                                .where((item) => item.isNotEmpty) // Filter out empty items.
+                                .map((item) => '• $item')         // Prefix each item with a bullet point.
+                                .join('\n') :
+                            experience.professionActivities
+                                .where((item) => item.isNotEmpty) // Filter out empty items.
+                                .map((item) => '• $item')         // Prefix each item with a bullet point.
+                                .join('\n')
                           ),
                         pw.SizedBox(height: 5),
 

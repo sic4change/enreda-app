@@ -112,6 +112,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
   bool _isSelectedPhoto = true;
   bool _isSelectedMaxEducation = true;
   String _myMaxEducation = '';
+  bool _isSelected2Page = false;
 
   List<int> mySelectedDateEducation = [];
   List<String> idSelectedDateEducation = [];
@@ -359,43 +360,131 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                         padding: const EdgeInsets.only(left: 10.0),
                         child: CustomTextBody(text: StringConst.MY_CV.toUpperCase()),
                       )),
-                  Expanded(
-                    flex: Responsive.isMobile(context) ? 4 : 2,
-                    child: EnredaButton(
-                      buttonTitle: "Vista previa",
-                      width: 80,
-                      onPressed: () async {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  MyCv(
-                                    user: widget.user!,
-                                    myPhoto: _isSelectedPhoto,
-                                    city: widget.myCustomCity,
-                                    province: widget.myCustomProvince,
-                                    country: widget.myCustomCountry,
-                                    myExperiences: widget.myCustomExperiences,
-                                    myPersonalExperiences: widget.myPersonalCustomExperiences,
-                                    myEducation: widget.myCustomEducation,
-                                    mySecondaryEducation: widget.mySecondaryCustomEducation,
-                                    idSelectedDateEducation: idSelectedDateEducation,
-                                    idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
-                                    idSelectedDateExperience: idSelectedDateExperience,
-                                    idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
-                                    competenciesNames: widget.myCustomCompetencies,
-                                    aboutMe: widget.myCustomAboutMe,
-                                    languagesNames: widget.myCustomLanguages,
-                                    myDataOfInterest: widget.myCustomDataOfInterest,
-                                    myCustomEmail: widget.myCustomEmail,
-                                    myCustomPhone: widget.myCustomPhone,
-                                    myCustomReferences: widget.myCustomReferences,
-                                    myMaxEducation: _myMaxEducation,
-                                  )),
-                        );
-                      },
-                    ),
+                  Column(
+                    children: [
+                      EnredaButton(
+                        buttonTitle: "Vista previa",
+                        width: 100,
+                        onPressed: () async {
+                          if(getTotalElements() >= 9 && !_isSelected2Page){
+                            showAlertDialog(
+                              context,
+                              title: StringConst.WARNING,
+                              content: StringConst.PAGE_WARNING_2,
+                              defaultActionText: StringConst.OK,
+                            );
+                            return;
+                          }
+                          if(getTotalElements() < 9 && _isSelected2Page){
+                            showAlertDialog(
+                              context,
+                              title: StringConst.WARNING,
+                              content: StringConst.PAGE_WARNING_1,
+                              defaultActionText: StringConst.OK,
+                            );
+                            return;
+                          }
+                          if(getTotalElements() > 18){
+                            showAlertDialog(
+                              context,
+                              title: StringConst.WARNING,
+                              content: StringConst.PAGE_WARNING_3,
+                              defaultActionText: StringConst.OK,
+                            );
+                            return;
+                          }
+                          /*if(widget.myPersonalCustomExperiences.length > 2){
+                      showAlertDialog(
+                        context,
+                        title: 'Error',
+                        content: 'Ha seleccionado demasiadas experiencias personales',
+                        defaultActionText: 'Ok',
+                      );
+                      return;
+                    }
+                    if(widget.myCustomExperiences.length > 2){
+                      showAlertDialog(
+                        context,
+                        title: 'Error',
+                        content: 'Ha seleccionado demasiadas experiencias profesionales',
+                        defaultActionText: 'Ok',
+                      );
+                      return;
+                    }
+                    if(widget.mySecondaryCustomEducation.length > 2){
+                      showAlertDialog(
+                        context,
+                        title: 'Error',
+                        content: 'Ha seleccionado demasiadas formaciones complementarias',
+                        defaultActionText: 'Ok',
+                      );
+                      return;
+                    }
+                    if(widget.myCustomEducation.length > 2){
+                      showAlertDialog(
+                        context,
+                        title: 'Error',
+                        content: 'Ha seleccionado demasiadas formaciones',
+                        defaultActionText: 'Ok',
+                      );
+                      return;
+                    }*/
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    MyCv(
+                                      user: widget.user!,
+                                      myPhoto: _isSelectedPhoto,
+                                      city: widget.myCustomCity,
+                                      province: widget.myCustomProvince,
+                                      country: widget.myCustomCountry,
+                                      myExperiences: widget.myCustomExperiences,
+                                      myPersonalExperiences: widget.myPersonalCustomExperiences,
+                                      myEducation: widget.myCustomEducation,
+                                      mySecondaryEducation: widget.mySecondaryCustomEducation,
+                                      idSelectedDateEducation: idSelectedDateEducation,
+                                      idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
+                                      idSelectedDateExperience: idSelectedDateExperience,
+                                      idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
+                                      competenciesNames: widget.myCustomCompetencies,
+                                      aboutMe: widget.myCustomAboutMe,
+                                      languagesNames: widget.myCustomLanguages,
+                                      myDataOfInterest: widget.myCustomDataOfInterest,
+                                      myCustomEmail: widget.myCustomEmail,
+                                      myCustomPhone: widget.myCustomPhone,
+                                      myCustomReferences: widget.myCustomReferences,
+                                      myMaxEducation: _myMaxEducation,
+                                      numPages: _isSelected2Page ? 2 : 1,
+                                    )),
+                          );
+                        },
+                      ),
+                    ],
                   ),
+                ],
+              ),
+              SpaceH12(),
+              Row(
+                children: [
+                  CustomTextSmall(text: '1 página'),
+                  SpaceW8(),
+                  Switch(
+                    onChanged: (value){
+                      setState(() {
+                        _isSelected2Page = value;
+                        print(getTotalElements());
+                        print(_isSelected2Page);
+                      });
+                    },
+                    value: _isSelected2Page,
+                    inactiveTrackColor: AppColors.primaryColor,
+                    inactiveThumbColor: AppColors.penBlue,
+                    activeColor: AppColors.penBlue,
+                    activeTrackColor: AppColors.primaryColor,
+                  ),
+                  SpaceW8(),
+                  CustomTextSmall(text: '2 páginas'),
                 ],
               ),
               SpaceH20(),
@@ -536,75 +625,130 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           children: [
             CustomTextBody(text: StringConst.MY_CV.toUpperCase()),
             Spacer(),
-            EnredaButton(
-              buttonTitle: "Vista previa",
-              width: 100,
-              onPressed: () async {
-                if(widget.myPersonalCustomExperiences.length > 2){
-                  showAlertDialog(
-                    context,
-                    title: 'Error',
-                    content: 'Ha seleccionado demasiadas experiencias personales',
-                    defaultActionText: 'Ok',
-                  );
-                  return;
-                }
-                if(widget.myCustomExperiences.length > 2){
-                  showAlertDialog(
-                    context,
-                    title: 'Error',
-                    content: 'Ha seleccionado demasiadas experiencias profesionales',
-                    defaultActionText: 'Ok',
-                  );
-                  return;
-                }
-                if(widget.mySecondaryCustomEducation.length > 2){
-                  showAlertDialog(
-                    context,
-                    title: 'Error',
-                    content: 'Ha seleccionado demasiadas formaciones complementarias',
-                    defaultActionText: 'Ok',
-                  );
-                  return;
-                }
-                if(widget.myCustomEducation.length > 2){
-                  showAlertDialog(
-                    context,
-                    title: 'Error',
-                    content: 'Ha seleccionado demasiadas formaciones',
-                    defaultActionText: 'Ok',
-                  );
-                  return;
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          MyCv(
-                            user: widget.user!,
-                            myPhoto: _isSelectedPhoto,
-                            city: widget.myCustomCity,
-                            province: widget.myCustomProvince,
-                            country: widget.myCustomCountry,
-                            myExperiences: widget.myCustomExperiences,
-                            myPersonalExperiences: widget.myPersonalCustomExperiences,
-                            myEducation: widget.myCustomEducation,
-                            mySecondaryEducation: widget.mySecondaryCustomEducation,
-                            idSelectedDateEducation: idSelectedDateEducation,
-                            idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
-                            idSelectedDateExperience: idSelectedDateExperience,
-                            idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
-                            competenciesNames: widget.myCustomCompetencies,
-                            aboutMe: widget.myCustomAboutMe,
-                            languagesNames: widget.myCustomLanguages,
-                            myDataOfInterest: widget.myCustomDataOfInterest,
-                            myCustomEmail: widget.myCustomEmail,
-                            myCustomPhone: widget.myCustomPhone,
-                            myCustomReferences: widget.myCustomReferences,
-                            myMaxEducation: _myMaxEducation,
-                          )),
-                );
-              },
+            Row(
+              children: [
+                Row(
+                  children: [
+                    CustomTextSmall(text: '1 página'),
+                    SpaceW8(),
+                    Switch(
+                      onChanged: (value){
+                        setState(() {
+                          _isSelected2Page = value;
+                          print(getTotalElements());
+                          print(_isSelected2Page);
+                        });
+                      },
+                      value: _isSelected2Page,
+                      inactiveTrackColor: AppColors.primaryColor,
+                      inactiveThumbColor: AppColors.penBlue,
+                      activeColor: AppColors.penBlue,
+                      activeTrackColor: AppColors.primaryColor,
+                    ),
+                    SpaceW8(),
+                    CustomTextSmall(text: '2 páginas'),
+                  ],
+                ),
+                SpaceW12(),
+                EnredaButton(
+                  buttonTitle: "Vista previa",
+                  width: 100,
+                  onPressed: () async {
+                    if(getTotalElements() >= 9 && !_isSelected2Page){
+                      showAlertDialog(
+                        context,
+                        title: 'Aviso',
+                        content: 'Con más de 9 elementos principales te recomendamos crear tu curriculum con dos páginas',
+                        defaultActionText: 'Ok',
+                      );
+                      return;
+                    }
+                    if(getTotalElements() < 9 && _isSelected2Page){
+                      showAlertDialog(
+                        context,
+                        title: 'Aviso',
+                        content: 'Con menos de 9 elementos principales te recomendamos crear tu curriculum con una páginas',
+                        defaultActionText: 'Ok',
+                      );
+                      return;
+                    }
+                    if(getTotalElements() > 18){
+                      showAlertDialog(
+                        context,
+                        title: StringConst.WARNING,
+                        content: StringConst.PAGE_WARNING_3,
+                        defaultActionText: StringConst.OK,
+                      );
+                      return;
+                    }
+                    /*if(widget.myPersonalCustomExperiences.length > 2){
+                      showAlertDialog(
+                        context,
+                        title: 'Error',
+                        content: 'Ha seleccionado demasiadas experiencias personales',
+                        defaultActionText: 'Ok',
+                      );
+                      return;
+                    }
+                    if(widget.myCustomExperiences.length > 2){
+                      showAlertDialog(
+                        context,
+                        title: 'Error',
+                        content: 'Ha seleccionado demasiadas experiencias profesionales',
+                        defaultActionText: 'Ok',
+                      );
+                      return;
+                    }
+                    if(widget.mySecondaryCustomEducation.length > 2){
+                      showAlertDialog(
+                        context,
+                        title: 'Error',
+                        content: 'Ha seleccionado demasiadas formaciones complementarias',
+                        defaultActionText: 'Ok',
+                      );
+                      return;
+                    }
+                    if(widget.myCustomEducation.length > 2){
+                      showAlertDialog(
+                        context,
+                        title: 'Error',
+                        content: 'Ha seleccionado demasiadas formaciones',
+                        defaultActionText: 'Ok',
+                      );
+                      return;
+                    }*/
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              MyCv(
+                                user: widget.user!,
+                                myPhoto: _isSelectedPhoto,
+                                city: widget.myCustomCity,
+                                province: widget.myCustomProvince,
+                                country: widget.myCustomCountry,
+                                myExperiences: widget.myCustomExperiences,
+                                myPersonalExperiences: widget.myPersonalCustomExperiences,
+                                myEducation: widget.myCustomEducation,
+                                mySecondaryEducation: widget.mySecondaryCustomEducation,
+                                idSelectedDateEducation: idSelectedDateEducation,
+                                idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
+                                idSelectedDateExperience: idSelectedDateExperience,
+                                idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
+                                competenciesNames: widget.myCustomCompetencies,
+                                aboutMe: widget.myCustomAboutMe,
+                                languagesNames: widget.myCustomLanguages,
+                                myDataOfInterest: widget.myCustomDataOfInterest,
+                                myCustomEmail: widget.myCustomEmail,
+                                myCustomPhone: widget.myCustomPhone,
+                                myCustomReferences: widget.myCustomReferences,
+                                myMaxEducation: _myMaxEducation,
+                                numPages: _isSelected2Page ? 2 : 1,
+                              )),
+                    );
+                  },
+                ),
+              ],
             ),
             SpaceW8(),
           ],
@@ -1762,6 +1906,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
         ),
       ],
     );
+  }
+
+  int getTotalElements(){
+    return widget.myPersonalCustomExperiences.length + widget.myCustomExperiences.length + widget.myCustomEducation.length + widget.mySecondaryCustomEducation.length + widget.myCustomReferences.length + widget.myCustomCompetencies.length;
   }
 
 }

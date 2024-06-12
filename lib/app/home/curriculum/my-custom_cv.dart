@@ -540,7 +540,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               buttonTitle: "Vista previa",
               width: 100,
               onPressed: () async {
-                if(widget.myPersonalCustomExperiences.length > 2){
+                if(widget.myPersonalCustomExperiences.length > 10){
                   showAlertDialog(
                     context,
                     title: 'Error',
@@ -549,7 +549,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   );
                   return;
                 }
-                if(widget.myCustomExperiences.length > 2){
+                if(widget.myCustomExperiences.length > 10){
                   showAlertDialog(
                     context,
                     title: 'Error',
@@ -558,7 +558,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   );
                   return;
                 }
-                if(widget.mySecondaryCustomEducation.length > 2){
+                if(widget.mySecondaryCustomEducation.length > 10){
                   showAlertDialog(
                     context,
                     title: 'Error',
@@ -567,7 +567,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   );
                   return;
                 }
-                if(widget.myCustomEducation.length > 2){
+                if(widget.myCustomEducation.length > 10){
                   showAlertDialog(
                     context,
                     title: 'Error',

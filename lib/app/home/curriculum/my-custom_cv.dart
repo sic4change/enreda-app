@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:enreda_app/app/home/curriculum/pdf_generator/pdf_preview.dart';
+import 'package:enreda_app/app/home/curriculum/pdf_generator/my_cv_multiple_pages.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
@@ -369,7 +369,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  MyCv(
+                                  MyCvMultiplePages(
                                     user: widget.user!,
                                     myPhoto: _isSelectedPhoto,
                                     city: widget.myCustomCity,
@@ -580,7 +580,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          MyCv(
+                          MyCvMultiplePages(
                             user: widget.user!,
                             myPhoto: _isSelectedPhoto,
                             city: widget.myCustomCity,

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:enreda_app/app/home/curriculum/pdf_generator/cv_page.dart';
+import 'package:enreda_app/app/home/curriculum/pdf_generator/cv_multiple_pages.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
@@ -17,8 +17,8 @@ import '../../../../utils/const.dart';
 import '../../models/experience.dart';
 import 'data.dart';
 
-class MyCv extends StatefulWidget {
-  const MyCv({
+class MyCvMultiplePages extends StatefulWidget {
+  const MyCvMultiplePages({
     Key? key,
     required this.user,
     required this.city,
@@ -71,7 +71,7 @@ class MyCv extends StatefulWidget {
   }
 }
 
-class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
+class MyAppState extends State<MyCvMultiplePages> with SingleTickerProviderStateMixin {
 
   int _tab = 0;
   TabController? _tabController;

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:enreda_app/app/home/curriculum/pdf_generator/cv_multiple_pages.dart';
+import 'package:enreda_app/app/home/curriculum/pdf_generator/cv_one_page.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
@@ -17,8 +17,8 @@ import '../../../../utils/const.dart';
 import '../../models/experience.dart';
 import 'data.dart';
 
-class MyCvMultiplePages extends StatefulWidget {
-  const MyCvMultiplePages({
+class MyCvOnePage extends StatefulWidget {
+  const MyCvOnePage({
     Key? key,
     required this.user,
     required this.city,
@@ -71,7 +71,7 @@ class MyCvMultiplePages extends StatefulWidget {
   }
 }
 
-class MyAppState extends State<MyCvMultiplePages> with SingleTickerProviderStateMixin {
+class MyAppState extends State<MyCvOnePage> with SingleTickerProviderStateMixin {
 
   int _tab = 0;
   TabController? _tabController;
@@ -94,7 +94,7 @@ class MyAppState extends State<MyCvMultiplePages> with SingleTickerProviderState
 
     _tabController = TabController(
       vsync: this,
-      length: examplesMultiplePages.length,
+      length: examplesOnePage.length,
       initialIndex: _tab,
     );
     _tabController!.addListener(() {
@@ -172,7 +172,7 @@ class MyAppState extends State<MyCvMultiplePages> with SingleTickerProviderState
             fontSize: 22.0),
         bottom: TabBar(
           controller: _tabController,
-          tabs: examplesMultiplePages.map<Tab>((e) => Tab(text: e.name)).toList(),
+          tabs: examplesOnePage.map<Tab>((e) => Tab(text: e.name)).toList(),
           labelColor: AppColors.bluePetrol,
           labelStyle: TextStyle(fontSize: 20),
           isScrollable: true,
@@ -180,30 +180,30 @@ class MyAppState extends State<MyCvMultiplePages> with SingleTickerProviderState
       ),
       body: PdfPreview(
         maxPageWidth: 700,
-        build: (format) => examplesMultiplePages[_tab].builder(
-            format,
-            _data,
-            widget.user!,
-            widget.city!,
-            widget.province!,
-            widget.country!,
-            widget.myExperiences!,
-            widget.myPersonalExperiences,
-            widget.myEducation!,
-            widget.mySecondaryEducation,
-            widget.idSelectedDateEducation,
-            widget.idSelectedDateSecondaryEducation,
-            widget.idSelectedDateExperience,
-            widget.idSelectedDatePersonalExperience,
-            widget.competenciesNames,
-            widget.languagesNames,
-            widget.aboutMe,
-            widget.myDataOfInterest,
-            widget.myCustomEmail,
-            widget.myCustomPhone,
-            widget.myPhoto,
-            widget.myCustomReferences,
-            widget.myMaxEducation,
+        build: (format) => examplesOnePage[_tab].builder(
+          format,
+          _data,
+          widget.user!,
+          widget.city!,
+          widget.province!,
+          widget.country!,
+          widget.myExperiences!,
+          widget.myPersonalExperiences,
+          widget.myEducation!,
+          widget.mySecondaryEducation,
+          widget.idSelectedDateEducation,
+          widget.idSelectedDateSecondaryEducation,
+          widget.idSelectedDateExperience,
+          widget.idSelectedDatePersonalExperience,
+          widget.competenciesNames,
+          widget.languagesNames,
+          widget.aboutMe,
+          widget.myDataOfInterest,
+          widget.myCustomEmail,
+          widget.myCustomPhone,
+          widget.myPhoto,
+          widget.myCustomReferences,
+          widget.myMaxEducation,
         ),
         actions: actions,
         canDebug: false,

@@ -579,10 +579,6 @@ class StringConst {
       '¿Está seguro que quiere continuar?';
   static const String SIGN_OUT_INSTRUCTIONS = 'Si pulsa en Aceptar se le envirá a su correo las acciones a '
       'realizar para cambiar su contraseña. Si no aparece, revisa las carpetas de SPAM y Correo no deseado';
-  static const String PAGE_WARNING_1 = 'Con menos de 9 elementos principales te recomendamos crear tu curriculum con una páginas';
-  static const String PAGE_WARNING_2 = 'Con más de 9 elementos principales te recomendamos crear tu curriculum con dos páginas';
-  static const String PAGE_WARNING_3 = 'Te recomendamos seleccionar menos de 18 elementos principales';
-  static const String WARNING = 'Aviso';
 
 
   //Gamification

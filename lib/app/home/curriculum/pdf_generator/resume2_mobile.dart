@@ -52,7 +52,6 @@ Future<Uint8List> generateResume2(
     bool myPhoto,
     List<CertificationRequest>? myReferences,
     String myMaxEducation,
-    int numPages,
     ) async {
   final doc = pw.Document(title: 'Mi Currículum');
 

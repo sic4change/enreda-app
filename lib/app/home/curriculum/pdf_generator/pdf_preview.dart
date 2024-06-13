@@ -41,7 +41,6 @@ class MyCv extends StatefulWidget {
     required this.myPhoto,
     required this.myCustomReferences,
     required this.myMaxEducation,
-    required this.numPages,
   }) : super(key: key);
 
   final UserEnreda? user;
@@ -65,7 +64,6 @@ class MyCv extends StatefulWidget {
   final String myMaxEducation;
   final bool myPhoto;
   final List<CertificationRequest>? myCustomReferences;
-  final int numPages;
 
   @override
   MyAppState createState() {
@@ -206,7 +204,6 @@ class MyAppState extends State<MyCv> with SingleTickerProviderStateMixin {
             widget.myPhoto,
             widget.myCustomReferences,
             widget.myMaxEducation,
-            widget.numPages,
         ),
         actions: actions,
         canDebug: false,

@@ -367,6 +367,15 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                         buttonTitle: "Vista previa",
                         width: 100,
                         onPressed: () async {
+                          if(getTotalSideElements() >= 5 && !_isSelected2Page){
+                            showAlertDialog(
+                              context,
+                              title: StringConst.WARNING,
+                              content: StringConst.PAGE_WARNING_4,
+                              defaultActionText: StringConst.OK,
+                            );
+                            return;
+                          }
                           if(getTotalElements() >= 9 && !_isSelected2Page){
                             showAlertDialog(
                               context,
@@ -614,7 +623,8 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           children: [
             CustomTextBody(text: StringConst.MY_CV.toUpperCase()),
             Spacer(),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
                   children: [
@@ -643,6 +653,15 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   buttonTitle: "Vista previa",
                   width: 100,
                   onPressed: () async {
+                    if(getTotalSideElements() >= 5 && !_isSelected2Page) {
+                      showAlertDialog(
+                        context,
+                        title: StringConst.WARNING,
+                        content: StringConst.PAGE_WARNING_4,
+                        defaultActionText: StringConst.OK,
+                      );
+                      return;
+                    }
                     if(getTotalElements() >= 9 && !_isSelected2Page){
                       showAlertDialog(
                         context,
@@ -1887,6 +1906,15 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
 
   int getTotalElements(){
     return widget.myPersonalCustomExperiences.length + widget.myCustomExperiences.length + widget.myCustomEducation.length + widget.mySecondaryCustomEducation.length + widget.myCustomReferences.length + widget.myCustomCompetencies.length;
+  }
+
+  int getTotalSideElements(){
+    int sum = 0;
+    if(widget.myCustomAboutMe.length > 90){
+      print('Texto largo');
+      sum = 1;
+    }
+    return widget.myCustomLanguages.length + widget.myCustomDataOfInterest.length + sum;
   }
 
 }

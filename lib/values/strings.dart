@@ -551,6 +551,7 @@ class StringConst {
   static const String PAGE_WARNING_1 = 'Con menos de 9 elementos principales te recomendamos crear tu curriculum con una páginas';
   static const String PAGE_WARNING_2 = 'Con más de 9 elementos principales te recomendamos crear tu curriculum con dos páginas';
   static const String PAGE_WARNING_3 = 'Te recomendamos seleccionar menos de 18 elementos principales';
+  static const String PAGE_WARNING_4 = 'Te recomendamos seleccionar menos de 5 elementos personales para una página';
   static const String WARNING = 'Aviso';
 
   // Profile

@@ -52,6 +52,7 @@ Future<Uint8List> generateResume2(
     String myMaxEducation,
     ) async {
   final doc = pw.Document(title: 'Mi Currículum');
+  var fontPoppins = await PdfGoogleFonts.poppinsExtraBold();
 
   var url = user?.profilePic?.src ?? "";
 
@@ -104,10 +105,12 @@ Future<Uint8List> generateResume2(
                   mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: <pw.Widget>[
                     pw.Text('${user?.firstName}',
-                        textScaleFactor: 1.5,
-                        style: pw.Theme.of(context)
-                            .defaultTextStyle
-                            .copyWith(fontWeight: pw.FontWeight.bold, color: black)),
+                        textScaleFactor: 1.2,
+                        style: pw.TextStyle(
+                            font: fontPoppins,
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 18,
+                            color: black)),
                     pw.Text('${user?.lastName}',
                         textScaleFactor: 1.2,
                         style: pw.Theme.of(context)
@@ -126,10 +129,12 @@ Future<Uint8List> generateResume2(
               mainAxisAlignment: pw.MainAxisAlignment.start,
               children: <pw.Widget>[
                 pw.Text('${user?.firstName}',
-                    textScaleFactor: 1.8,
-                    style: pw.Theme.of(context)
-                        .defaultTextStyle
-                        .copyWith(fontWeight: pw.FontWeight.bold, color: black)),
+                    textScaleFactor: 1.5,
+                    style: pw.TextStyle(
+                        font: fontPoppins,
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 18,
+                        color: black)),
                 pw.Text('${user?.lastName}',
                     textScaleFactor: 1.2,
                     style: pw.Theme.of(context)

@@ -231,11 +231,17 @@ class _EmailSignInFormChangeNotifierState
   }
 
   Widget _buildForgotPassword(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
     return InkWell(
       mouseCursor: MaterialStateMouseCursor.clickable,
       onTap: () => _launchForgotPassword(context),
-      child: Center(child: Text("¿Has olvidado la contraseña?", style: TextStyle(
-          fontWeight: FontWeight.normal, color: Constants.white),)),
+      child: Center(child: Text("¿Has olvidado la contraseña?",
+        style: textTheme.bodySmall?.copyWith(
+          height: 1.5,
+          color: AppColors.white,
+        ),
+      )
+      ),
     );
   }
 
@@ -249,12 +255,17 @@ class _EmailSignInFormChangeNotifierState
   }
 
   Widget _buildCreateAccount(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('¿Aún no tienes cuenta?', style: TextStyle(
-            fontWeight: FontWeight.normal, color: Constants.white),),
+        Text('¿Aún no tienes cuenta?',
+          style: textTheme.bodySmall?.copyWith(
+            height: 1.5,
+            color: AppColors.white,
+          ),
+        ),
         SpaceW8(),
         InkWell(
           mouseCursor: MaterialStateMouseCursor.clickable,

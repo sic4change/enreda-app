@@ -7,7 +7,6 @@ import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
 import 'package:enreda_app/app/home/web_home.dart';
-import 'package:enreda_app/app/home/web_home_scafold.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/main_container.dart';
@@ -446,7 +445,8 @@ class _GamificationState extends State<GamificationPage> {
           || item.id == UserEnreda.FLAG_CV_DATA_OF_INTEREST ? widget.goBackToCV
           : item.id == UserEnreda.FLAG_EVALUATE_COMPETENCY? widget.goBackToCompetencies
           : item.id == UserEnreda.FLAG_CHAT ? () => widget.showChatNotifier.value = !widget.showChatNotifier.value
-          : item.id == UserEnreda.FLAG_JOIN_RESOURCE ? () => setState(() { WebHomeScaffold.selectedIndex.value = 0; })
+          : item.id == UserEnreda.FLAG_JOIN_RESOURCE ? () => setState(() {
+            WebHome.selectedIndex.value = 1; ResourcesPage.selectedIndex.value = 0;})
           : null,
         child: Ink(
           decoration:  BoxDecoration(
@@ -621,15 +621,8 @@ class _GamificationState extends State<GamificationPage> {
         children: [
           _getCertificateImage(),
           SpaceH24(),
-
           EnredaButton(
               buttonTitle: StringConst.DOWNLOAD,
-              width: 150,
-              height: 35,
-              borderRadius:
-              BorderRadius.all(
-                Radius.circular(20),
-              ),
               onPressed: (){
                 Navigator.push(
                     context,

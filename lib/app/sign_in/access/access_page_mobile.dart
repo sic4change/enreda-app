@@ -3,6 +3,7 @@ import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_too
 import 'package:enreda_app/app/sign_in/email_sign_in_form_change_notifier.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -51,7 +52,7 @@ class _AccessPageMobileState extends State<AccessPageMobile> {
                       onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
                       child: Image.asset(
                         ImagePath.LOGO_ENREDA_LIGHT,
-                        height: Sizes.HEIGHT_50,
+                        height: Responsive.isMobile(context) ? Sizes.HEIGHT_50 : Sizes.HEIGHT_60,
                       ),
                     ),
                     SpaceH30(),
@@ -77,10 +78,9 @@ class _AccessPageMobileState extends State<AccessPageMobile> {
                     SpaceH4(),
                     kIsWeb ? Text(
                       StringConst.BETTER_FROM_APPS,
-                      style: textTheme.bodyMedium?.copyWith(
+                      style: textTheme.bodySmall?.copyWith(
                         height: 1.5,
                         color: AppColors.white,
-                        fontWeight: FontWeight.w400,
                       ),
                     ) : Container(),
                   ],

@@ -1,6 +1,5 @@
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/home/web_home.dart';
-import 'package:enreda_app/app/home/web_home_scafold.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';

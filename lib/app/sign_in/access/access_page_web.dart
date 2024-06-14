@@ -45,7 +45,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
         AccessBackgroundWeb(),
         Center(
           child: Container(
-            height: heightSize * 0.85,
+            height: heightSize * 0.80,
             width: widthSize * 0.70,
             child: Card(
               color: AppColors.turquoiseBlue,
@@ -83,7 +83,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
         Center(
           child: Container(
             color: Colors.transparent,
-            height: heightSize * 0.85,
+            height: heightSize * 0.80,
             width: widthSize * 0.70,
             child: Card(
               color: Colors.transparent,
@@ -190,13 +190,14 @@ class _AccessPageWebState extends State<AccessPageWeb> {
   Widget _buildSmallBody(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final double widthSize = MediaQuery.of(context).size.width;
+    final double heightSize = MediaQuery.of(context).size.height;
     double fontSize = responsiveSize(context, 20, 30, md: 22);
     return Stack(
       children: [
         AccessBackgroundWeb(),
         Center(
           child: Container(
-            height: 750,
+            height: heightSize * 0.80,
             width: widthSize * 0.85,
             child: Card(
               color: AppColors.turquoiseBlue,
@@ -232,7 +233,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
         ),
         Center(
           child: Container(
-            height: 750,
+            height: heightSize * 0.80,
             width: widthSize * 0.85,
             child: Card(
               color: Colors.transparent,

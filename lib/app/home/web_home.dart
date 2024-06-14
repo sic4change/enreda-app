@@ -12,13 +12,13 @@ import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
 import 'package:enreda_app/app/home/side_bar_widget.dart';
 import 'package:enreda_app/app/sign_in/access/access_page.dart';
+import 'package:enreda_app/common_widgets/custom_icons_icons.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
-import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
@@ -27,11 +27,8 @@ import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:sidebarx/sidebarx.dart';
-
-import '../../common_widgets/custom_icons_icons.dart';
 import 'models/userEnreda.dart';
 
 
@@ -42,11 +39,6 @@ class WebHome extends StatefulWidget {
   static final SidebarXController controller = SidebarXController(selectedIndex: 0, extended: true);
   static ValueNotifier<int> selectedIndex = ValueNotifier(0);
   final ValueNotifier<bool> showChatNotifier;
-
-  // static goToControlPanel() {
-  //   WebHome.selectedIndex.value = 0;
-  //   WebHome.controller.selectIndex(0);
-  // }
 
   static goResources() {
     WebHome.selectedIndex.value = 1;
@@ -472,20 +464,11 @@ class _WebHomeState extends State<WebHome> {
                 ),
               ),
               actions: <Widget>[
-                if (!auth.isNullUser && !isSmallScreen)
-                  Container(
-                    width: 1,
-                    height: 120,
-                    color: AppColors.grey100,
-                  ),
+                VerticalDivider(thickness: 1, color: AppColors.grey100,),
                 SizedBox(width: 20),
-                !isSmallScreen ? IconButton(
-                  icon: const Icon(
-                    CustomIcons.cuenta,
-                    color: AppColors.bluePetrol,
-                    size: 30,
-                  ),
-                  tooltip: 'Cuenta',
+                !isSmallScreen ? EnredaButton(
+                  buttonTitle: StringConst.ACCESS.toUpperCase(),
+                  buttonColor: AppColors.turquoiseBlue,
                   onPressed: () {
                     setState(() {
                       WebHome.selectedIndex.value = 0;

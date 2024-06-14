@@ -52,7 +52,7 @@ class _AccessPageMobileState extends State<AccessPageMobile> {
                       onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
                       child: Image.asset(
                         ImagePath.LOGO_ENREDA_LIGHT,
-                        height: Responsive.isMobile(context) ? Sizes.HEIGHT_50 : Sizes.HEIGHT_74,
+                        height: Responsive.isMobile(context) ? Sizes.HEIGHT_50 : Sizes.HEIGHT_60,
                       ),
                     ),
                     SpaceH30(),

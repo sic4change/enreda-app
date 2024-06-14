@@ -2,7 +2,6 @@ import 'package:country_picker/country_picker.dart';
 import 'package:enreda_app/app/home/home_page.dart';
 import 'package:enreda_app/app/home/resources/resource_detail/resource_detail_link_page.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/training_pill_page_mobile.dart';
-import 'package:enreda_app/app/sign_in/email_sign_in_page.dart';
 import 'package:enreda_app/app_theme.dart';
 import 'package:enreda_app/firebase_options.dart';
 import 'package:enreda_app/services/auth.dart';

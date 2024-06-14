@@ -117,7 +117,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                                     onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
                                     child: Image.asset(
                                       ImagePath.LOGO_ENREDA_LIGHT,
-                                      height: Sizes.HEIGHT_74,
+                                      height: Sizes.HEIGHT_100,
                                     ),
                                   ),
                                 ],
@@ -167,10 +167,9 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                                 SpaceH4(),
                                 kIsWeb ? Text(
                                   StringConst.BETTER_FROM_APPS,
-                                  style: textTheme.bodyMedium?.copyWith(
+                                  style: textTheme.bodySmall?.copyWith(
                                     height: 1.5,
                                     color: AppColors.white,
-                                    fontWeight: FontWeight.w400,
                                   ),
                                 ) : Container(),
                               ],
@@ -197,7 +196,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
         AccessBackgroundWeb(),
         Center(
           child: Container(
-            height: 680,
+            height: 750,
             width: widthSize * 0.85,
             child: Card(
               color: AppColors.turquoiseBlue,
@@ -207,7 +206,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                   Expanded(
                     flex: 5,
                     child: Image.asset(
-                      height: 680,
+                      height: 750,
                       ImagePath.ACCESS_PHOTO,
                       fit: BoxFit.cover,
                     ),
@@ -226,14 +225,14 @@ class _AccessPageWebState extends State<AccessPageWeb> {
           right: 0,
           child: Center(
             child: Container(
-                padding: EdgeInsets.only(left: 4, right: 25),
+                padding: EdgeInsets.only(left: 4, right: 30, top: 50),
                 width: widthSize * 0.85,
                 child: Image.asset(ImagePath.ACCESS_VECTOR)),
           ),
         ),
         Center(
           child: Container(
-            height: 680,
+            height: 750,
             width: widthSize * 0.85,
             child: Card(
               color: Colors.transparent,
@@ -253,7 +252,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                         child: Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(10.0),
+                              padding: const EdgeInsets.only(right: 10.0, top: 50),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
@@ -261,7 +260,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                                     onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
                                     child: Image.asset(
                                       ImagePath.LOGO_ENREDA_LIGHT,
-                                      height: Sizes.HEIGHT_42,
+                                      height: Sizes.HEIGHT_74,
                                     ),
                                   ),
                                 ],
@@ -310,10 +309,9 @@ class _AccessPageWebState extends State<AccessPageWeb> {
                                 SpaceH4(),
                                 kIsWeb ? Text(
                                   StringConst.BETTER_FROM_APPS,
-                                  style: textTheme.bodyMedium?.copyWith(
+                                  style: textTheme.bodySmall?.copyWith(
                                     height: 1.5,
                                     color: AppColors.white,
-                                    fontWeight: FontWeight.w400,
                                   ),
                                 ) : Container(),
                               ],

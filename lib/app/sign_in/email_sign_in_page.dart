@@ -132,7 +132,10 @@ class EmailSignInPage extends StatelessWidget {
                           SpaceH4(),
                           kIsWeb ? Text(
                             StringConst.BETTER_FROM_APPS,
-                            style: textTheme.bodyText2,
+                            style: textTheme.bodySmall?.copyWith(
+                              height: 1.5,
+                              color: AppColors.white,
+                            ),
                           ) : Container(),
                         ],
                       ),

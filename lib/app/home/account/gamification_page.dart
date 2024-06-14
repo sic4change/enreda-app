@@ -621,15 +621,8 @@ class _GamificationState extends State<GamificationPage> {
         children: [
           _getCertificateImage(),
           SpaceH24(),
-
           EnredaButton(
               buttonTitle: StringConst.DOWNLOAD,
-              width: 150,
-              height: 35,
-              borderRadius:
-              BorderRadius.all(
-                Radius.circular(20),
-              ),
               onPressed: (){
                 Navigator.push(
                     context,

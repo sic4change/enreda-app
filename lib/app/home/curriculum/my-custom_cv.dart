@@ -114,6 +114,8 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
   bool _isSelectedMaxEducation = true;
   String _myMaxEducation = '';
   bool _isSelected2Page = false;
+  List<String> printingOptions = ['1 página', '2 o más páginas'];
+  String? currentPrintingOption;
 
   List<int> mySelectedDateEducation = [];
   List<String> idSelectedDateEducation = [];
@@ -127,6 +129,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
   @override
   void initState() {
     super.initState();
+    currentPrintingOption = printingOptions[0];
     _myMaxEducation = widget.myMaxEducation;
     widget.mySelectedEducation.forEach((element) {
       mySelectedDateEducation.add(element);
@@ -355,137 +358,165 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             children: [
               Row(
                 children: [
-                  Expanded(
-                      flex: 5,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: CustomTextBody(text: StringConst.MY_CV.toUpperCase()),
-                      )),
                   Column(
                     children: [
-                      EnredaButton(
-                        buttonTitle: "Vista previa",
-                        width: 100,
-                        onPressed: () async {
-                          if(getTotalSideElements() >= 5 && !_isSelected2Page){
-                            showAlertDialog(
-                              context,
-                              title: StringConst.WARNING,
-                              content: StringConst.PAGE_WARNING_4,
-                              defaultActionText: StringConst.OK,
-                            );
-                            return;
-                          }
-                          if(getTotalElements() >= 9 && !_isSelected2Page){
-                            showAlertDialog(
-                              context,
-                              title: StringConst.WARNING,
-                              content: StringConst.PAGE_WARNING_2,
-                              defaultActionText: StringConst.OK,
-                            );
-                            return;
-                          }
-                          if(getTotalElements() < 9 && _isSelected2Page){
-                            showAlertDialog(
-                              context,
-                              title: StringConst.WARNING,
-                              content: StringConst.PAGE_WARNING_1,
-                              defaultActionText: StringConst.OK,
-                            );
-                            return;
-                          }
-                          if(getTotalElements() > 18){
-                            showAlertDialog(
-                              context,
-                              title: StringConst.WARNING,
-                              content: StringConst.PAGE_WARNING_3,
-                              defaultActionText: StringConst.OK,
-                            );
-                            return;
-                          }
-                          Navigator.push(
-                            context,
-                            _isSelected2Page == true ? MaterialPageRoute(
-                                builder: (context) =>
-                                    MyCvMultiplePages(
-                                      user: widget.user!,
-                                      myPhoto: _isSelectedPhoto,
-                                      city: widget.myCustomCity,
-                                      province: widget.myCustomProvince,
-                                      country: widget.myCustomCountry,
-                                      myExperiences: widget.myCustomExperiences,
-                                      myPersonalExperiences: widget.myPersonalCustomExperiences,
-                                      myEducation: widget.myCustomEducation,
-                                      mySecondaryEducation: widget.mySecondaryCustomEducation,
-                                      idSelectedDateEducation: idSelectedDateEducation,
-                                      idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
-                                      idSelectedDateExperience: idSelectedDateExperience,
-                                      idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
-                                      competenciesNames: widget.myCustomCompetencies,
-                                      aboutMe: widget.myCustomAboutMe,
-                                      languagesNames: widget.myCustomLanguages,
-                                      myDataOfInterest: widget.myCustomDataOfInterest,
-                                      myCustomEmail: widget.myCustomEmail,
-                                      myCustomPhone: widget.myCustomPhone,
-                                      myCustomReferences: widget.myCustomReferences,
-                                      myMaxEducation: _myMaxEducation,
-                                    )) :
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    MyCvOnePage(
-                                      user: widget.user!,
-                                      myPhoto: _isSelectedPhoto,
-                                      city: widget.myCustomCity,
-                                      province: widget.myCustomProvince,
-                                      country: widget.myCustomCountry,
-                                      myExperiences: widget.myCustomExperiences,
-                                      myPersonalExperiences: widget.myPersonalCustomExperiences,
-                                      myEducation: widget.myCustomEducation,
-                                      mySecondaryEducation: widget.mySecondaryCustomEducation,
-                                      idSelectedDateEducation: idSelectedDateEducation,
-                                      idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
-                                      idSelectedDateExperience: idSelectedDateExperience,
-                                      idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
-                                      competenciesNames: widget.myCustomCompetencies,
-                                      aboutMe: widget.myCustomAboutMe,
-                                      languagesNames: widget.myCustomLanguages,
-                                      myDataOfInterest: widget.myCustomDataOfInterest,
-                                      myCustomEmail: widget.myCustomEmail,
-                                      myCustomPhone: widget.myCustomPhone,
-                                      myCustomReferences: widget.myCustomReferences,
-                                      myMaxEducation: _myMaxEducation,
-                                    )),
-                          );
-                        },
+                      Container(
+                        height: 50,
+                        width: 180,
+                        child: ListTile(
+                          title: CustomTextSmall(text: printingOptions[0],),
+                          leading: Radio<String>(
+                            value: printingOptions[0],
+                            groupValue: currentPrintingOption,
+                            onChanged: (value) {
+                              setState(() {
+                                currentPrintingOption = value.toString();
+                                _isSelected2Page = true;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 180,
+                        child: ListTile(
+                          title: CustomTextSmall(text: printingOptions[1],),
+                          leading: Radio<String>(
+                            value: printingOptions[1],
+                            groupValue: currentPrintingOption,
+                            onChanged: (value) {
+                              setState(() {
+                                currentPrintingOption = value.toString();
+                                _isSelected2Page = false;
+                              });
+                            },
+                          ),
+                        ),
                       ),
                     ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: EnredaButton(
+                      buttonTitle: "Vista previa",
+                      width: 100,
+                      onPressed: () async {
+                        if(getTotalSideElements() >= 5 && !_isSelected2Page){
+                          showAlertDialog(
+                            context,
+                            title: StringConst.WARNING,
+                            content: StringConst.PAGE_WARNING_4,
+                            defaultActionText: StringConst.OK,
+                            image: Container(
+                                width: 250,
+                                height: 350,
+                                child: Image.asset(ImagePath.CV_WARNING_2)
+                            ),
+                          );
+                          return;
+                        }
+                        if(getTotalElements() >= 9 && !_isSelected2Page){
+                          showAlertDialog(
+                            context,
+                            title: StringConst.WARNING,
+                            content: StringConst.PAGE_WARNING_2,
+                            defaultActionText: StringConst.OK,
+                            image: Container(
+                                width: 250,
+                                height: 350,
+                                child: Image.asset(ImagePath.CV_WARNING_1)
+                            ),
+                          );
+                          return;
+                        }
+                        if(getTotalElements() < 9 && _isSelected2Page){
+                          showAlertDialog(
+                            context,
+                            title: StringConst.WARNING,
+                            content: StringConst.PAGE_WARNING_1,
+                            defaultActionText: StringConst.OK,
+                            image: Container(
+                                width: 250,
+                                height: 350,
+                                child: Image.asset(ImagePath.CV_WARNING_1)
+                            ),
+                          );
+                          return;
+                        }
+                        if(getTotalElements() > 18){
+                          showAlertDialog(
+                            context,
+                            title: StringConst.WARNING,
+                            content: StringConst.PAGE_WARNING_3,
+                            defaultActionText: StringConst.OK,
+                            image: Container(
+                                width: 250,
+                                height: 350,
+                                child: Image.asset(ImagePath.CV_WARNING_1)
+                            ),
+                          );
+                          return;
+                        }
+                        Navigator.push(
+                          context,
+                          _isSelected2Page == true ? MaterialPageRoute(
+                              builder: (context) =>
+                                  MyCvMultiplePages(
+                                    user: widget.user!,
+                                    myPhoto: _isSelectedPhoto,
+                                    city: widget.myCustomCity,
+                                    province: widget.myCustomProvince,
+                                    country: widget.myCustomCountry,
+                                    myExperiences: widget.myCustomExperiences,
+                                    myPersonalExperiences: widget.myPersonalCustomExperiences,
+                                    myEducation: widget.myCustomEducation,
+                                    mySecondaryEducation: widget.mySecondaryCustomEducation,
+                                    idSelectedDateEducation: idSelectedDateEducation,
+                                    idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
+                                    idSelectedDateExperience: idSelectedDateExperience,
+                                    idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
+                                    competenciesNames: widget.myCustomCompetencies,
+                                    aboutMe: widget.myCustomAboutMe,
+                                    languagesNames: widget.myCustomLanguages,
+                                    myDataOfInterest: widget.myCustomDataOfInterest,
+                                    myCustomEmail: widget.myCustomEmail,
+                                    myCustomPhone: widget.myCustomPhone,
+                                    myCustomReferences: widget.myCustomReferences,
+                                    myMaxEducation: _myMaxEducation,
+                                  )) :
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  MyCvOnePage(
+                                    user: widget.user!,
+                                    myPhoto: _isSelectedPhoto,
+                                    city: widget.myCustomCity,
+                                    province: widget.myCustomProvince,
+                                    country: widget.myCustomCountry,
+                                    myExperiences: widget.myCustomExperiences,
+                                    myPersonalExperiences: widget.myPersonalCustomExperiences,
+                                    myEducation: widget.myCustomEducation,
+                                    mySecondaryEducation: widget.mySecondaryCustomEducation,
+                                    idSelectedDateEducation: idSelectedDateEducation,
+                                    idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
+                                    idSelectedDateExperience: idSelectedDateExperience,
+                                    idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
+                                    competenciesNames: widget.myCustomCompetencies,
+                                    aboutMe: widget.myCustomAboutMe,
+                                    languagesNames: widget.myCustomLanguages,
+                                    myDataOfInterest: widget.myCustomDataOfInterest,
+                                    myCustomEmail: widget.myCustomEmail,
+                                    myCustomPhone: widget.myCustomPhone,
+                                    myCustomReferences: widget.myCustomReferences,
+                                    myMaxEducation: _myMaxEducation,
+                                  )),
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
               SpaceH12(),
-              Row(
-                children: [
-                  CustomTextSmall(text: '1 página'),
-                  SpaceW8(),
-                  Switch(
-                    onChanged: (value){
-                      setState(() {
-                        _isSelected2Page = value;
-                        print(getTotalElements());
-                        print(_isSelected2Page);
-                      });
-                    },
-                    value: _isSelected2Page,
-                    inactiveTrackColor: AppColors.primaryColor,
-                    inactiveThumbColor: AppColors.penBlue,
-                    activeColor: AppColors.penBlue,
-                    activeTrackColor: AppColors.primaryColor,
-                  ),
-                  SpaceW8(),
-                  CustomTextSmall(text: '2 páginas'),
-                ],
-              ),
-              SpaceH20(),
               InkWell(
                 onTap: (){
                   setState(() {
@@ -620,133 +651,163 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomTextBody(text: StringConst.MY_CV.toUpperCase()),
-            Spacer(),
             Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    CustomTextSmall(text: '1 página'),
-                    SpaceW8(),
-                    Switch(
-                      onChanged: (value){
+                Container(
+                  height: 50,
+                  width: 220,
+                  child: ListTile(
+                    title: CustomTextSmall(text: printingOptions[0],),
+                    leading: Radio<String>(
+                      value: printingOptions[0],
+                      groupValue: currentPrintingOption,
+                      onChanged: (value) {
                         setState(() {
-                          _isSelected2Page = value;
-                          print(getTotalElements());
-                          print(_isSelected2Page);
+                          currentPrintingOption = value.toString();
+                          _isSelected2Page = true;
                         });
                       },
-                      value: _isSelected2Page,
-                      inactiveTrackColor: AppColors.primaryColor,
-                      inactiveThumbColor: AppColors.penBlue,
-                      activeColor: AppColors.penBlue,
-                      activeTrackColor: AppColors.primaryColor,
                     ),
-                    SpaceW8(),
-                    CustomTextSmall(text: '2 páginas'),
-                  ],
+                  ),
                 ),
-                SpaceW12(),
-                EnredaButton(
-                  buttonTitle: "Vista previa",
-                  width: 100,
-                  onPressed: () async {
-                    if(getTotalSideElements() >= 5 && !_isSelected2Page) {
-                      showAlertDialog(
-                        context,
-                        title: StringConst.WARNING,
-                        content: StringConst.PAGE_WARNING_4,
-                        defaultActionText: StringConst.OK,
-                      );
-                      return;
-                    }
-                    if(getTotalElements() >= 9 && !_isSelected2Page){
-                      showAlertDialog(
-                        context,
-                        title: 'Aviso',
-                        content: 'Con más de 9 elementos principales te recomendamos crear tu curriculum con dos páginas',
-                        defaultActionText: 'Ok',
-                      );
-                      return;
-                    }
-                    if(getTotalElements() < 9 && _isSelected2Page){
-                      showAlertDialog(
-                        context,
-                        title: 'Aviso',
-                        content: 'Con menos de 9 elementos principales te recomendamos crear tu curriculum con una páginas',
-                        defaultActionText: 'Ok',
-                      );
-                      return;
-                    }
-                    if(getTotalElements() > 18){
-                      showAlertDialog(
-                        context,
-                        title: StringConst.WARNING,
-                        content: StringConst.PAGE_WARNING_3,
-                        defaultActionText: StringConst.OK,
-                      );
-                      return;
-                    }
-                    Navigator.push(
-                      context,
-                      _isSelected2Page == true ? MaterialPageRoute(
-                          builder: (context) =>
-                              MyCvMultiplePages(
-                                user: widget.user!,
-                                myPhoto: _isSelectedPhoto,
-                                city: widget.myCustomCity,
-                                province: widget.myCustomProvince,
-                                country: widget.myCustomCountry,
-                                myExperiences: widget.myCustomExperiences,
-                                myPersonalExperiences: widget.myPersonalCustomExperiences,
-                                myEducation: widget.myCustomEducation,
-                                mySecondaryEducation: widget.mySecondaryCustomEducation,
-                                idSelectedDateEducation: idSelectedDateEducation,
-                                idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
-                                idSelectedDateExperience: idSelectedDateExperience,
-                                idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
-                                competenciesNames: widget.myCustomCompetencies,
-                                aboutMe: widget.myCustomAboutMe,
-                                languagesNames: widget.myCustomLanguages,
-                                myDataOfInterest: widget.myCustomDataOfInterest,
-                                myCustomEmail: widget.myCustomEmail,
-                                myCustomPhone: widget.myCustomPhone,
-                                myCustomReferences: widget.myCustomReferences,
-                                myMaxEducation: _myMaxEducation,
-                              )) :
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              MyCvOnePage(
-                                user: widget.user!,
-                                myPhoto: _isSelectedPhoto,
-                                city: widget.myCustomCity,
-                                province: widget.myCustomProvince,
-                                country: widget.myCustomCountry,
-                                myExperiences: widget.myCustomExperiences,
-                                myPersonalExperiences: widget.myPersonalCustomExperiences,
-                                myEducation: widget.myCustomEducation,
-                                mySecondaryEducation: widget.mySecondaryCustomEducation,
-                                idSelectedDateEducation: idSelectedDateEducation,
-                                idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
-                                idSelectedDateExperience: idSelectedDateExperience,
-                                idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
-                                competenciesNames: widget.myCustomCompetencies,
-                                aboutMe: widget.myCustomAboutMe,
-                                languagesNames: widget.myCustomLanguages,
-                                myDataOfInterest: widget.myCustomDataOfInterest,
-                                myCustomEmail: widget.myCustomEmail,
-                                myCustomPhone: widget.myCustomPhone,
-                                myCustomReferences: widget.myCustomReferences,
-                                myMaxEducation: _myMaxEducation,
-                              )),
-                    );
-                  },
+                Container(
+                  height: 50,
+                  width: 220,
+                  child: ListTile(
+                    title: CustomTextSmall(text: printingOptions[1],),
+                    leading: Radio<String>(
+                      value: printingOptions[1],
+                      groupValue: currentPrintingOption,
+                      onChanged: (value) {
+                        setState(() {
+                          currentPrintingOption = value.toString();
+                          _isSelected2Page = false;
+                        });
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),
-            SpaceW8(),
+            Spacer(),
+            EnredaButton(
+              buttonTitle: "Vista previa",
+              width: 100,
+              onPressed: () async {
+                if(getTotalSideElements() >= 5 && !_isSelected2Page) {
+                  showAlertDialog(
+                    context,
+                    title: StringConst.WARNING,
+                    content: StringConst.PAGE_WARNING_4,
+                    defaultActionText: StringConst.OK,
+                    image: Container(
+                      width: 300,
+                      height: 450,
+                      child: Image.asset(ImagePath.CV_WARNING_2)
+                    ),
+                  );
+                  return;
+                }
+                if(getTotalElements() >= 9 && !_isSelected2Page){
+                  showAlertDialog(
+                    context,
+                    title: StringConst.WARNING,
+                    content: StringConst.PAGE_WARNING_2,
+                    defaultActionText: StringConst.OK,
+                    image: Container(
+                        width: 300,
+                        height: 450,
+                        child: Image.asset(ImagePath.CV_WARNING_1)
+                    ),
+                  );
+                  return;
+                }
+                if(getTotalElements() < 9 && _isSelected2Page){
+                  showAlertDialog(
+                    context,
+                    title: StringConst.WARNING,
+                    content: StringConst.PAGE_WARNING_1,
+                    defaultActionText: StringConst.OK,
+                    image: Container(
+                        width: 300,
+                        height: 450,
+                        child: Image.asset(ImagePath.CV_WARNING_1)
+                    ),
+                  );
+                  return;
+                }
+                if(getTotalElements() > 18){
+                  showAlertDialog(
+                    context,
+                    title: StringConst.WARNING,
+                    content: StringConst.PAGE_WARNING_3,
+                    defaultActionText: StringConst.OK,
+                    image: Container(
+                        width: 200,
+                        height: 500,
+                        child: Image.asset(ImagePath.CV_WARNING_1)
+                    ),
+                  );
+                  return;
+                }
+                Navigator.push(
+                  context,
+                  _isSelected2Page == true ? MaterialPageRoute(
+                      builder: (context) =>
+                          MyCvMultiplePages(
+                            user: widget.user!,
+                            myPhoto: _isSelectedPhoto,
+                            city: widget.myCustomCity,
+                            province: widget.myCustomProvince,
+                            country: widget.myCustomCountry,
+                            myExperiences: widget.myCustomExperiences,
+                            myPersonalExperiences: widget.myPersonalCustomExperiences,
+                            myEducation: widget.myCustomEducation,
+                            mySecondaryEducation: widget.mySecondaryCustomEducation,
+                            idSelectedDateEducation: idSelectedDateEducation,
+                            idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
+                            idSelectedDateExperience: idSelectedDateExperience,
+                            idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
+                            competenciesNames: widget.myCustomCompetencies,
+                            aboutMe: widget.myCustomAboutMe,
+                            languagesNames: widget.myCustomLanguages,
+                            myDataOfInterest: widget.myCustomDataOfInterest,
+                            myCustomEmail: widget.myCustomEmail,
+                            myCustomPhone: widget.myCustomPhone,
+                            myCustomReferences: widget.myCustomReferences,
+                            myMaxEducation: _myMaxEducation,
+                          )) :
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          MyCvOnePage(
+                            user: widget.user!,
+                            myPhoto: _isSelectedPhoto,
+                            city: widget.myCustomCity,
+                            province: widget.myCustomProvince,
+                            country: widget.myCustomCountry,
+                            myExperiences: widget.myCustomExperiences,
+                            myPersonalExperiences: widget.myPersonalCustomExperiences,
+                            myEducation: widget.myCustomEducation,
+                            mySecondaryEducation: widget.mySecondaryCustomEducation,
+                            idSelectedDateEducation: idSelectedDateEducation,
+                            idSelectedDateSecondaryEducation: idSelectedDateSecondaryEducation,
+                            idSelectedDateExperience: idSelectedDateExperience,
+                            idSelectedDatePersonalExperience: idSelectedDatePersonalExperience,
+                            competenciesNames: widget.myCustomCompetencies,
+                            aboutMe: widget.myCustomAboutMe,
+                            languagesNames: widget.myCustomLanguages,
+                            myDataOfInterest: widget.myCustomDataOfInterest,
+                            myCustomEmail: widget.myCustomEmail,
+                            myCustomPhone: widget.myCustomPhone,
+                            myCustomReferences: widget.myCustomReferences,
+                            myMaxEducation: _myMaxEducation,
+                          )),
+                );
+              },
+            ),
           ],
         ),
         SpaceH20(),

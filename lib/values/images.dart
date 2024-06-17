@@ -202,4 +202,8 @@ class ImagePath {
   static const String PERSONAL_DOCUMENTATION_ADD = '$imageDir/icon-add-entidad.png';
   static const String PERSONAL_DOCUMENTATION_DOWNLOAD = '$imageDir/icon-descargar-entidad.png';
   static const String NAME_IN_USE = 'Nombre en uso';
+
+  //CV pdf generator
+  static const String CV_WARNING_1 = '$imageDir/cv-warning-1.png';
+  static const String CV_WARNING_2 = '$imageDir/cv-warning-2.png';
 }

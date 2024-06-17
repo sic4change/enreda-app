@@ -374,7 +374,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             onChanged: (value) {
                               setState(() {
                                 currentPrintingOption = value.toString();
-                                _isSelected2Page = true;
+                                _isSelected2Page = false;
                               });
                             },
                           ),
@@ -391,7 +391,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             onChanged: (value) {
                               setState(() {
                                 currentPrintingOption = value.toString();
-                                _isSelected2Page = false;
+                                _isSelected2Page = true;
                               });
                             },
                           ),
@@ -673,7 +673,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                       onChanged: (value) {
                         setState(() {
                           currentPrintingOption = value.toString();
-                          _isSelected2Page = true;
+                          _isSelected2Page = false;
                         });
                       },
                     ),
@@ -690,7 +690,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                       onChanged: (value) {
                         setState(() {
                           currentPrintingOption = value.toString();
-                          _isSelected2Page = false;
+                          _isSelected2Page = true;
                         });
                       },
                     ),

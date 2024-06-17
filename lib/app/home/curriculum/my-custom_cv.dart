@@ -277,9 +277,12 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                       width: 120,
                                       child: Image.asset(ImagePath.USER_DEFAULT),
                                     ):
-                                    PrecacheAvatarCard(
-                                      imageUrl: profilePic,
-                                    ),
+                                    CachedNetworkImage(
+                                        width: 120,
+                                        height: 120,
+                                        fit: BoxFit.cover,
+                                        alignment: Alignment.center,
+                                        imageUrl: widget.user!.profilePic!.src),
                                   ),
                                 ],
                               ),
@@ -361,8 +364,8 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   Column(
                     children: [
                       Container(
-                        height: 50,
-                        width: 180,
+                        height: 30,
+                        width: 195,
                         child: ListTile(
                           title: CustomTextSmall(text: printingOptions[0],),
                           leading: Radio<String>(
@@ -379,7 +382,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                       ),
                       Container(
                         height: 50,
-                        width: 180,
+                        width: 195,
                         child: ListTile(
                           title: CustomTextSmall(text: printingOptions[1],),
                           leading: Radio<String>(
@@ -564,9 +567,12 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               width: 120,
                               child: Image.asset(ImagePath.USER_DEFAULT),
                             ):
-                            PrecacheAvatarCard(
-                              imageUrl: profilePic,
-                            ),
+                            CachedNetworkImage(
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center,
+                              imageUrl: widget.user!.profilePic!.src),
                           ),
                         ],
                       ),
@@ -657,7 +663,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             Column(
               children: [
                 Container(
-                  height: 50,
+                  height: 30,
                   width: 220,
                   child: ListTile(
                     title: CustomTextSmall(text: printingOptions[0],),
@@ -674,7 +680,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   ),
                 ),
                 Container(
-                  height: 50,
+                  height: 30,
                   width: 220,
                   child: ListTile(
                     title: CustomTextSmall(text: printingOptions[1],),

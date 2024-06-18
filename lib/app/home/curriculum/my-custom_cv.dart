@@ -447,7 +447,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                           );
                           return;
                         }
-                        if(getTotalElements() > 18){
+                        /*if(getTotalElements() > 18){
                           showAlertDialog(
                             context,
                             title: StringConst.WARNING,
@@ -460,7 +460,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             ),
                           );
                           return;
-                        }
+                        }*/
                         Navigator.push(
                           context,
                           _isSelected2Page == true ? MaterialPageRoute(
@@ -745,7 +745,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   );
                   return;
                 }
-                if(getTotalElements() > 18){
+               /* if(getTotalElements() > 18){
                   showAlertDialog(
                     context,
                     title: StringConst.WARNING,
@@ -758,7 +758,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                     ),
                   );
                   return;
-                }
+                }*/
                 Navigator.push(
                   context,
                   _isSelected2Page == true ? MaterialPageRoute(

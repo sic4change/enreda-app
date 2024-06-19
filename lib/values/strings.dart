@@ -548,10 +548,11 @@ class StringConst {
   static const String NO_EXPERIENCE = 'Todavía no has añadido ninguna experiencia. ¡Chatea con nuestro asistente para añadir una!';
   static const String NO_REFERENCES = 'Todavía no cuentas con ninguna referencia personal. ¡Certifica tus competencias!';
   static const String PERSONAL_DATA_LAW = 'Según la Ley Orgánica 15/1999 de Protección de Datos Personales, autorizo a la empresa al uso y tratamiento de mis datos con fines exclusivamente de selección de personal y bolsas de empleo.';
-  static const String PAGE_WARNING_1 = 'Con menos de 9 elementos principales te recomendamos crear tu curriculum con una páginas';
+  static const String PAGE_WARNING_1 = 'Con menos de 9 elementos principales te recomendamos crear tu curriculum con una página.';
   static const String PAGE_WARNING_2 = 'Con más de 9 elementos principales te recomendamos crear tu curriculum con dos páginas';
   static const String PAGE_WARNING_3 = 'Te recomendamos seleccionar menos de 18 elementos principales';
   static const String PAGE_WARNING_4 = 'Te recomendamos seleccionar menos de 5 elementos personales para una página';
+  static const String PAGE_WARNING_5 = 'Para una página te recomendamos seleccionar: \n\n • Menos de 9 elementos de formación y experiencias. \n\n • Menos de 5 elementos personales.';
   static const String WARNING = 'Aviso';
 
   // Profile

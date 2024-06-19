@@ -92,182 +92,173 @@ Future<Uint8List> generateResume1(
           children: [
             pw.Partition(
               width: leftWidth,
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                mainAxisAlignment: pw.MainAxisAlignment.start,
-                children: <pw.Widget>[
-                  pw.Container(
-                    height: pageTheme.pageFormat.availableHeight,
-                    child: pw.Padding(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 30.0),
-                      child: pw.Column(
+              child: pw.Container(
+                height: pageTheme.pageFormat.availableHeight,
+                child: pw.Padding(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 30.0),
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: <pw.Widget>[
+                      pw.Column(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: <pw.Widget>[
-                          pw.Column(
-                            crossAxisAlignment: pw.CrossAxisAlignment.start,
-                            children: <pw.Widget>[
-                              pw.SizedBox(height: 10),
-                              pw.Text('${user?.firstName}',
-                                  textScaleFactor: 1,
-                                  style: pw.TextStyle(
-                                      font: fontPoppinsBold,
-                                      fontWeight: pw.FontWeight.bold,
-                                      fontSize: 28,
-                                      color: bluePetrol)),
-                              pw.SizedBox(height: 2),
-                              pw.Text('${user?.lastName}',
-                                  textScaleFactor: 1,
-                                  style: pw.TextStyle(
-                                      font: fontPoppins,
-                                      fontWeight: pw.FontWeight.bold,
-                                      fontSize: 22,
-                                      color: bluePetrol)),
-                              pw.SizedBox(height: 130),
-                              myCustomEmail != "" ?
-                              _Category(title: StringConst.PERSONAL_DATA, color: white, fontPoppins: fontPoppins) : pw.Container(),
-                              myCustomEmail != "" ?
-                              pw.Row(
-                                children: [
-                                  pw.Container(
-                                    width: 20,
-                                    height: 20,
-                                    decoration: pw.BoxDecoration(
-                                      shape: pw.BoxShape.circle,
-                                      color: bluePetrol,
-                                    ),
-                                    child: pw.Center(
-                                      child: pw.Icon(pw.IconData(0xe0be), size: 10.0, color: white),
-                                    ),
-                                  ),
-                                  pw.SizedBox(width: 4),
-                                  _UrlText(myCustomEmail, 'mailto: $myCustomEmail', fontPoppins: fontPoppins)
-                                ],
-                              ) : pw.Container(),
-                              pw.SizedBox(height: 6),
-                              myCustomPhone != "" ?
-                              pw.Row(
-                                  children: [
-                                    pw.Container(
-                                      width: 20,
-                                      height: 20,
-                                      decoration: pw.BoxDecoration(
-                                        shape: pw.BoxShape.circle,
-                                        color: bluePetrol,
-                                      ),
-                                      child: pw.Center(
-                                        child: pw.Icon(pw.IconData(0xe0b0), size: 10.0, color: white),
-                                      ),
-                                    ),
-                                    pw.SizedBox(width: 6),
-                                    pw.Text(myCustomPhone,
-                                        textScaleFactor: 0.8,
-                                        style: pw.TextStyle(
-                                            font: fontPoppins,
-                                            fontWeight: pw.FontWeight.normal,
-                                            fontSize: 12,
-                                            color: greyTitle)),
-                                  ]
-                              ) : pw.Container(),
-                              pw.SizedBox(height: 6),
-                              city != "" || province != "" || country != "" ?
-                              pw.Row(
-                                  children: [
-                                    pw.Row(
-                                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                        mainAxisAlignment: pw.MainAxisAlignment.start,
-                                        children: [
-                                          pw.Container(
-                                            width: 20,
-                                            height: 20,
-                                            decoration: pw.BoxDecoration(
-                                              shape: pw.BoxShape.circle,
-                                              color: bluePetrol,
-                                            ),
-                                            child: pw.Center(
-                                              child: pw.Icon(pw.IconData(0xe8b4), size: 10.0, color: white),
-                                            ),
-                                          ),
-                                          pw.SizedBox(width: 5),
-                                          pw.Column(
-                                              crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                              children: [
-                                                pw.Text('${city ?? ''}',
-                                                    textScaleFactor: 0.8,
-                                                    style: pw.TextStyle(
-                                                        font: fontPoppins,
-                                                        fontWeight: pw.FontWeight.normal,
-                                                        fontSize: 12,
-                                                        color: greyTitle)),
-                                                pw.Text('${province ?? ''}',
-                                                    textScaleFactor: 0.8,
-                                                    style: pw.TextStyle(
-                                                        font: fontPoppins,
-                                                        fontWeight: pw.FontWeight.normal,
-                                                        fontSize: 12,
-                                                        color: greyTitle)),
-                                                pw.Text('${country ?? ''}',
-                                                    textScaleFactor: 0.8,
-                                                    style: pw.TextStyle(
-                                                        font: fontPoppins,
-                                                        fontWeight: pw.FontWeight.normal,
-                                                        fontSize: 12,
-                                                        color: greyTitle)),
-                                              ]
-                                          )
-                                        ]
-                                    ),
-                                    // _UrlText(
-                                    //     'wholeprices.ca', 'https://wholeprices.ca'),
-                                  ]
-                              ) : pw.Container(),
-                              pw.SizedBox(height: 6),
-                              aboutMe != null && aboutMe != "" ?
-                              _BlockSimple(
-                                title: StringConst.ABOUT_ME,
-                                fontPoppins: fontPoppins,
-                                description: aboutMe,) : pw.Container(),
-                              pw.SizedBox(height: 10),
-                              myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST, color: white, fontPoppins: fontPoppins) : pw.Container(),
-                              pw.Wrap(
-                                  spacing: 4,
-                                  runSpacing: 4,
-                                  children: <pw.Widget>[
-                                    for (var data in dataOfInterest!)
-                                      _BlockRoundedList(
-                                          title: data,
-                                          color: white,
-                                          fontPoppins: fontPoppins
-                                      ),
-                                  ]
-                              ),
-                              pw.SizedBox(height: 10),
-                              languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES, color: white, fontPoppins: fontPoppins) : pw.Container(),
-                              for (var data in languages!)
-                                _BlockSimpleList(
-                                    title: data.name,
-                                    color: white,
-                                    dotsSpeaking: data.speakingLevel,
-                                    dotsWriting: data.writingLevel,
-                                    fontPoppins: fontPoppins,
-                                    languages: true
+                          pw.SizedBox(height: 10),
+                          pw.Text('${user?.firstName}',
+                              textScaleFactor: 1,
+                              style: pw.TextStyle(
+                                  font: fontPoppinsBold,
+                                  fontWeight: pw.FontWeight.bold,
+                                  fontSize: 28,
+                                  color: bluePetrol)),
+                          pw.SizedBox(height: 2),
+                          pw.Text('${user?.lastName}',
+                              textScaleFactor: 1,
+                              style: pw.TextStyle(
+                                  font: fontPoppins,
+                                  fontWeight: pw.FontWeight.bold,
+                                  fontSize: 22,
+                                  color: bluePetrol)),
+                          pw.SizedBox(height: 140),
+                          myCustomEmail != "" ?
+                          _Category(title: StringConst.PERSONAL_DATA, color: white, fontPoppins: fontPoppins) : pw.Container(),
+                          myCustomEmail != "" ?
+                          pw.Row(
+                            children: [
+                              pw.Container(
+                                width: 20,
+                                height: 20,
+                                decoration: pw.BoxDecoration(
+                                  shape: pw.BoxShape.circle,
+                                  color: bluePetrol,
                                 ),
-                              // pw.Center(
-                              //   child: pw.BarcodeWidget(
-                              //       data: 'mailto:<${user?.email}>?subject=&body=',
-                              //       width: 60,
-                              //       height: 60,
-                              //       barcode: pw.Barcode.qrCode(),
-                              //       drawText: false,
-                              //       color: white
-                              //   ),
-                              // ),
+                                child: pw.Center(
+                                  child: pw.Icon(pw.IconData(0xe0be), size: 10.0, color: white),
+                                ),
+                              ),
+                              pw.SizedBox(width: 4),
+                              _UrlText(myCustomEmail, 'mailto: $myCustomEmail')
                             ],
+                          ) : pw.Container(),
+                          pw.SizedBox(height: 6),
+                          myCustomPhone != "" ?
+                          pw.Row(
+                              children: [
+                                pw.Container(
+                                  width: 20,
+                                  height: 20,
+                                  decoration: pw.BoxDecoration(
+                                    shape: pw.BoxShape.circle,
+                                    color: bluePetrol,
+                                  ),
+                                  child: pw.Center(
+                                    child: pw.Icon(pw.IconData(0xe0b0), size: 10.0, color: white),
+                                  ),
+                                ),
+                                pw.SizedBox(width: 6),
+                                pw.Text(myCustomPhone,
+                                    textScaleFactor: 0.8,
+                                    style: pw.TextStyle(
+                                        font: fontPoppins,
+                                        fontWeight: pw.FontWeight.normal,
+                                        fontSize: 12,
+                                        color: greyTitle)),
+                              ]
+                          ) : pw.Container(),
+                          pw.SizedBox(height: 6),
+                          city != "" || province != "" || country != "" ?
+                          pw.Row(
+                              children: [
+                                pw.Row(
+                                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                    mainAxisAlignment: pw.MainAxisAlignment.start,
+                                    children: [
+                                      pw.Container(
+                                        width: 20,
+                                        height: 20,
+                                        decoration: pw.BoxDecoration(
+                                          shape: pw.BoxShape.circle,
+                                          color: bluePetrol,
+                                        ),
+                                        child: pw.Center(
+                                          child: pw.Icon(pw.IconData(0xe8b4), size: 10.0, color: white),
+                                        ),
+                                      ),
+                                      pw.SizedBox(width: 5),
+                                      pw.Column(
+                                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                          children: [
+                                            pw.Text('${city ?? ''}',
+                                                textScaleFactor: 0.8,
+                                                style: pw.TextStyle(
+                                                    font: fontPoppins,
+                                                    fontWeight: pw.FontWeight.normal,
+                                                    fontSize: 12,
+                                                    color: greyTitle)),
+                                            pw.Text('${province ?? ''}',
+                                                textScaleFactor: 0.8,
+                                                style: pw.TextStyle(
+                                                    font: fontPoppins,
+                                                    fontWeight: pw.FontWeight.normal,
+                                                    fontSize: 12,
+                                                    color: greyTitle)),
+                                            pw.Text('${country ?? ''}',
+                                                textScaleFactor: 0.8,
+                                                style: pw.TextStyle(
+                                                    font: fontPoppins,
+                                                    fontWeight: pw.FontWeight.normal,
+                                                    fontSize: 12,
+                                                    color: greyTitle)),
+                                          ]
+                                      )
+                                    ]
+                                ),
+                              ]
+                          ) : pw.Container(),
+                          pw.SizedBox(height: 6),
+                          aboutMe != null && aboutMe != "" ?
+                          _BlockSimple(
+                            title: StringConst.ABOUT_ME,
+                            fontPoppins: fontPoppins,
+                            description: aboutMe,) : pw.Container(),
+                          pw.SizedBox(height: 5),
+                          myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST, color: white, fontPoppins: fontPoppins) : pw.Container(),
+                          pw.Wrap(
+                              spacing: 4,
+                              runSpacing: 4,
+                              children: <pw.Widget>[
+                                for (var data in dataOfInterest!)
+                                  _BlockRoundedList(
+                                      title: data,
+                                      color: white,
+                                      fontPoppins: fontPoppins
+                                  ),
+                              ]
                           ),
+                          pw.SizedBox(height: 5),
+                          languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES, color: white, fontPoppins: fontPoppins) : pw.Container(),
+                          for (var data in languages!)
+                            _BlockSimpleList(
+                                title: data.name,
+                                color: white,
+                                dotsSpeaking: data.speakingLevel,
+                                dotsWriting: data.writingLevel,
+                                fontPoppins: fontPoppins,
+                                languages: true
+                            ),
+                          pw.SizedBox(height: 10),
+                          myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.REFERENCES, color: white, fontPoppins: fontPoppins) : pw.Container(),
+                          for (var reference in myReferences!)
+                            _BlockIcon(
+                              title: '${reference.certifierName}',
+                              description1: '${reference.certifierPosition} - ${reference.certifierCompany}',
+                              description2: '${reference.email}',
+                              description3: '${reference.phone}',
+                            ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
             pw.Partition(
@@ -347,7 +338,6 @@ Future<Uint8List> generateResume1(
                             fontPoppins: fontPoppins,
                           ),
                         pw.SizedBox(height: 5),
-
                         mySecondaryEducation!.isNotEmpty ? _Category(title: StringConst.SECONDARY_EDUCATION, color: lilac, fontPoppins: fontPoppins) : pw.Container(),
                         for (var education in mySecondaryEducation)
                           _Block(
@@ -359,16 +349,6 @@ Future<Uint8List> generateResume1(
                             descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate())
                                 : '-'} / ${education.endDate != null ? formatter.format(education.endDate!.toDate()) : 'Actualmente'}',
                             descriptionPlace: '${education.location}',
-                            fontPoppins: fontPoppins,
-                          ),
-                        pw.SizedBox(height: 5),
-                        myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.REFERENCES, color: white, fontPoppins: fontPoppins) : pw.Container(),
-                        for (var reference in myReferences!)
-                          _BlockIcon(
-                            title: '${reference.certifierName}',
-                            description1: '${reference.certifierPosition} - ${reference.certifierCompany}',
-                            description2: '${reference.email}',
-                            description3: '${reference.phone}',
                             fontPoppins: fontPoppins,
                           ),
                         pw.SizedBox(height: 5),
@@ -634,23 +614,22 @@ class _Percent extends pw.StatelessWidget {
 }
 
 class _UrlText extends pw.StatelessWidget {
-  _UrlText(this.text, this.url,{required this.fontPoppins});
+  _UrlText(this.text, this.url);
 
   final String text;
   final String url;
-  final pw.Font fontPoppins;
 
   @override
   pw.Widget build(pw.Context context) {
     return pw.UrlLink(
-      destination: url,
-      child: pw.Text(text,
-          textScaleFactor: 0.8,
-          style: pw.TextStyle(
-              font: fontPoppins,
-              fontWeight: pw.FontWeight.normal,
-              fontSize: 12,
-              color: greyTitle)),
+        destination: url,
+        child: pw.Text(text,
+            textScaleFactor: 0.9,
+            style: pw.Theme.of(context)
+                .defaultTextStyle
+                .copyWith(
+                fontWeight: pw.FontWeight.normal,
+                color: grey))
     );
   }
 }
@@ -859,14 +838,12 @@ class _BlockIcon extends pw.StatelessWidget {
     this.description1,
     this.description2,
     this.description3,
-    required this.fontPoppins
   });
 
   final String? title;
   final String? description1;
   final String? description2;
   final String? description3;
-  final pw.Font fontPoppins;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -880,11 +857,11 @@ class _BlockIcon extends pw.StatelessWidget {
                 child: pw.Text(
                     title!,
                     textScaleFactor: 0.9,
-                    style: pw.TextStyle(
-                        font: fontPoppins,
+                    style: pw.Theme.of(context)
+                        .defaultTextStyle
+                        .copyWith(
                         fontWeight: pw.FontWeight.bold,
-                        fontSize: 12,
-                        color: greyTitle)),
+                        color: grey)),
               ) : pw.Container()
             ]),
         pw.SizedBox(height: 4),
@@ -895,39 +872,27 @@ class _BlockIcon extends pw.StatelessWidget {
                 child: pw.Text(
                     description1!.toUpperCase(),
                     textScaleFactor: 0.8,
-                    style: pw.TextStyle(
-                        font: fontPoppins,
-                        fontWeight: pw.FontWeight.normal,
-                        fontSize: 12,
-                        color: greyTitle)),
+                    style: pw.Theme.of(context)
+                        .defaultTextStyle
+                        .copyWith(
+                        fontWeight: pw.FontWeight.bold,
+                        color: grey)),
               ) : pw.Container()
             ]),
         pw.SizedBox(height: 4),
-
+        description2 != "" ?
         pw.Row(
           children: [
-            description2 != "" ? _UrlText(description2!, 'mailto: $description1', fontPoppins: fontPoppins) : pw.Container(),
+            pw.Icon(pw.IconData(0xe0be), size: 10.0, color: bluePetrol),
             pw.SizedBox(width: 4),
-            (description2 != ""  && description3 != '') ?
-            pw.Text('/', style: pw.TextStyle(
-                font: fontPoppins,
-                fontWeight: pw.FontWeight.normal,
-                fontSize: 12,
-                color: greyTitle)) : pw.Container(),
-            pw.SizedBox(width: 4),
-            description3 != "" ? pw.Text(description3!,
-                textScaleFactor: 0.8,
-                style: pw.TextStyle(
-                    font: fontPoppins,
-                    fontWeight: pw.FontWeight.normal,
-                    fontSize: 12,
-                    color: greyTitle)) : pw.Container(),
+            _UrlText(description2!, 'mailto: $description1'),
           ],
-        ),
+        ) : pw.Container(),
+        pw.SizedBox(height: 4),
         description3 != "" ?
         pw.Row(
             children: [
-              pw.Icon(pw.IconData(0xe0b0), size: 10.0, color:white),
+              pw.Icon(pw.IconData(0xe0b0), size: 10.0, color: bluePetrol),
               pw.SizedBox(width: 4),
               pw.Text(description3!,
                   textScaleFactor: 0.8,
@@ -935,10 +900,10 @@ class _BlockIcon extends pw.StatelessWidget {
                       .defaultTextStyle
                       .copyWith(
                       fontWeight: pw.FontWeight.normal,
-                      color: white)) ,
+                      color: grey)) ,
             ]
         ) : pw.Container(),
-        pw.SizedBox(height: 8),
+        pw.SizedBox(height: 12),
       ],
     );
   }

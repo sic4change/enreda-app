@@ -429,8 +429,33 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                       pillId: TrainingPill.HOW_TO_DO_CV_ID,
                     ),
                   ),
-                  //SpaceH24(),
-                  //_buildMyCareer(context),
+                  SpaceH24(),
+                  _buildMyEducation(context, user),
+                  SpaceH24(),
+                  _buildMySecondaryEducation(context, user),
+                  SpaceH24(),
+                  _buildMyExperiences(context, user),
+                  SpaceH24(),
+                  _buildMyCompetencies(context, user),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(Constants.mainPadding),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      AppColors.primary400.withOpacity(0.15),
+                      AppColors.primary020.withOpacity(0.13)
+                    ],
+                  )
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   SpaceH24(),
                   CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase(), color: AppColors.turquoiseBlue),
                   Row(
@@ -463,31 +488,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   ),
                   SpaceH8(),
                   _buildMyLocation(context, user),
-                  SpaceH24(),
-                  _buildMyEducation(context, user),
-                  SpaceH24(),
-                  _buildMySecondaryEducation(context, user),
-                  SpaceH24(),
-                  _buildMyExperiences(context, user),
-                  SpaceH24(),
-                  _buildMyCompetencies(context, user),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(Constants.mainPadding),
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                      AppColors.primary400.withOpacity(0.15),
-                      AppColors.primary020.withOpacity(0.13)
-                    ],
-                  )
-              ),
-              child: Column(
-                children: [
                   SpaceH24(),
                   _buildAboutMe(context),
                   SpaceH24(),
@@ -905,7 +905,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             children: [
               Expanded(
                 child:
-                CustomTextTitle(title: StringConst.ABOUT_ME),
+                CustomTextTitle(title: StringConst.ABOUT_ME.toUpperCase()),
               ),
               InkWell(
                 onTap: () async {

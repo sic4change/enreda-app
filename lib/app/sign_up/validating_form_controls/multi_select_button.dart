@@ -91,7 +91,7 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
     return CheckboxListTile(
       value: checked,
       title: Text(item.label,
-        style: textTheme.button?.copyWith(
+        style: textTheme.bodySmall?.copyWith(
           height: 1.5,
           color: AppColors.greyDark,
           fontWeight: FontWeight.w400,

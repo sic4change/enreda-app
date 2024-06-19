@@ -54,7 +54,7 @@ Widget unemployedRevisionForm(
       (keepLearningOptionsNames != '') ? CustomExpandedRow(title: StringConst.FORM_GOALS, text: keepLearningOptionsNames) : Container(),
       SizedBox(height: Sizes.kDefaultPaddingDouble),
       Text(StringConst.FORM_ACCEPTANCE,
-        style: textTheme.button?.copyWith(
+        style: textTheme.bodySmall?.copyWith(
           height: 1.5,
           color: AppColors.greyDark,
           fontWeight: FontWeight.w400,

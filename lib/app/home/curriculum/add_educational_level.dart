@@ -79,7 +79,7 @@ class _AddEducationalLevelState extends State<AddEducationalLevel> {
                           }),
                           iconDisabledColor: AppColors.greyDark,
                           iconEnabledColor: AppColors.primaryColor,
-                          style: textTheme.button?.copyWith(
+                          style: textTheme.bodyMedium?.copyWith(
                             height: 1.5,
                             color: AppColors.greyDark,
                             fontWeight: FontWeight.w400,
@@ -93,7 +93,7 @@ class _AddEducationalLevelState extends State<AddEducationalLevel> {
                         onPressed: () => Navigator.pop(context),
                         child: Text(
                           StringConst.CANCEL,
-                          style: textTheme.button?.copyWith(
+                          style: textTheme.bodyMedium?.copyWith(
                             height: 1.5,
                             color: AppColors.silver,
                             fontWeight: FontWeight.w700,

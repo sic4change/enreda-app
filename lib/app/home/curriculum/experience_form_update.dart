@@ -380,7 +380,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                         onSaved: (value) => value = _professionActivityId,
                         //maxLines: 2,
                         readOnly: true,
-                        style: textTheme.button?.copyWith(
+                        style: textTheme.bodySmall?.copyWith(
                           height: 1.5,
                           color: AppColors.greyDark,
                           fontWeight: FontWeight.w400,

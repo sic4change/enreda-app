@@ -780,12 +780,12 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           WebUiSettings(
               context: context,
               presentStyle: CropperPresentStyle.dialog,
-              boundary: const CroppieBoundary(
+              boundary: CroppieBoundary(
                 width: 400,
                 height: 400,
               ),
               viewPort:
-              const CroppieViewPort(width: 300, height: 300, type: 'circle',),
+              CroppieViewPort(width: 300, height: 300, type: 'circle',),
               enableExif: true,
               enableZoom: true,
               showZoomer: true,

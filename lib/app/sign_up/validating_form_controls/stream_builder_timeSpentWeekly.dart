@@ -35,7 +35,7 @@ Widget streamBuilderDropdownTimeSpentWeekly (BuildContext context, TimeSpentWeek
           iconDisabledColor: AppColors.greyDark,
           iconEnabledColor: AppColors.primaryColor,
           decoration: InputDecoration(
-            labelStyle: textTheme.button?.copyWith(
+            labelStyle: textTheme.bodySmall?.copyWith(
               height: 1.5,
               color: AppColors.greyDark,
               fontWeight: FontWeight.w400,
@@ -55,7 +55,7 @@ Widget streamBuilderDropdownTimeSpentWeekly (BuildContext context, TimeSpentWeek
               ),
             ),
           ),
-          style: textTheme.button?.copyWith(
+          style: textTheme.bodySmall?.copyWith(
             height: 1.5,
             color: AppColors.greyDark,
             fontWeight: FontWeight.w400,

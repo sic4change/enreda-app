@@ -43,7 +43,7 @@ Future<dynamic> showCompetencies(
     showCustomDialog(context,
         content: Text(
           'Ya has conseguido las competencias recomendadas para esta experiencia. Sigue introduciendo experiencias para identificar nuevas competencias',
-          style: textTheme.bodyText1,
+          style: textTheme.bodySmall,
         ),
         defaultActionText: 'Ok',
         onDefaultActionPressed: onDismiss);
@@ -57,7 +57,7 @@ Future<dynamic> showCompetencies(
             SpaceH12(),
             Text(
               '¡Con esta experiencia desarrollaste las siguientes competencias! Selecciona hasta 3 para añadirla/s a tu perfil:',
-              style: textTheme.bodyText1?.copyWith(fontSize: 18.0),
+              style: textTheme.bodySmall?.copyWith(fontSize: 18.0),
             ),
             SpaceH12(),
             Flexible(
@@ -110,7 +110,7 @@ Future<dynamic> showCompetencies(
                                     SpaceH12(),
                                     Text(
                                       '${userCompetencies[competency.id]} puntos',
-                                      style: textTheme.bodyText1?.copyWith(fontSize: 14.0),
+                                      style: textTheme.bodySmall?.copyWith(fontSize: 14.0),
                                     ),
                                   ],
                                 );

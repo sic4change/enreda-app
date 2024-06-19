@@ -749,7 +749,7 @@ class _PersonalDataState extends State<PersonalData> {
             if (prefix != null) prefix,
             Text(
               title,
-              style: textTheme.bodyText1?.copyWith(
+              style: textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Constants.chatDarkGray,
                 fontSize: fontSize,

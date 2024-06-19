@@ -60,11 +60,7 @@ class Constants {
 
   static ThemeData lighTheme(BuildContext context) {
     return ThemeData(
-      backgroundColor: lightBackground,
       primaryColor: lightPrimary,
-      colorScheme: Theme.of(context).colorScheme.copyWith(
-        secondary: lightAccent,
-      ),
       scaffoldBackgroundColor: lightBackground,
       textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),
       appBarTheme: AppBarTheme(
@@ -73,7 +69,9 @@ class Constants {
         iconTheme: IconThemeData(
           color: lightAccent,
         ),
-      ),
+      ), colorScheme: Theme.of(context).colorScheme.copyWith(
+        secondary: lightAccent,
+      ).copyWith(background: lightBackground),
     );
   }
 

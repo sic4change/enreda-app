@@ -213,9 +213,9 @@ class _ExperienceFormState extends State<ExperienceForm> {
                         hintMaxLines: 2,
                         label: Text(
                           'Tareas que realizaste',
-                          style: textTheme.bodyText2,
+                          style: textTheme.bodySmall,
                         ),
-                        labelStyle: textTheme.bodyText1?.copyWith(
+                        labelStyle: textTheme.bodySmall?.copyWith(
                           color: AppColors.greyDark,
                           height: 1.5,
                           fontWeight: FontWeight.w400,
@@ -230,7 +230,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                       onSaved: (value) => value = _professionActivityId,
                       maxLines: 2,
                       readOnly: true,
-                      style: textTheme.button?.copyWith(
+                      style: textTheme.bodySmall?.copyWith(
                         height: 1.5,
                         color: AppColors.greyDark,
                         fontWeight: FontWeight.w400,
@@ -240,11 +240,11 @@ class _ExperienceFormState extends State<ExperienceForm> {
                   ]) : Container(),
               childRight: _type?.name == 'Profesional' ? TextFormField(
                 controller: _positionController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                   label: Text(
                     'Indica tu cargo...',
-                    style: textTheme.bodyText2,
+                    style: textTheme.bodySmall,
                   ),
                 ),
               ) : Container(),
@@ -253,11 +253,11 @@ class _ExperienceFormState extends State<ExperienceForm> {
               childRight: _type?.name == 'Personal' ? _buildLevelDropdown(setState) : Container(),
               childLeft: TextFormField(
                 controller: _organizationController,
-                style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                   label: Text(
                     widget.isEducation? 'Empresa, organización, instituto, universidad...':'Empresa, organización...' ,
-                    style: textTheme.bodyText2,
+                    style: textTheme.bodySmall,
                   ),
                 ),
               ),
@@ -327,11 +327,11 @@ class _ExperienceFormState extends State<ExperienceForm> {
             CustomFlexRowColumn(
               childLeft: TextFormField(
                   controller: _locationController,
-                  style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                  style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
                   decoration: InputDecoration(
                       label: Text(
                         'Municipio, ciudad, región o país *',
-                        style: textTheme.bodyText2,
+                        style: textTheme.bodySmall,
                       )),
                   validator: (value) {
                     if (value == null || value.isEmpty)
@@ -341,11 +341,11 @@ class _ExperienceFormState extends State<ExperienceForm> {
                 ),
               childRight: DropdownButtonFormField<String>(
                 hint: Text('La mayor parte del tiempo estabas... *',
-                    style: textTheme.bodyText2,
+                    style: textTheme.bodySmall,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis),
                 style:
-                    textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                    textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
                 isExpanded: true,
                 isDense: false,
                 value: _workType,
@@ -367,10 +367,10 @@ class _ExperienceFormState extends State<ExperienceForm> {
                 childLeft: DropdownButtonFormField<String>(
                   hint: Text(
                     'Sensación del ambiente de la experiencia *',
-                    style: textTheme.bodyText2,
+                    style: textTheme.bodySmall,
                     maxLines: 2, overflow: TextOverflow.ellipsis
                   ),
-                  style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                  style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
                   isExpanded: true,
                   isDense: false,
                   value: _context,
@@ -379,7 +379,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                       value: e,
                       child: Text(
                         e,
-                        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                        style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
                       )))
                       .toList(),
                   onChanged: (value) {
@@ -392,12 +392,12 @@ class _ExperienceFormState extends State<ExperienceForm> {
                 ),
                 childRight: DropdownButtonFormField<String>(
                   hint: Text(
-                      'Lugar *', style: textTheme.bodyText2
+                      'Lugar *', style: textTheme.bodySmall
                   ),
-                  style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                  style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
                   value: _contextPlace,
                   items: StringConst.EXPERIENCE_CONTEXT_PLACES
-                      .map((e) => DropdownMenuItem<String>(value: e, child: Text(e, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+                      .map((e) => DropdownMenuItem<String>(value: e, child: Text(e, style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),)))
                       .toList(),
                   onChanged: (value) {
                     _contextPlace = value ?? _contextPlace;
@@ -417,7 +417,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                     padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: (Text(
                       StringConst.CANCEL,
-                      style: textTheme.bodyText1,
+                      style: textTheme.bodySmall,
                     )),
                   ),
                   onPressed: () => Navigator.of(context).pop(),
@@ -433,7 +433,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
                           padding: const EdgeInsets.symmetric(vertical: 12.0),
                           child: (Text(
                             StringConst.SAVE,
-                            style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600,
+                            style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600,
                               color: Constants.white,),
                           )),
                         ),
@@ -521,10 +521,10 @@ class _ExperienceFormState extends State<ExperienceForm> {
     final textTheme = Theme.of(context).textTheme;
 
     return DropdownButtonFormField<Choice>(
-      hint: Text('Tipo *', style: textTheme.bodyText1,),
-      style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+      hint: Text('Tipo *', style: textTheme.bodySmall,),
+      style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
       items: _experienceTypes
-          .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+          .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),)))
           .toList(),
       value: _type,
       onChanged: widget.isEducation
@@ -558,10 +558,10 @@ class _ExperienceFormState extends State<ExperienceForm> {
     final textTheme = Theme.of(context).textTheme;
 
     return DropdownButtonFormField<Choice>(
-        hint: Text('Subtipo', style: textTheme.bodyText1,),
-        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+        hint: Text('Subtipo', style: textTheme.bodySmall,),
+        style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
         items: _experienceSubtypes
-            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),)))
             .toList(),
         value: _subtype,
         onChanged: (newSubtype) {
@@ -581,12 +581,12 @@ class _ExperienceFormState extends State<ExperienceForm> {
     final textTheme = Theme.of(context).textTheme;
 
     return DropdownButtonFormField<Choice>(
-        hint: Text('Actividad', style: textTheme.bodyText1, maxLines: 2, overflow: TextOverflow.ellipsis),
-        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+        hint: Text('Actividad', style: textTheme.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
+        style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
         isExpanded: true,
         isDense: false,
         items: _experienceActivities
-            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),)))
             .toList(),
         value: _activity,
         onChanged: (newActivity) {
@@ -604,7 +604,7 @@ class _ExperienceFormState extends State<ExperienceForm> {
       builder: (BuildContext context) {
         if(_activity == null)
           return AlertDialog(
-            content: Text(StringConst.FORM_ACTIVITIES_EMPTY,  style: textTheme.bodyText1,),
+            content: Text(StringConst.FORM_ACTIVITIES_EMPTY,  style: textTheme.bodySmall,),
             actions: <Widget>[
               ElevatedButton(
                   onPressed: () => Navigator.pop(context),
@@ -641,10 +641,10 @@ class _ExperienceFormState extends State<ExperienceForm> {
     final textTheme = Theme.of(context).textTheme;
 
     return DropdownButtonFormField<Choice>(
-        hint: Text('Rol', style: textTheme.bodyText1,),
-        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+        hint: Text('Rol', style: textTheme.bodySmall,),
+        style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
         items: _experienceRoles
-            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),)))
             .toList(),
         value: _role,
         onChanged: (newRole) {
@@ -658,10 +658,10 @@ class _ExperienceFormState extends State<ExperienceForm> {
     final textTheme = Theme.of(context).textTheme;
 
     return DropdownButtonFormField<Choice>(
-        hint: Text('Nivel', style: textTheme.bodyText1,),
-        style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+        hint: Text('Nivel', style: textTheme.bodySmall,),
+        style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
         items: _experienceLevels
-            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)))
+            .map((e) => DropdownMenuItem<Choice>(value: e, child: Text(e.name, style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),)))
             .toList(),
         value: _level,
         onChanged: (newLevel) {

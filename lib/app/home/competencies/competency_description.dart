@@ -34,7 +34,7 @@ class CompetencyDescription extends StatelessWidget {
             width: 260.0,
             filterQuality: FilterQuality.high,
           ),
-        Text(competency.description, textAlign: TextAlign.center, style: textTheme.bodyText1,),
+        Text(competency.description, textAlign: TextAlign.center, style: textTheme.bodySmall,),
       ],
     );
   }

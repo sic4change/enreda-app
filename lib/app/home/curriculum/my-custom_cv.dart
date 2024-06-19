@@ -5,6 +5,7 @@ import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/common_widgets/precached_avatar.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
+import 'package:enreda_app/common_widgets/show_alert_dialog_img.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/values.dart';
@@ -406,7 +407,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                       width: 100,
                       onPressed: () async {
                         if(getTotalSideElements() >= 5 && !_isSelected2Page){
-                          showAlertDialog(
+                          showAlertDialogImg(
                             context,
                             title: StringConst.WARNING,
                             content: StringConst.PAGE_WARNING_4,
@@ -420,7 +421,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                           return;
                         }
                         if(getTotalElements() >= 9 && !_isSelected2Page){
-                          showAlertDialog(
+                          showAlertDialogImg(
                             context,
                             title: StringConst.WARNING,
                             content: StringConst.PAGE_WARNING_2,
@@ -434,7 +435,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                           return;
                         }
                         if(getTotalElements() < 9 && _isSelected2Page){
-                          showAlertDialog(
+                          showAlertDialogImg(
                             context,
                             title: StringConst.WARNING,
                             content: StringConst.PAGE_WARNING_1,
@@ -447,20 +448,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                           );
                           return;
                         }
-                        /*if(getTotalElements() > 18){
-                          showAlertDialog(
-                            context,
-                            title: StringConst.WARNING,
-                            content: StringConst.PAGE_WARNING_3,
-                            defaultActionText: StringConst.OK,
-                            image: Container(
-                                width: 250,
-                                height: 350,
-                                child: Image.asset(ImagePath.CV_WARNING_1)
-                            ),
-                          );
-                          return;
-                        }*/
                         Navigator.push(
                           context,
                           _isSelected2Page == true ? MaterialPageRoute(
@@ -704,7 +691,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               width: 100,
               onPressed: () async {
                 if(getTotalSideElements() >= 5 && !_isSelected2Page) {
-                  showAlertDialog(
+                  showAlertDialogImg(
                     context,
                     title: StringConst.WARNING,
                     content: StringConst.PAGE_WARNING_4,
@@ -718,7 +705,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   return;
                 }
                 if(getTotalElements() >= 9 && !_isSelected2Page){
-                  showAlertDialog(
+                  showAlertDialogImg(
                     context,
                     title: StringConst.WARNING,
                     content: StringConst.PAGE_WARNING_2,
@@ -732,7 +719,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   return;
                 }
                 if(getTotalElements() < 9 && _isSelected2Page){
-                  showAlertDialog(
+                  showAlertDialogImg(
                     context,
                     title: StringConst.WARNING,
                     content: StringConst.PAGE_WARNING_1,
@@ -745,20 +732,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   );
                   return;
                 }
-               /* if(getTotalElements() > 18){
-                  showAlertDialog(
-                    context,
-                    title: StringConst.WARNING,
-                    content: StringConst.PAGE_WARNING_3,
-                    defaultActionText: StringConst.OK,
-                    image: Container(
-                        width: 200,
-                        height: 500,
-                        child: Image.asset(ImagePath.CV_WARNING_1)
-                    ),
-                  );
-                  return;
-                }*/
                 Navigator.push(
                   context,
                   _isSelected2Page == true ? MaterialPageRoute(

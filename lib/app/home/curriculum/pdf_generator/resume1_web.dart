@@ -58,6 +58,7 @@ Future<Uint8List> generateResume1(
 
   var url = user?.profilePic?.src ?? "";
   var fontPoppins = await PdfGoogleFonts.poppinsRegular();
+  var fontPoppinsBold = await PdfGoogleFonts.poppinsExtraBold();
 
   Future<Uint8List> imageFromUrl(String url) async {
     final uri = Uri.parse(url);
@@ -94,6 +95,7 @@ Future<Uint8List> generateResume1(
               width: leftWidth,
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
+                mainAxisAlignment: pw.MainAxisAlignment.start,
                 children: <pw.Widget>[
                   pw.Container(
                     height: pageTheme.pageFormat.availableHeight,
@@ -109,9 +111,9 @@ Future<Uint8List> generateResume1(
                               pw.Text('${user?.firstName}',
                                   textScaleFactor: 1,
                                   style: pw.TextStyle(
-                                      font: fontPoppins,
+                                      font: fontPoppinsBold,
                                       fontWeight: pw.FontWeight.bold,
-                                      fontSize: 45,
+                                      fontSize: 28,
                                       color: bluePetrol)),
                               pw.SizedBox(height: 2),
                               pw.Text('${user?.lastName}',

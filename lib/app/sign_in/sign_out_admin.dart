@@ -34,7 +34,7 @@ Future<void> adminSignOut(BuildContext context) async {
                   ),
                   SpaceH20(),
                   Text(StringConst.ARENT_YOU_PARTICIPANT,
-                      style: textTheme.bodyText1?.copyWith(
+                      style: textTheme.bodySmall?.copyWith(
                         color: AppColors.greyDark,
                         height: 1.5,
                         fontWeight: FontWeight.w800,

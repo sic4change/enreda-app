@@ -479,7 +479,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                   decoration: InputDecoration(
                     hintText: StringConst.FORM_ABILITIES,
                     hintMaxLines: 2,
-                    labelStyle: textTheme.button?.copyWith(
+                    labelStyle: textTheme.bodySmall?.copyWith(
                       color: AppColors.greyDark,
                       height: 1.5,
                       fontWeight: FontWeight.w400,
@@ -505,7 +505,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                   onSaved: (value) => value = _abilityId,
                   maxLines: 2,
                   readOnly: true,
-                  style: textTheme.button?.copyWith(
+                  style: textTheme.bodySmall?.copyWith(
                     height: 1.5,
                     color: AppColors.greyDark,
                     fontWeight: FontWeight.w400,
@@ -538,7 +538,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                     decoration: InputDecoration(
                       hintText: StringConst.FORM_INTERESTS_QUESTION,
                       hintMaxLines: 2,
-                      labelStyle: textTheme.bodyText1?.copyWith(
+                      labelStyle: textTheme.bodySmall?.copyWith(
                         color: AppColors.greyDark,
                         height: 1.5,
                         fontWeight: FontWeight.w400,
@@ -564,7 +564,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                     onSaved: (value) => value = _interestId,
                     maxLines: 2,
                     readOnly: true,
-                    style: textTheme.button?.copyWith(
+                    style: textTheme.bodySmall?.copyWith(
                       height: 1.5,
                       color: AppColors.greyDark,
                       fontWeight: FontWeight.w400,
@@ -581,7 +581,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                     controller: textEditingControllerSpecificInterests,
                     decoration: InputDecoration(
                       labelText: StringConst.FORM_SPECIFIC_INTERESTS,
-                      labelStyle: textTheme.button?.copyWith(
+                      labelStyle: textTheme.bodySmall?.copyWith(
                         color: AppColors.greyDark,
                         height: 1.5,
                         fontWeight: FontWeight.w400,
@@ -607,7 +607,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                     onSaved: (value) => value = _interestId,
                     maxLines: 2,
                     readOnly: true,
-                    style: textTheme.button?.copyWith(
+                    style: textTheme.bodySmall?.copyWith(
                       height: 1.5,
                       color: AppColors.greyDark,
                       fontWeight: FontWeight.w400,
@@ -625,7 +625,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                     decoration: InputDecoration(
                       hintText: '¿Qué te gustaría seguir aprendiendo?',
                       hintMaxLines: 2,
-                      labelStyle: textTheme.bodyText1?.copyWith(
+                      labelStyle: textTheme.bodySmall?.copyWith(
                         color: AppColors.greyDark,
                         height: 1.5,
                         fontWeight: FontWeight.w400,
@@ -651,7 +651,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                     onSaved: (value) => value = _keepLearningOptionId,
                     maxLines: 2,
                     readOnly: true,
-                    style: textTheme.button?.copyWith(
+                    style: textTheme.bodySmall?.copyWith(
                       height: 1.5,
                       color: AppColors.greyDark,
                       fontWeight: FontWeight.w400,

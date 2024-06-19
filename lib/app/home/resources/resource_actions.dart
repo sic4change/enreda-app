@@ -107,7 +107,7 @@ Future<dynamic> showContactDialog(
           Text(
               StringConst.INTERESTED,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Constants.darkGray,
                 fontSize: fontSize,
               )),
@@ -130,7 +130,7 @@ Future<dynamic> showContactDialog(
                     child: Text(
                         resource.contactEmail!,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Constants.darkLilac,
                           fontSize: fontSize,
                         )
@@ -156,7 +156,7 @@ Future<dynamic> showContactDialog(
                 kIsWeb
                     ? Text(
                         resource.contactPhone!,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Constants.darkLilac,
                         fontSize: fontSize,
                       )
@@ -167,7 +167,7 @@ Future<dynamic> showContactDialog(
                       child: Text(
                           resource.contactPhone!,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Constants.darkLilac,
                             fontSize: fontSize,
                           )),

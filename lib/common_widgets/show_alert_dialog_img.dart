@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 
 import '../utils/responsive.dart';
 
-Future showAlertDialog(
+Future showAlertDialogImg(
     BuildContext context, {
       required String title,
       required String content,
       required String defaultActionText,
       String? cancelActionText,
+      Widget? image,
     }) {
   final textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 13, 20, md: 16);
@@ -38,52 +39,60 @@ Future showAlertDialog(
                 )),
           ],
         ),
-        content: Text(content,
-            style: textTheme.headlineLarge?.copyWith(
-                color: AppColors.turquoiseBlue,
-                height: 1.5,
-                fontSize: fontSizeSubTitle)),
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(content,
+                style: textTheme.headlineLarge?.copyWith(
+                    color: AppColors.turquoiseBlue,
+                    height: 1.5,
+                    fontSize: fontSizeSubTitle)),
+            image != null ?
+            image
+                :
+            Container(),
+          ],
+        ),
         actions: <Widget>[
-          if (cancelActionText != null)
           // ignore: deprecated_member_use
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Constants.turquoise,
-                      ),
-                      onPressed: () => Navigator.of(context).pop((false)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(cancelActionText,
-                            style: textTheme.bodySmall?.copyWith(
-                                color: AppColors.white,
-                                height: 1.5,
-                                fontWeight: FontWeight.w400,
-                                fontSize: fontSizeButton
-                            )),
-                      )),
-                  Responsive.isMobile(context) ? SizedBox(width: 10,) : SizedBox(width: 30,),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Constants.turquoise,
-                      ),
-                      onPressed: () => Navigator.of(context).pop((true)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(defaultActionText,
-                            style: textTheme.bodySmall?.copyWith(
-                                color: AppColors.white,
-                                height: 1.5,
-                                fontWeight: FontWeight.w400,
-                                fontSize: fontSizeButton)),
-                      )),
-                ],
-              ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                cancelActionText != null ? ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Constants.turquoise,
+                    ),
+                    onPressed: () => Navigator.of(context).pop((false)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(cancelActionText,
+                          style: textTheme.bodySmall?.copyWith(
+                              color: AppColors.white,
+                              height: 1.5,
+                              fontWeight: FontWeight.w400,
+                              fontSize: fontSizeButton
+                          )),
+                    )) : Container(),
+                cancelActionText != null ? Responsive.isMobile(context) ? SizedBox(width: 10,) : SizedBox(width: 30,) : Container(),
+                defaultActionText != null ? ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Constants.turquoise,
+                    ),
+                    onPressed: () => Navigator.of(context).pop((true)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(defaultActionText,
+                          style: textTheme.bodySmall?.copyWith(
+                              color: AppColors.white,
+                              height: 1.5,
+                              fontWeight: FontWeight.w400,
+                              fontSize: fontSizeButton)),
+                    )) : Container(),
+              ],
             ),
+          ),
         ],
       ),
     );
@@ -98,11 +107,16 @@ Future showAlertDialog(
               fontSize: fontSize,
               height: 1.5,
             )),
-        content: Text(content,
-            style: textTheme.headlineLarge?.copyWith(
-                color: AppColors.turquoiseBlue,
-                height: 1.5,
-                fontSize: fontSizeSubTitle)),
+        content: Column(
+          children: [
+            Text(content,
+                style: textTheme.headlineLarge?.copyWith(
+                    color: AppColors.turquoiseBlue,
+                    height: 1.5,
+                    fontSize: fontSizeSubTitle)),
+            image != null ? image : Container(),
+          ],
+        ),
         actions: <Widget>[
           if (cancelActionText != null)
           // ignore: deprecated_member_use

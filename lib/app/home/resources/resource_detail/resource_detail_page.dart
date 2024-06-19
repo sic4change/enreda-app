@@ -113,8 +113,9 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                           final province = snapshot.data;
                           resource.provinceName = province == null ? '' : province.name;
                           return StreamBuilder<City>(
-                            stream: database.cityStream(resource.city!),
+                            stream: database.cityStream(resource.city),
                             builder: (context, snapshot) {
+                              if(!snapshot.hasData) return const Center(child: CircularProgressIndicator());
                               final city = snapshot.data;
                               resource.cityName = city == null ? '' : city.name;
                               return Responsive.isMobile(context) ? _buildResourceDetailMobile(context, resource)

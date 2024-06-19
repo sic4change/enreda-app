@@ -119,7 +119,7 @@ class _EmailSignInFormChangeNotifierState
       decoration: InputDecoration(
         labelText: 'Correo electrónico',
         hintText: 'email@email.com',
-        hintStyle: textTheme.button?.copyWith(
+        hintStyle: textTheme.bodySmall?.copyWith(
           height: 1.5,
           color: AppColors.white,
           fontWeight: FontWeight.w400,
@@ -128,7 +128,7 @@ class _EmailSignInFormChangeNotifierState
         errorText: model.emailErrorText,
         enabled: model.isLoading == false,
         focusColor: AppColors.primaryColor,
-        labelStyle: textTheme.button?.copyWith(
+        labelStyle: textTheme.bodySmall?.copyWith(
           height: 1.5,
           color: AppColors.white,
           fontWeight: FontWeight.w400,
@@ -156,7 +156,7 @@ class _EmailSignInFormChangeNotifierState
       textInputAction: TextInputAction.next,
       onChanged: model.updateEmail,
       onEditingComplete: () => _emailEditingComplete(),
-      style: textTheme.button?.copyWith(
+      style: textTheme.bodySmall?.copyWith(
         height: 1.5,
         color: AppColors.white,
         fontWeight: FontWeight.w400,
@@ -187,7 +187,7 @@ class _EmailSignInFormChangeNotifierState
           ),
         ),
         focusColor: AppColors.primaryColor,
-        labelStyle: textTheme.button?.copyWith(
+        labelStyle: textTheme.bodySmall?.copyWith(
           height: 1.5,
           color: AppColors.white,
           fontWeight: FontWeight.w400,
@@ -210,7 +210,7 @@ class _EmailSignInFormChangeNotifierState
       textInputAction: TextInputAction.done,
       onChanged: model.updatePassword,
       onEditingComplete: _submit,
-      style: textTheme.button?.copyWith(
+      style: textTheme.bodySmall?.copyWith(
         height: 1.5,
         color: AppColors.white,
         fontWeight: FontWeight.w400,

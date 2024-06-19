@@ -59,6 +59,7 @@ Future<Uint8List> generateResume1(
   final doc = pw.Document(title: 'Mi Currículum');
 
   var fontPoppins = await PdfGoogleFonts.poppinsRegular();
+  var fontPoppinsBold = await PdfGoogleFonts.poppinsExtraBold();
 
   var url = user?.profilePic?.src ?? "";
 
@@ -93,6 +94,7 @@ Future<Uint8List> generateResume1(
               width: leftWidth,
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
+                mainAxisAlignment: pw.MainAxisAlignment.start,
                 children: <pw.Widget>[
                   pw.Container(
                     height: pageTheme.pageFormat.availableHeight,
@@ -108,9 +110,9 @@ Future<Uint8List> generateResume1(
                               pw.Text('${user?.firstName}',
                                   textScaleFactor: 1,
                                   style: pw.TextStyle(
-                                      font: fontPoppins,
+                                      font: fontPoppinsBold,
                                       fontWeight: pw.FontWeight.bold,
-                                      fontSize: 45,
+                                      fontSize: 28,
                                       color: bluePetrol)),
                               pw.SizedBox(height: 2),
                               pw.Text('${user?.lastName}',

@@ -75,7 +75,7 @@ class _MultiSelectListDialogState<V> extends State<MultiSelectListDialog<V>> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-                        child: Text(items[0].title, style: textTheme.bodyText1?.copyWith(
+                        child: Text(items[0].title, style: textTheme.bodySmall?.copyWith(
                           height: 1.5,
                           color: AppColors.primaryColor,
                           fontWeight: FontWeight.w700,
@@ -113,7 +113,7 @@ class _MultiSelectListDialogState<V> extends State<MultiSelectListDialog<V>> {
     return CheckboxListTile(
       value: checked,
       title: Text(item.label,
-        style: textTheme.button?.copyWith(
+        style: textTheme.bodySmall?.copyWith(
           height: 1.5,
           color: AppColors.greyDark,
           fontWeight: FontWeight.w400,

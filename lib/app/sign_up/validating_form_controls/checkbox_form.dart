@@ -26,7 +26,7 @@ Widget checkboxForm(BuildContext context, _checkFieldKey, bool _isChecked, funct
                         onChanged: (bool? val) => { functionSetState(val), state.didChange(val)}
                     ),
                     Text(StringConst.FORM_ACCEPT_SENTENCE,
-                      style: textTheme.button?.copyWith(
+                      style: textTheme.bodySmall?.copyWith(
                         height: 1.5,
                         color: AppColors.greyDark,
                         fontWeight: FontWeight.w700,
@@ -39,7 +39,7 @@ Widget checkboxForm(BuildContext context, _checkFieldKey, bool _isChecked, funct
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(StringConst.RIGHTS_RESERVED,
-                              style: textTheme.button?.copyWith(
+                              style: textTheme.bodySmall?.copyWith(
                                 height: 1.5,
                                 color: AppColors.primaryColor,
                                 fontWeight: FontWeight.w700,
@@ -54,7 +54,7 @@ Widget checkboxForm(BuildContext context, _checkFieldKey, bool _isChecked, funct
                 Row(
                   children: [
                     Text(StringConst.FORM_ACCEPT_SENTENCE_Y,
-                      style: textTheme.button?.copyWith(
+                      style: textTheme.bodySmall?.copyWith(
                         height: 1.5,
                         color: AppColors.greyDark,
                         fontWeight: FontWeight.w700,
@@ -67,7 +67,7 @@ Widget checkboxForm(BuildContext context, _checkFieldKey, bool _isChecked, funct
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(StringConst.BUILT_BY,
-                              style: textTheme.button?.copyWith(
+                              style: textTheme.bodySmall?.copyWith(
                                 height: 1.5,
                                 color: AppColors.primaryColor,
                                 fontWeight: FontWeight.w700,

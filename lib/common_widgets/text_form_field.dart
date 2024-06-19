@@ -9,7 +9,7 @@ Widget customTextFormFieldName(BuildContext context, String formValue, String la
     decoration: InputDecoration(
       labelText: labelText,
       focusColor: AppColors.primaryColor,
-      labelStyle: textTheme.button?.copyWith(
+      labelStyle: textTheme.bodySmall?.copyWith(
         height: 1.5,
         color: AppColors.greyDark,
         fontWeight: FontWeight.w400,
@@ -35,7 +35,7 @@ Widget customTextFormFieldName(BuildContext context, String formValue, String la
     onSaved: (String? val) => {functionSetState(val)},
     textCapitalization: TextCapitalization.sentences,
     keyboardType: TextInputType.name,
-    style: textTheme.button?.copyWith(
+    style: textTheme.bodySmall?.copyWith(
       height: 1.5,
       color: AppColors.greyDark,
       fontWeight: FontWeight.w400,

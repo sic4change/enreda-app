@@ -21,7 +21,7 @@ class CustomExpandedRow extends StatelessWidget {
               flex: 1,
               child: Text(title,
                 maxLines: 3,
-                style: textTheme.bodyText1?.copyWith(
+                style: textTheme.bodySmall?.copyWith(
                   height: 1.5,
                   color: AppColors.greyDark,
                   fontWeight: FontWeight.w700,
@@ -33,7 +33,7 @@ class CustomExpandedRow extends StatelessWidget {
               child: Text(text,
                 //textAlign: TextAlign.right,
                 maxLines: 4,
-                style: textTheme.bodyText1?.copyWith(
+                style: textTheme.bodySmall?.copyWith(
                   height: 1.5,
                   color: AppColors.greyDark,
                   fontWeight: FontWeight.w700,

@@ -420,7 +420,7 @@ class StringConst {
   static const String FORM_EDUCATION_REV = "Educación";
   static const String FORM_NAME_CERTIFIER = "Nombres y Apellidos";
   static const String FORM_COMPANY_CERTIFIER = "Empresa";
-  static const String FORM_EMAIL_CERTIFIER = "Correo electrónico";
+  static const String FORM_EMAIL_CERTIFIER = "Correoelectrónico";
   static const String FORM_PHONE_CERTIFIER = "Teléfono";
   static const String FORM_POSITION_CERTIFIER = "Cargo";
   static const String FORM_SOCIAL_ENTITY = "¿Vienes de mano de una Entidad Social?";

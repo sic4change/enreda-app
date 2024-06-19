@@ -361,12 +361,13 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Column(
                     children: [
                       Container(
                         height: 30,
-                        width: 195,
+                        width: 180,
                         child: ListTile(
                           title: CustomTextSmall(text: printingOptions[0],),
                           leading: Radio<String>(
@@ -383,7 +384,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                       ),
                       Container(
                         height: 50,
-                        width: 195,
+                        width: 180,
                         child: ListTile(
                           title: CustomTextSmall(text: printingOptions[1],),
                           leading: Radio<String>(
@@ -406,45 +407,23 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                       buttonTitle: "Vista previa",
                       width: 100,
                       onPressed: () async {
-                        if(getTotalSideElements() >= 5 && !_isSelected2Page){
-                          showAlertDialogImg(
+                        if(getTotalLeftElements() >= 5 && getTotalRightElements() >= 9 && !_isSelected2Page){
+                          showAlertDialog(
                             context,
                             title: StringConst.WARNING,
-                            content: StringConst.PAGE_WARNING_4,
-                            defaultActionText: StringConst.OK,
-                            image: Container(
-                                width: 250,
-                                height: 350,
-                                child: Image.asset(ImagePath.CV_WARNING_2)
-                            ),
+                            content: StringConst.PAGE_WARNING_5,
+                            defaultActionText: StringConst.FORM_ACCEPT,
+                            cancelActionText: StringConst.CANCEL,
                           );
                           return;
                         }
-                        if(getTotalElements() >= 9 && !_isSelected2Page){
-                          showAlertDialogImg(
-                            context,
-                            title: StringConst.WARNING,
-                            content: StringConst.PAGE_WARNING_2,
-                            defaultActionText: StringConst.OK,
-                            image: Container(
-                                width: 250,
-                                height: 350,
-                                child: Image.asset(ImagePath.CV_WARNING_1)
-                            ),
-                          );
-                          return;
-                        }
-                        if(getTotalElements() < 9 && _isSelected2Page){
-                          showAlertDialogImg(
+                        if(getTotalRightElements() < 9 && _isSelected2Page){
+                          showAlertDialog(
                             context,
                             title: StringConst.WARNING,
                             content: StringConst.PAGE_WARNING_1,
-                            defaultActionText: StringConst.OK,
-                            image: Container(
-                                width: 250,
-                                height: 350,
-                                child: Image.asset(ImagePath.CV_WARNING_1)
-                            ),
+                            defaultActionText: StringConst.FORM_ACCEPT,
+                            cancelActionText: StringConst.CANCEL,
                           );
                           return;
                         }
@@ -611,8 +590,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 ),
               ),
               SpaceH24(),
-              _buildPersonalData(context),
-              SpaceH24(),
               _buildMyEducation(context),
               SpaceH24(),
               _buildMySecondaryEducation(context),
@@ -622,6 +599,8 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               _buildMyPersonalExperiences(context),
               SpaceH24(),
               _buildMyCompetencies(context),
+              SpaceH24(),
+              _buildPersonalData(context),
               SpaceH24(),
               _buildAboutMe(context),
               SpaceH24(),
@@ -690,12 +669,12 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               buttonTitle: "Vista previa",
               width: 100,
               onPressed: () async {
-                if(getTotalSideElements() >= 5 && !_isSelected2Page) {
+                if(getTotalLeftElements() >= 5 && !_isSelected2Page) {
                   showAlertDialogImg(
                     context,
                     title: StringConst.WARNING,
                     content: StringConst.PAGE_WARNING_4,
-                    defaultActionText: StringConst.OK,
+                    defaultActionText: StringConst.FORM_ACCEPT,
                     image: Container(
                       width: 300,
                       height: 450,
@@ -704,12 +683,12 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   );
                   return;
                 }
-                if(getTotalElements() >= 9 && !_isSelected2Page){
+                if(getTotalRightElements() >= 9 && !_isSelected2Page){
                   showAlertDialogImg(
                     context,
                     title: StringConst.WARNING,
                     content: StringConst.PAGE_WARNING_2,
-                    defaultActionText: StringConst.OK,
+                    defaultActionText: StringConst.FORM_ACCEPT,
                     image: Container(
                         width: 300,
                         height: 450,
@@ -718,7 +697,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   );
                   return;
                 }
-                if(getTotalElements() < 9 && _isSelected2Page){
+                if(getTotalRightElements() < 9 && _isSelected2Page){
                   showAlertDialogImg(
                     context,
                     title: StringConst.WARNING,
@@ -1944,17 +1923,24 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
     );
   }
 
-  int getTotalElements(){
-    return widget.myPersonalCustomExperiences.length + widget.myCustomExperiences.length + widget.myCustomEducation.length + widget.mySecondaryCustomEducation.length + widget.myCustomReferences.length + widget.myCustomCompetencies.length;
+  int getTotalRightElements(){
+    return widget.myPersonalCustomExperiences.length +
+        widget.myCustomExperiences.length +
+        widget.myCustomEducation.length +
+        widget.mySecondaryCustomEducation.length +
+        widget.myCustomCompetencies.length;
   }
 
-  int getTotalSideElements(){
+  int getTotalLeftElements(){
     int sum = 0;
     if(widget.myCustomAboutMe.length > 90){
       print('Texto largo');
       sum = 1;
     }
-    return widget.myCustomLanguages.length + widget.myCustomDataOfInterest.length + sum;
+    return widget.myCustomLanguages.length +
+        widget.myCustomDataOfInterest.length +
+        widget.myCustomReferences.length +
+        sum;
   }
 
 }

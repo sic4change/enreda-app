@@ -914,17 +914,7 @@ class _BlockIcon extends pw.StatelessWidget {
         description2 != "" ?
         pw.Row(
           children: [
-            pw.Container(
-              alignment: pw.Alignment.center,
-              width: 15,
-              height: 15,
-              padding: const pw.EdgeInsets.all(2.0),
-              decoration: pw.BoxDecoration(
-                color: black,
-                shape: pw.BoxShape.circle,
-              ),
-              child: pw.Icon(pw.IconData(0xe0be), size: 10.0, color: white),
-            ),
+            pw.Icon(pw.IconData(0xe0be), size: 10.0, color: black),
             pw.SizedBox(width: 4),
             _UrlText(description2!, 'mailto: $description1')
           ],
@@ -933,17 +923,7 @@ class _BlockIcon extends pw.StatelessWidget {
         description3 != "" ?
         pw.Row(
             children: [
-              pw.Container(
-                alignment: pw.Alignment.center,
-                width: 15,
-                height: 15,
-                padding: const pw.EdgeInsets.all(2.0),
-                decoration: pw.BoxDecoration(
-                  color: black,
-                  shape: pw.BoxShape.circle,
-                ),
-                child: pw.Icon(pw.IconData(0xe0b0), size: 10.0, color: white),
-              ),
+              pw.Icon(pw.IconData(0xe0b0), size: 10.0, color: black),
               pw.SizedBox(width: 4),
               pw.Text(description3!,
                   textScaleFactor: 0.8,

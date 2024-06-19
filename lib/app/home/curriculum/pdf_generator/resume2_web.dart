@@ -274,14 +274,21 @@ Future<Uint8List> generateResume2(
                         dotsWriting: data.writingLevel,
                       ),
                     pw.SizedBox(height: 10),
-                    myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.REFERENCES, color: black) : pw.Container(),
-                    for (var reference in myReferences!)
-                      _BlockIcon(
-                        title: '${reference.certifierName}',
-                        description1: '${reference.certifierPosition} - ${reference.certifierCompany}',
-                        description2: '${reference.email}',
-                        description3: '${reference.phone}',
-                      ),
+                    pw.Container(
+                      child: pw.Column(
+                        children: [
+                          myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.REFERENCES, color: black) : pw.Container(),
+                          for (var reference in myReferences!)
+                            _BlockIcon(
+                              title: '${reference.certifierName}',
+                              description1: '${reference.certifierPosition} - ${reference.certifierCompany}',
+                              description2: '${reference.email}',
+                              description3: '${reference.phone}',
+                            ),
+                        ]
+                      )
+                    ),
+
                   ],
                 ),
               ),

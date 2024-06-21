@@ -107,7 +107,6 @@ flutter:
     - images/researching.png
     - images/ic_enreda_bn.png
     - images/ic_enreda.png
-    - images/enreda-mdpi.png
     - images/
     - images/learning-girl.png
     - images/ilustracion-competencias.png
@@ -139,8 +138,6 @@ flutter:
     - images/fondo-verde-vista-2.png
     - images/fondo-verde-vista-3.png
     - images/fondo-verde-vista-4.png
-    - images/enreda-logo-alone.png
-    - images/enreda-logo-text.png
     - images/flecha.png
     - images/icon-download.png
     - images/icon-logout.png

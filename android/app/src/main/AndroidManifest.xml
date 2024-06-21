@@ -28,7 +28,7 @@
 
    <application
        android:name=".Application"
-        android:label="enREDa"
+        android:label="Enreda"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"

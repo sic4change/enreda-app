@@ -28,7 +28,6 @@ class ImagePath {
   static const String BLOB_2 = '$imageDir/fondo-verde-vista-2.png';
   static const String BLOB_3 = '$imageDir/fondo-verde-vista-3.png';
   static const String BLOB_4 = '$imageDir/fondo-verde-vista-4.png';
-  static const String LOGO_ALONE = '$imageDir/enreda-logo-alone.png';
   static const String LOGO_TEXT = '$imageDir/enreda-logo-text.png';
   static const String ARROW = '$imageDir/flecha.png';
   static const String ARROW_B = '$imageDir/flecha-back.png';

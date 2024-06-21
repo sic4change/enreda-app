@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/contact.dart';
-import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/organization.dart';
-import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/resources/build_share_button.dart';
@@ -26,6 +23,7 @@ import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -60,76 +58,37 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildResourcePage(context, globals.currentResource! );
+    return _buildResourcePage(context, globals.currentResource!);
   }
 
   Widget _buildResourcePage(BuildContext context, Resource resource) {
     final database = Provider.of<Database>(context, listen: false);
-    return StreamBuilder<Resource>(
-        stream: database.resourceStream(resource.resourceId),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-                child: CircularProgressIndicator());
+    resource.setResourceTypeName();
+    resource.setResourceCategoryName();
+    return StreamBuilder(
+      stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
+      resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
+          : database.mentorStream(resource.organizer),
+      builder: (context, snapshotOrganizer) {
+        if (snapshotOrganizer.hasData) {
+          if (resource.organizerType == 'Organización') {
+            final organization = snapshotOrganizer.data as Organization;
+            resource.organizerName = organization.name;
+            resource.organizerImage = organization.photo;
+          } else if (resource.organizerType == 'Entidad Social') {
+            final organization = snapshotOrganizer.data as SocialEntity;
+            resource.organizerName = organization.name;
+            resource.organizerImage = organization.photo;
+          } else {
+            final mentor = snapshotOrganizer.data as UserEnreda;
+            resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
+            resource.organizerImage = mentor.photo;
           }
-          if (snapshot.hasData) {
-            Resource resource = snapshot.data!;
-            resource.setResourceTypeName();
-            resource.setResourceCategoryName();
-            return StreamBuilder(
-              stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
-              resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
-                  : database.mentorStream(resource.organizer),
-              builder: (context, snapshotOrganizer) {
-                if (snapshotOrganizer.hasData) {
-                  if (resource.organizerType == 'Organización') {
-                    final organization = snapshotOrganizer.data as Organization;
-                    resource.organizerName = organization.name;
-                    resource.organizerImage = organization.photo;
-                  } else if (resource.organizerType == 'Entidad Social') {
-                    final organization = snapshotOrganizer.data as SocialEntity;
-                    resource.organizerName = organization.name;
-                    resource.organizerImage = organization.photo;
-                  } else {
-                    final mentor = snapshotOrganizer.data as UserEnreda;
-                    resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
-                    resource.organizerImage = mentor.photo;
-                  }
-                }
-                if (!snapshot.hasData) {
-                  return const Center(
-                      child: CircularProgressIndicator());
-                }
-                resource.setResourceTypeName();
-                resource.setResourceCategoryName();
-                return StreamBuilder<Country>(
-                    stream: database.countryStream(resource.country),
-                    builder: (context, snapshot) {
-                      final country = snapshot.data;
-                      resource.countryName = country == null ? '' : country.name;
-                      return StreamBuilder<Province>(
-                        stream: database.provinceStream(resource.province),
-                        builder: (context, snapshot) {
-                          final province = snapshot.data;
-                          resource.provinceName = province == null ? '' : province.name;
-                          return StreamBuilder<City>(
-                            stream: database.cityStream(resource.city),
-                            builder: (context, snapshot) {
-                              if(!snapshot.hasData) return const Center(child: CircularProgressIndicator());
-                              final city = snapshot.data;
-                              resource.cityName = city == null ? '' : city.name;
-                              return Responsive.isMobile(context) ? _buildResourceDetailMobile(context, resource)
-                                  : _buildResourceDetailWeb(context, resource);
-                            },
-                          );
-                        },
-                      );
-                    });
-              },
-            );
-          }
-          return const Center(child: CircularProgressIndicator());
-        });
+        }
+        return Responsive.isMobile(context) ? _buildResourceDetailMobile(context, resource)
+            : _buildResourceDetailWeb(context, resource);
+      },
+    );
   }
 
   Widget _buildResourceDetailWeb(BuildContext context, Resource resource) {
@@ -621,7 +580,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_PLACE_YELLOW
             : ImagePath.ICON_PLACE),
         title: StringConst.LOCATION,
-        contact: _getLocationText(resource),
+        contact: getLocationText(resource),
       ),
       BoxItemData(
         icon: Image.asset(Responsive.isMobile(context) ? ImagePath.ICON_MODALITY_YELLOW
@@ -1047,7 +1006,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     }
   }
 
-  String _getLocationText(Resource resource) {
+  String getLocationText(Resource resource) {
     switch (resource.modality) {
       case StringConst.FACE_TO_FACE:
       case StringConst.BLENDED:
@@ -1073,16 +1032,16 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         }
 
       case StringConst.ONLINE_FOR_COUNTRY:
-        return StringConst.ONLINE_FOR_COUNTRY
-            .replaceAll('país', resource.countryName!);
+      /*return StringConst.ONLINE_FOR_COUNTRY
+            .replaceAll('país', resource.countryName!);*/
 
       case StringConst.ONLINE_FOR_PROVINCE:
-        return StringConst.ONLINE_FOR_PROVINCE.replaceAll(
-            'provincia', '${resource.provinceName!}, ${resource.countryName!}');
+      /*return StringConst.ONLINE_FOR_PROVINCE.replaceAll(
+            'provincia', '${resource.provinceName!}, ${resource.countryName!}');*/
 
       case StringConst.ONLINE_FOR_CITY:
-        return StringConst.ONLINE_FOR_CITY.replaceAll('ciudad',
-            '${resource.cityName!}, ${resource.provinceName!}, ${resource.countryName!}');
+      /*return StringConst.ONLINE_FOR_CITY.replaceAll('ciudad',
+            '${resource.cityName!}, ${resource.provinceName!}, ${resource.countryName!}');*/
 
       case StringConst.ONLINE:
         return StringConst.ONLINE;

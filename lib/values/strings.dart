@@ -428,6 +428,7 @@ class StringConst {
   static const String FORM_CURRENT_NATIONALITY = "Nacionalidad";
   static const String FORM_EDUCATION_REV_CREATE = "Nivel educativo";
   static const String FORM_GOALS = 'Objetivos';
+  static const String FORM_SOCIAL_ENTITY_ERROR = "El campo no puede estar vacío";
 
   static const String FORM_GENERAL_INFO = "Información general";
   static const String FORM_MOTIVATION = "Motivaciones";

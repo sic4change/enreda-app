@@ -449,7 +449,9 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                     initialValue: _postalCode!,
                     /*validator: (value) =>
                       value!.isNotEmpty ? null : StringConst.POSTAL_CODE_ERROR,*/
-                    onSaved: _postalCode_setState
+                    onSaved: _postalCode_setState,
+                  validator: (value) =>
+                  value!.isNotEmpty ? null : StringConst.POSTAL_CODE_ERROR,
                 ),
               ),
               SpaceH20(),

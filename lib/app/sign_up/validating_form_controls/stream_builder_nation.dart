@@ -5,7 +5,7 @@ import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-Widget streamBuilderForNation (BuildContext context, String? selectedCountry,  functionToWriteBackThings, String title ) {
+Widget streamBuilderForNation(BuildContext context, String? selectedNation, functionToWriteBackThings, String title, String? nationalityName) {
   final database = Provider.of<Database>(context, listen: false);
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
@@ -13,79 +13,76 @@ Widget streamBuilderForNation (BuildContext context, String? selectedCountry,  f
       stream: database.nationsSpanishStream(),
       builder: (context, snapshotCountries){
 
-        List<String> countries = [];
-        List<DropdownMenuItem<String>> countryItems = [];
+        List<DropdownMenuItem<String>> nationItems = [];
         if (snapshotCountries.hasData) {
-          countries = snapshotCountries.data!;
-          countryItems = countries.map((String c) =>
-              DropdownMenuItem<String>(
-                value: c,
-                child: Text(c),
-              ))
+          nationItems = snapshotCountries.data!.map((String nation) {
+            if (selectedNation == null && nation == nationalityName) {
+              selectedNation = nation;
+            }
+            return DropdownMenuItem<String>(
+              value: nation,
+              child: Text(nation),
+            );
+          })
               .toList();
         }
-        if(selectedCountry == null || countries.contains(selectedCountry)) {
-          return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    title,
-                    style: textTheme.bodySmall?.copyWith(
-                      height: 1.5,
-                      color: AppColors.greyDark,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15,
-                    ),
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Text(
+                title,
+                style: textTheme.bodySmall?.copyWith(
+                  height: 1.5,
+                  color: AppColors.greyDark,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+            DropdownButtonFormField(
+              value: selectedNation,
+              isExpanded: true,
+              items: nationItems,
+              onChanged: (value) => functionToWriteBackThings(value),
+              validator: (value) => selectedNation != null ? null : StringConst.FORM_GENDER_ERROR,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: EdgeInsets.all(5),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: AppColors.greyUltraLight,
                   ),
                 ),
-                Container(
-                  height: 50,
-                  child: DropdownButtonFormField(
-                    value: selectedCountry,
-                    items: countryItems,
-                    isDense: true,
-                    isExpanded: true,
-                    onChanged: (value) => functionToWriteBackThings(value),
-                    validator: (value) =>
-                    selectedCountry != null
-                        ? null
-                        : StringConst.COUNTRY_ERROR,
-                    decoration: InputDecoration(
-                      errorStyle: TextStyle(height: 0.01),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: AppColors.greyUltraLight,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: AppColors.greyUltraLight,
-                          width: 1.0,
-                        ),
-                      ),
-                      disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: AppColors.greyUltraLight,
-                          width: 1.0,
-                        ),
-                      ),
-                    ),
-                    style: textTheme.bodySmall?.copyWith(
-                      color: AppColors.greyDark,
-                      fontWeight: FontWeight.w400,
-                      fontSize: fontSize,
-                    ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: AppColors.greyUltraLight,
+                    width: 1.0,
                   ),
                 ),
-              ]
-          );
-        }else{
-          return Container();
-        }
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: AppColors.greyUltraLight,
+                    width: 1.0,
+                  ),
+                ),
+              ),
+              style: textTheme.bodySmall?.copyWith(
+                height: 1.5,
+                color: AppColors.greyDark,
+                fontWeight: FontWeight.w400,
+                fontSize: fontSize,
+              ),
+            ),
+          ],
+        );
+
       });
 }

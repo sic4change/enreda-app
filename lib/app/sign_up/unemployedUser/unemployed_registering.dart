@@ -379,7 +379,8 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                 ],
               ),
               SpaceH20(),
-              streamBuilderForNation(context, selectedNationality, _buildNationalityStreamBuilder_setState, StringConst.FORM_CURRENT_NATIONALITY),
+              streamBuilderForNation(context, selectedNationality,
+                  _buildNationalityStreamBuilder_setState, StringConst.FORM_CURRENT_NATIONALITY, nationalityName),
               SpaceH20(),
               Flex(
                 direction: Responsive.isMobile(context) ? Axis.vertical : Axis.horizontal,
@@ -435,14 +436,14 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
               CustomFlexRowColumn(
                 contentPadding: EdgeInsets.all(0.0),
                 separatorSize: Sizes.kDefaultPaddingDouble,
-                childLeft: streamBuilderForCountry(context, selectedCountry, _buildCountryStreamBuilder_setState, StringConst.FORM_CURRENT_COUNTRY),
-                childRight: streamBuilderForProvince(context, selectedCountry, selectedProvince, _buildProvinceStreamBuilder_setState),
+                childLeft: streamBuilderForCountry(context, selectedCountry, _buildCountryStreamBuilder_setState, null, StringConst.FORM_CURRENT_COUNTRY),
+                childRight: streamBuilderForProvince(context, selectedCountry?.countryId, selectedProvince, _buildProvinceStreamBuilder_setState, null),
               ),
               SpaceH20(),
               CustomFlexRowColumn(
                 contentPadding: EdgeInsets.all(0.0),
                 separatorSize: Sizes.kDefaultPaddingDouble,
-                childLeft: streamBuilderForCity(context, selectedCountry, selectedProvince, selectedCity, _buildCityStreamBuilder_setState),
+                childLeft: streamBuilderForCity(context, selectedProvince?.provinceId, selectedCity, _buildCityStreamBuilder_setState, null),
                 //childLeft: Container(),
                 childRight: CustomTextFormFieldTitle(
                     labelText: StringConst.FORM_POSTAL_CODE,
@@ -455,10 +456,9 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                 ),
               ),
               SpaceH20(),
-              streamBuilderDropdownEducation(context, selectedEducation, _buildEducationStreamBuilder_setState),
+              streamBuilderDropdownEducation(context, selectedEducation, _buildEducationStreamBuilder_setState, null, StringConst.FORM_EDUCATION),
               SpaceH20(),
-              streamBuilderForSocialEntity(context, selectedSocialEntity, _buildSocialEntityStreamBuilder_setState),
-
+              streamBuilderForSocialEntity(context, selectedSocialEntity, _buildSocialEntityStreamBuilder_setState, null, StringConst.FORM_SOCIAL_ENTITY),
             ]),
       );
   }
@@ -514,7 +514,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                     fontSize: fontSize,
                   ),
                 ), ),
-              CustomPadding(child: streamBuilderDropdownEducation(context, selectedEducation, _buildEducationStreamBuilder_setState)),
+              CustomPadding(child: streamBuilderDropdownEducation(context, selectedEducation, _buildEducationStreamBuilder_setState, null, StringConst.FORM_EDUCATION)),
             ]),
       );
   }
@@ -784,12 +784,11 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     setState(() => this._postalCode = val!);
   }
 
-  void _buildNationalityStreamBuilder_setState(String? country) {
+  void _buildNationalityStreamBuilder_setState(String? nation) {
     setState(() {
-      this.selectedNationality = country;
-      nationalityName = country != null ? country : "";
+      this.selectedNationality = nation;
+      nationalityName = nation != null ? nation : "";
     });
-    _nationality = country;
   }
 
   void _showMultiSelectAbilities(BuildContext context) async {

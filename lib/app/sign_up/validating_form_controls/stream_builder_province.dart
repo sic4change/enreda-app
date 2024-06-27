@@ -8,21 +8,27 @@ import '../../../utils/adaptive.dart';
 import '../../../values/values.dart';
 
 
-Widget streamBuilderForProvince (BuildContext context, Country? selectedCountry, Province? selectedProvince,  functionToWriteBackThings ) {
+Widget streamBuilderForProvince (BuildContext context, String? selectedCountryId, Province? selectedProvince,  functionToWriteBackThings, genericType ) {
   final database = Provider.of<Database>(context, listen: false);
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
   return StreamBuilder<List<Province>>(
-      stream: database.provincesCountryStream(selectedCountry?.countryId),
+      stream: database.provincesCountryStream(selectedCountryId),
       builder: (context, snapshotProvinces) {
 
         List<DropdownMenuItem<Province>> provinceItems = [];
-        if (snapshotProvinces.hasData && selectedCountry != null) {
-          provinceItems = snapshotProvinces.data!.map((Province p) =>
-              DropdownMenuItem<Province>(
-                value: p,
-                child: Text(p.name),
-              )
+        if (snapshotProvinces.hasData &&
+            snapshotProvinces.data!.isNotEmpty &&
+            snapshotProvinces.data![0].countryId == selectedCountryId) {
+          provinceItems = snapshotProvinces.data!.map((Province province) {
+            if (selectedProvince == null && province.provinceId == genericType?.province) {
+              selectedProvince = province;
+            }
+            return DropdownMenuItem<Province>(
+                value: province,
+                child: Text(province.name),
+              );
+          }
           ).toList();
         }
 

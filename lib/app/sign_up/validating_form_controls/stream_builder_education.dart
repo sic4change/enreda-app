@@ -6,7 +6,7 @@ import '../../../../../../services/database.dart';
 import '../../../utils/adaptive.dart';
 import '../../../values/values.dart';
 
-Widget streamBuilderDropdownEducation (BuildContext context, Education? selectedEducation,  functionToWriteBackThings ) {
+Widget streamBuilderDropdownEducation(BuildContext context, Education? selectedEducation,  functionToWriteBackThings, genericType, String title) {
   final database = Provider.of<Database>(context, listen: false);
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
@@ -16,14 +16,17 @@ Widget streamBuilderDropdownEducation (BuildContext context, Education? selected
 
         List<DropdownMenuItem<Education>> educationItems = [];
         if (snapshotEducation.hasData) {
-          educationItems = snapshotEducation.data!.map((Education education) =>
-              DropdownMenuItem<Education>(
-                value: education,
-                child: Text(education.label),
-              ))
+          educationItems = snapshotEducation.data!.map((Education education) {
+            if (selectedEducation == null && education.educationId == genericType?.educationId) {
+              selectedEducation = education;
+            }
+            return DropdownMenuItem<Education>(
+              value: education,
+              child: Text(education.label),
+            );
+          })
               .toList();
         }
-
         return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

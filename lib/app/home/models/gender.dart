@@ -16,7 +16,8 @@ class Gender {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is Gender &&
-            other.genderId == genderId);
+            other.genderId == genderId &&
+            other.name == name);
   }
 
   Map<String, dynamic> toMap() {

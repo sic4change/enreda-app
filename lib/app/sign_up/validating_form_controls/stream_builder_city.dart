@@ -9,21 +9,27 @@ import '../../../utils/adaptive.dart';
 import '../../../values/values.dart';
 
 
-Widget streamBuilderForCity (BuildContext context, Country? selectedCountry, Province? selectedProvince, City? selectedCity,  functionToWriteBackThings ) {
+Widget streamBuilderForCity (BuildContext context, String? selectedProvinceId, City? selectedCity,  functionToWriteBackThings, genericType ) {
   final database = Provider.of<Database>(context, listen: false);
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
   return StreamBuilder<List<City>>(
-      stream: database.citiesProvinceStream(selectedProvince?.provinceId),
+      stream: database.citiesProvinceStream(selectedProvinceId),
       builder: (context, snapshotCities){
 
         List<DropdownMenuItem<City>> cityItems = [];
-        if (snapshotCities.hasData && selectedProvince != null) {
-          cityItems = snapshotCities.data!.map((City c) =>
-              DropdownMenuItem<City>(
-                value: c,
-                child: Text(c.name),
-              )
+        if (snapshotCities.hasData &&
+            snapshotCities.data!.isNotEmpty &&
+            snapshotCities.data![0].provinceId == selectedProvinceId) {
+          cityItems = snapshotCities.data!.map((City city) {
+            if (selectedCity == null && city.cityId == genericType?.city) {
+              selectedCity = city;
+            }
+            return DropdownMenuItem<City>(
+                value: city,
+                child: Text(city.name),
+              );
+          }
           ).toList();
         }
         return Column(

@@ -56,6 +56,7 @@ abstract class Database {
   Stream<List<Resource>> myResourcesStream(String userId);
   Stream<List<Resource>> likeResourcesStream(String userId);
   Stream<List<Resource>> recommendedResourcesStream(UserEnreda? user);
+  Stream<List<Interest>> interestsByUserStream(List<String?> interestsIdList);
   Stream<List<Interest>> resourcesInterestsStream(List<String?> interestsIdList);
   Stream<List<Competency>> resourcesCompetenciesStream(List<String?> competenciesIdList);
   Stream<UserEnreda> enredaUserStream(String userId);
@@ -300,6 +301,16 @@ class FirestoreDatabase implements Database {
         return null;
       },
       sort: (lhs, rhs) => lhs.createdate.compareTo(rhs.createdate),
+    );
+  }
+
+  @override
+  Stream<List<Interest>> interestsByUserStream(List<String?> interestsIdList) {
+    return _service.collectionStream<Interest>(
+      path: APIPath.interests(),
+      queryBuilder: (query) => query.where('interestId', whereIn: interestsIdList),
+      builder: (data, documentId) => Interest.fromMap(data, documentId),
+      sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
     );
   }
 

@@ -1,5 +1,5 @@
 import 'package:enreda_app/app/home/account/gamification_page.dart';
-import 'package:enreda_app/app/home/account/personal_data_page.dart';
+import 'package:enreda_app/app/home/account/personal_data_form.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/competencies/my_competencies_page.dart';
 import 'package:enreda_app/app/home/control_panel/control_panel_mobile_intervention.dart';
@@ -29,6 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sidebarx/sidebarx.dart';
+import 'account/personal_data_page.dart';
 import 'models/userEnreda.dart';
 
 
@@ -329,7 +330,7 @@ class _WebHomeState extends State<WebHome> {
                                     case 1:
                                       return MyCurriculumPage();
                                     case 2:
-                                      return PersonalData();
+                                      return PersonalDataPage();
                                     case 3:
                                       return MyCompetenciesPage();
                                     case 4:

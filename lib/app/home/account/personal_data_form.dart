@@ -336,14 +336,15 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
                   CustomFlexRowColumn(
                     childLeft: streamBuilderForNation(context, selectedNation,
                         nationalitySetState, StringConst.FORM_CURRENT_NATIONALITY, _nationality),
-                    childRight: Container(),
-                  ),
-                  CustomFlexRowColumn(
-                    childLeft: streamBuilderDropdownEducation(context, selectedEducation,
+                    childRight: streamBuilderDropdownEducation(context, selectedEducation,
                         educationSetState, user, StringConst.FORM_EDUCATION),
-                    childRight: streamBuilderForSocialEntity(context, selectedSocialEntity,
-                        socialEntityStreamBuilderSetState, user, StringConst.FORM_SOCIAL_ENTITY),
                   ),
+                  ///Definir user assinedById cuando unemployed se registre solo, error en Contact Page
+                  // CustomFlexRowColumn(
+                  //   childLeft: Container(),
+                  //   childRight: streamBuilderForSocialEntity(context, selectedSocialEntity,
+                  //       socialEntityStreamBuilderSetState, user, StringConst.FORM_SOCIAL_ENTITY),
+                  // ),
                   SpaceH20(),
                 ],),
             ),
@@ -434,7 +435,9 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
         birthday: _birthday,
         educationId: _education,
         nationality: _nationality,
-        assignedEntityId: _socialEntity,
+        ///Definir user assinedById cuando unemployed se registre solo
+        //assignedEntityId: _socialEntity,
+        //assignedById: ?,
       );
 
       try {

@@ -282,7 +282,8 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           role: 'Desempleado',
           unemployedType: unemployedType,
           nationality: selectedNationality,
-          assignedEntityId: selectedSocialEntity!.socialEntityId ?? null,
+          ///Definir user assinedById cuando unemployed se registre solo
+          //assignedEntityId: selectedSocialEntity!.socialEntityId ?? null,
           gamificationFlags: {
             UserEnreda.FLAG_SIGN_UP: true,
           },
@@ -436,14 +437,17 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
               CustomFlexRowColumn(
                 contentPadding: EdgeInsets.all(0.0),
                 separatorSize: Sizes.kDefaultPaddingDouble,
-                childLeft: streamBuilderForCountry(context, selectedCountry, _buildCountryStreamBuilder_setState, null, StringConst.FORM_CURRENT_COUNTRY),
-                childRight: streamBuilderForProvince(context, selectedCountry?.countryId, selectedProvince, _buildProvinceStreamBuilder_setState, null),
+                childLeft: streamBuilderForCountry(context, selectedCountry,
+                    _buildCountryStreamBuilder_setState, null, StringConst.FORM_CURRENT_COUNTRY),
+                childRight: streamBuilderForProvince(context, selectedCountry?.countryId, selectedProvince,
+                    _buildProvinceStreamBuilder_setState, null),
               ),
               SpaceH20(),
               CustomFlexRowColumn(
                 contentPadding: EdgeInsets.all(0.0),
                 separatorSize: Sizes.kDefaultPaddingDouble,
-                childLeft: streamBuilderForCity(context, selectedProvince?.provinceId, selectedCity, _buildCityStreamBuilder_setState, null),
+                childLeft: streamBuilderForCity(context, selectedProvince?.provinceId, selectedCity,
+                    _buildCityStreamBuilder_setState, null),
                 //childLeft: Container(),
                 childRight: CustomTextFormFieldTitle(
                     labelText: StringConst.FORM_POSTAL_CODE,
@@ -456,9 +460,12 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                 ),
               ),
               SpaceH20(),
-              streamBuilderDropdownEducation(context, selectedEducation, _buildEducationStreamBuilder_setState, null, StringConst.FORM_EDUCATION),
+              streamBuilderDropdownEducation(context, selectedEducation,
+                  _buildEducationStreamBuilder_setState, null, StringConst.FORM_EDUCATION),
               SpaceH20(),
-              streamBuilderForSocialEntity(context, selectedSocialEntity, _buildSocialEntityStreamBuilder_setState, null, StringConst.FORM_SOCIAL_ENTITY),
+              ///Definir user assinedById cuando unemployed se registre solo, error en Contact Page
+              // streamBuilderForSocialEntity(context, selectedSocialEntity,
+              //     _buildSocialEntityStreamBuilder_setState, null, StringConst.FORM_SOCIAL_ENTITY),
             ]),
       );
   }

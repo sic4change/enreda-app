@@ -14,7 +14,7 @@ class ImagePath {
   static const String LOGO_WHITE_CHAT = "$imageDir/logo-white-chat.png";
   static const String LOGO_IC = "$imageDir/ic_enreda.png";
   static const String LOGO_FUNDAULA = '$imageDir/fundaula-logo.png';
-  static const String LOGO_ENREDA = '$imageDir/logo-enreda.png';
+  static const String LOGO_S4C = '$imageDir/logo-enreda.png';
 
   // Stores
   static const String APP_STORE_BUTTON = "$imageDir/app_store_900x503.png";

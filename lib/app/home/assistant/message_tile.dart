@@ -252,7 +252,7 @@ class _MessageTileState extends State<MessageTile> {
             title: StringConst.CHAT_TITLE_QUESTION,
             content:
                 StringConst.CHAT_MESSAGE_WARNING + '${widget.question.optionsToSelect!}',
-            defaultActionText: StringConst.OK,
+            defaultActionText: StringConst.FORM_ACCEPT,
           );
         }
         /*else if (val.length < minSelectedActivities &&

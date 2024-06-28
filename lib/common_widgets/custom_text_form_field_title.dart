@@ -1,4 +1,5 @@
 import 'package:enreda_app/utils/responsive.dart';
+import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 
@@ -84,7 +85,8 @@ class CustomTextFormFieldTitle extends StatelessWidget {
         ),
       ),
       initialValue: initialValue,
-      validator: validator,
+      validator: (value) =>
+      value!.isNotEmpty ? null : StringConst.FORM_FIELD_ERROR,
       onSaved: onSaved,
       keyboardType: keyboardType,
       onChanged: onChanged,

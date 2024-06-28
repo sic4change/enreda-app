@@ -44,14 +44,12 @@ Future showAlertDialog(
                 height: 1.5,
                 fontSize: fontSizeSubTitle)),
         actions: <Widget>[
-          if (cancelActionText != null)
-          // ignore: deprecated_member_use
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
+                  cancelActionText != null ? ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Constants.turquoise,
                       ),
@@ -65,7 +63,7 @@ Future showAlertDialog(
                                 fontWeight: FontWeight.w400,
                                 fontSize: fontSizeButton
                             )),
-                      )),
+                      )) : SizedBox(),
                   Responsive.isMobile(context) ? SizedBox(width: 10,) : SizedBox(width: 30,),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -104,9 +102,7 @@ Future showAlertDialog(
                 height: 1.5,
                 fontSize: fontSizeSubTitle)),
         actions: <Widget>[
-          if (cancelActionText != null)
-          // ignore: deprecated_member_use
-            ElevatedButton(
+          cancelActionText != null ? ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Constants.turquoise,
                 ),
@@ -119,7 +115,7 @@ Future showAlertDialog(
                           height: 1.5,
                           fontWeight: FontWeight.w400,
                           fontSize: fontSizeButton)),
-                )),
+                )) : SizedBox(),
           ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Constants.turquoise,

@@ -319,7 +319,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                             this.context,
                             title: StringConst.CHAT_TITLE_QUESTION,
                             content: StringConst.CHAT_SELECT,
-                            defaultActionText: StringConst.OK,
+                            defaultActionText: StringConst.FORM_ACCEPT,
                           );
                           return;
                         }
@@ -330,7 +330,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                             this.context,
                             title: StringConst.CHAT_TITLE_QUESTION,
                             content: StringConst.CHAT_ANSWER_QUESTION,
-                            defaultActionText: StringConst.OK,
+                            defaultActionText: StringConst.FORM_ACCEPT,
                           );
                           return;
                         }
@@ -344,7 +344,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                             title: StringConst.CHAT_TITLE_QUESTION,
                             content:
                              StringConst.CHAT_SELECT1_QUESTION + '${minSelectedActivities}' + StringConst.CHAT_SELECT2_QUESTION,
-                            defaultActionText: StringConst.OK,
+                            defaultActionText: StringConst.FORM_ACCEPT,
                           );
                           return;
                         }

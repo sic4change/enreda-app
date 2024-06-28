@@ -48,7 +48,7 @@ Widget streamBuilderForNation(BuildContext context, String? selectedNation, func
               isExpanded: true,
               items: nationItems,
               onChanged: (value) => functionToWriteBackThings(value),
-              validator: (value) => selectedNation != null ? null : StringConst.FORM_GENDER_ERROR,
+              validator: (value) => selectedNation != null ? null : StringConst.FORM_FIELD_ERROR,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,

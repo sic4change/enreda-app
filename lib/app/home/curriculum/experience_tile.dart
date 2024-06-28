@@ -1,12 +1,14 @@
-import 'package:enreda_app/app/home/curriculum/experience_form.dart';
 import 'package:enreda_app/app/home/curriculum/experience_form_update.dart';
 import 'package:enreda_app/app/home/curriculum/formation_form.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/delete_button.dart';
 import 'package:enreda_app/common_widgets/edit_button.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/utils/responsive.dart';
+import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -165,17 +167,23 @@ class ExperienceTile extends StatelessWidget {
           DeleteButton(
             onTap: () {
               showCustomDialog(context,
-                  content: Text(
-                      '¿Quieres eliminar esta ${experience.type == 'Formativa' ? 'formación' : 'experiencia'}?', style: textTheme.bodySmall,),
+                  content: Container(
+                    width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width * 0.3,
+                    child: CustomTextMediumBold(
+                        text: '¿Quieres eliminar esta ${experience.type == 'Formativa' ? 'formación' : 'experiencia'}?'),
+                  ),
                   defaultActionText: 'Eliminar',
                   cancelActionText: 'Cancelar',
                   onDefaultActionPressed: (dialogContext) {
                     sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
                     database.deleteExperience(experience);
                     showCustomDialog(dialogContext,
-                        content: Text(
-                            'La ${experience.type == 'Formativa' ? 'formación' : 'experiencia'} ha sido eliminada de tu CV', style: textTheme.bodySmall,),
-                        defaultActionText: 'Ok',
+                        content: Container(
+                          width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width * 0.3,
+                          child: CustomTextMedium(
+                              text: 'La ${experience.type == 'Formativa' ? 'formación' : 'experiencia'} ha sido eliminada de tu CV'),
+                        ),
+                        defaultActionText: StringConst.FORM_ACCEPT,
                         onDefaultActionPressed: (dialog2Context) {
                       Navigator.of(dialog2Context).pop();
                       Navigator.of(dialog2Context).pop();

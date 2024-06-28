@@ -40,19 +40,19 @@ class StringConst {
   static const String DATA_OF_INTEREST = "Datos de interés";
   static const String LANGUAGES = "Idiomas";
   static const String EVALUATE_COMPETENCY = "Evaluar: ";
-  static const String CERTIFICATE_COMPETENCY = 'Solicitud de certificación de competencias';
+  static const String CERTIFICATE_COMPETENCY = 'Certificación de competencia';
   static const String APPLICANT = 'Solicitante:';
   static const String COMPETENCY = 'Competencia:';
   static const String COMPETENCY_SELECT = 'Selecciona una opción:';
   static const String COMPETENCY_APPROVED = 'Apto';
   static const String COMPETENCY_NOT_APPROVED = 'No apto';
-  static const String COMPETENCY_CONTACT_INFO = '¿Puedo incluir tus datos de contacto en mi CV?';
+  static const String COMPETENCY_CONTACT_INFO = '¿Puede incluir tus datos de contacto en su CV?';
   static const String COMPETENCY_CONTACT_YES = 'Si';
   static const String COMPETENCY_CONTACT_NO = 'No';
   static const String COMPETENCY_CERTIFICATION = 'Certificar competencia';
   static const String COMPETENCY_THANK_YOU = 'Muchas gracias por tu información.';
   static const String COMPETENCY_CERTIFIED1 = '¡Competencia ';
-  static const String COMPETENCY_CERTIFIED2 = ' ha sido certificada con éxito!';
+  static const String COMPETENCY_CERTIFIED2 = ' ha sido evaluada con éxito!';
   static const String COMPETENCY_ERROR = 'Error al enviar solicitud, intenta de nuevo.';
   static const String COMPETENCY_SELECT_OPC = 'Debe seleccionar al menos una opción:';
   static const String COMPETENCY_CONTACT_SHARE = '¿Apruebas compartir sus datos de contacto?';
@@ -262,7 +262,8 @@ class StringConst {
   static const String FIND_ME = "Find me on..";
 
   //URL Links
-  static const String PRIVACY_URL = "https://firebasestorage.googleapis.com/v0/b/enreda-d3b41.appspot.com/o/politicas.html?alt=media&token=374df99b-04fc-4f19-9a03-4bcbbc08a55b";
+  static const String POLICIES_URL = "https://firebasestorage.googleapis.com/v0/b/enreda-d3b41.appspot.com/o/pagina-politicas.html?alt=media&token=3f1ed44d-b0e2-4e51-8266-1ad608604eba";
+  static const String CONDITIONS_URL = "https://firebasestorage.googleapis.com/v0/b/enreda-d3b41.appspot.com/o/pagina-condiciones.html?alt=media&token=a2dc50e8-fc48-46a4-afff-2eb326e63821";
   static const String BEHANCE_URL = "https://www.behance.net/";
   static const String DRIBBLE_URL = "https://dribbble.com/";
   static const String LINKED_IN_URL = "https://www.linkedin.com/company/sic4change/";
@@ -270,7 +271,6 @@ class StringConst {
   static const String GITHUB_URL = "https://github.com/";
   static const String FACEBOOK_URL = "https://www.facebook.com/EnREDaEmpleo/";
   static const String TWITTER_URL = "https://twitter.com/sic4change";
-  static const String USE_CONDITIONS_URL = "https://firebasestorage.googleapis.com/v0/b/enreda-d3b41.appspot.com/o/condiciones.html?alt=media&token=95f2b0f5-cd12-4a43-80a6-0cb32788f380";
   static const String ADMIN_WEB_URL = 'https://enreda-d3b41.firebaseapp.com/#/login';
   static const String WEB_APP_URL = 'https://enredawebapp.web.app/';
   static const String NEW_WEB_ENREDA_URL = 'https://www.enredas.org/';
@@ -282,7 +282,6 @@ class StringConst {
   //Contact form
   static const String CONFIRM = "Confirmado";
   static const String OK_MESSAGE = "Te has puesto en contacto con nosotr@s, en breve nos comunicaremos contigo. Gracias";
-  static const String OK = "Ok";
   static const String ERROR_MESSAGE = "Error al enviar contacto";
   static const String TALK_WITH_US = "Hablemos";
   static const String ANY_QUESTION = "¿Tienes alguna pregunta?";
@@ -300,7 +299,7 @@ class StringConst {
   static const String HELLO_WP_MESSAGE1 = "Hola ";
   static const String HELLO_WP_MESSAGE2 = ", quisiera más información";
   static const String MESSAGE_SENT = 'Mensaje enviado';
-  static const String MESSAGE_SENT_DESCRIPTION = 'Hemos recibido satistactoriamente tu sugerencia. ¡Muchas gracias por tu información!';
+  static const String MESSAGE_SENT_DESCRIPTION = 'Hemos recibido satistactoriamente tu sugerencia.\n¡Muchas gracias por tu información!';
 
   //Stores
   static const String URL_GOOGLE_PLAY = "https://play.google.com/store/apps/details?id=org.sic4change.enreda_app&hl=es";
@@ -382,7 +381,7 @@ class StringConst {
   static const String FORM_GENDER_ERROR = "El género no puede estar vacío";
   static const String FORM_LASTNAME = "Apellidos";
   static const String FORM_LASTNAME_ERROR = "Los apellidos no puede estar vacío";
-  static const String FORM_COMPANY_ERROR = "El campo no puede estar vacío";
+  static const String FORM_FIELD_ERROR = "El campo no puede estar vacío";
   static const String FORM_PHONE = "Teléfono";
   static const String PHONE_ERROR = "El teléfono no puede estar vacío";
   static const String FORM_EMAIL = "Email";
@@ -420,7 +419,7 @@ class StringConst {
   static const String FORM_EDUCATION_REV = "Educación";
   static const String FORM_NAME_CERTIFIER = "Nombres y Apellidos";
   static const String FORM_COMPANY_CERTIFIER = "Empresa";
-  static const String FORM_EMAIL_CERTIFIER = "Correoelectrónico";
+  static const String FORM_EMAIL_CERTIFIER = "Correo electrónico";
   static const String FORM_PHONE_CERTIFIER = "Teléfono";
   static const String FORM_POSITION_CERTIFIER = "Cargo";
   static const String FORM_SOCIAL_ENTITY = "¿Vienes de mano de una Entidad Social?";
@@ -581,11 +580,8 @@ class StringConst {
   static const String UPDATE_DATA_ERROR = 'Error al actualizar el usuario';
   static const String SEND_FEEDBACK_TITLE = "Escribe tus sugerencias";
   static const String SIGN_OUT_DESCRIPTION = '¿Estás seguro que quieres cerrar sesión?';
-  static const String DELETE_ACCOUNT_INSTRUCTIONS = 'Si pulsa en Aceptar se procederá a la eliminación completa '
-      'de su cuenta, esta acción no se podrá deshacer, '
-      '¿Está seguro que quiere continuar?';
-  static const String SIGN_OUT_INSTRUCTIONS = 'Si pulsa en Aceptar se le envirá a su correo las acciones a '
-      'realizar para cambiar su contraseña. Si no aparece, revisa las carpetas de SPAM y Correo no deseado';
+  static const String DELETE_ACCOUNT_INSTRUCTIONS = 'Si pulsa en "Aceptar" se procederá a la eliminación completa de su cuenta.\nEsta acción no se podrá deshacer. ¿Está seguro que quiere continuar?';
+  static const String SIGN_OUT_INSTRUCTIONS = 'Si pulsa en "Aceptar" se le enviará a su correo las acciones a realizar para cambiar su contraseña.\nSi no aparece, revisa las carpetas de SPAM o correo no deseado';
 
 
   //Gamification

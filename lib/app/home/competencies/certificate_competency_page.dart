@@ -61,12 +61,13 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 20, 22, md: 22);
     return Scaffold(
+      backgroundColor: AppColors.primary010,
       appBar: AppBar(
         title: Text(
           StringConst.COMPETENCY_CERTIFICATION_TITLE,
           textAlign: TextAlign.left,
           style: textTheme.bodySmall?.copyWith(
-            color: Constants.white,
+            color: AppColors.turquoiseBlue,
             height: 1.5,
             letterSpacing: 0.3,
             fontWeight: FontWeight.w800,
@@ -76,7 +77,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
         backgroundColor: AppColors.primaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(
-          color: Colors.white,
+          color: AppColors.turquoiseBlue,
         ),
       ),
       body: _buildContent(context, widget.competency)
@@ -113,21 +114,11 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SpaceH12(),
-                  CustomTextTitle(title: competency.name.toUpperCase()),
+                  CustomTextChip(text: competency.name.toUpperCase(), color: AppColors.turquoiseBlue,),
                   SpaceH12(),
-                  Text(
-                    StringConst.COMPETENCY_INFORMATION,
-                    textAlign: TextAlign.center,
-                    style: textTheme.bodyLarge?.copyWith(
-                      color: Constants.grey,
-                      height: 1.5,
-                      fontWeight: FontWeight.w800,
-                      fontSize: fontSize,
-                    ),
-                  ),
+                  CustomTextMedium(text: StringConst.COMPETENCY_INFORMATION),
                   _buildForm(context),
                   SpaceH12(),
-                  Divider(),
                 ],
               ),
             )
@@ -171,13 +162,13 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                     _certifierNameSetState),
                 childRight: customTextFormFieldName(context, _certifierCompany!,
                     StringConst.FORM_COMPANY_CERTIFIER,
-                    StringConst.FORM_COMPANY_ERROR,
+                    StringConst.FORM_FIELD_ERROR,
                     _certifierCompanySetState),
               ),
               CustomFlexRowColumn(
                 childLeft: customTextFormFieldName(context, _certifierPosition!,
                     StringConst.FORM_POSITION_CERTIFIER,
-                    StringConst.FORM_COMPANY_ERROR,
+                    StringConst.FORM_FIELD_ERROR,
                     _certifierPositionSetState),
                 childRight: TextFormField(
                   decoration: InputDecoration(
@@ -223,9 +214,9 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                   decoration: InputDecoration(
                     labelText: StringConst.FORM_PHONE_CERTIFIER,
                     prefixIcon:CountryCodePicker(
+                      dialogSize: Size(350.0, MediaQuery.of(context).size.height * 0.6),
                       onChanged: _onCountryChange,
                       initialSelection: 'ES',
-                      countryFilter: ['ES', 'PE', 'GT'],
                       showFlagDialog: true,
                     ),
                     focusColor: AppColors.primaryColor,

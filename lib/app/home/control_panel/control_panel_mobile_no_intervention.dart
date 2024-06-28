@@ -154,7 +154,7 @@ class _ControlPanelMobileNoInterventionPageState extends State<ControlPanelMobil
                               children: [
                                 CustomTextBoldTitle(title: StringConst.ENREDA_CONTACT),
                                 SpaceH4(),
-                                Image.asset(ImagePath.LOGO_ENREDA, height: 50),
+                                Image.asset(ImagePath.LOGO_S4C, height: 50),
                                 SpaceH4(),
                                 CustomTextSmall(text: 'Sede SIC4Change'),
                                 Row(

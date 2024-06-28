@@ -37,7 +37,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
   bool? _isSelected = false;
   bool? _isSelectedData = false;
   bool? _buttonDisabled = false;
-  Color _selectedColor = AppColors.greyViolet;
+  Color _selectedColor = AppColors.turquoiseBlue;
   Color _textColorOpc1 = AppColors.greyDark;
   Color _textColorOpc2 = AppColors.greyDark;
   Color _textColorOne = AppColors.greyDark;
@@ -70,33 +70,19 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 200),
-        child: SafeArea(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(),
-            ],
-          ),
-        ),
-      ),
-      body: Stack(
-        alignment: AlignmentDirectional.topCenter,
-        children: <Widget>[
-          BackgroundMobile(backgroundHeight: BackgroundHeight.ExtraLarge),
-          Positioned(
-            top: 50,
-            child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50.0),
-            child: Image.asset(
-              ImagePath.LOGO_WHITE,
-              height: 40,
+      backgroundColor: AppColors.primary010,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(
+              ImagePath.LOGO,
+              height: 50,
             ),
-          ),),
-          _buildContent()
-        ],
+            _buildContent()
+          ],
+        ),
       ),
     );
   }
@@ -126,7 +112,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
     return Container(
         width: Responsive.isMobile(context) || Responsive.isTablet(context) ?
           MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.6,
-        margin: EdgeInsets.only(top: 120),
+        margin: EdgeInsets.only(top: 40),
         decoration: BoxDecoration(
             color: Constants.white,
             shape: BoxShape.rectangle,
@@ -146,40 +132,15 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SpaceH20(),
-              Text(
-                StringConst.CERTIFICATE_COMPETENCY,
-                textAlign: TextAlign.center,
-                style: textTheme.bodySmall?.copyWith(
-                  color: AppColors.greyDark,
-                  height: 1.5,
-                  fontWeight: FontWeight.w800,
-                  fontSize: fontSizeTitle,
-                ),
-              ),
+              CustomTextBoldTitle(title: StringConst.CERTIFICATE_COMPETENCY),
               SpaceH20(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    StringConst.APPLICANT,
-                    style: textTheme.bodySmall?.copyWith(
-                      color: AppColors.greyDark,
-                      height: 1.5,
-                      fontWeight: FontWeight.w800,
-                      fontSize: fontSize,
-                    ),
-                  ),
+                  CustomTextMedium(text: StringConst.APPLICANT),
                   SpaceW12(),
-                  Text(
-                    '${certificationRequest.unemployedRequesterName}',
-                    style: textTheme.bodySmall?.copyWith(
-                      color: AppColors.greyDark,
-                      height: 1.5,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 18,
-                    ),
-                  ),
+                  CustomTextMedium(text: '${certificationRequest.unemployedRequesterName}'),
                 ],
               ),
               SpaceH8(),
@@ -187,32 +148,15 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    StringConst.COMPETENCY,
-                    style: textTheme.bodySmall?.copyWith(
-                      color: AppColors.greyDark,
-                      height: 1.5,
-                      fontWeight: FontWeight.w800,
-                      fontSize: fontSize,
-                    ),
-                  ),
+                  CustomTextMedium(text: StringConst.COMPETENCY),
                   SpaceW12(),
-                  CustomTextTitle(title: certificationRequest.competencyName.toUpperCase()),
+                  CustomTextMediumBold(text: certificationRequest.competencyName.toUpperCase()),
                 ],
               ),
               SizedBox(height: Constants.mainPadding),
-              Text(
-                StringConst.COMPETENCY_SELECT,
-                style: textTheme.bodySmall?.copyWith(
-                  color: AppColors.greyDark,
-                  height: 1.5,
-                  fontWeight: FontWeight.w800,
-                  fontSize: fontSize,
-                ),
-              ),
+              CustomTextMedium(text: StringConst.COMPETENCY_SELECT),
               _buildFormCertify(context),
               SpaceH12(),
-              Divider(),
             ],
           ),
         )
@@ -227,19 +171,20 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
         children: [
           SizedBox(height: Constants.mainPadding / 2),
           Container(
-            width: Responsive.isMobile(context) ? 300 : 500,
+            width: Responsive.isMobile(context) ? 300 : 400,
             child: CustomFlexRowColumn(
               childLeft: Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: ChoiceChip(
-                  label: Text(StringConst.COMPETENCY_APPROVED.toUpperCase(),
+                  showCheckmark: false,
+                  label: Text(StringConst.COMPETENCY_APPROVED,
                     style: textTheme.bodySmall?.copyWith(
                       color: _textColorOpc1,
                       height: 1.5,
                       fontWeight: FontWeight.w800,
                       fontSize: fontSize,
                     ),),
-                  labelPadding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
                   elevation: 1.0,
                   selected: _selectedCertify == 0,
                   selectedColor: _selectedColor,
@@ -256,6 +201,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
               childRight: Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: ChoiceChip(
+                  showCheckmark: false,
                   label: Text(StringConst.COMPETENCY_NOT_APPROVED,
                     style: textTheme.bodySmall?.copyWith(
                       color: _textColorOpc2,
@@ -263,7 +209,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                       fontWeight: FontWeight.w800,
                       fontSize: fontSize,
                     ),),
-                  labelPadding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
                   selected: _selectedCertify == 1,
                   selectedColor: _selectedColor,
                   onSelected: (value) {
@@ -279,24 +225,17 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
             ),
           ),
           SizedBox(height: Constants.mainPadding),
-          Text(
-            StringConst.COMPETENCY_CONTACT_INFO,
-            style: textTheme.bodySmall?.copyWith(
-              color: AppColors.greyDark,
-              height: 1.5,
-              fontWeight: FontWeight.w800,
-              fontSize: fontSize,
-            ),
-          ),
+          CustomTextMedium(text: StringConst.COMPETENCY_CONTACT_INFO),
           SizedBox(height: Constants.mainPadding / 2),
           Container(
-            width: 400,
+            width: Responsive.isMobile(context) ? 300 : 400,
             child: CustomFlexRowColumn(
               childLeft: ChoiceChip(
-                label: CustomTextChip(text: StringConst.COMPETENCY_CONTACT_YES.toUpperCase(), color: _textColorOne),
-                labelPadding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                showCheckmark: false,
+                label: CustomTextChip(text: StringConst.COMPETENCY_CONTACT_YES, color: _textColorOne),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
                 selected: _selectedApprove == 0,
-                selectedColor: AppColors.greyViolet,
+                selectedColor: AppColors.turquoiseBlue,
                 onSelected: (bool selected) {
                   _selectApproval(0);
                   _textColorOne = AppColors.white;
@@ -305,10 +244,11 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                 },
               ),
               childRight: ChoiceChip(
-                label: CustomTextChip(text: StringConst.COMPETENCY_CONTACT_NO.toUpperCase(), color: _textColorTwo),
-                labelPadding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                showCheckmark: false,
+                label: CustomTextChip(text: StringConst.COMPETENCY_CONTACT_NO, color: _textColorTwo),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
                 selected: _selectedApprove == 1,
-                selectedColor: AppColors.greyViolet,
+                selectedColor: AppColors.turquoiseBlue,
                 onSelected: (bool selected) {
                   _selectApproval(1);
                   _textColorOne = AppColors.greyDark;

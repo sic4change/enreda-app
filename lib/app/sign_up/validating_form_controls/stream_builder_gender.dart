@@ -49,7 +49,7 @@ Widget streamBuilder_Dropdown_Genders(BuildContext context, Gender? selectedGend
               isExpanded: true,
               items: genderItems,
               onChanged: (value) => functionToWriteBackThings(value),
-              validator: (value) => selectedGender != null ? null : StringConst.FORM_GENDER_ERROR,
+              validator: (value) => selectedGender != null ? null : StringConst.FORM_FIELD_ERROR,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,

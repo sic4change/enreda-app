@@ -278,7 +278,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                               this.context,
                               title: StringConst.CHAT_TITLE_QUESTION,
                               content: StringConst.CHAT_CONTENT_QUESTION,
-                              defaultActionText: StringConst.OK,
+                              defaultActionText: StringConst.FORM_ACCEPT,
                             );
                             return;
                           }
@@ -289,7 +289,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                               this.context,
                               title: StringConst.CHAT_TITLE_QUESTION,
                               content: StringConst.CHAT_ANSWER_QUESTION,
-                              defaultActionText: StringConst.OK,
+                              defaultActionText: StringConst.FORM_ACCEPT,
                             );
                             return;
                           }
@@ -303,7 +303,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                               title: StringConst.CHAT_TITLE_QUESTION,
                               content:
                               StringConst.CHAT_SELECT1_QUESTION + '${minSelectedActivities}' + StringConst.CHAT_SELECT2_QUESTION,
-                              defaultActionText: StringConst.OK,
+                              defaultActionText: StringConst.FORM_ACCEPT,
                             );
                             return;
                           }

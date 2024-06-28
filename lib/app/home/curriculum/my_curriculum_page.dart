@@ -551,7 +551,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           showAlertDialog(context,
               title: 'Error',
               content: 'Por favor, acepta las condiciones antes de continuar',
-              defaultActionText: 'Ok'
+              defaultActionText: 'Aceptar'
           );
           return;
         }
@@ -1392,7 +1392,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           children: [
             CustomTextSubTitle(title: StringConst.MY_PROFESIONAL_EXPERIENCES.toUpperCase()),
             SpaceW8(),
-
             _addButton(() {
               showDialog(
                   barrierDismissible: dismissible,
@@ -2109,7 +2108,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     if (myCompetencies!.length < 3 || myExperiences!.length < 2) {
       await showCustomDialog(context,
           content: CustomTextBody(text: StringConst.ADD_MORE_EXPERIENCES_SUGGESTION),
-          defaultActionText: StringConst.OK,
+          defaultActionText: StringConst.FORM_ACCEPT,
           onDefaultActionPressed: (dialogContext) => Navigator.of(dialogContext).pop(true));
     }
   }

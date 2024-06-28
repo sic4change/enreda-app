@@ -50,7 +50,7 @@ Widget streamBuilderDropdownEducation(BuildContext context, Education? selectedE
                 value: selectedEducation,
                 items: educationItems,
                 onChanged: (value) => functionToWriteBackThings(value),
-                validator: (value) => selectedEducation != null ? null : StringConst.FORM_MOTIVATION_ERROR,
+                validator: (value) => selectedEducation != null ? null : StringConst.FORM_FIELD_ERROR,
                 decoration: InputDecoration(
                   errorStyle: TextStyle(height: 0.01),
                   focusedBorder: OutlineInputBorder(

@@ -50,7 +50,7 @@ Widget streamBuilderForSocialEntity (BuildContext context, SocialEntity? selecte
                 items: socialEntityItems,
                 onChanged: (value) => functionToWriteBackThings(value),
                 //onChanged: null,
-                validator: (value) => selectedSocialEntity != null ? null : StringConst.FORM_SOCIAL_ENTITY_ERROR,
+                validator: (value) => selectedSocialEntity != null ? null : StringConst.FORM_FIELD_ERROR,
                 decoration: InputDecoration(
                   errorStyle: TextStyle(height: 0.01),
                   focusedBorder: OutlineInputBorder(

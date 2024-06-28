@@ -702,7 +702,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                     context,
                     title: StringConst.WARNING,
                     content: StringConst.PAGE_WARNING_1,
-                    defaultActionText: StringConst.OK,
+                    defaultActionText: StringConst.FORM_ACCEPT,
                     image: Container(
                         width: 300,
                         height: 450,

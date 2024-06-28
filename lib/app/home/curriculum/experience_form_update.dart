@@ -347,11 +347,6 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                 onChanged: (dateTime) {
                   setState(() => _endDate = Timestamp.fromDate(dateTime!));
                 },
-                validator: (value) {
-                  if (value == null || value.toString().isEmpty)
-                    return 'La fecha de nacimiento no puede estar vacía';
-                  return null;
-                },
               ),
             ) : Container(),
 

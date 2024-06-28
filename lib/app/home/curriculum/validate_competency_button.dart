@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'package:enreda_app/app/home/models/competency.dart';
-import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -152,7 +151,7 @@ class ValidateCompetencyButton extends StatelessWidget {
                       )
                     ],
                   ),
-                  defaultActionText: 'Ok',
+                  defaultActionText: 'Aceptar',
                   onDefaultActionPressed: (con) async {
                     Navigator.of(con).pop(true);
                     onComingBack();
@@ -170,7 +169,7 @@ class ValidateCompetencyButton extends StatelessWidget {
                   title: '¡Lo sentimos!',
                   content:
                   'No has conseguido evaluar la competencia ${competency.name}, te animamos a que lo intentes de nuevo.',
-                  defaultActionText: 'Ok');
+                  defaultActionText: 'Aceptar');
             }
           },
         );

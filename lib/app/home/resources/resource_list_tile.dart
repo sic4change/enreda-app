@@ -3,6 +3,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/resources/build_share_button.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
@@ -175,6 +176,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                                     style: textTheme.bodySmall?.copyWith(
                                                       height: 1.5,
                                                       color: AppColors.red,
+                                                      fontSize: fontSize,
                                                       fontWeight: FontWeight.w700,
                                                     ),),
                                             );
@@ -356,19 +358,12 @@ class _ResourceListTileState extends State<ResourceListTile> {
 
   Future<void> _displayReportDialogVisitor(
       BuildContext context, Resource resource) async {
-    final textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 13, 20, md: 16);
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             backgroundColor: AppColors.primary050,
-            title: Text('Denunciar recurso',
-                style: textTheme.titleLarge?.copyWith(
-                  color: AppColors.turquoiseBlue,
-                  fontSize: fontSize,
-                  height: 1.5,
-                )),
+            title: CustomTextMediumBold(text: 'Denunciar recurso'),
             content: _buildForm(context, resource),
           );
         });
@@ -563,42 +558,42 @@ class _ResourceListTileState extends State<ResourceListTile> {
   Future<void> _displayReportDialog(BuildContext context, Resource resource) async {
     final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 13, 20, md: 16);
+    double fontSize = responsiveSize(context, 15, 16, md: 15);
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             backgroundColor: AppColors.primary050,
-            title: Text('Denunciar recurso',
-                style: textTheme.titleLarge?.copyWith(
+            title: CustomTextMediumBold(text: 'Denunciar recurso'),
+            content: Container(
+              width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width :
+              MediaQuery.of(context).size.width * 0.5,
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    valueText = value;
+                  });
+                },
+                controller: _textFieldController,
+                decoration: InputDecoration(
+                    hintText: "Escribe la queja",
+                    hintStyle: textTheme.bodySmall?.copyWith(
+                      color: AppColors.greyDark,
+                      height: 1.5,
+                      fontSize: fontSize,
+                      fontWeight: FontWeight.w400,
+                    ),
+                ),
+                style: textTheme.bodySmall?.copyWith(
+                  height: 1.5,
                   color: AppColors.turquoiseBlue,
                   fontSize: fontSize,
-                  height: 1.5,
-                )),
-            content: TextField(
-              onChanged: (value) {
-                setState(() {
-                  valueText = value;
-                });
-              },
-              controller: _textFieldController,
-              decoration: InputDecoration(
-                  hintText: "Escribe la queja",
-                  labelStyle: textTheme.bodySmall?.copyWith(
-                    color: AppColors.turquoiseBlue,
-                    height: 1.5,
-                    fontWeight: FontWeight.w400,
-                    fontSize: fontSize,
-                  )
+                  fontWeight: FontWeight.w400,),
+                minLines: 4,
+                maxLines: 4,
+                textCapitalization: TextCapitalization.sentences,
+                keyboardType: TextInputType.multiline,
               ),
-              style: textTheme.bodySmall?.copyWith(
-                height: 1.5,
-                color: AppColors.turquoiseBlue,
-                fontWeight: FontWeight.w400,),
-              minLines: 4,
-              maxLines: 4,
-              textCapitalization: TextCapitalization.sentences,
-              keyboardType: TextInputType.multiline,
             ),
             actions: <Widget>[
               TextButton(

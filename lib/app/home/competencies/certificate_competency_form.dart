@@ -37,7 +37,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
   bool? _isSelected = false;
   bool? _isSelectedData = false;
   bool? _buttonDisabled = false;
-  Color _selectedColor = AppColors.turquoiseBlue;
+  Color _selectedColor = AppColors.primary900;
   Color _textColorOpc1 = AppColors.greyDark;
   Color _textColorOpc2 = AppColors.greyDark;
   Color _textColorOne = AppColors.greyDark;
@@ -235,7 +235,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                 label: CustomTextChip(text: StringConst.COMPETENCY_CONTACT_YES, color: _textColorOne),
                 labelPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
                 selected: _selectedApprove == 0,
-                selectedColor: AppColors.turquoiseBlue,
+                selectedColor: AppColors.primary900,
                 onSelected: (bool selected) {
                   _selectApproval(0);
                   _textColorOne = AppColors.white;
@@ -248,7 +248,7 @@ class _CertificateCompetencyFormState extends State<CertificateCompetencyForm> {
                 label: CustomTextChip(text: StringConst.COMPETENCY_CONTACT_NO, color: _textColorTwo),
                 labelPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
                 selected: _selectedApprove == 1,
-                selectedColor: AppColors.turquoiseBlue,
+                selectedColor: AppColors.primary900,
                 onSelected: (bool selected) {
                   _selectApproval(1);
                   _textColorOne = AppColors.greyDark;

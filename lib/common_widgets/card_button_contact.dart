@@ -41,7 +41,7 @@ class CardButtonContact extends StatelessWidget {
               children: [
                 icon,
                 SpaceW4(),
-                CustomText(title: title, color: AppColors.turquoiseBlue)
+                CustomText(title: title, color: AppColors.primary900)
               ],
             ),
           ],

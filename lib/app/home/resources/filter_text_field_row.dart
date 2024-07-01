@@ -97,7 +97,7 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
                       decoration: InputDecoration(
                         hintText: widget.hintText,
                         hintStyle:  textTheme.bodySmall?.copyWith(
-                          color: AppColors.turquoiseBlue,
+                          color: AppColors.primary900,
                           height: 1.5,
                           fontWeight: FontWeight.w500,
                           fontSize: fontSize,
@@ -107,7 +107,7 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
                       controller: widget.searchTextController,
                       keyboardType: TextInputType.text,
                       style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.turquoiseBlue,
+                        color: AppColors.primary900,
                         height: 1.5,
                         fontWeight: FontWeight.w500,
                         fontSize: fontSize,
@@ -117,13 +117,13 @@ class _FilterTextFieldRowState extends State<FilterTextFieldRow> {
                 if (_isClearTextVisible)
                   IconButton(
                     padding: Responsive.isDesktop(context) ? EdgeInsets.only(top: 10, right: 10) : EdgeInsets.only(bottom: 2),
-                    icon: Icon(Icons.clear, color: AppColors.turquoiseBlue),
+                    icon: Icon(Icons.clear, color: AppColors.primary900),
                     onPressed: widget.clearFilter,
                   ),
                 if (!_isClearTextVisible)
                 IconButton(
                   padding: Responsive.isDesktop(context) ? EdgeInsets.only(top: 10, right: 10) : EdgeInsets.only(bottom: 2),
-                  icon: Icon(Icons.search, color: AppColors.turquoiseBlue),
+                  icon: Icon(Icons.search, color: AppColors.primary900),
                   onPressed: widget.onPressed,
                 ),
               ]),

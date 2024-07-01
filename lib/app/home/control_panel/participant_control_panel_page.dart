@@ -222,7 +222,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
               width: double.infinity,
               margin: const EdgeInsets.only(top: 25.0, bottom: 30.0),
               decoration: BoxDecoration(
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(15.0),
               ),

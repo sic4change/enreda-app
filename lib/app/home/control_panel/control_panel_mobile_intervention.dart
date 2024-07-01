@@ -36,7 +36,7 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CustomTextBoldTitle(title: StringConst.CONTROL_PANEL, color: AppColors.turquoiseBlue,),
+            CustomTextBoldTitle(title: StringConst.CONTROL_PANEL, color: AppColors.primary900,),
             InkWell(
               onTap: () {
                 setState(() {
@@ -135,9 +135,9 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                 margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                 padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
                 decoration: BoxDecoration(
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   shape: BoxShape.rectangle,
-                  border: Border.all(color: AppColors.turquoiseBlue.withOpacity(0.3), width: 1),
+                  border: Border.all(color: AppColors.primary900.withOpacity(0.3), width: 1),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Row(
@@ -177,9 +177,9 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                 margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                 padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
                 decoration: BoxDecoration(
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   shape: BoxShape.rectangle,
-                  border: Border.all(color: AppColors.turquoiseBlue.withOpacity(0.3), width: 1),
+                  border: Border.all(color: AppColors.primary900.withOpacity(0.3), width: 1),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Row(
@@ -231,7 +231,7 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                             decoration: BoxDecoration(
                               color: AppColors.white,
                               shape: BoxShape.rectangle,
-                              border: Border.all(color: AppColors.turquoiseBlue.withOpacity(0.3), width: 1),
+                              border: Border.all(color: AppColors.primary900.withOpacity(0.3), width: 1),
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             child: GamificationItem(
@@ -246,7 +246,7 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                             decoration: BoxDecoration(
                               color: AppColors.white,
                               shape: BoxShape.rectangle,
-                              border: Border.all(color: AppColors.turquoiseBlue.withOpacity(0.3), width: 1),
+                              border: Border.all(color: AppColors.primary900.withOpacity(0.3), width: 1),
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             child: GamificationItem(
@@ -262,7 +262,7 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                             decoration: BoxDecoration(
                               color: AppColors.white,
                               shape: BoxShape.rectangle,
-                              border: Border.all(color: AppColors.turquoiseBlue.withOpacity(0.3), width: 1),
+                              border: Border.all(color: AppColors.primary900.withOpacity(0.3), width: 1),
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             child: StreamBuilder<List<Competency>>(
@@ -290,7 +290,7 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                             decoration: BoxDecoration(
                               color: AppColors.white,
                               shape: BoxShape.rectangle,
-                              border: Border.all(color: AppColors.turquoiseBlue.withOpacity(0.3), width: 1),
+                              border: Border.all(color: AppColors.primary900.withOpacity(0.3), width: 1),
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             child: GamificationItem(
@@ -306,7 +306,7 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                             decoration: BoxDecoration(
                               color: AppColors.white,
                               shape: BoxShape.rectangle,
-                              border: Border.all(color: AppColors.turquoiseBlue.withOpacity(0.3), width: 1),
+                              border: Border.all(color: AppColors.primary900.withOpacity(0.3), width: 1),
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                             child: GamificationItem(

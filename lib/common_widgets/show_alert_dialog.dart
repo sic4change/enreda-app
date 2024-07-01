@@ -32,7 +32,7 @@ Future showAlertDialog(
           children: [
             Text(title,
                 style: textTheme.titleLarge?.copyWith(
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   fontSize: fontSize,
                   height: 1.5,
                 )),
@@ -40,7 +40,7 @@ Future showAlertDialog(
         ),
         content: Text(content,
             style: textTheme.headlineLarge?.copyWith(
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
                 height: 1.5,
                 fontSize: fontSizeSubTitle)),
         actions: <Widget>[
@@ -92,13 +92,13 @@ Future showAlertDialog(
       builder: (context) => AlertDialog(
         title: Text(title,
             style: textTheme.titleLarge?.copyWith(
-              color: AppColors.turquoiseBlue,
+              color: AppColors.primary900,
               fontSize: fontSize,
               height: 1.5,
             )),
         content: Text(content,
             style: textTheme.headlineLarge?.copyWith(
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
                 height: 1.5,
                 fontSize: fontSizeSubTitle)),
         actions: <Widget>[

@@ -57,7 +57,7 @@ class _CupertinoScaffoldAnonymousState extends State<CupertinoScaffoldAnonymous>
       appBar: AppBar(
       toolbarHeight: 70,
       elevation: 0.4,
-      shadowColor: AppColors.bluePetrol,
+      shadowColor: AppColors.primary900,
       backgroundColor: AppColors.white,
       title: Padding(
         padding: const EdgeInsets.only(left: 10),

@@ -262,7 +262,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 style: textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-                    color: AppColors.turquoiseBlue),
+                    color: AppColors.primary900),
               ),
               SpaceH30(),
               _buildMyEducation(context, user),
@@ -417,7 +417,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                         style: textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
-                            color: AppColors.turquoiseBlue),
+                            color: AppColors.primary900),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -457,7 +457,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SpaceH24(),
-                  CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase(), color: AppColors.turquoiseBlue),
+                  CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase(), color: AppColors.primary900),
                   Row(
                     children: [
                       Icon(
@@ -523,7 +523,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 style: textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: Responsive.isDesktopS(context) ? 30.0 : 40.0,
-                    color: AppColors.turquoiseBlue),
+                    color: AppColors.primary900),
               ),
             ),
             Spacer(),
@@ -688,7 +688,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                         child: Icon(
                           Icons.mode_edit_outlined,
                           size: 22,
-                          color: AppColors.turquoiseBlue,
+                          color: AppColors.primary900,
                         ),
                       ),
                     ),
@@ -802,7 +802,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           AndroidUiSettings(
               toolbarTitle: 'Recortar imagen',
               toolbarColor: AppColors.white,
-              toolbarWidgetColor: AppColors.turquoiseBlue,
+              toolbarWidgetColor: AppColors.primary900,
               activeControlsWidgetColor: AppColors.primaryColor,
               initAspectRatio: CropAspectRatioPreset.original,
               hideBottomControls: false,
@@ -951,7 +951,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase(), color: AppColors.turquoiseBlue,),
+        CustomTextTitle(title: StringConst.PERSONAL_DATA.toUpperCase(), color: AppColors.primary900,),
         Row(
           children: [
             Icon(
@@ -1075,7 +1075,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.rectangle,
-                border: Border.all(color: AppColors.turquoiseBlue, width: 1),
+                border: Border.all(color: AppColors.primary900, width: 1),
                 borderRadius: BorderRadius.circular(20.0),
               ),
             child: Column(
@@ -1117,7 +1117,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                           },
                           child: Icon(
                             Icons.arrow_back_ios_new,
-                            color: AppColors.turquoiseBlue,
+                            color: AppColors.primary900,
                           ),
                         ),
                       ),
@@ -1171,7 +1171,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                           },
                           child: Icon(
                             Icons.arrow_forward_ios,
-                            color: AppColors.turquoiseBlue,
+                            color: AppColors.primary900,
                           ),
                         ),
                       ),
@@ -1255,7 +1255,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CustomTextTitle(title: StringConst.EDUCATION.toUpperCase(), color: AppColors.turquoiseBlue,),
+            CustomTextTitle(title: StringConst.EDUCATION.toUpperCase(), color: AppColors.primary900,),
             SpaceW8(),
             _addButton(() {
               showDialog(
@@ -1322,7 +1322,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
       children: [
         Row(
           children: [
-            CustomTextTitle(title: StringConst.SECONDARY_EDUCATION.toUpperCase(), color: AppColors.turquoiseBlue,),
+            CustomTextTitle(title: StringConst.SECONDARY_EDUCATION.toUpperCase(), color: AppColors.primary900,),
             SpaceW8(),
             _addButton(() {
               showDialog(
@@ -1526,7 +1526,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
       children: [
         Row(
           children: [
-            CustomTextTitle(title: StringConst.MY_EXPERIENCES.toUpperCase(), color: AppColors.turquoiseBlue,),
+            CustomTextTitle(title: StringConst.MY_EXPERIENCES.toUpperCase(), color: AppColors.primary900,),
             SpaceW8(),
             _addButton(() {
               showDialog(
@@ -2064,8 +2064,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             size: iconSize,
             filledIconData: Icons.circle,
             defaultIconData: Icons.circle_outlined,
-            color: AppColors.turquoiseBlue,
-            borderColor: AppColors.turquoiseBlue,
+            color: AppColors.primary900,
+            borderColor: AppColors.primary900,
             spacing: 5.0
         )
       ],
@@ -2096,8 +2096,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             size: iconSize,
             filledIconData: Icons.circle,
             defaultIconData: Icons.circle_outlined,
-            color: AppColors.turquoiseBlue,
-            borderColor: AppColors.turquoiseBlue,
+            color: AppColors.primary900,
+            borderColor: AppColors.primary900,
             spacing: 5.0
         )
       ],

@@ -57,7 +57,7 @@ class GamificationItem extends StatelessWidget {
                   Text(
                     progressText!,
                     style: textTheme.titleLarge?.copyWith(
-                      color: AppColors.turquoiseBlue,
+                      color: AppColors.primary900,
                       fontSize: !Responsive.isDesktop(context) ? textTheme.titleLarge!.fontSize!/1.8 : textTheme.titleLarge!.fontSize!,
                     ),
                   ),
@@ -73,7 +73,7 @@ class GamificationItem extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style: textTheme.bodySmall?.copyWith(
-              color: AppColors.turquoiseBlue,
+              color: AppColors.primary900,
               fontSize: !Responsive.isDesktop(context)? textTheme.bodySmall!.fontSize!/1.2:textTheme.bodySmall!.fontSize!,
             ),
           ),

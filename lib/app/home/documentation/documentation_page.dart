@@ -154,7 +154,7 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
                         children: [
                           Icon(
                             Icons.add_circle_outlined,
-                            color: AppColors.turquoiseBlue,
+                            color: AppColors.primary900,
                             size: 24,
                           ),
                           Padding(
@@ -190,7 +190,7 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
                   children: [
                     Icon(
                       Icons.add_circle_outlined,
-                      color: AppColors.turquoiseBlue,
+                      color: AppColors.primary900,
                       size: 24,
                     ),
                     Padding(

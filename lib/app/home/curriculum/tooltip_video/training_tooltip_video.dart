@@ -84,7 +84,7 @@ class _TrainingTooltipVideoState extends State<TrainingTooltipVideo> {
                   },
                   icon: Icon(
                     Icons.play_circle_fill_outlined,
-                    color: AppColors.bluePetrol.withOpacity(0.5), size: 60,),),
+                    color: AppColors.primary900.withOpacity(0.5), size: 60,),),
               )
             ]
         ),
@@ -92,7 +92,7 @@ class _TrainingTooltipVideoState extends State<TrainingTooltipVideo> {
           controller: _controller,
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.bluePetrol,
+              color: AppColors.primary900,
             ),
             child: Column(
               children: [

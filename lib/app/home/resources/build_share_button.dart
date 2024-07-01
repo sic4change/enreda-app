@@ -111,7 +111,7 @@ Widget buildShare(BuildContext context, Resource resource, Color color, Color ic
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25.0),
-        color: AppColors.turquoiseBlue.withOpacity(0.8),
+        color: AppColors.primary900.withOpacity(0.8),
       ),
       child: const Text(
         "Enlace copiado en el portapapeles",
@@ -152,12 +152,12 @@ Widget buildShare(BuildContext context, Resource resource, Color color, Color ic
             children: [
               const Icon(
                 Icons.copy,
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
               ),
               SpaceW16(),
               Text('Copiar enlace',
                   style: TextStyle(
-                    color: AppColors.turquoiseBlue,
+                    color: AppColors.primary900,
                     fontSize: widthOfScreen(context) >= 1024 ? 16 : 14,
                   )),
             ],
@@ -169,12 +169,12 @@ Widget buildShare(BuildContext context, Resource resource, Color color, Color ic
             children: [
               const Icon(
                 Icons.share_outlined,
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
               ),
               SpaceW16(),
               Text('Compartir',
                 style: textTheme.bodySmall?.copyWith(
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
                   fontSize: fontSize,

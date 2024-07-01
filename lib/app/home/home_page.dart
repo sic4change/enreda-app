@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
             duration: Duration(seconds: 1),
             child: FloatingActionButton(
               foregroundColor: Constants.white,
-              backgroundColor: AppColors.turquoiseBlue,
+              backgroundColor: AppColors.primary900,
               child: Image.asset(ImagePath.CHAT_ICON),
               onPressed: () {
                 showChatNotifier.value = !showChatNotifier.value; // Optimizado sin setState

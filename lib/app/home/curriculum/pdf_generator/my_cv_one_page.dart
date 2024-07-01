@@ -164,16 +164,16 @@ class MyAppState extends State<MyCvOnePage> with SingleTickerProviderStateMixin 
       appBar: AppBar(
         backgroundColor: AppColors.primary100,
         foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: AppColors.turquoiseBlue,),
+        iconTheme: const IconThemeData(color: AppColors.primary900,),
         title: const Text('Mi Currículum'),
         titleTextStyle: textTheme.bodyLarge?.copyWith(
             fontWeight: FontWeight.bold,
-            color: AppColors.turquoiseBlue,
+            color: AppColors.primary900,
             fontSize: 22.0),
         bottom: TabBar(
           controller: _tabController,
           tabs: examplesOnePage.map<Tab>((e) => Tab(text: e.name)).toList(),
-          labelColor: AppColors.bluePetrol,
+          labelColor: AppColors.primary900,
           labelStyle: TextStyle(fontSize: 20),
           isScrollable: true,
         ),

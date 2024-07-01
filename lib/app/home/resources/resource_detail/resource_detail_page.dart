@@ -424,7 +424,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
             StringConst.FORM_DESCRIPTION.toUpperCase(),
             style: textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w600,
-              color: AppColors.turquoiseBlue,
+              color: AppColors.primary900,
             ),
           ),
           const SizedBox(height: 10,),
@@ -455,7 +455,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
           StringConst.FORM_INTERESTS.toUpperCase(),
           style: textTheme.bodySmall?.copyWith(
             fontWeight: FontWeight.w600,
-            color: AppColors.turquoiseBlue,
+            color: AppColors.primary900,
           ),
         ),
         const SizedBox(height: 10,),
@@ -468,7 +468,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
           StringConst.COMPETENCIES.toUpperCase(),
           style: textTheme.bodySmall?.copyWith(
             fontWeight: FontWeight.w600,
-            color: AppColors.turquoiseBlue,
+            color: AppColors.primary900,
           ),
         ),
         const SizedBox(height: 10,),
@@ -481,7 +481,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
           StringConst.AVAILABLE.toUpperCase(),
           style: textTheme.bodySmall?.copyWith(
             fontWeight: FontWeight.w600,
-            color: AppColors.turquoiseBlue,
+            color: AppColors.primary900,
           ),
         ),
         Container(
@@ -705,7 +705,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
             backgroundColor: AppColors.primary050,
             title: Text('Denunciar recurso',
                 style: textTheme.titleLarge?.copyWith(
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   fontSize: fontSize,
                   height: 1.5,
                 )),
@@ -744,7 +744,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               decoration: InputDecoration(
                 labelText: 'Nombre',
                 labelStyle: textTheme.bodySmall?.copyWith(
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
                   fontSize: fontSize,
@@ -758,7 +758,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               keyboardType: TextInputType.name,
               style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
                 fontWeight: FontWeight.w400,
                 fontSize: fontSize,
               ),
@@ -767,7 +767,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               decoration: InputDecoration(
                 labelText: 'Email',
                 labelStyle: textTheme.bodySmall?.copyWith(
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
                   fontSize: fontSize,
@@ -779,7 +779,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               keyboardType: TextInputType.emailAddress,
               style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
                 fontWeight: FontWeight.w400,
                 fontSize: fontSize,
               ),
@@ -788,7 +788,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               decoration: InputDecoration(
                 labelText: 'Descripción de la denuncia',
                 labelStyle: textTheme.bodySmall?.copyWith(
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
                   fontSize: fontSize,
@@ -804,7 +804,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               keyboardType: TextInputType.multiline,
               style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
                 fontWeight: FontWeight.w400,
                 fontSize: fontSize,
               ),
@@ -911,7 +911,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
             backgroundColor: AppColors.primary050,
             title: Text('Denunciar recurso',
                 style: textTheme.titleLarge?.copyWith(
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   fontSize: fontSize,
                   height: 1.5,
                 )),
@@ -925,7 +925,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               decoration: InputDecoration(
                 hintText: "Escribe la queja",
                 labelStyle: textTheme.bodySmall?.copyWith(
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
                   fontSize: fontSize,
@@ -933,7 +933,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               ),
               style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
                 fontWeight: FontWeight.w400,),
               minLines: 4,
               maxLines: 4,

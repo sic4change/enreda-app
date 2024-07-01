@@ -30,11 +30,11 @@ class _GamificationCertificateState extends State<GamificationCertificate> {
           appBar: AppBar(
             backgroundColor: AppColors.primary100,
             foregroundColor: Colors.white,
-            iconTheme: const IconThemeData(color: AppColors.turquoiseBlue,),
+            iconTheme: const IconThemeData(color: AppColors.primary900,),
             title: const Text('Mi certificado'),
             titleTextStyle: textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
                 fontSize: 22.0),
           ),
           body: PdfPreview(

@@ -63,7 +63,7 @@ class _ControlPanelPageState extends State<ControlPanelPage> {
                                     style: textTheme.displaySmall?.copyWith(
                                         fontWeight: FontWeight.bold,
                                         fontSize: Responsive.isMobile(context) ? 30 : 42.0,
-                                        color: AppColors.turquoiseBlue),),
+                                        color: AppColors.primary900),),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 4.0),

@@ -91,7 +91,7 @@ class _WebHomeState extends State<WebHome> {
                         child: Text(_userName,
                             style: textTheme.bodyLarge?.copyWith(
                               fontWeight: FontWeight.w900,
-                              color: AppColors.bluePetrol,
+                              color: AppColors.primary900,
                               fontSize: 16.0,)
                         ),
                       ),
@@ -263,7 +263,7 @@ class _WebHomeState extends State<WebHome> {
                 !isSmallScreen ? IconButton(
                   icon: const Icon(
                     CustomIcons.cuenta,
-                    color: AppColors.bluePetrol,
+                    color: AppColors.primary900,
                     size: 30,
                   ),
                   tooltip: 'Cuenta',
@@ -469,7 +469,7 @@ class _WebHomeState extends State<WebHome> {
                 SizedBox(width: 20),
                 !isSmallScreen ? EnredaButton(
                   buttonTitle: StringConst.ACCESS.toUpperCase(),
-                  buttonColor: AppColors.turquoiseBlue,
+                  buttonColor: AppColors.primary900,
                   onPressed: () {
                     setState(() {
                       WebHome.selectedIndex.value = 0;

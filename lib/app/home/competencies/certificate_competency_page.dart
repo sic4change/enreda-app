@@ -67,7 +67,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
           StringConst.COMPETENCY_CERTIFICATION_TITLE,
           textAlign: TextAlign.left,
           style: textTheme.bodySmall?.copyWith(
-            color: AppColors.turquoiseBlue,
+            color: AppColors.primary900,
             height: 1.5,
             letterSpacing: 0.3,
             fontWeight: FontWeight.w800,
@@ -77,7 +77,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
         backgroundColor: AppColors.primaryColor,
         elevation: 0.0,
         iconTheme: IconThemeData(
-          color: AppColors.turquoiseBlue,
+          color: AppColors.primary900,
         ),
       ),
       body: _buildContent(context, widget.competency)
@@ -114,7 +114,7 @@ class _CompetencyDetailPageState extends State<CompetencyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SpaceH12(),
-                  CustomTextChip(text: competency.name.toUpperCase(), color: AppColors.turquoiseBlue,),
+                  CustomTextChip(text: competency.name.toUpperCase(), color: AppColors.primary900,),
                   SpaceH12(),
                   CustomTextMedium(text: StringConst.COMPETENCY_INFORMATION),
                   _buildForm(context),

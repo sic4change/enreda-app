@@ -31,7 +31,7 @@ class _OnboardingCarruselState extends State<OnboardingCarrusel> {
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
             colors: [
-              AppColors.turquoiseBlue.withOpacity(0.9844),
+              AppColors.primary900.withOpacity(0.9844),
               AppColors.blueDarker.withOpacity(0.5104),
             ],
           )

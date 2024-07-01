@@ -43,7 +43,7 @@ class _ChatPillVideoState extends State<ChatPillVideo> {
           child: EnredaButton(
               height: 45.0,
               buttonTitle: "Ver vídeo",
-              buttonColor: AppColors.turquoiseBlue,
+              buttonColor: AppColors.primary900,
               borderRadius: const BorderRadius.all(Radius.circular(Sizes.RADIUS_18),),
               titleStyle: textTheme.bodySmall?.copyWith(
                   color: Colors.white,

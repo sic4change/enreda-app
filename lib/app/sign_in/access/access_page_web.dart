@@ -48,7 +48,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
             height: heightSize * 0.80,
             width: widthSize * 0.70,
             child: Card(
-              color: AppColors.turquoiseBlue,
+              color: AppColors.primary900,
               elevation: 5,
               child: Row(
                 children: [
@@ -200,7 +200,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
             height: heightSize * 0.80,
             width: widthSize * 0.85,
             child: Card(
-              color: AppColors.turquoiseBlue,
+              color: AppColors.primary900,
               elevation: 5,
               child: Row(
                 children: [

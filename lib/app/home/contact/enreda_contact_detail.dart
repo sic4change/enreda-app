@@ -40,7 +40,7 @@ class ContactDetail extends StatelessWidget {
               width: double.infinity,
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(Sizes.kDefaultPaddingDouble), // Adjust the radius as needed
                   bottomRight: Radius.circular(Sizes.kDefaultPaddingDouble), // Adjust the radius as needed

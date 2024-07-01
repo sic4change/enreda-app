@@ -363,7 +363,7 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
             style: TextStyle(
               fontFamily: GoogleFonts.outfit().fontFamily,
                 fontWeight: FontWeight.w300,
-                color: AppColors.bluePetrol,
+                color: AppColors.primary900,
                 fontSize: 24.0),
           ),
           SpaceH20(),
@@ -578,7 +578,7 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 StringConst.ACCOUNT_PARAMETERS,
-                style: textTheme.bodyLarge?.copyWith(color: AppColors.turquoiseBlue),
+                style: textTheme.bodyLarge?.copyWith(color: AppColors.primary900),
               ),
             ),
             _buildMyProfileRow(
@@ -684,7 +684,7 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
                 ),
                 style: textTheme.bodySmall?.copyWith(
                   height: 1.5,
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   fontSize: fontSize,
                   fontWeight: FontWeight.w400,),
                 minLines: 4,

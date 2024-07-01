@@ -1,6 +1,4 @@
-import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
-import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/app/home/trainingPills/pages/training_pills_actions.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/utils/adaptive.dart';
@@ -11,7 +9,6 @@ import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 Widget buildShareTrainingPill(BuildContext context, TrainingPill trainingPill, Color color) {
   _showToast() {
@@ -67,7 +64,7 @@ Widget buildShareTrainingPill(BuildContext context, TrainingPill trainingPill, C
               SpaceW16(),
               Text('Copiar enlace',
                   style: textTheme.bodySmall?.copyWith(
-                    color: AppColors.bluePetrol,
+                    color: AppColors.primary900,
                     height: 1.5,
                     fontWeight: FontWeight.w400,
                     fontSize: fontSize,
@@ -82,12 +79,12 @@ Widget buildShareTrainingPill(BuildContext context, TrainingPill trainingPill, C
             children: [
               Icon(
                 Icons.share_outlined,
-                color: AppColors.bluePetrol,
+                color: AppColors.primary900,
               ),
               SpaceW16(),
               Text('Compartir',
                 style: textTheme.bodySmall?.copyWith(
-                  color: AppColors.bluePetrol,
+                  color: AppColors.primary900,
                   height: 1.5,
                   fontWeight: FontWeight.w400,
                   fontSize: fontSize,

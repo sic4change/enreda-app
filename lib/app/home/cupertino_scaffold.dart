@@ -7,7 +7,6 @@ import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/home/assistant/assistant_page_mobile.dart';
 import 'package:enreda_app/app/home/competencies/competencies_page.dart';
 import 'package:enreda_app/app/home/tab_item.dart';
-import 'package:enreda_app/app/home/trainingPills/training_list_tile_mobile.dart';
 import 'package:enreda_app/common_widgets/background_mobile.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -144,7 +143,7 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
       appBar: AppBar(
         toolbarHeight: 70,
         elevation: 0.4,
-        shadowColor: AppColors.bluePetrol,
+        shadowColor: AppColors.primary900,
         backgroundColor: AppColors.white,
         title: Transform(
           transform:  Matrix4.translationValues(10.0, 0.0, 0.0),

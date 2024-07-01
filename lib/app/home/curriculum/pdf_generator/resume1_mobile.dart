@@ -21,13 +21,11 @@ const PdfColor lilac = PdfColor.fromInt(0xF8A6A83);
 const PdfColor lightLilac = PdfColor.fromInt(0xFFF4F5FB);
 const PdfColor blue = PdfColor.fromInt(0xFF002185);
 const PdfColor grey = PdfColor.fromInt(0xFF535A5F);
-const PdfColor greyDark = PdfColor.fromInt(0xFF44494B);
+const PdfColor greyDark = PdfColor.fromInt(0xFFD6DAFB);
+const PdfColor primary900 = PdfColor.fromInt(0xFF054D5E);
+const PdfColor white = PdfColors.white;
 const PdfColor black = PdfColor.fromInt(0xF44494B);
-const PdfColor white = PdfColor.fromInt(0xFFFFFFFF);
-const PdfColor greyLight = PdfColor.fromInt(0xFFADADAD);
-const PdfColor bluePetrol = PdfColor.fromInt(0xFF054D5E);
-const PdfColor greyTitle = PdfColor.fromInt(0xFF545454);
-const PdfColor leftPanel = PdfColor.fromInt(0xFFD6DAFB);
+const PdfColor greyLight = PdfColor.fromInt(0xFFC6C6C6);
 const leftWidth = 200.0;
 const rightWidth = 350.0;
 
@@ -58,9 +56,7 @@ Future<Uint8List> generateResume1(
     ) async {
   final doc = pw.Document(title: 'Mi Currículum');
 
-  var fontPoppins = await PdfGoogleFonts.poppinsRegular();
-  var fontPoppinsBold = await PdfGoogleFonts.poppinsExtraBold();
-
+  var fontPoppins = await PdfGoogleFonts.poppinsExtraBold();
   var url = user?.profilePic?.src ?? "";
 
   final profileImage = url == ""
@@ -92,173 +88,177 @@ Future<Uint8List> generateResume1(
           children: [
             pw.Partition(
               width: leftWidth,
-              child: pw.Container(
-                height: pageTheme.pageFormat.availableHeight,
-                child: pw.Padding(
-                  padding: const pw.EdgeInsets.symmetric(horizontal: 30.0),
-                  child: pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: <pw.Widget>[
-                      pw.Column(
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        children: <pw.Widget>[
-                          pw.SizedBox(height: 10),
-                          pw.Text('${user?.firstName}',
-                              textScaleFactor: 1,
-                              style: pw.TextStyle(
-                                  font: fontPoppinsBold,
-                                  fontWeight: pw.FontWeight.bold,
-                                  fontSize: 28,
-                                  color: bluePetrol)),
-                          pw.SizedBox(height: 2),
-                          pw.Text('${user?.lastName}',
-                              textScaleFactor: 1,
-                              style: pw.TextStyle(
-                                  font: fontPoppins,
-                                  fontWeight: pw.FontWeight.bold,
-                                  fontSize: 22,
-                                  color: bluePetrol)),
-                          pw.SizedBox(height: 140),
-                          myCustomEmail != "" ?
-                          _Category(title: StringConst.PERSONAL_DATA, color: white, fontPoppins: fontPoppins) : pw.Container(),
-                          myCustomEmail != "" ?
-                          pw.Row(
-                            children: [
-                              pw.Container(
-                                width: 20,
-                                height: 20,
-                                decoration: pw.BoxDecoration(
-                                  shape: pw.BoxShape.circle,
-                                  color: bluePetrol,
-                                ),
-                                child: pw.Center(
-                                  child: pw.Icon(pw.IconData(0xe0be), size: 10.0, color: white),
-                                ),
-                              ),
-                              pw.SizedBox(width: 4),
-                              _UrlText(myCustomEmail, 'mailto: $myCustomEmail')
-                            ],
-                          ) : pw.Container(),
-                          pw.SizedBox(height: 6),
-                          myCustomPhone != "" ?
-                          pw.Row(
-                              children: [
-                                pw.Container(
-                                  width: 20,
-                                  height: 20,
-                                  decoration: pw.BoxDecoration(
-                                    shape: pw.BoxShape.circle,
-                                    color: bluePetrol,
-                                  ),
-                                  child: pw.Center(
-                                    child: pw.Icon(pw.IconData(0xe0b0), size: 10.0, color: white),
-                                  ),
-                                ),
-                                pw.SizedBox(width: 6),
-                                pw.Text(myCustomPhone,
-                                    textScaleFactor: 0.8,
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                mainAxisAlignment: pw.MainAxisAlignment.start,
+                children: <pw.Widget>[
+                  pw.Container(
+                    height: pageTheme.pageFormat.availableHeight,
+                    child: pw.Padding(
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 30.0),
+                      child: pw.Center(
+                        child: pw.Column(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: <pw.Widget>[
+                            pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: <pw.Widget>[
+                                pw.Text('${user?.firstName}',
+                                    textScaleFactor: 1.5,
                                     style: pw.TextStyle(
                                         font: fontPoppins,
-                                        fontWeight: pw.FontWeight.normal,
-                                        fontSize: 12,
-                                        color: greyTitle)),
-                              ]
-                          ) : pw.Container(),
-                          pw.SizedBox(height: 6),
-                          city != "" || province != "" || country != "" ?
-                          pw.Row(
-                              children: [
+                                        fontWeight: pw.FontWeight.bold,
+                                        fontSize: 18,
+                                        color: primary900)),
+                                pw.Text('${user?.lastName}',
+                                    textScaleFactor: 1.3,
+                                    style: pw.Theme.of(context)
+                                        .defaultTextStyle
+                                        .copyWith(fontWeight: pw.FontWeight.bold, color: primary900)),
+                                pw.SizedBox(height: 120),
+                                myCustomEmail != "" ?
+                                _Category(title: StringConst.PERSONAL_DATA, color: primary900) : pw.Container(),
+                                myCustomEmail != "" ?
                                 pw.Row(
-                                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                  mainAxisAlignment: pw.MainAxisAlignment.start,
+                                  children: [
+                                    pw.Container(
+                                      alignment: pw.Alignment.center,
+                                      width: 15,
+                                      height: 15,
+                                      padding: const pw.EdgeInsets.all(2.0),
+                                      decoration: pw.BoxDecoration(
+                                        color: primary900,
+                                        shape: pw.BoxShape.circle,
+                                      ),
+                                      child: pw.Icon(pw.IconData(0xe0be), size: 8.0, color: white),
+                                    ),
+                                    pw.SizedBox(width: 4),
+                                    _UrlText(myCustomEmail, 'mailto: $myCustomEmail')
+                                  ],
+                                ) : pw.Container(),
+                                pw.SizedBox(height: 5),
+                                myCustomPhone != "" ?
+                                pw.Row(
                                     mainAxisAlignment: pw.MainAxisAlignment.start,
                                     children: [
                                       pw.Container(
-                                        width: 20,
-                                        height: 20,
+                                        alignment: pw.Alignment.center,
+                                        width: 15,
+                                        height: 15,
+                                        padding: const pw.EdgeInsets.all(2.0),
                                         decoration: pw.BoxDecoration(
+                                          color: primary900,
                                           shape: pw.BoxShape.circle,
-                                          color: bluePetrol,
                                         ),
-                                        child: pw.Center(
-                                          child: pw.Icon(pw.IconData(0xe8b4), size: 10.0, color: white),
-                                        ),
+                                        child: pw.Icon(pw.IconData(0xe0b0), size: 10.0, color: white),
                                       ),
-                                      pw.SizedBox(width: 5),
-                                      pw.Column(
+                                      pw.SizedBox(width: 4),
+                                      pw.Text(myCustomPhone,
+                                          textScaleFactor: 0.8,
+                                          textAlign: pw.TextAlign.start,
+                                          style: pw.Theme.of(context)
+                                              .defaultTextStyle
+                                              .copyWith(
+                                              fontWeight: pw.FontWeight.normal,
+                                              color: primary900)) ,
+                                    ]
+                                ) : pw.Container(),
+                                pw.SizedBox(height: 5),
+                                city != "" || province != "" || country != "" ?
+                                pw.Row(
+                                    mainAxisAlignment: pw.MainAxisAlignment.start,
+                                    children: [
+                                      pw.Row(
                                           crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                          mainAxisAlignment: pw.MainAxisAlignment.start,
                                           children: [
-                                            pw.Text('${city ?? ''}',
-                                                textScaleFactor: 0.8,
-                                                style: pw.TextStyle(
-                                                    font: fontPoppins,
-                                                    fontWeight: pw.FontWeight.normal,
-                                                    fontSize: 12,
-                                                    color: greyTitle)),
-                                            pw.Text('${province ?? ''}',
-                                                textScaleFactor: 0.8,
-                                                style: pw.TextStyle(
-                                                    font: fontPoppins,
-                                                    fontWeight: pw.FontWeight.normal,
-                                                    fontSize: 12,
-                                                    color: greyTitle)),
-                                            pw.Text('${country ?? ''}',
-                                                textScaleFactor: 0.8,
-                                                style: pw.TextStyle(
-                                                    font: fontPoppins,
-                                                    fontWeight: pw.FontWeight.normal,
-                                                    fontSize: 12,
-                                                    color: greyTitle)),
+                                            pw.Container(
+                                              alignment: pw.Alignment.center,
+                                              width: 15,
+                                              height: 15,
+                                              padding: const pw.EdgeInsets.all(2.0),
+                                              decoration: pw.BoxDecoration(
+                                                color: primary900,
+                                                shape: pw.BoxShape.circle,
+                                              ),
+                                              child: pw.Icon(pw.IconData(0xe8b4), size: 10.0, color: white),
+                                            ),
+                                            pw.SizedBox(width: 4),
+                                            pw.Column(
+                                                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                                children: [
+                                                  pw.Text('${city ?? ''}',
+                                                      textScaleFactor: 0.8,
+                                                      style: pw.Theme.of(context)
+                                                          .defaultTextStyle
+                                                          .copyWith(
+                                                          fontWeight: pw.FontWeight.normal,
+                                                          color: primary900)),
+                                                  pw.Text('${province ?? ''}',
+                                                      textScaleFactor: 0.8,
+                                                      style: pw.Theme.of(context)
+                                                          .defaultTextStyle
+                                                          .copyWith(
+                                                          fontWeight: pw.FontWeight.normal,
+                                                          color: primary900)),
+                                                  pw.Text('${country ?? ''}',
+                                                      textScaleFactor: 0.8,
+                                                      style: pw.Theme.of(context)
+                                                          .defaultTextStyle
+                                                          .copyWith(
+                                                          fontWeight: pw.FontWeight.normal,
+                                                          color: primary900)),
+                                                ]
+                                            )
                                           ]
-                                      )
+                                      ),
+                                      // _UrlText(
+                                      //     'wholeprices.ca', 'https://wholeprices.ca'),
+                                    ]
+                                ) : pw.Container(),
+                                pw.SizedBox(height: 10),
+                                pw.Column(
+                                    children: [
+                                      languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES, color: primary900) : pw.Container(),
+                                      for (var data in languages!)
+                                        _BlockSimpleList(
+                                          title: data.name,
+                                          color: primary900,
+                                          dotsSpeaking: data.speakingLevel,
+                                          dotsWriting: data.writingLevel,
+                                        ),
+                                      pw.SizedBox(height: 15),
                                     ]
                                 ),
-                              ]
-                          ) : pw.Container(),
-                          pw.SizedBox(height: 6),
-                          aboutMe != null && aboutMe != "" ?
-                          _BlockSimple(
-                            title: StringConst.ABOUT_ME,
-                            fontPoppins: fontPoppins,
-                            description: aboutMe,) : pw.Container(),
-                          pw.SizedBox(height: 5),
-                          myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST, color: white, fontPoppins: fontPoppins) : pw.Container(),
-                          pw.Wrap(
-                              spacing: 4,
-                              runSpacing: 4,
-                              children: <pw.Widget>[
+                                aboutMe != null && aboutMe != "" ?
+                                _BlockSimple(
+                                  title: StringConst.ABOUT_ME,
+                                  description: aboutMe,) : pw.Container(),
+                                pw.SizedBox(height: 10),
+                                myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST, color: primary900) : pw.Container(),
                                 for (var data in dataOfInterest!)
-                                  _BlockRoundedList(
-                                      title: data,
-                                      color: white,
-                                      fontPoppins: fontPoppins
+                                  _CustomChipList(
+                                    title: data,
+                                    color: primary900,
                                   ),
-                              ]
-                          ),
-                          pw.SizedBox(height: 5),
-                          languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES, color: white, fontPoppins: fontPoppins) : pw.Container(),
-                          for (var data in languages!)
-                            _BlockSimpleList(
-                                title: data.name,
-                                color: white,
-                                dotsSpeaking: data.speakingLevel,
-                                dotsWriting: data.writingLevel,
-                                fontPoppins: fontPoppins,
-                                languages: true
+                                pw.SizedBox(height: 10),
+                                myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.REFERENCES, color: primary900) : pw.Container(),
+                                for (var reference in myReferences!)
+                                  _BlockIcon(
+                                    title: '${reference.certifierName}',
+                                    description1: '${reference.certifierPosition} - ${reference.certifierCompany}',
+                                    description2: '${reference.email}',
+                                    description3: '${reference.phone}',
+                                  ),
+                              ],
                             ),
-                          pw.SizedBox(height: 10),
-                          myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.REFERENCES, color: white, fontPoppins: fontPoppins) : pw.Container(),
-                          for (var reference in myReferences!)
-                            _BlockIcon(
-                              title: '${reference.certifierName}',
-                              description1: '${reference.certifierPosition} - ${reference.certifierCompany}',
-                              description2: '${reference.email}',
-                              description3: '${reference.phone}',
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
             pw.Partition(
@@ -268,20 +268,21 @@ Future<Uint8List> generateResume1(
                 children: [
                   pw.Container(
                     height: pageTheme.pageFormat.availableHeight,
-                    padding: const pw.EdgeInsets.only(left: 50, right: 30),
+                    padding: const pw.EdgeInsets.symmetric(horizontal: 30.0),
                     child: pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       mainAxisAlignment: pw.MainAxisAlignment.start,
                       children: <pw.Widget>[
                         pw.Text(myMaxEducation.toUpperCase() ?? '',
-                            //textScaleFactor: 1,
-                            style: pw.TextStyle(
-                                font: fontPoppins,
+                            textScaleFactor: 1.2,
+                            textAlign: pw.TextAlign.start,
+                            style: pw.Theme.of(context)
+                                .defaultTextStyle
+                                .copyWith(
                                 fontWeight: pw.FontWeight.normal,
-                                fontSize: 20,
-                                color: greyTitle)),
-                        pw.SizedBox(height: 30),
-                        myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_PROFESIONAL_EXPERIENCES, color: bluePetrol, fontPoppins: fontPoppins) : pw.Container(),
+                                color: grey)),
+                        pw.SizedBox(height: 5),
+                        myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_PROFESIONAL_EXPERIENCES, color: primary900) : pw.Container(),
                         for (var experience in myExperiences!)
                           _Block(
                             title: (experience.activity != null) ? experience.activity : '',
@@ -291,21 +292,15 @@ Future<Uint8List> generateResume1(
                             descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate())
                                 : '-'} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
                             descriptionPlace: '${experience.location}',
-                            descriptionActivities:
-                            experience.professionActivitiesText != null ? experience.professionActivitiesText!
+                            descriptionActivities: experience.professionActivitiesText!
                                 .split(' / ')
                                 .where((item) => item.isNotEmpty) // Filter out empty items.
                                 .map((item) => '• $item')         // Prefix each item with a bullet point.
-                                .join('\n') :
-                            experience.professionActivities
-                                .where((item) => item.isNotEmpty) // Filter out empty items.
-                                .map((item) => '• $item')         // Prefix each item with a bullet point.
                                 .join('\n'),
-                            fontPoppins: fontPoppins,
                           ),
                         pw.SizedBox(height: 5),
 
-                        myPersonalExperiences != null && myPersonalExperiences.isNotEmpty ? _Category(title: StringConst.MY_PERSONAL_EXPERIENCES, color: lilac, fontPoppins: fontPoppins) : pw.Container(),
+                        myPersonalExperiences != null && myPersonalExperiences.isNotEmpty ? _Category(title: StringConst.MY_PERSONAL_EXPERIENCES, color: primary900) : pw.Container(),
                         for (var experience in myPersonalExperiences!)
                           _Block(
                             title: experience.subtype == 'Responsabilidades familiares' || experience.subtype == "Compromiso social" ? experience.subtype :
@@ -320,11 +315,10 @@ Future<Uint8List> generateResume1(
                             descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate())
                                 : '-'} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
                             descriptionPlace: '${experience.location}',
-                            fontPoppins: fontPoppins,
                           ),
                         pw.SizedBox(height: 5),
 
-                        myEducation!.isNotEmpty ? _Category(title: StringConst.EDUCATION, color: lilac, fontPoppins: fontPoppins) : pw.Container(),
+                        myEducation!.isNotEmpty ? _Category(title: StringConst.EDUCATION, color: primary900) : pw.Container(),
                         for (var education in myEducation)
                           _Block(
                             title: education.institution != null && education.nameFormation != null && education.nameFormation != ''
@@ -335,10 +329,9 @@ Future<Uint8List> generateResume1(
                             descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate())
                                 : '-'} / ${education.endDate != null ? formatter.format(education.endDate!.toDate()) : 'Actualmente'}',
                             descriptionPlace: '${education.location}',
-                            fontPoppins: fontPoppins,
                           ),
                         pw.SizedBox(height: 5),
-                        mySecondaryEducation!.isNotEmpty ? _Category(title: StringConst.SECONDARY_EDUCATION, color: lilac, fontPoppins: fontPoppins) : pw.Container(),
+                        mySecondaryEducation!.isNotEmpty ? _Category(title: StringConst.SECONDARY_EDUCATION, color: primary900) : pw.Container(),
                         for (var education in mySecondaryEducation)
                           _Block(
                             title: education.institution != null && education.nameFormation != null && education.nameFormation != ''
@@ -349,15 +342,13 @@ Future<Uint8List> generateResume1(
                             descriptionDate:'${education.startDate != null ? formatter.format(education.startDate!.toDate())
                                 : '-'} / ${education.endDate != null ? formatter.format(education.endDate!.toDate()) : 'Actualmente'}',
                             descriptionPlace: '${education.location}',
-                            fontPoppins: fontPoppins,
                           ),
-                        pw.SizedBox(height: 5),
-                        competenciesNames != null && competenciesNames.isNotEmpty ? _Category(title: StringConst.COMPETENCIES, color: white, fontPoppins: fontPoppins) : pw.Container(),
+                        pw.SizedBox(height: 10),
+                        competenciesNames != null && competenciesNames.isNotEmpty ? _Category(title: StringConst.COMPETENCIES, color: primary900) : pw.Container(),
                         for (var data in competenciesNames!)
-                          _BlockSimpleList(
+                          _BlockSimpleListLabel(
                               title: data,
-                              color: greyTitle,
-                              fontPoppins: fontPoppins
+                              color: primary900
                           ),
                       ],
                     ),
@@ -375,17 +366,12 @@ Future<Uint8List> generateResume1(
 
 Future<pw.PageTheme> _myPageTheme(PdfPageFormat format, bool myPhoto, profileImageWeb) async {
   final bgShape = await rootBundle.loadString('images/polygon.svg');
-  format = format.applyMargin(
-      left: 2.0 * PdfPageFormat.cm,
-      top: 2.0 * PdfPageFormat.cm,
-      right: 2.0 * PdfPageFormat.cm,
-      bottom: 2.0 * PdfPageFormat.cm);
   return pw.PageTheme(
     pageFormat: format,
     margin: pw.EdgeInsets.only(top: 50, left: 0.0, right: 20, bottom: 10),
     theme: pw.ThemeData.withFont(
-      base: await PdfGoogleFonts.latoRegular(),
-      bold: await PdfGoogleFonts.aliceRegular(),
+      base: await PdfGoogleFonts.poppinsLight(),
+      bold: await PdfGoogleFonts.poppinsMedium(),
       icons: await PdfGoogleFonts.materialIcons(),
     ),
     buildBackground: (pw.Context context) {
@@ -394,9 +380,9 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format, bool myPhoto, profileIma
         child: pw.Stack(
           children: [
             pw.Container(
-              width: 220,
+              width: 200,
               decoration: pw.BoxDecoration(
-                color: leftPanel,
+                color: greyDark,
                 shape: pw.BoxShape.rectangle,
               ),
               child: pw.Positioned(
@@ -407,25 +393,21 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format, bool myPhoto, profileIma
               ),
             ),
             pw.Positioned(
-              child: pw.Container(
-                  child: pw.SvgImage(svg: bgShape),
-                  width: 200,
-                  height: 400
-              ),
+              child: pw.SvgImage(svg: bgShape),
               left: 0,
               top: 10,
             ),
             myPhoto == true ?
             pw.Positioned(
-              right: 360,
-              top: 160,
+              right: 380,
+              top: 110,
               child: pw.Container(
                   padding: const pw.EdgeInsets.all(8.0),
                   decoration: pw.BoxDecoration(
                       color: PdfColors.white,
                       shape: pw.BoxShape.circle,
                       border: pw.Border.all(
-                        color: white,
+                        color: PdfColors.white,
                       )
                   ),
                   child: pw.ClipOval(
@@ -452,7 +434,6 @@ class _Block extends pw.StatelessWidget {
     this.descriptionPlace,
     this.showDescriptionDate,
     this.descriptionActivities,
-    required this.fontPoppins,
   });
 
   final String? title;
@@ -461,26 +442,38 @@ class _Block extends pw.StatelessWidget {
   final String? descriptionPlace;
   final bool? showDescriptionDate;
   final String? descriptionActivities;
-  final pw.Font fontPoppins;
-
 
   @override
   pw.Widget build(pw.Context context) {
     return pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: <pw.Widget>[
+          pw.Row(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: <pw.Widget>[
+                title != null ? pw.Expanded(
+                  child: pw.Text(
+                      title!.toUpperCase(),
+                      textScaleFactor: 0.8,
+                      style: pw.Theme.of(context)
+                          .defaultTextStyle
+                          .copyWith(
+                          fontWeight: pw.FontWeight.bold,
+                          color: grey)),
+                ) : pw.Container()
+              ]),
           organization != null ? pw.Row(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: <pw.Widget>[
                 pw.Expanded(
                   child: pw.Text(
                       organization!,
-                      textScaleFactor: 1,
+                      textScaleFactor: 0.8,
                       style: pw.Theme.of(context)
                           .defaultTextStyle
                           .copyWith(
                           fontWeight: pw.FontWeight.bold,
-                          color: greyTitle)),
+                          color: grey)),
                 )
               ]) : pw.Container(),
           pw.Container(
@@ -489,11 +482,11 @@ class _Block extends pw.StatelessWidget {
                 children: <pw.Widget>[
                   (showDescriptionDate ?? true) ? pw.Text(descriptionDate!,
                       textScaleFactor: 0.8,
-                      style: pw.TextStyle(
-                          font: fontPoppins,
+                      style: pw.Theme.of(context)
+                          .defaultTextStyle
+                          .copyWith(
                           fontWeight: pw.FontWeight.normal,
-                          fontSize: 12,
-                          color: greyTitle))
+                          color: grey))
                       : pw.Container(),
                 ]),
           ),
@@ -503,11 +496,11 @@ class _Block extends pw.StatelessWidget {
                 children: <pw.Widget>[
                   pw.Text(descriptionPlace!,
                       textScaleFactor: 0.8,
-                      style: pw.TextStyle(
-                          font: fontPoppins,
+                      style: pw.Theme.of(context)
+                          .defaultTextStyle
+                          .copyWith(
                           fontWeight: pw.FontWeight.normal,
-                          fontSize: 12,
-                          color: greyTitle)),
+                          color: grey)),
                 ]),
           ),
           descriptionActivities != null ? pw.Container(
@@ -516,18 +509,18 @@ class _Block extends pw.StatelessWidget {
                 children: <pw.Widget>[
                   pw.Text('Actividades realizadas:',
                       textScaleFactor: 0.8,
-                      style: pw.TextStyle(
-                          font: fontPoppins,
+                      style: pw.Theme.of(context)
+                          .defaultTextStyle
+                          .copyWith(
                           fontWeight: pw.FontWeight.bold,
-                          fontSize: 12,
-                          color: greyTitle)),
+                          color: grey)),
                   pw.Text(descriptionActivities!,
                       textScaleFactor: 0.8,
-                      style: pw.TextStyle(
-                          font: fontPoppins,
+                      style: pw.Theme.of(context)
+                          .defaultTextStyle
+                          .copyWith(
                           fontWeight: pw.FontWeight.normal,
-                          fontSize: 12,
-                          color: greyTitle)),
+                          color: grey)),
                 ]),
           ) : pw.Container(),
           pw.SizedBox(height: 8),
@@ -536,11 +529,10 @@ class _Block extends pw.StatelessWidget {
 }
 
 class _Category extends pw.StatelessWidget {
-  _Category({required this.title, required this.color, required this.fontPoppins});
+  _Category({required this.title, required this.color});
 
   final String title;
   final PdfColor color;
-  final pw.Font fontPoppins;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -550,11 +542,11 @@ class _Category extends pw.StatelessWidget {
       child: pw.Text(
           title.toUpperCase(),
           textScaleFactor: 1,
-          style: pw.TextStyle(
-              font: fontPoppins,
+          style: pw.Theme.of(context)
+              .defaultTextStyle
+              .copyWith(
               fontWeight: pw.FontWeight.bold,
-              fontSize: 14,
-              color: bluePetrol)),
+              color: color)),
     );
   }
 }
@@ -624,12 +616,12 @@ class _UrlText extends pw.StatelessWidget {
     return pw.UrlLink(
         destination: url,
         child: pw.Text(text,
-            textScaleFactor: 0.9,
+            textScaleFactor: 0.8,
             style: pw.Theme.of(context)
                 .defaultTextStyle
                 .copyWith(
                 fontWeight: pw.FontWeight.normal,
-                color: grey))
+                color: primary900))
     );
   }
 }
@@ -638,12 +630,10 @@ class _BlockSimple extends pw.StatelessWidget {
   _BlockSimple({
     this.title,
     this.description,
-    required this.fontPoppins,
   });
 
   final String? title;
   final String? description;
-  final pw.Font fontPoppins;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -654,8 +644,15 @@ class _BlockSimple extends pw.StatelessWidget {
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: <pw.Widget>[
                 title != null ? pw.Expanded(
-                    child:
-                    _Category(title: title!, color: bluePetrol, fontPoppins: fontPoppins)
+                  child:
+                  pw.Text(
+                      title!.toUpperCase(),
+                      textScaleFactor: 1,
+                      style: pw.Theme.of(context)
+                          .defaultTextStyle
+                          .copyWith(
+                          fontWeight: pw.FontWeight.bold,
+                          color: primary900)),
                 ) : pw.Container()
               ]),
           pw.Container(
@@ -664,11 +661,11 @@ class _BlockSimple extends pw.StatelessWidget {
                 children: <pw.Widget>[
                   description != null ? pw.Text(description!,
                       textScaleFactor: 0.8,
-                      style: pw.TextStyle(
-                          font: fontPoppins,
+                      style: pw.Theme.of(context)
+                          .defaultTextStyle
+                          .copyWith(
                           fontWeight: pw.FontWeight.normal,
-                          fontSize: 12,
-                          color: greyTitle)) : pw.Container(),
+                          color: grey)) : pw.Container(),
                 ]),
           ),
           pw.SizedBox(height: 5),
@@ -682,16 +679,13 @@ class _BlockSimpleList extends pw.StatelessWidget {
     this.color,
     this.dotsSpeaking,
     this.dotsWriting,
-    required this.fontPoppins,
-    this.languages = false,
   });
 
   final String? title;
   final PdfColor? color;
   late int? dotsSpeaking;
   late int? dotsWriting;
-  final pw.Font fontPoppins;
-  late bool languages;
+
 
   @override
   pw.Widget build(pw.Context context) {
@@ -701,28 +695,26 @@ class _BlockSimpleList extends pw.StatelessWidget {
           pw.Row(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: <pw.Widget>[
-                !languages ? pw.Container(
+                pw.Container(
                   width: 3,
                   height: 3,
                   margin: const pw.EdgeInsets.only(top: 5.5, left: 2, right: 5),
                   decoration: const pw.BoxDecoration(
-                    color: bluePetrol,
+                    color: grey,
                     shape: pw.BoxShape.circle,
                   ),
-                ) : pw.Container(),
+                ),
                 title != null ? pw.Expanded(
                   child:
                   pw.Text(
                       title!,
                       textScaleFactor: 0.8,
-                      style: pw.TextStyle(
-                          font: fontPoppins,
-                          fontWeight: pw.FontWeight.normal,
-                          fontSize: 12,
-                          color: greyTitle)),
-                ) : pw.Container(),
+                      style: pw.Theme.of(context)
+                          .defaultTextStyle
+                          .copyWith(fontWeight: pw.FontWeight.normal, color: color)),
+                ) : pw.Container()
               ]),
-          dotsSpeaking != null && dotsWriting != null ? pw.Container() : pw.SizedBox(height: 8),
+          dotsSpeaking != null && dotsWriting != null ? pw.Container() : pw.SizedBox(height: 5),
           dotsSpeaking != null && dotsWriting != null ?
           pw.Column(
               children: [
@@ -730,18 +722,10 @@ class _BlockSimpleList extends pw.StatelessWidget {
                     crossAxisAlignment: pw.CrossAxisAlignment.center,
                     children: [
                       pw.SizedBox(width: 10),
-                      pw.Text('Oral:  ', textScaleFactor: 0.8, style: pw.TextStyle(
-                          font: fontPoppins,
-                          fontWeight: pw.FontWeight.normal,
-                          fontSize: 12,
-                          color: greyTitle)),
+                      pw.Text('Oral:  ', textScaleFactor: 0.8, style: pw.Theme.of(context).defaultTextStyle.copyWith(fontWeight: pw.FontWeight.normal)),
                       _Dots(dotsNumber: dotsSpeaking),
                       pw.SizedBox(width: 10),
-                      pw.Text('Escrito:  ', textScaleFactor: 0.8, style: pw.TextStyle(
-                          font: fontPoppins,
-                          fontWeight: pw.FontWeight.normal,
-                          fontSize: 12,
-                          color: greyTitle)),
+                      pw.Text('Escrito:  ', textScaleFactor: 0.8, style: pw.Theme.of(context).defaultTextStyle.copyWith(fontWeight: pw.FontWeight.normal)),
                       _Dots(dotsNumber: dotsWriting
                       ),
                     ]
@@ -749,41 +733,6 @@ class _BlockSimpleList extends pw.StatelessWidget {
               ]
           ) : pw.Container()
         ]);
-  }
-}
-
-class _BlockRoundedList extends pw.StatelessWidget {
-  _BlockRoundedList({
-    this.title,
-    this.color,
-    required this.fontPoppins,
-  });
-
-  final String? title;
-  final PdfColor? color;
-  final pw.Font fontPoppins;
-
-  @override
-  pw.Widget build(pw.Context context) {
-    return title != null ? pw.Container(
-      decoration: pw.BoxDecoration(
-          shape: pw.BoxShape.rectangle,
-          borderRadius: pw.BorderRadius.circular(14),
-          color: bluePetrol
-      ),
-      child:
-      pw.Padding(
-        padding: pw.EdgeInsets.all(8),
-        child: pw.Text(
-            title!,
-            textScaleFactor: 0.8,
-            style: pw.TextStyle(
-                font: fontPoppins,
-                fontWeight: pw.FontWeight.normal,
-                fontSize: 12,
-                color: white)),
-      ),
-    ) : pw.Container();
   }
 }
 
@@ -809,7 +758,7 @@ class _Dots extends pw.StatelessWidget {
   pw.Widget buildDotRow() {
     List<pw.Widget> dots = [];
     for (int i = 0; i < 3; i++) {
-      PdfColor color = i < (dotsNumber ?? 0) ? greyTitle : greyLight;
+      PdfColor color = i < (dotsNumber ?? 0) ? primary900 : greyLight;
       dots.add(buildDot(color));
     }
     return pw.Row(
@@ -827,6 +776,68 @@ class _Dots extends pw.StatelessWidget {
       decoration: pw.BoxDecoration(
         color: color,
         shape: pw.BoxShape.circle,
+      ),
+    );
+  }
+}
+
+class _BlockSimpleListLabel extends pw.StatelessWidget {
+  _BlockSimpleListLabel({
+    this.title,
+    this.color
+  });
+
+  final String? title;
+  final PdfColor? color;
+
+  @override
+  pw.Widget build(pw.Context context) {
+    return pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: <pw.Widget>[
+          pw.Row(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: <pw.Widget>[
+                title != null ? pw.Expanded(
+                  child:
+                  pw.Text(
+                      title!,
+                      textScaleFactor: 0.7,
+                      textAlign: pw.TextAlign.start,
+                      style: pw.Theme.of(context)
+                          .defaultTextStyle
+                          .copyWith(fontWeight: pw.FontWeight.normal, color: color)),
+                ) : pw.Container()
+              ]),
+          pw.SizedBox(height: 5),
+        ]);
+  }
+}
+
+class _CategoryLabel extends pw.StatelessWidget {
+  _CategoryLabel({
+    required this.title,
+    required this.color,
+  });
+
+  final String title;
+  final PdfColor color;
+
+  @override
+  pw.Widget build(pw.Context context) {
+    return pw.Container(
+      decoration: const pw.BoxDecoration(
+        color: primary900,
+        borderRadius: pw.BorderRadius.all(pw.Radius.circular(10)),
+      ),
+      margin: const pw.EdgeInsets.only(bottom: 10, top: 10),
+      padding: const pw.EdgeInsets.fromLTRB(20, 4, 20, 5),
+      child: pw.Text(
+          title.toUpperCase(),
+          textScaleFactor: 1,
+          style: pw.Theme.of(context)
+              .defaultTextStyle
+              .copyWith(fontWeight: pw.FontWeight.normal, color: color)
       ),
     );
   }
@@ -861,10 +872,10 @@ class _BlockIcon extends pw.StatelessWidget {
                         .defaultTextStyle
                         .copyWith(
                         fontWeight: pw.FontWeight.bold,
-                        color: grey)),
+                        color: primary900)),
               ) : pw.Container()
             ]),
-        pw.SizedBox(height: 4),
+        pw.SizedBox(height: 2),
         pw.Row(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: <pw.Widget>[
@@ -876,23 +887,23 @@ class _BlockIcon extends pw.StatelessWidget {
                         .defaultTextStyle
                         .copyWith(
                         fontWeight: pw.FontWeight.bold,
-                        color: grey)),
+                        color: primary900)),
               ) : pw.Container()
             ]),
-        pw.SizedBox(height: 4),
+        pw.SizedBox(height: 2),
         description2 != "" ?
         pw.Row(
           children: [
-            pw.Icon(pw.IconData(0xe0be), size: 10.0, color: bluePetrol),
+            pw.Icon(pw.IconData(0xe0be), size: 10.0, color:primary900),
             pw.SizedBox(width: 4),
-            _UrlText(description2!, 'mailto: $description1'),
+            _UrlText(description2!, 'mailto: $description1')
           ],
         ) : pw.Container(),
         pw.SizedBox(height: 4),
         description3 != "" ?
         pw.Row(
             children: [
-              pw.Icon(pw.IconData(0xe0b0), size: 10.0, color: bluePetrol),
+              pw.Icon(pw.IconData(0xe0b0), size: 10.0, color:primary900),
               pw.SizedBox(width: 4),
               pw.Text(description3!,
                   textScaleFactor: 0.8,
@@ -900,11 +911,39 @@ class _BlockIcon extends pw.StatelessWidget {
                       .defaultTextStyle
                       .copyWith(
                       fontWeight: pw.FontWeight.normal,
-                      color: grey)) ,
+                      color: primary900)) ,
             ]
         ) : pw.Container(),
-        pw.SizedBox(height: 12),
+        pw.SizedBox(height: 7),
       ],
+    );
+  }
+}
+
+class _CustomChipList extends pw.StatelessWidget {
+  _CustomChipList({
+    this.title,
+    this.color,
+  });
+
+  final String? title;
+  final PdfColor? color;
+
+  @override
+  pw.Widget build(pw.Context context) {
+    return pw.Container(
+      margin: const pw.EdgeInsets.only(top: 5.5, left: 2, right: 5),
+      padding: const pw.EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      decoration: pw.BoxDecoration(
+        color: color ?? primary900,
+        borderRadius: const pw.BorderRadius.all(pw.Radius.circular(10)),
+      ),
+      child: title != null ? pw.Text(
+          title!,
+          textScaleFactor: 0.8,
+          style: pw.Theme.of(context)
+              .defaultTextStyle
+              .copyWith(fontWeight: pw.FontWeight.normal, color: white)) : pw.Container(),
     );
   }
 }

@@ -96,7 +96,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                         gradient: LinearGradient(
                             colors: [
                               AppColors.greenCheckIcon,
-                              AppColors.turquoiseBlue,
+                              AppColors.primary900,
                             ],
                             begin: const FractionalOffset(0.0, 0.0),
                             end: const FractionalOffset(0.5, 0.0),
@@ -205,7 +205,7 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
                     colors: [
                       AppColors.primary100,
                       AppColors.primary500,
-                      AppColors.turquoiseBlue,
+                      AppColors.primary900,
                     ],
                     backgroundColor: Constants.white,
                   ),

@@ -103,7 +103,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
   Widget _buildCompetenciesLevelsPanel(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return ExpandablePanel(
-      theme: ExpandableThemeData(iconColor: AppColors.turquoiseBlue,
+      theme: ExpandableThemeData(iconColor: AppColors.primary900,
           expandIcon: Icons.keyboard_arrow_down_rounded,
           collapseIcon: Icons.expand_less_outlined, iconSize: 30),
       header: Padding(
@@ -168,7 +168,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
     TextTheme textTheme = Theme.of(context).textTheme;
     return ExpandablePanel(
       theme: ExpandableThemeData(
-          iconColor: AppColors.turquoiseBlue,
+          iconColor: AppColors.primary900,
           expandIcon: Icons.keyboard_arrow_down_rounded,
           collapseIcon: Icons.expand_less_outlined,
           iconSize: 30),

@@ -22,7 +22,7 @@ const PdfColor lightLilac = PdfColor.fromInt(0xFFF4F5FB);
 const PdfColor blue = PdfColor.fromInt(0xFF002185);
 const PdfColor grey = PdfColor.fromInt(0xFF535A5F);
 const PdfColor greyDark = PdfColor.fromInt(0xFFD6DAFB);
-const PdfColor black = PdfColor.fromInt(0xFF054D5E);
+const PdfColor primary900 = PdfColor.fromInt(0xFF054D5E);
 const PdfColor white = PdfColor.fromInt(0xFFFFFFFF);
 const PdfColor greyLight = PdfColor.fromInt(0xFFADADAD);
 const leftWidth = 200.0;
@@ -104,12 +104,12 @@ Future<Uint8List> generateResume2(
                         textScaleFactor: 1.5,
                         style: pw.Theme.of(context)
                             .defaultTextStyle
-                            .copyWith(fontWeight: pw.FontWeight.bold, color: black)),
+                            .copyWith(fontWeight: pw.FontWeight.bold, color: primary900)),
                     pw.Text('${user?.lastName}',
                         textScaleFactor: 1.2,
                         style: pw.Theme.of(context)
                             .defaultTextStyle
-                            .copyWith(fontWeight: pw.FontWeight.bold, color: black)),
+                            .copyWith(fontWeight: pw.FontWeight.bold, color: primary900)),
                   ],
                 )
             );
@@ -126,12 +126,12 @@ Future<Uint8List> generateResume2(
                       textScaleFactor: 1.8,
                       style: pw.Theme.of(context)
                           .defaultTextStyle
-                          .copyWith(fontWeight: pw.FontWeight.bold, color: black)),
+                          .copyWith(fontWeight: pw.FontWeight.bold, color: primary900)),
                   pw.Text('${user?.lastName}',
                       textScaleFactor: 1.2,
                       style: pw.Theme.of(context)
                           .defaultTextStyle
-                          .copyWith(fontWeight: pw.FontWeight.bold, color: black)),
+                          .copyWith(fontWeight: pw.FontWeight.bold, color: primary900)),
                 ],
               )
           );
@@ -148,7 +148,7 @@ Future<Uint8List> generateResume2(
                   children: <pw.Widget>[
                     pw.SizedBox(height: 120),
                     myCustomEmail != "" ?
-                    _Category(title: StringConst.PERSONAL_DATA, color: black) : pw.Container(),
+                    _Category(title: StringConst.PERSONAL_DATA, color: primary900) : pw.Container(),
                     myCustomEmail != "" ?
                     pw.Row(
                       children: [
@@ -158,7 +158,7 @@ Future<Uint8List> generateResume2(
                           height: 15,
                           padding: const pw.EdgeInsets.all(2.0),
                           decoration: pw.BoxDecoration(
-                            color: black,
+                            color: primary900,
                             shape: pw.BoxShape.circle,
                           ),
                           child: pw.Icon(pw.IconData(0xe0be), size: 8.0, color: white),
@@ -177,7 +177,7 @@ Future<Uint8List> generateResume2(
                             height: 15,
                             padding: const pw.EdgeInsets.all(2.0),
                             decoration: pw.BoxDecoration(
-                              color: black,
+                              color: primary900,
                               shape: pw.BoxShape.circle,
                             ),
                             child: pw.Icon(pw.IconData(0xe0b0), size: 10.0, color: white),
@@ -206,7 +206,7 @@ Future<Uint8List> generateResume2(
                                   height: 15,
                                   padding: const pw.EdgeInsets.all(2.0),
                                   decoration: pw.BoxDecoration(
-                                    color: black,
+                                    color: primary900,
                                     shape: pw.BoxShape.circle,
                                   ),
                                   child: pw.Icon(pw.IconData(0xe8b4), size: 10.0, color: white),
@@ -250,18 +250,18 @@ Future<Uint8List> generateResume2(
                       title: StringConst.ABOUT_ME,
                       description: aboutMe,) : pw.Container(),
                     pw.SizedBox(height: 10),
-                    myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST, color: black) : pw.Container(),
+                    myDataOfInterest != null && myDataOfInterest.isNotEmpty ? _Category(title: StringConst.DATA_OF_INTEREST, color: primary900) : pw.Container(),
                     for (var data in dataOfInterest!)
                       _CustomChipList(
                         title: data,
-                        color: black,
+                        color: primary900,
                       ),
                     pw.SizedBox(height: 15),
-                    languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES, color: black) : pw.Container(),
+                    languagesNames != null && languagesNames.isNotEmpty ? _Category(title: StringConst.LANGUAGES, color: primary900) : pw.Container(),
                     for (var data in languages!)
                       _BlockSimpleList(
                         title: data.name,
-                        color: black,
+                        color: primary900,
                         dotsSpeaking: data.speakingLevel,
                         dotsWriting: data.writingLevel,
                       ),
@@ -269,7 +269,7 @@ Future<Uint8List> generateResume2(
                     pw.Container(
                         child: pw.Column(
                             children: [
-                              myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.REFERENCES, color: black) : pw.Container(),
+                              myReferences != null && myReferences.isNotEmpty ? _Category(title: StringConst.REFERENCES, color: primary900) : pw.Container(),
                               for (var reference in myReferences!)
                                 _BlockIcon(
                                   title: '${reference.certifierName}',
@@ -300,7 +300,7 @@ Future<Uint8List> generateResume2(
                               fontWeight: pw.FontWeight.normal,
                               color: grey)),
                       pw.SizedBox(height: 10),
-                      myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_PROFESIONAL_EXPERIENCES, color: black) : pw.Container(),
+                      myExperiences != null && myExperiences.isNotEmpty ? _Category(title: StringConst.MY_PROFESIONAL_EXPERIENCES, color: primary900) : pw.Container(),
                       for (var experience in myExperiences!)
                         _Block(
                             title: (experience.activity != null) ? experience.activity : '',
@@ -323,7 +323,7 @@ Future<Uint8List> generateResume2(
                         ),
                       pw.SizedBox(height: 10),
 
-                      myPersonalExperiences != null && myPersonalExperiences.isNotEmpty ? _Category(title: StringConst.MY_PERSONAL_EXPERIENCES, color: black) : pw.Container(),
+                      myPersonalExperiences != null && myPersonalExperiences.isNotEmpty ? _Category(title: StringConst.MY_PERSONAL_EXPERIENCES, color: primary900) : pw.Container(),
                       for (var experience in myPersonalExperiences!)
                         _Block(
                           title: experience.subtype == 'Responsabilidades familiares' || experience.subtype == "Compromiso social" ? experience.subtype :
@@ -341,7 +341,7 @@ Future<Uint8List> generateResume2(
                         ),
                       pw.SizedBox(height: 10),
 
-                      myEducation!.isNotEmpty ? _Category(title: StringConst.EDUCATION, color: black) : pw.Container(),
+                      myEducation!.isNotEmpty ? _Category(title: StringConst.EDUCATION, color: primary900) : pw.Container(),
                       for (var education in myEducation)
                         _Block(
                           title: education.institution != null && education.nameFormation != null && education.nameFormation != ''
@@ -355,7 +355,7 @@ Future<Uint8List> generateResume2(
                         ),
                       pw.SizedBox(height: 10),
 
-                      mySecondaryEducation!.isNotEmpty ? _Category(title: StringConst.SECONDARY_EDUCATION, color: black) : pw.Container(),
+                      mySecondaryEducation!.isNotEmpty ? _Category(title: StringConst.SECONDARY_EDUCATION, color: primary900) : pw.Container(),
                       for (var education in mySecondaryEducation)
                         _Block(
                           title: education.institution != null && education.nameFormation != null && education.nameFormation != ''
@@ -368,7 +368,7 @@ Future<Uint8List> generateResume2(
                           descriptionPlace: '${education.location}',
                         ),
                       pw.SizedBox(height: 10),
-                      competenciesNames != null && competenciesNames.isNotEmpty ? _Category(title: StringConst.COMPETENCIES, color: black) : pw.Container(),
+                      competenciesNames != null && competenciesNames.isNotEmpty ? _Category(title: StringConst.COMPETENCIES, color: primary900) : pw.Container(),
                       for (var data in competenciesNames!)
                         _BlockSimpleList(
                           title: data,
@@ -707,7 +707,7 @@ class _BlockSimple extends pw.StatelessWidget {
                           .defaultTextStyle
                           .copyWith(
                           fontWeight: pw.FontWeight.bold,
-                          color: black)),
+                          color: primary900)),
                 ) : pw.Container()
               ]),
           pw.Container(
@@ -754,7 +754,7 @@ class _BlockSimpleList extends pw.StatelessWidget {
                   height: 3,
                   margin: const pw.EdgeInsets.only(top: 5.5, left: 2, right: 5),
                   decoration: const pw.BoxDecoration(
-                    color: black,
+                    color: primary900,
                     shape: pw.BoxShape.circle,
                   ),
                 ),
@@ -776,10 +776,10 @@ class _BlockSimpleList extends pw.StatelessWidget {
                     crossAxisAlignment: pw.CrossAxisAlignment.center,
                     children: [
                       pw.SizedBox(width: 10),
-                      pw.Text('Oral:  ', textScaleFactor: 0.8, style: pw.Theme.of(context).defaultTextStyle.copyWith(fontWeight: pw.FontWeight.normal, color: black)),
+                      pw.Text('Oral:  ', textScaleFactor: 0.8, style: pw.Theme.of(context).defaultTextStyle.copyWith(fontWeight: pw.FontWeight.normal, color: primary900)),
                       _Dots(dotsNumber: dotsSpeaking),
                       pw.SizedBox(width: 10),
-                      pw.Text('Escrito:  ', textScaleFactor: 0.8, style: pw.Theme.of(context).defaultTextStyle.copyWith(fontWeight: pw.FontWeight.normal, color: black)),
+                      pw.Text('Escrito:  ', textScaleFactor: 0.8, style: pw.Theme.of(context).defaultTextStyle.copyWith(fontWeight: pw.FontWeight.normal, color: primary900)),
                       _Dots(dotsNumber: dotsWriting
                       ),
                     ]
@@ -805,7 +805,7 @@ class _CustomChipList extends pw.StatelessWidget {
       margin: const pw.EdgeInsets.only(top: 5.5, left: 2, right: 5),
       padding: const pw.EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       decoration: pw.BoxDecoration(
-        color: color ?? black,
+        color: color ?? primary900,
         borderRadius: const pw.BorderRadius.all(pw.Radius.circular(10)),
       ),
       child: title != null ? pw.Text(
@@ -840,7 +840,7 @@ class _Dots extends pw.StatelessWidget {
   pw.Widget buildDotRow() {
     List<pw.Widget> dots = [];
     for (int i = 0; i < 3; i++) {
-      PdfColor color = i < (dotsNumber ?? 0) ? black : greyLight;
+      PdfColor color = i < (dotsNumber ?? 0) ? primary900 : greyLight;
       dots.add(buildDot(color));
     }
     return pw.Row(
@@ -914,7 +914,7 @@ class _BlockIcon extends pw.StatelessWidget {
         description2 != "" ?
         pw.Row(
           children: [
-            pw.Icon(pw.IconData(0xe0be), size: 10.0, color: black),
+            pw.Icon(pw.IconData(0xe0be), size: 10.0, color: primary900),
             pw.SizedBox(width: 4),
             _UrlText(description2!, 'mailto: $description1')
           ],
@@ -923,7 +923,7 @@ class _BlockIcon extends pw.StatelessWidget {
         description3 != "" ?
         pw.Row(
             children: [
-              pw.Icon(pw.IconData(0xe0b0), size: 10.0, color: black),
+              pw.Icon(pw.IconData(0xe0b0), size: 10.0, color: primary900),
               pw.SizedBox(width: 4),
               pw.Text(description3!,
                   textScaleFactor: 0.8,

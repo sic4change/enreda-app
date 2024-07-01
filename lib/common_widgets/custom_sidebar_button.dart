@@ -11,7 +11,7 @@ class CustomSideBarButton extends StatelessWidget {
     required this.buttonTitle,
     this.height = 45.0,
     this.titleStyle,
-    this.titleColor = AppColors.turquoiseBlue,
+    this.titleColor = AppColors.primary900,
     this.onPressed,
     this.padding = const EdgeInsets.symmetric(horizontal: 10.0),
     this.borderRadius = const BorderRadius.all(

@@ -26,7 +26,7 @@ class _AccessPageMobileState extends State<AccessPageMobile> {
     return Scaffold(
       backgroundColor: Constants.white,
         body: Container(
-          color: AppColors.turquoiseBlue,
+          color: AppColors.primary900,
           height: MediaQuery.of(context).size.height,
           alignment: Alignment.center,
           child: SingleChildScrollView(

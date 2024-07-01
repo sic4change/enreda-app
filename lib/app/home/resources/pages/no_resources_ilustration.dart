@@ -32,7 +32,7 @@ class NoResourcesIlustration extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: textTheme.bodySmall?.copyWith(
                     fontSize: Responsive.isMobile(context) ? 12.0 : 18.0,
-                    color: AppColors.turquoiseBlue),
+                    color: AppColors.primary900),
               ),
             ),
             SpaceH12(),
@@ -43,7 +43,7 @@ class NoResourcesIlustration extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: textTheme.bodyLarge?.copyWith(
                     fontSize: Responsive.isMobile(context) ? 15.0 : 22.0,
-                    color: AppColors.turquoiseBlue),
+                    color: AppColors.primary900),
               ),
             ),
             SpaceH20(),

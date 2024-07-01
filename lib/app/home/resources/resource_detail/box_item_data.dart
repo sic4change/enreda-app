@@ -85,7 +85,7 @@ class BoxItem extends StatelessWidget {
                   Text(
                     title,
                     textAlign: TextAlign.start,
-                    style: textTheme.bodySmall?.copyWith(height: 1.4, fontWeight: FontWeight.w600, color: AppColors.turquoiseBlue),
+                    style: textTheme.bodySmall?.copyWith(height: 1.4, fontWeight: FontWeight.w600, color: AppColors.primary900),
                   ),
                 ],
               ),

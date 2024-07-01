@@ -49,16 +49,16 @@ class _SideBarWidgetState extends State<SideBarWidget> {
         ),
         hoverColor: AppColors.primary050,
         hoverTextStyle: textTheme.titleLarge?.copyWith(
-          color: AppColors.turquoiseBlue,
+          color: AppColors.primary900,
           fontSize: 15,
         ),
         textStyle: textTheme.bodySmall?.copyWith(
-              color: AppColors.turquoiseBlue,
+              color: AppColors.primary900,
               fontSize: 15,
               fontWeight: FontWeight.w500,
             ),
         selectedTextStyle: textTheme.titleLarge?.copyWith(
-          color: AppColors.turquoiseBlue,
+          color: AppColors.primary900,
           fontSize: 15,
         ),
         itemTextPadding: const EdgeInsets.only(left: 10),
@@ -74,11 +74,11 @@ class _SideBarWidgetState extends State<SideBarWidget> {
           color: AppColors.primary100,
         ),
         iconTheme: const IconThemeData(
-          color: AppColors.turquoiseBlue,
+          color: AppColors.primary900,
           size: 20,
         ),
         selectedIconTheme: const IconThemeData(
-          color: AppColors.turquoiseBlue,
+          color: AppColors.primary900,
           size: 20,
         ),
       ),

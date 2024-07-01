@@ -4,7 +4,7 @@ import '../utils/adaptive.dart';
 
 class CustomTextTitle extends StatelessWidget {
 
-  CustomTextTitle({ required this.title, this.color = AppColors.turquoiseBlue });
+  CustomTextTitle({ required this.title, this.color = AppColors.primary900 });
   final String title;
   final Color? color;
 
@@ -39,7 +39,7 @@ class CustomTextSubTitle extends StatelessWidget {
       child: Text(
         title,
         style: textTheme.bodySmall?.copyWith(
-          color: AppColors.turquoiseBlue,
+          color: AppColors.primary900,
           height: 1.5,
           fontWeight: FontWeight.w400,
         ),
@@ -212,7 +212,7 @@ class CustomTextBoldCenter extends StatelessWidget {
 
 class CustomTextBoldTitle extends StatelessWidget {
 
-  const CustomTextBoldTitle({super.key,  required this.title, this.color = AppColors.turquoiseBlue });
+  const CustomTextBoldTitle({super.key,  required this.title, this.color = AppColors.primary900 });
   final String title;
   final Color color;
 
@@ -239,7 +239,7 @@ class CustomTextBoldTitle extends StatelessWidget {
 
 class CustomTextMediumBold extends StatelessWidget {
 
-  const CustomTextMediumBold({super.key,  required this.text, this.color = AppColors.turquoiseBlue });
+  const CustomTextMediumBold({super.key,  required this.text, this.color = AppColors.primary900 });
   final String text;
   final Color color;
 
@@ -270,7 +270,7 @@ class CustomTextMedium extends StatelessWidget {
     return Text(
       text,
       style: textTheme.bodyMedium?.copyWith(
-        color: AppColors.turquoiseBlue,
+        color: AppColors.primary900,
         height: 1.5,
         fontSize: fontSize,
       ),
@@ -291,7 +291,7 @@ class CustomTextLargeBold extends StatelessWidget {
       text,
       textAlign: TextAlign.center,
       style: textTheme.bodyLarge?.copyWith(
-        color: AppColors.turquoiseBlue,
+        color: AppColors.primary900,
         height: 1.5,
         fontSize: fontSize
       ),

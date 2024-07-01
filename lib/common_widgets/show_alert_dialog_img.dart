@@ -33,7 +33,7 @@ Future showAlertDialogImg(
           children: [
             Text(title,
                 style: textTheme.titleLarge?.copyWith(
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   fontSize: fontSize,
                   height: 1.5,
                 )),
@@ -44,7 +44,7 @@ Future showAlertDialogImg(
           children: [
             Text(content,
                 style: textTheme.headlineLarge?.copyWith(
-                    color: AppColors.turquoiseBlue,
+                    color: AppColors.primary900,
                     height: 1.5,
                     fontSize: fontSizeSubTitle)),
             image != null ?
@@ -103,7 +103,7 @@ Future showAlertDialogImg(
       builder: (context) => AlertDialog(
         title: Text(title,
             style: textTheme.titleLarge?.copyWith(
-              color: AppColors.turquoiseBlue,
+              color: AppColors.primary900,
               fontSize: fontSize,
               height: 1.5,
             )),
@@ -111,7 +111,7 @@ Future showAlertDialogImg(
           children: [
             Text(content,
                 style: textTheme.headlineLarge?.copyWith(
-                    color: AppColors.turquoiseBlue,
+                    color: AppColors.primary900,
                     height: 1.5,
                     fontSize: fontSizeSubTitle)),
             image != null ? image : Container(),

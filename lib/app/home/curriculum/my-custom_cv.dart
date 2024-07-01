@@ -407,11 +407,31 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                       buttonTitle: "Vista previa",
                       width: 100,
                       onPressed: () async {
-                        if(getTotalLeftElements() >= 5 && getTotalRightElements() >= 9 && !_isSelected2Page){
+                        if(_isSelectedAboutMe == true && widget.myCustomAboutMe.length > 330 && !_isSelected2Page) {
                           showAlertDialog(
                             context,
                             title: StringConst.WARNING,
-                            content: StringConst.PAGE_WARNING_5,
+                            content:  StringConst.PAGE_WARNING_6,
+                            defaultActionText: StringConst.FORM_ACCEPT,
+                          );
+                          return;
+                        }
+                        if(getTotalLeftElements() >= 5 && getTotalRightElements() > 9 && !_isSelected2Page
+                            && _isSelectedAboutMe == true && widget.myCustomAboutMe.length > 130) {
+                          showAlertDialog(
+                            context,
+                            title: StringConst.WARNING,
+                            content:  StringConst.PAGE_WARNING_3,
+                            defaultActionText: StringConst.FORM_ACCEPT,
+                          );
+                          return;
+                        }
+                        if(getTotalLeftElements() > 5 && getTotalRightElements() > 9 && !_isSelected2Page){
+                          showAlertDialog(
+                            context,
+                            title: StringConst.WARNING,
+                            content: widget.myCustomAboutMe.length > 130 ?
+                              StringConst.PAGE_WARNING_3 : StringConst.PAGE_WARNING_5,
                             defaultActionText: StringConst.FORM_ACCEPT,
                             cancelActionText: StringConst.CANCEL,
                           );
@@ -562,7 +582,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                     fontWeight: FontWeight.bold,
                     height: 1.2,
                     fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-                    color: AppColors.turquoiseBlue),
+                    color: AppColors.primary900),
                 textAlign: TextAlign.center,
               ),
               SpaceH24(),
@@ -669,11 +689,27 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               buttonTitle: "Vista previa",
               width: 100,
               onPressed: () async {
-                if(getTotalLeftElements() >= 5 && !_isSelected2Page) {
+                if(getTotalLeftElements() >= 5 && !_isSelected2Page
+                    && _isSelectedAboutMe == true && widget.myCustomAboutMe.length > 130) {
                   showAlertDialogImg(
                     context,
                     title: StringConst.WARNING,
-                    content: StringConst.PAGE_WARNING_4,
+                    content:  StringConst.PAGE_WARNING_3,
+                    defaultActionText: StringConst.FORM_ACCEPT,
+                    image: Container(
+                        width: 300,
+                        height: 450,
+                        child: Image.asset(ImagePath.CV_WARNING_2)
+                    ),
+                  );
+                  return;
+                }
+                if(getTotalLeftElements() > 5 && !_isSelected2Page) {
+                  showAlertDialogImg(
+                    context,
+                    title: StringConst.WARNING,
+                    content: widget.myCustomAboutMe.length > 130 ?
+                      StringConst.PAGE_WARNING_3 : StringConst.PAGE_WARNING_4,
                     defaultActionText: StringConst.FORM_ACCEPT,
                     image: Container(
                       width: 300,
@@ -683,7 +719,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   );
                   return;
                 }
-                if(getTotalRightElements() >= 9 && !_isSelected2Page){
+                if(getTotalRightElements() > 9 && !_isSelected2Page){
                   showAlertDialogImg(
                     context,
                     title: StringConst.WARNING,
@@ -774,7 +810,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           style: textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
               fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-              color: AppColors.turquoiseBlue),
+              color: AppColors.primary900),
         ),
         SpaceH20(),
         InkWell(
@@ -1933,9 +1969,11 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
 
   int getTotalLeftElements(){
     int sum = 0;
-    if(widget.myCustomAboutMe.length > 90){
-      print('Texto largo');
+    if(widget.myCustomAboutMe.length < 130 && widget.myCustomAboutMe.length > 0){
       sum = 1;
+    }
+    if(widget.myCustomAboutMe.length > 130 && widget.myCustomAboutMe.length > 0){
+      sum = 2;
     }
     return widget.myCustomLanguages.length +
         widget.myCustomDataOfInterest.length +

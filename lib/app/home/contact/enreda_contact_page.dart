@@ -168,7 +168,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                 children: [
                   CustomTextTitle(title: StringConst.ASSIGNED_USER),
                   CustomTextBold(title: '${user.firstName} ${user.lastName}',
-                    color: AppColors.turquoiseBlue,),
+                    color: AppColors.primary900,),
                 ],
               ),
               SpaceH20(),
@@ -286,7 +286,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
         children: [
           CardButtonContact(
             title: StringConst.EMAIL,
-            icon: Icon(Icons.email_outlined, color: AppColors.turquoiseBlue, size: 20,),
+            icon: Icon(Icons.email_outlined, color: AppColors.primary900, size: 20,),
             onTap: () {
               sendEmail(
                 toEmail: socialEntity.contactEmail!,
@@ -335,7 +335,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
         children: [
           CardButtonContact(
             title: StringConst.EMAIL,
-            icon: Icon(Icons.email_outlined, color: AppColors.turquoiseBlue, size: 20,),
+            icon: Icon(Icons.email_outlined, color: AppColors.primary900, size: 20,),
             onTap: () {
               sendEmail(
                 toEmail: socialEntity.email!,
@@ -355,7 +355,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
           SpaceW4(),
           CardButtonContact(
             title: StringConst.CALL,
-            icon: Icon(Icons.phone, color: AppColors.turquoiseBlue, size: 20),
+            icon: Icon(Icons.phone, color: AppColors.primary900, size: 20),
             onTap: () {
               kIsWeb ? showCustomDialog(
               context,
@@ -373,15 +373,15 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                         socialEntity.entityPhone!.isNotEmpty ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.local_phone, color: AppColors.turquoiseBlue, size: 20),
-                            CustomTextBold(title: socialEntity.entityPhone!, color: AppColors.turquoiseBlue,),
+                            Icon(Icons.local_phone, color: AppColors.primary900, size: 20),
+                            CustomTextBold(title: socialEntity.entityPhone!, color: AppColors.primary900,),
                           ],) : Container(),
                         SpaceH8(),
                         socialEntity.entityMobilePhone!.isNotEmpty ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.phone_android, color: AppColors.turquoiseBlue, size: 20),
-                            CustomTextBold(title: socialEntity.entityMobilePhone!, color: AppColors.turquoiseBlue,),
+                            Icon(Icons.phone_android, color: AppColors.primary900, size: 20),
+                            CustomTextBold(title: socialEntity.entityMobilePhone!, color: AppColors.primary900,),
                           ],) : Container(),
                       ]
                     ))),

@@ -232,7 +232,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                     letterSpacing: 1,
                                     fontSize: fontSize,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.turquoiseBlue,
+                                    color: AppColors.primary900,
                                   ),
                                 ),
                               ),
@@ -399,7 +399,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
               decoration: InputDecoration(
                   labelText: 'Nombre',
                   labelStyle: textTheme.bodySmall?.copyWith(
-                    color: AppColors.turquoiseBlue,
+                    color: AppColors.primary900,
                     height: 1.5,
                     fontWeight: FontWeight.w400,
                     fontSize: fontSize,
@@ -413,7 +413,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
               keyboardType: TextInputType.name,
               style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
                 fontWeight: FontWeight.w400,
                 fontSize: fontSize,
               ),
@@ -422,7 +422,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
               decoration: InputDecoration(
                   labelText: 'Email',
                   labelStyle: textTheme.bodySmall?.copyWith(
-                    color: AppColors.turquoiseBlue,
+                    color: AppColors.primary900,
                     height: 1.5,
                     fontWeight: FontWeight.w400,
                     fontSize: fontSize,
@@ -434,7 +434,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
               keyboardType: TextInputType.emailAddress,
               style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
                 fontWeight: FontWeight.w400,
                 fontSize: fontSize,
               ),
@@ -443,7 +443,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
               decoration: InputDecoration(
                   labelText: 'Descripción de la denuncia',
                   labelStyle: textTheme.bodySmall?.copyWith(
-                    color: AppColors.turquoiseBlue,
+                    color: AppColors.primary900,
                     height: 1.5,
                     fontWeight: FontWeight.w400,
                     fontSize: fontSize,
@@ -459,7 +459,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
               keyboardType: TextInputType.multiline,
               style: textTheme.bodySmall?.copyWith(
                 height: 1.5,
-                color: AppColors.turquoiseBlue,
+                color: AppColors.primary900,
                 fontWeight: FontWeight.w400,
                 fontSize: fontSize,
               ),
@@ -586,7 +586,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                 ),
                 style: textTheme.bodySmall?.copyWith(
                   height: 1.5,
-                  color: AppColors.turquoiseBlue,
+                  color: AppColors.primary900,
                   fontSize: fontSize,
                   fontWeight: FontWeight.w400,),
                 minLines: 4,

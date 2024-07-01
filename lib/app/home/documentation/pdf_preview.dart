@@ -71,10 +71,10 @@ class MyAppState extends State<MyPreviewPdf> with SingleTickerProviderStateMixin
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary100,
-        iconTheme: const IconThemeData(color: AppColors.turquoiseBlue,),
+        iconTheme: const IconThemeData(color: AppColors.primary900,),
         actionsIconTheme: const IconThemeData(color: AppColors.white,),
         foregroundColor: Colors.white,
-        title: CustomTextBoldCenter(title: StringConst.PREVIEW, color: AppColors.turquoiseBlue,),
+        title: CustomTextBoldCenter(title: StringConst.PREVIEW, color: AppColors.primary900,),
         titleTextStyle: textTheme.bodyLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -123,7 +123,7 @@ class _PdfPreviewScreenState extends State<PdfPreviewScreen> {
   void _showPrintedToast(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        backgroundColor: AppColors.turquoiseBlue,
+        backgroundColor: AppColors.primary900,
         content: Text('Documento impreso con éxito'),
       ),
     );
@@ -132,7 +132,7 @@ class _PdfPreviewScreenState extends State<PdfPreviewScreen> {
   void _showSharedToast(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        backgroundColor: AppColors.turquoiseBlue,
+        backgroundColor: AppColors.primary900,
         content: Text('Documento compartido con éxito'),
       ),
     );

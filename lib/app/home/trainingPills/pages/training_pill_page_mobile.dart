@@ -93,7 +93,7 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
           decoration: BoxDecoration(
               border: Border.all(color: AppColors.greyBorder, width: 1),
               borderRadius: BorderRadius.all(Radius.circular(15)),
-              color: AppColors.bluePetrol,
+              color: AppColors.primary900,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.greyBorder,
@@ -273,7 +273,7 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
               Center(
                 child: Icon(
                   Icons.play_circle_rounded,
-                  color: AppColors.bluePetrol.withOpacity(0.5),
+                  color: AppColors.primary900.withOpacity(0.5),
                   size: 70,
                 ),
               ),

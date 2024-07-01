@@ -62,7 +62,7 @@ class _PillTooltipState extends State<PillTooltip> {
                 margin: const EdgeInsets.all(10.0),
                 padding: const EdgeInsets.only(top: 13.0, bottom: 30),
                 decoration: BoxDecoration(
-                  color: AppColors.bluePetrol,
+                  color: AppColors.primary900,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 width: 300,

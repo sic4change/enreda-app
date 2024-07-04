@@ -46,6 +46,8 @@ Widget streamBuilderForSocialEntity (BuildContext context, SocialEntity? selecte
                 ),
               ),
               DropdownButtonFormField(
+                isDense: true,
+                isExpanded: true,
                 value: selectedSocialEntity,
                 items: socialEntityItems,
                 onChanged: (value) => functionToWriteBackThings(value),

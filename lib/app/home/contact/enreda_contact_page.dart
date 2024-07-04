@@ -66,57 +66,54 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                       final userEnreda = snapshot.data![0];
                       _assignedContactId = userEnreda.assignedById;
                       _assignedSocialEntity = userEnreda.assignedEntityId;
-                      return StreamBuilder<UserEnreda>(
-                        stream: database.enredaUserStream(_assignedContactId!),
+                      return StreamBuilder<SocialEntity>(
+                        stream: database.socialEntityStream(_assignedSocialEntity!),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) return Container();
                           if (snapshot.hasData) {
-                            final assignedUser = snapshot.data!;
-                            return StreamBuilder<SocialEntity>(
-                              stream: database.socialEntityStream(
-                                  _assignedSocialEntity!),
+                            final socialEntity = snapshot.data!;
+                            Address fullLocation = socialEntity.address ??
+                                Address();
+                            return StreamBuilder<City>(
+                              stream: database.cityStream(
+                                  fullLocation.city!),
                               builder: (context, snapshot) {
-                                if (!snapshot.hasData) return Container();
-                                if (snapshot.hasData) {
-                                  final socialEntity = snapshot.data!;
-                                  Address fullLocation = socialEntity.address ??
-                                      Address();
-                                  return StreamBuilder<City>(
-                                    stream: database.cityStream(
-                                        fullLocation.city!),
+                                final city = snapshot.data;
+                                cityName = city == null ? '' : city.name;
+                                return StreamBuilder<Country>(
+                                    stream: database.countryStream(
+                                        fullLocation.country),
                                     builder: (context, snapshot) {
-                                      final city = snapshot.data;
-                                      cityName = city == null ? '' : city.name;
-                                      return StreamBuilder<Country>(
-                                          stream: database.countryStream(
-                                              fullLocation.country),
-                                          builder: (context, snapshot) {
-                                            final country = snapshot.data;
-                                            countryName =
-                                            country == null ? '' : country.name;
-                                            if (countryName != '') {
-                                              location = countryName;
-                                            } else if (cityName != '') {
-                                              location = cityName;
-                                            }
-                                            if (cityName != '' &&
-                                                countryName != '') {
-                                              location =
-                                                  location + ', ' + cityName;
-                                            }
-                                            return _buildContent(context, assignedUser, socialEntity, cityName, countryName);
-                                          }
+                                      final country = snapshot.data;
+                                      countryName =
+                                      country == null ? '' : country.name;
+                                      if (countryName != '') {
+                                        location = countryName;
+                                      } else if (cityName != '') {
+                                        location = cityName;
+                                      }
+                                      if (cityName != '' &&
+                                          countryName != '') {
+                                        location =
+                                            location + ', ' + cityName;
+                                      }
+                                      if (_assignedContactId == null || _assignedContactId == '') {
+                                        return _buildContent(context, null, socialEntity, cityName, countryName);
+                                      }
+                                      return StreamBuilder<UserEnreda>(
+                                        stream: database.enredaUserStream(_assignedContactId!),
+                                        builder: (context, snapshot) {
+                                          final UserEnreda? assignedUser = snapshot.data;
+                                          return _buildContent(context, assignedUser, socialEntity, cityName, countryName);
+                                        },
                                       );
-                                    },
-                                  );
-                                } else {
-                                  return Center(
-                                      child: CircularProgressIndicator());
-                                }
+                                    }
+                                );
                               },
                             );
                           } else {
-                            return Center(child: CircularProgressIndicator());
+                            return Center(
+                                child: CircularProgressIndicator());
                           }
                         },
                       );
@@ -130,13 +127,14 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
     );
   }
 
-  Widget _buildContent(BuildContext context, UserEnreda user, SocialEntity socialEntity, String cityName, String countryName) {
+  Widget _buildContent(BuildContext context, UserEnreda? assignedUser, SocialEntity socialEntity, String cityName, String countryName) {
     return Container(
       width: double.infinity,
       height: double.infinity,
       alignment: Responsive.isMobile(context) ? Alignment.topCenter : Alignment.center,
       child: SingleChildScrollView(
         child: MainContainer(
+          height: MediaQuery.of(context).size.height * 0.7,
           padding: Responsive.isMobile(context) ?
             EdgeInsets.symmetric(vertical: 0, horizontal: 10 ) :
             const EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble * 2),
@@ -163,16 +161,16 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                 ),
               ) : Container(),
               Responsive.isMobile(context) ? SpaceH12() : Container(),
-              Responsive.isMobile(context) ? Container() : Row(
+              Responsive.isMobile(context) || assignedUser == null ? Container() : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CustomTextTitle(title: StringConst.ASSIGNED_USER),
-                  CustomTextBold(title: '${user.firstName} ${user.lastName}',
+                  CustomTextBold(title: '${assignedUser.firstName} ${assignedUser.lastName}',
                     color: AppColors.primary900,),
                 ],
               ),
               SpaceH20(),
-              Responsive.isMobile(context) ? Container() : Column(
+              Responsive.isMobile(context) || assignedUser == null ? Container() : Column(
                 children: [
                   Container(
                       constraints: BoxConstraints(
@@ -187,16 +185,16 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
                       )),
                 ],
               ),
-              Responsive.isMobile(context) ? Container() : SpaceH30(),
+              Responsive.isMobile(context) || assignedUser == null ? Container() : SpaceH30(),
               Flex(
                 direction: Responsive.isMobile(context) || Responsive.isDesktopS(context) ? Axis.vertical : Axis.horizontal,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ContactDetail(
-                    widget: _buildMyUserPhoto(context, user.profilePic!.src),
-                    title: '${user.firstName} ${user.lastName}',
+                  assignedUser == null ? Container() : ContactDetail(
+                    widget: _buildMyUserPhoto(context, assignedUser.profilePic!.src),
+                    title: '${assignedUser.firstName} ${assignedUser.lastName}',
                     description: StringConst.ASSIGNED_CONTACT_DESCRIPTION,
-                    icon: _buildEntityActionsContact(context, user, socialEntity),
+                    icon: _buildEntityActionsContact(context, assignedUser, socialEntity),
                   ),
                   ContactDetail(
                     widget: _buildMyUserPhoto(context, socialEntity.photo!),
@@ -276,7 +274,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
     );
   }
 
-  Widget _buildEntityActionsContact(BuildContext context, UserEnreda user, SocialEntity socialEntity) {
+  Widget _buildEntityActionsContact(BuildContext context, UserEnreda? assignedUser, SocialEntity socialEntity) {
     return Container(
       height: 40,
       width: double.infinity,
@@ -304,20 +302,20 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
               height: 15,
               child: VerticalDivider(color: AppColors.white,)),
           SpaceW4(),
-          CardButtonContact(
+          assignedUser == null ? Container() : CardButtonContact(
             title: '',
             icon: Image.asset(ImagePath.WHATSAPP_ICON, width: 30,),
             color: Colors.transparent,
             onTap: (){
               kIsWeb ? sendWhatsAppWebMessage(
                   socialEntity.contactMobilePhone!,
-                  StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2) :
+                  StringConst.HELLO_WP_MESSAGE1 + assignedUser.firstName! + StringConst.HELLO_WP_MESSAGE2) :
               Responsive.isMobile(context) ? openWhatsAppMobile(
                   context, socialEntity.contactMobilePhone!,
-                  StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2) :
+                  StringConst.HELLO_WP_MESSAGE1 + assignedUser.firstName! + StringConst.HELLO_WP_MESSAGE2) :
               sendWhatsAppWebMessage(
                   socialEntity.contactMobilePhone!,
-                  StringConst.HELLO_WP_MESSAGE1 + user.firstName! + StringConst.HELLO_WP_MESSAGE2);
+                  StringConst.HELLO_WP_MESSAGE1 + assignedUser.firstName! + StringConst.HELLO_WP_MESSAGE2);
             },
           ),
         ],

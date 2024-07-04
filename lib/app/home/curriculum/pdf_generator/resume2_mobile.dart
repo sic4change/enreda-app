@@ -184,7 +184,7 @@ Future<Uint8List> generateResume2(
                           ),
                           pw.SizedBox(width: 4),
                           pw.Text(myCustomPhone,
-                              textScaleFactor: 1,
+                              textScaleFactor: 0.9,
                               style: pw.Theme.of(context)
                                   .defaultTextStyle
                                   .copyWith(
@@ -216,21 +216,21 @@ Future<Uint8List> generateResume2(
                                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                                     children: [
                                       pw.Text('${city ?? ''}',
-                                          textScaleFactor: 0.9,
+                                          textScaleFactor: 0.8,
                                           style: pw.Theme.of(context)
                                               .defaultTextStyle
                                               .copyWith(
                                               fontWeight: pw.FontWeight.normal,
                                               color: grey)),
                                       pw.Text('${province ?? ''}',
-                                          textScaleFactor: 0.9,
+                                          textScaleFactor: 0.8,
                                           style: pw.Theme.of(context)
                                               .defaultTextStyle
                                               .copyWith(
                                               fontWeight: pw.FontWeight.normal,
                                               color: grey)),
                                       pw.Text('${country?.toUpperCase() ?? ''}',
-                                          textScaleFactor: 0.9,
+                                          textScaleFactor: 0.8,
                                           style: pw.Theme.of(context)
                                               .defaultTextStyle
                                               .copyWith(
@@ -261,7 +261,7 @@ Future<Uint8List> generateResume2(
                     for (var data in languages!)
                       _BlockSimpleList(
                         title: data.name,
-                        color: primary900,
+                        color: grey,
                         dotsSpeaking: data.speakingLevel,
                         dotsWriting: data.writingLevel,
                       ),
@@ -671,7 +671,7 @@ class _UrlText extends pw.StatelessWidget {
     return pw.UrlLink(
         destination: url,
         child: pw.Text(text,
-            textScaleFactor: 0.9,
+            textScaleFactor: 0.8,
             style: pw.Theme.of(context)
                 .defaultTextStyle
                 .copyWith(

@@ -155,13 +155,13 @@ Future<Uint8List> generateResume1(
                                       ),
                                       pw.SizedBox(width: 4),
                                       pw.Text(myCustomPhone,
-                                          textScaleFactor: 0.8,
+                                          textScaleFactor: 0.9,
                                           textAlign: pw.TextAlign.start,
                                           style: pw.Theme.of(context)
                                               .defaultTextStyle
                                               .copyWith(
                                               fontWeight: pw.FontWeight.normal,
-                                              color: primary900)) ,
+                                              color: grey)) ,
                                     ]
                                 ) : pw.Container(),
                                 pw.SizedBox(height: 5),
@@ -194,21 +194,21 @@ Future<Uint8List> generateResume1(
                                                           .defaultTextStyle
                                                           .copyWith(
                                                           fontWeight: pw.FontWeight.normal,
-                                                          color: primary900)),
+                                                          color: grey)),
                                                   pw.Text('${province ?? ''}',
                                                       textScaleFactor: 0.8,
                                                       style: pw.Theme.of(context)
                                                           .defaultTextStyle
                                                           .copyWith(
                                                           fontWeight: pw.FontWeight.normal,
-                                                          color: primary900)),
+                                                          color: grey)),
                                                   pw.Text('${country ?? ''}',
                                                       textScaleFactor: 0.8,
                                                       style: pw.Theme.of(context)
                                                           .defaultTextStyle
                                                           .copyWith(
                                                           fontWeight: pw.FontWeight.normal,
-                                                          color: primary900)),
+                                                          color: grey)),
                                                 ]
                                             )
                                           ]
@@ -224,7 +224,7 @@ Future<Uint8List> generateResume1(
                                       for (var data in languages!)
                                         _BlockSimpleList(
                                           title: data.name,
-                                          color: primary900,
+                                          color: grey,
                                           dotsSpeaking: data.speakingLevel,
                                           dotsWriting: data.writingLevel,
                                         ),
@@ -292,11 +292,16 @@ Future<Uint8List> generateResume1(
                             descriptionDate:'${experience.startDate != null ? formatter.format(experience.startDate!.toDate())
                                 : '-'} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
                             descriptionPlace: '${experience.location}',
-                            descriptionActivities: experience.professionActivitiesText!
+                            descriptionActivities:
+                            experience.professionActivitiesText != null ? experience.professionActivitiesText!
                                 .split(' / ')
                                 .where((item) => item.isNotEmpty) // Filter out empty items.
                                 .map((item) => '• $item')         // Prefix each item with a bullet point.
-                                .join('\n'),
+                                .join('\n') :
+                            experience.professionActivities
+                                .where((item) => item.isNotEmpty) // Filter out empty items.
+                                .map((item) => '• $item')         // Prefix each item with a bullet point.
+                                .join('\n')
                           ),
                         pw.SizedBox(height: 5),
 
@@ -348,7 +353,7 @@ Future<Uint8List> generateResume1(
                         for (var data in competenciesNames!)
                           _BlockSimpleListLabel(
                               title: data,
-                              color: primary900
+                              color: grey
                           ),
                       ],
                     ),
@@ -621,7 +626,7 @@ class _UrlText extends pw.StatelessWidget {
                 .defaultTextStyle
                 .copyWith(
                 fontWeight: pw.FontWeight.normal,
-                color: primary900))
+                color: grey))
     );
   }
 }
@@ -872,7 +877,7 @@ class _BlockIcon extends pw.StatelessWidget {
                         .defaultTextStyle
                         .copyWith(
                         fontWeight: pw.FontWeight.bold,
-                        color: primary900)),
+                        color: grey)),
               ) : pw.Container()
             ]),
         pw.SizedBox(height: 2),
@@ -887,7 +892,7 @@ class _BlockIcon extends pw.StatelessWidget {
                         .defaultTextStyle
                         .copyWith(
                         fontWeight: pw.FontWeight.bold,
-                        color: primary900)),
+                        color: grey)),
               ) : pw.Container()
             ]),
         pw.SizedBox(height: 2),
@@ -911,7 +916,7 @@ class _BlockIcon extends pw.StatelessWidget {
                       .defaultTextStyle
                       .copyWith(
                       fontWeight: pw.FontWeight.normal,
-                      color: primary900)) ,
+                      color: grey)) ,
             ]
         ) : pw.Container(),
         pw.SizedBox(height: 7),

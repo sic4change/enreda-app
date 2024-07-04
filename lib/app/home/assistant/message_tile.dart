@@ -48,6 +48,26 @@ class _MessageTileState extends State<MessageTile> {
   List<String> _choicesSelected = [];
   List<Choice> _choices = [];
   DateTime dateResponse = DateTime.now();
+  TextEditingController? _dateController;
+  bool _isAwaitingCompletion = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _dateController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    if (!_isAwaitingCompletion) {
+      _dateController?.dispose();
+    }
+    super.dispose();
+  }
+
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +137,7 @@ class _MessageTileState extends State<MessageTile> {
                       widget.question.negativeResponse!.text,
                     ],
                     onChanged: (val) {
-                      setState(() {
+                      setStateIfMounted(() {
                         widget.currentChoicesNotifier.value = [
                           Choice(id: '', name: val)
                         ];
@@ -127,47 +147,44 @@ class _MessageTileState extends State<MessageTile> {
               widget.chatQuestion.userResponse == null)
             _choices.isNotEmpty
                 ? Container(
-                    alignment: Alignment.center,
-                    child: widget.question.optionsToSelect == 1
-                        ? _buildSingleChoiceResponse(
-                            source: _choices.map((e) => e.name).toList(),
-                            onChanged: (val) {
-                              setState(() {
-                                _choicesSelected = [val];
-                                //_choices.forEach((element) {widget.sourceAutoCompleteNotifier.value.add(element.name);});
-                                final choice = _choices.firstWhere(
-                                    (element) => element.name == val);
-                                widget.currentChoicesNotifier.value = [
-                                  Choice(
-                                      id: choice.id,
-                                      name: choice.name,
-                                      competencies: choice.competencies),
-                                ];
-                                if (choice.activities.isNotEmpty) {
-                                  MessageTile.recommendedActivities.clear();
-                                  choice.activities.forEach((activityId) {
-                                    database
-                                        .activityStream(activityId)
-                                        .first
-                                        .then((activity) => MessageTile
-                                            .recommendedActivities
-                                            .add(activity.name));
-                                  });
-                                }
+                alignment: Alignment.center,
+                child: widget.question.optionsToSelect == 1
+                    ? _buildSingleChoiceResponse(
+                    source: _choices.map((e) => e.name).toList(),
+                    onChanged: (val) {
+                      setStateIfMounted(() {
+                        _choicesSelected = [val];
+                        //_choices.forEach((element) {widget.sourceAutoCompleteNotifier.value.add(element.name);});
+                        final choice = _choices.firstWhere(
+                                (element) => element.name == val);
+                        widget.currentChoicesNotifier.value = [
+                          Choice(
+                              id: choice.id,
+                              name: choice.name,
+                              competencies: choice.competencies),
+                        ];
+                        if (choice.activities.isNotEmpty) {
+                          MessageTile.recommendedActivities.clear();
+                          choice.activities.forEach((activityId) {
+                            database
+                                .activityStream(activityId)
+                                .first
+                                .then((activity) => MessageTile
+                                .recommendedActivities
+                                .add(activity.name));
+                          });
+                        }
 
-                                if (widget.question.experienceField ==
-                                    StringConst.EXPERIENCE_TYPE_FIELD)
-                                  MessageTile.experienceTypeId = choice.id;
-                                if (widget.question.experienceField ==
-                                    StringConst.EXPERIENCE_SUBTYPE_FIELD)
-                                  MessageTile.experienceSubtypeId = choice.id;
-                              });
-                            })
-                        : _buildMultiChoiceResponse(context))
+                        if (widget.question.experienceField ==
+                            StringConst.EXPERIENCE_TYPE_FIELD)
+                          MessageTile.experienceTypeId = choice.id;
+                        if (widget.question.experienceField ==
+                            StringConst.EXPERIENCE_SUBTYPE_FIELD)
+                          MessageTile.experienceSubtypeId = choice.id;
+                      });
+                    })
+                    : _buildMultiChoiceResponse(context))
                 : CircularProgressIndicator(),
-          if (widget.question.type == StringConst.DATE_QUESTION &&
-              widget.chatQuestion.userResponse == null)
-            _buildDateResponse(),
           if (widget.chatQuestion.userResponse != null) _buildUserResponse(),
         ],
       ),
@@ -201,8 +218,6 @@ class _MessageTileState extends State<MessageTile> {
 
   Widget _buildSingleChoiceResponse(
       {required List<String> source, required Function(String) onChanged}) {
-
-
     return source.length <= 9  || Responsive.isMobile(context) || (widget.showSportOptions?.value ?? false) ?
     ChipsChoice<String>.single(
       choiceItems: C2Choice.listFrom<String, String>(
@@ -251,7 +266,7 @@ class _MessageTileState extends State<MessageTile> {
             context,
             title: StringConst.CHAT_TITLE_QUESTION,
             content:
-                StringConst.CHAT_MESSAGE_WARNING + '${widget.question.optionsToSelect!}',
+            StringConst.CHAT_MESSAGE_WARNING + '${widget.question.optionsToSelect!}',
             defaultActionText: StringConst.FORM_ACCEPT,
           );
         }
@@ -266,12 +281,12 @@ class _MessageTileState extends State<MessageTile> {
           );
         }*/
         else {
-          setState(() {
+          setStateIfMounted(() {
             _choicesSelected = val;
             widget.currentChoicesNotifier.value.clear();
             val.forEach((choiceName) {
               final choice =
-                  _choices.firstWhere((choice) => choice.name == choiceName);
+              _choices.firstWhere((choice) => choice.name == choiceName);
               widget.currentChoicesNotifier.value.add(Choice(
                   id: choice.id,
                   name: choice.name,
@@ -290,49 +305,6 @@ class _MessageTileState extends State<MessageTile> {
     );
   }
 
-  Widget _buildDateResponse() {
-    return Container(
-      width: 150.0,
-      height: 80.0,
-      margin: EdgeInsets.only(left: 20),
-      padding: EdgeInsets.all(20),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(50)),
-      ),
-      child: DateTimeField(
-        initialValue: dateResponse,
-        format: DateFormat('MM/yyyy'),
-        decoration: InputDecoration(
-          suffixIcon: Icon(
-            Icons.event,
-          ),
-        ),
-        style: Theme.of(context).textTheme.bodyLarge,
-        onShowPicker: (context, currentValue) {
-          return showDatePicker(
-            context: context,
-            locale: Locale('es', 'ES'),
-            firstDate: new DateTime(DateTime.now().year - 100,
-                DateTime.now().month, DateTime.now().day),
-            initialDate: currentValue ?? DateTime.now(),
-            lastDate: DateTime.now(),
-            initialEntryMode: DatePickerEntryMode.calendarOnly,
-          );
-        },
-        onChanged: (dateTime) {
-          setState(() {
-            dateResponse = dateTime!;
-            widget.currentChoicesNotifier.value = [
-              Choice(id: '', name: dateResponse.toString())
-            ];
-          });
-        },
-      ),
-    );
-  }
-
   Widget _buildUserResponse() {
     String userText = widget.chatQuestion.userResponse!;
     if (widget.question.type == StringConst.MULTICHOICE_QUESTION &&
@@ -343,7 +315,6 @@ class _MessageTileState extends State<MessageTile> {
       final year = '${DateTime.parse(userText).year}';
       userText = '$month/$year';
     }
-
     return Container(
       padding: EdgeInsets.only(
           top: 8,
@@ -386,24 +357,24 @@ class _MessageTileState extends State<MessageTile> {
 
     database.choicesStream(widget.question.choicesCollection!, typeId, subtypeId).first
         .then((value) => value.forEach((choice) {
-              setState(() {
-                if (!_choices.any((element) => element.id == choice.id))
-                  _choices.add(choice);
+      setStateIfMounted(() {
+        if (!_choices.any((element) => element.id == choice.id))
+          _choices.add(choice);
 
-                if (widget.question.choicesCollection == StringConst.ACTIVITIES_CHOICES &&
-                    _choicesSelected.contains(choice.name)) {
-                  if (!widget.currentChoicesNotifier.value.any((element) => element.id == choice.id))
-                    widget.currentChoicesNotifier.value.add(choice);
-                }
-                _choices.forEach((element) {widget.sourceAutoCompleteNotifier.value.add(element);});
-              });
-            }))
+        if (widget.question.choicesCollection == StringConst.ACTIVITIES_CHOICES &&
+            _choicesSelected.contains(choice.name)) {
+          if (!widget.currentChoicesNotifier.value.any((element) => element.id == choice.id))
+            widget.currentChoicesNotifier.value.add(choice);
+        }
+        _choices.forEach((element) {widget.sourceAutoCompleteNotifier.value.add(element);});
+      });
+    }))
         .whenComplete(() {
-          if (!_choices.any((c) => c.order == null)) {
-            _choices.sort((a,b) => a.order!.compareTo(b.order!));
-          } else {
-            _choices.sort((a, b) => _choicesSelected.contains(a.name) ? 1 : -1);
-          }
+      if (!_choices.any((c) => c.order == null)) {
+        _choices.sort((a,b) => a.order!.compareTo(b.order!));
+      } else {
+        _choices.sort((a, b) => _choicesSelected.contains(a.name) ? 1 : -1);
+      }
     });
   }
 }

@@ -510,7 +510,8 @@ class StringConst {
   static const String CHAT_ANSWER_QUESTION = 'Escriba una respuesta';
   static const String CHAT_SELECT1_QUESTION = 'Selecciona al menos ';
   static const String CHAT_SELECT2_QUESTION = ' actividades';
-  static const String CHAT_WRITE = 'Escribe algo...';
+  static const String CHAT_WRITE = 'Escribe tu respuesta';
+  static const String CHAT_WRITE_DATE = 'Elige una fecha';
   static const String CHAT_SELECT = 'No he entendido tu respuesta. Selecciona una de las posibles';
   static const String CHAT_SEARCH = 'Busca por nombre';
   static const String CHAT_MESSAGE_WARNING = 'Número máximo de respuestas a seleccionar: ';

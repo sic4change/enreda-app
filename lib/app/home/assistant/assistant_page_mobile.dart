@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:enreda_app/app/home/assistant/simple_text_style.dart';
 import 'package:enreda_app/app/home/models/chatQuestion.dart';
 import 'package:enreda_app/app/home/models/choice.dart';
@@ -19,6 +20,7 @@ import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import '../../anallytics/analytics.dart';
@@ -35,6 +37,7 @@ class AssistantPageMobile extends StatefulWidget {
 
 class _AssistantPageMobileState extends State<AssistantPageMobile> {
   TextEditingController messageEditingController = new TextEditingController();
+  TextEditingController dateEditingController = new TextEditingController();
   List<Question> questions = [];
   List<ChatQuestion> chatQuestions = [];
   ValueNotifier<List<Choice>> currentChoicesNotifier =
@@ -43,8 +46,10 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
   List<List<Choice>> choicesLog = [];
   ValueNotifier<bool> isWritingNotifier = ValueNotifier<bool>(false);
   ValueNotifier<bool> isTextEnabledNotifier = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isDateEnabledNotifier = ValueNotifier<bool>(false);
+  bool isDateVisible = false;
   late ChatQuestion _currentChatQuestion;
-
+  DateTime? dateResponse;
   Map<String, int> userCompetencies = {};
 
   void setStateIfMounted(f) {
@@ -55,6 +60,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
   void initState() {
     super.initState();
     _resetQuestions();
+    dateResponse = DateTime.now();
     setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CHAT);
     setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
   }
@@ -64,7 +70,9 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
     currentChoicesNotifier.dispose();
     isWritingNotifier.dispose();
     isTextEnabledNotifier.dispose();
+    isDateEnabledNotifier.dispose();
     messageEditingController.dispose();
+    dateEditingController.dispose();
     MessageTile.experienceTypeId = null;
     MessageTile.experienceSubtypeId = null;
     super.dispose();
@@ -234,7 +242,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                         onPressed: () => isWriting ? {} : _editLastResponse(),
                       ));
                 }),
-            ValueListenableBuilder<bool>(
+            isDateVisible ? Container() : ValueListenableBuilder<bool>(
                 valueListenable: isTextEnabledNotifier,
                 builder: (context, isTextEnabled, child) {
                   return Expanded(
@@ -247,7 +255,7 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
-                        hintText: 'Escribe algo...',
+                        hintText: StringConst.CHAT_WRITE,
                         hintStyle: textTheme.bodySmall?.copyWith(
                           color: AppColors.primaryText1,
                           height: 1.5,
@@ -257,6 +265,48 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
                     ),
                   ));
                 }),
+            isDateVisible ? ValueListenableBuilder<bool>(
+                valueListenable: isDateEnabledNotifier,
+                builder: (context, isTextEnabled, child) {
+                  return Expanded(
+                      child: DateTimeField(
+                        controller: dateEditingController,
+                        format: DateFormat('MM/yyyy'),
+                        decoration: InputDecoration(
+                          hintText: StringConst.CHAT_WRITE_DATE,
+                          hintStyle: textTheme.bodySmall?.copyWith(
+                            color: AppColors.primaryText1,
+                            height: 1.5,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                          ),
+                          suffixIcon: Icon(
+                            Icons.event,
+                          ),
+                        ),
+                        style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                        onShowPicker: (context, currentValue) {
+                          return showDatePicker(
+                            context: context,
+                            locale: Locale('es', 'ES'),
+                            firstDate: new DateTime(DateTime.now().year - 100,
+                                DateTime.now().month, DateTime.now().day),
+                            initialDate: currentValue ?? DateTime.now(),
+                            lastDate: DateTime.now(),
+                            initialEntryMode: DatePickerEntryMode.calendarOnly,
+                          );
+                        },
+                        onChanged: (dateTime) {
+                          setState(() {
+                            dateResponse = dateTime!;
+                            currentChoicesNotifier.value = [
+                              Choice(id: '', name: dateResponse.toString())
+                            ];
+                            dateResponse = DateTime.now();
+                          });
+                        },
+                      ),);
+                }) : Container(),
             ValueListenableBuilder<List<Choice>>(
                 valueListenable: currentChoicesNotifier,
                 builder: (context, currentChoice, child) {
@@ -441,6 +491,18 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
       isTextEnabledNotifier.value = false;
     }
 
+    if (nextQuestion.type == StringConst.DATE_QUESTION) {
+      isDateEnabledNotifier.value = true;
+      setState(() {
+        isDateVisible = true;
+      });
+    } else {
+      isDateEnabledNotifier.value = false;
+      setState(() {
+        isDateVisible = false;
+      });
+    }
+
     currentChoicesNotifier.value.clear();
   }
 
@@ -547,55 +609,58 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
         await database.chatQuestionsStream(auth.currentUser!.uid).first;
 
     chatQuestions.forEach((chatQuestion) {
-      final question = questions
-          .firstWhere((question) => chatQuestion.questionId == question.id);
-      if (chatQuestion.show && question.experienceField != null) {
-        switch (question.experienceField) {
-          case 'type':
-            type = chatQuestion.userResponse!;
-            break;
-          case 'subtype':
-            subtype = chatQuestion.userResponse!;
-            break;
-          case 'activity':
-            activity = chatQuestion.userResponse!;
-            break;
-          case 'activityRole':
-            activityRole = chatQuestion.userResponse!;
-            break;
-          case 'activityLevel':
-            activityLevel = chatQuestion.userResponse;
-            break;
-          case 'professionActivities':
-            professionActivities = chatQuestion.userResponse!.split(';');
-            break;
-          case 'peopleAffected':
-            peopleAffected = chatQuestion.userResponse;
-            break;
-          case 'organization':
-            organization = chatQuestion.userResponse;
-            break;
-          case 'startDate':
-            startDate =
-                Timestamp.fromDate(DateTime.parse(chatQuestion.userResponse!));
-            break;
-          case 'endDate':
-            endDate = chatQuestion.userResponse != null
-                ? Timestamp.fromDate(DateTime.parse(chatQuestion.userResponse!))
-                : null;
-            break;
-          case 'location':
-            location = chatQuestion.userResponse!;
-            break;
-          case 'workType':
-            workType = chatQuestion.userResponse!;
-            break;
-          case 'context':
-            experienceContext = chatQuestion.userResponse!;
-            break;
-          case 'contextPlace':
-            experienceContextPlace = chatQuestion.userResponse!;
-            break;
+      final question = questions.any((question) => chatQuestion.questionId == question.id)
+          ? questions.firstWhere((question) => chatQuestion.questionId == question.id)
+          : null;
+      if (question != null) {
+        if (chatQuestion.show && question.experienceField != null) {
+          switch (question.experienceField) {
+            case 'type':
+              type = chatQuestion.userResponse!;
+              break;
+            case 'subtype':
+              subtype = chatQuestion.userResponse!;
+              break;
+            case 'activity':
+              activity = chatQuestion.userResponse!;
+              break;
+            case 'activityRole':
+              activityRole = chatQuestion.userResponse!;
+              break;
+            case 'activityLevel':
+              activityLevel = chatQuestion.userResponse;
+              break;
+            case 'professionActivities':
+              professionActivities = chatQuestion.userResponse!.split(';');
+              break;
+            case 'peopleAffected':
+              peopleAffected = chatQuestion.userResponse;
+              break;
+            case 'organization':
+              organization = chatQuestion.userResponse;
+              break;
+            case 'startDate':
+              startDate =
+                  Timestamp.fromDate(DateTime.parse(chatQuestion.userResponse!));
+              break;
+            case 'endDate':
+              endDate = chatQuestion.userResponse != null
+                  ? Timestamp.fromDate(DateTime.parse(chatQuestion.userResponse!))
+                  : null;
+              break;
+            case 'location':
+              location = chatQuestion.userResponse!;
+              break;
+            case 'workType':
+              workType = chatQuestion.userResponse!;
+              break;
+            case 'context':
+              experienceContext = chatQuestion.userResponse!;
+              break;
+            case 'contextPlace':
+              experienceContextPlace = chatQuestion.userResponse!;
+              break;
+          }
         }
       }
     });

@@ -138,7 +138,7 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
        const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
       contentPadding: Responsive.isMobile(context) ?
-        EdgeInsets.symmetric(horizontal: Sizes.mainPadding) :
+        EdgeInsets.symmetric(horizontal: 0.0) :
         EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       child: SingleChildScrollView(
         child: Column(
@@ -152,23 +152,30 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
                 },
                 child: Row(
                   children: [
-                    Image.asset(ImagePath.ARROW_B, height: 30),
+                    Padding(
+                      padding: Responsive.isMobile(context) ? const EdgeInsets.only(left: 25.0) : const EdgeInsets.all(0),
+                      child: Image.asset(ImagePath.ARROW_B, height: 30),
+                    ),
                     Spacer(),
                     CustomTextMediumBold(text: StringConst.PERSONAL_DATA),
                     Spacer(),
-                    SizedBox(width: 30),
+                    SizedBox(width: Responsive.isMobile(context) ? 55 : 30),
                   ],
                 )) : CustomTextMediumBold(text: StringConst.PERSONAL_DATA),
             Container(
-              margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble),
-              padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble),
+              margin: Responsive.isMobile(context) ? const EdgeInsets.only(top: Sizes.kDefaultPaddingDouble / 4) :
+                const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+              padding: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+                const EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble),
               decoration: BoxDecoration(
-                border: Border.all(color: Constants.lightGray, width: 1),
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                border: Border.all(color: Responsive.isMobile(context) ? Colors.white :
+                  Constants.lightGray, width: 1),
+                borderRadius: Responsive.isMobile(context) ? BorderRadius.all(Radius.circular(0.0)) :
+                  BorderRadius.all(Radius.circular(15.0)),
                 color: AppColors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
+                    color: Responsive.isMobile(context) ? Colors.transparent : Colors.grey.withOpacity(0.2),
                     spreadRadius: 2,
                     blurRadius: 5,
                     offset: Offset(0, 1), // changes position of shadow
@@ -179,7 +186,7 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                      padding: Responsive.isMobile(context) ? const EdgeInsets.all(0) : const EdgeInsets.symmetric(horizontal: 30.0),
                       child: _buildForm(context, userEnreda),
                     ),
                     _buildInterestsContainer(context),
@@ -339,12 +346,11 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
                     childRight: streamBuilderDropdownEducation(context, selectedEducation,
                         educationSetState, user, StringConst.FORM_EDUCATION),
                   ),
-                  ///Definir user assinedById cuando unemployed se registre solo, error en Contact Page
-                  // CustomFlexRowColumn(
-                  //   childLeft: Container(),
-                  //   childRight: streamBuilderForSocialEntity(context, selectedSocialEntity,
-                  //       socialEntityStreamBuilderSetState, user, StringConst.FORM_SOCIAL_ENTITY),
-                  // ),
+                  CustomFlexRowColumn(
+                    childLeft: Container(),
+                    childRight: streamBuilderForSocialEntity(context, selectedSocialEntity,
+                        socialEntityStreamBuilderSetState, user, StringConst.FORM_SOCIAL_ENTITY),
+                  ),
                   SpaceH20(),
                 ],),
             ),
@@ -354,7 +360,7 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
 
   Widget _buildInterestsContainer(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 60.0, vertical: 0.0),
+      padding:Responsive.isMobile(context) ? const EdgeInsets.symmetric(horizontal: 25.0, vertical: 0.0) : const EdgeInsets.symmetric(horizontal: 60.0, vertical: 0.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -435,9 +441,8 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
         birthday: _birthday,
         educationId: _education,
         nationality: _nationality,
-        ///Definir user assinedById cuando unemployed se registre solo
-        //assignedEntityId: _socialEntity,
-        //assignedById: ?,
+        assignedEntityId: _socialEntity,
+        //assignedById:,
       );
 
       try {
@@ -555,14 +560,17 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
   Widget _buildMyParameters(BuildContext context, UserEnreda userEnreda) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
-        padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble, horizontal: Sizes.kDefaultPaddingDouble),
+        padding: EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble,
+            horizontal: Sizes.kDefaultPaddingDouble),
         decoration: BoxDecoration(
           border: Border.all(color: AppColors.greyUltraLight, width: 1),
-          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+          borderRadius: BorderRadius.all(Responsive.isMobile(context) ? Radius.circular(0) :
+            Radius.circular(15.0)),
           color: AppColors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
+              color: Responsive.isMobile(context) ? Colors.transparent :
+                Colors.grey.withOpacity(0.2),
               spreadRadius: 2,
               blurRadius: 5,
               offset: Offset(0, 1), // changes position of shadow

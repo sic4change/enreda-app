@@ -40,6 +40,7 @@ class GamificationItem extends StatelessWidget {
           strokeCap: StrokeCap.round,
           animation: true,
           animDurationMillis: 1500,
+          interactive: false,
           child: Padding(
             padding: EdgeInsets.only(top: !Responsive.isDesktop(context) ? 4.0 : 8.0),
             child: Column(

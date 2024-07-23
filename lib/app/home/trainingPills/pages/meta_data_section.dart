@@ -25,6 +25,7 @@ class MetaDataSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _Text('Duración', '${value.metaData.duration.inMinutes.toString()} min'),
+                  /*
                   const Spacer(),
                   Text('Velocidad :', style: Theme.of(context).textTheme.bodySmall!.copyWith(
                     fontWeight: FontWeight.w300,
@@ -64,6 +65,7 @@ class MetaDataSection extends StatelessWidget {
                       );
                     },
                   ),
+                  */
                 ],
               ),
             ],

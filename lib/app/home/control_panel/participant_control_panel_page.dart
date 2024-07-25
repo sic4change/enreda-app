@@ -401,7 +401,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                 height: Responsive.isMobile(context) ? 360 : MediaQuery.sizeOf(context).height * 0.4,
                 //width: 340.0,
                 width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width * 0.7 :
-                  Responsive.isDesktopS(context) ? MediaQuery.of(context).size.width * 0.5 : MediaQuery.sizeOf(context).width * 0.2,
+                  Responsive.isDesktopS(context) ? 300 : 350,
                 borderColor: AppColors.greyAlt.withOpacity(0.15),
                 child: SingleChildScrollView(
                   physics: NeverScrollableScrollPhysics(),
@@ -416,7 +416,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                           });
                         },
                         child: Transform.scale(
-                          scale: Responsive.isMobile(context) ? 0.25 : 0.33,
+                          scale: Responsive.isMobile(context) ? 0.25 : Responsive.isDesktopS(context) ? 0.29 : 0.33,
                           child: MyCurriculumPage(
                             mini: true,
                           ),

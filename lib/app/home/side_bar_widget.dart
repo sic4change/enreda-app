@@ -36,7 +36,6 @@ class _SideBarWidgetState extends State<SideBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen = MediaQuery.of(context).size.width < 600;
     TextTheme textTheme = Theme.of(context).textTheme;
     return SidebarX(
       animationDuration: const Duration(milliseconds: 0),
@@ -100,10 +99,10 @@ class _SideBarWidgetState extends State<SideBarWidget> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                isSmallScreen ? Image.asset(
+                Image.asset(
                   ImagePath.LOGO,
                   height: 30,
-                ) : Container(),
+                ),
                 Column(
                   children: [
                     SizedBox(height: 20),
@@ -154,7 +153,6 @@ class _SideBarWidgetState extends State<SideBarWidget> {
   }
 
   Widget _buildMyUserPhoto(BuildContext context, String profilePic) {
-    final isSmallScreen = MediaQuery.of(context).size.width < 600;
     return InkWell(
       onTap: () {
         setState(() {
@@ -187,14 +185,14 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                     profilePic == "" ?
                     Container(
                       color:  Colors.transparent,
-                      height: isSmallScreen ? 80 : 100,
-                      width: isSmallScreen ? 80 : 100,
+                      height: 100,
+                      width: 100,
                       child: Image.asset(ImagePath.USER_DEFAULT),
                     ) :
                     Image.network(
                       profilePic,
-                      width: isSmallScreen ? 80 : 100,
-                      height: isSmallScreen ? 80 : 100,
+                      width: 100,
+                      height: 100,
                       fit: BoxFit.cover,
                       alignment: Alignment.center,
                     ),
@@ -215,16 +213,16 @@ class _SideBarWidgetState extends State<SideBarWidget> {
                   profilePic == "" ?
                   Container(
                     color:  Colors.transparent,
-                    height: isSmallScreen ? 80 : 100,
-                    width: isSmallScreen ? 80 : 100,
+                    height: 100,
+                    width: 100,
                     child: Image.asset(ImagePath.USER_DEFAULT),
                   ) :
                   Container(
                     child: FadeInImage.assetNetwork(
                       image: profilePic,
                       placeholder: ImagePath.USER_DEFAULT,
-                      width: isSmallScreen ? 80 : 100,
-                      height: isSmallScreen ? 80 : 100,
+                      width: 100,
+                      height: 100,
                       fit: BoxFit.cover,
                       alignment: Alignment.center,
                     ),

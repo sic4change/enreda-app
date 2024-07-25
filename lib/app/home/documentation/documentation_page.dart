@@ -41,7 +41,7 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
     late int documentsCount = 0;
-    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+    final isSmallScreen = Responsive.isMobile(context);
     return RoundedContainer(
       height: MediaQuery.of(context).size.height,
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :

@@ -133,7 +133,7 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
   }
 
     Widget _buildMainDataContainer(BuildContext context, UserEnreda userEnreda) {
-    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+    final isSmallScreen = Responsive.isMobile(context);
     return RoundedContainer(
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
        const EdgeInsets.all(Sizes.kDefaultPaddingDouble),

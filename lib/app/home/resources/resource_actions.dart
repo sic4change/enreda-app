@@ -10,10 +10,12 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/const.dart';
+import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:layout/layout.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -76,7 +78,7 @@ Future<void> shareResource(Resource resource) async {
 }
 
 void showAlertNullUser(BuildContext context) async {
-  final isSmallScreen = MediaQuery.of(context).size.width < 600;
+  final isSmallScreen = Responsive.isMobile(context);
   final signIn = await showAlertDialog(context,
       title: '¿Te interesa este recurso?',
       content:

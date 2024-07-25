@@ -333,7 +333,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
   }
 
   void _showAlertNullUser(BuildContext context) async {
-    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+    final isSmallScreen = Responsive.isMobile(context);
     final signIn = await showAlertDialog(context,
         title: StringConst.NOT_LOGIN,
         content: StringConst.ASK_LOGIN,

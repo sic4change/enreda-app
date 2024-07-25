@@ -158,12 +158,11 @@ class _GamificationState extends State<GamificationPage> {
   }
 
   Widget _gamificationMobile(){
-    final isSmallScreen = MediaQuery.of(context).size.width < 600;
     return SingleChildScrollView(
       controller: ScrollController(),
       child: Column(
         children: [
-          isSmallScreen ? InkWell(
+          Responsive.isMobile(context) ? InkWell(
             onTap: () {
               setStateIfMounted(() {
                 WebHome.controller.selectIndex(0);});

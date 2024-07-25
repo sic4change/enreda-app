@@ -213,7 +213,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
   }
 
   Widget _buildMyUserPhoto(BuildContext context, String profilePic) {
-    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+    final isSmallScreen = Responsive.isMobile(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,

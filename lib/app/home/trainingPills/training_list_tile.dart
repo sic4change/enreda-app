@@ -46,7 +46,7 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 12, 13, md: 12);
     double sidePadding = responsiveSize(context, 15, 20, md: 17);
-    final isBigScreen = MediaQuery.of(context).size.width >= 900;
+    final isBigScreen =Responsive.isDesktop(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(

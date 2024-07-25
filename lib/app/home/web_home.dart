@@ -159,11 +159,11 @@ class _WebHomeState extends State<WebHome> {
     return ValueListenableBuilder<int>(
         valueListenable: WebHome.selectedIndex,
         builder: (context, selectedIndex, child) {
-          final isSmallScreen = MediaQuery.of(context).size.width < 600;
+          final isSmallScreen = Responsive.isMobile(context);
           return Scaffold(
             key: _key,
             appBar: isSmallScreen ? null : AppBar(
-              toolbarHeight: !isSmallScreen ? 100 : 80,
+              toolbarHeight: 100,
               elevation: 1.0,
               backgroundColor: Colors.white,
               surfaceTintColor: Colors.transparent,
@@ -366,16 +366,15 @@ class _WebHomeState extends State<WebHome> {
   }
 
   Widget _buildContentAnonymous(BuildContext context){
-    final auth = Provider.of<AuthBase>(context, listen: false);
     TextTheme textTheme = Theme.of(context).textTheme;
     return ValueListenableBuilder<int>(
         valueListenable: WebHome.selectedIndex,
         builder: (context, selectedIndex, child) {
-          final isSmallScreen = MediaQuery.of(context).size.width < 600;
+          final isSmallScreen = Responsive.isMobile(context);
           return Scaffold(
             key: _key,
             appBar: isSmallScreen ? null : AppBar(
-              toolbarHeight: !isSmallScreen ? 100 : 80,
+              toolbarHeight: 100,
               elevation: 1.0,
               backgroundColor: Colors.white,
               surfaceTintColor: Colors.transparent,

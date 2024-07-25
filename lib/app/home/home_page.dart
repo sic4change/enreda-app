@@ -39,23 +39,21 @@ class _HomePageState extends State<HomePage> {
     return StreamBuilder<User?>(
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
-          return LayoutBuilder(builder: (context, constraints) {
-            final isBigScreen = constraints.maxWidth >= 600;
-            return !snapshot.hasData && !kIsWeb
-                ? OnboardingCarrusel()
-                : Stack(
-                  children: [
-                    isBigScreen ? WebHome(showChatNotifier: showChatNotifier)
-                    : snapshot.hasData
-                        ? CupertinoScaffold(
-                        showChatNotifier: showChatNotifier)
-                        : CupertinoScaffoldAnonymous(
-                        showChatNotifier: showChatNotifier),
-                    if (snapshot.hasData && isBigScreen) _buildChatFAB(context),
-                    if (snapshot.hasData && isBigScreen) _buildChatContainer(),
-                  ],
-                );
-          });
+          final isBigScreen = !Responsive.isMobile(context);
+          return !snapshot.hasData && !kIsWeb
+              ? OnboardingCarrusel()
+              : Stack(
+            children: [
+              isBigScreen ? WebHome(showChatNotifier: showChatNotifier)
+                  : snapshot.hasData
+                  ? CupertinoScaffold(
+                  showChatNotifier: showChatNotifier)
+                  : CupertinoScaffoldAnonymous(
+                  showChatNotifier: showChatNotifier),
+              if (snapshot.hasData && isBigScreen) _buildChatFAB(context),
+              if (snapshot.hasData && isBigScreen) _buildChatContainer(),
+            ],
+          );
         });
   }
 

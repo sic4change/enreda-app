@@ -48,12 +48,12 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
-    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+    final isSmallScreen = Responsive.isMobile(context);
     return RoundedContainer(
       height: MediaQuery.of(context).size.height,
-      margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+      margin: isSmallScreen ? const EdgeInsets.all(0) :
         const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-          contentPadding: Responsive.isMobile(context) ?
+          contentPadding: isSmallScreen ?
         EdgeInsets.symmetric(horizontal: Constants.mainPadding) :
         EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       child: SingleChildScrollView(

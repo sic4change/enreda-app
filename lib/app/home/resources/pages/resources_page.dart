@@ -375,7 +375,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   Widget _buildFilteredResourcesPage(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    final isBigScreen = MediaQuery.of(context).size.width >= 900;
+    final isBigScreen = Responsive.isDesktop(context);
     return Stack(
       children: [
         Container(
@@ -506,8 +506,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
   }
 
   Widget _buildTrainingPills(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
-    final isBigScreen = MediaQuery.of(context).size.width >= 900;
     return Stack(
       children: [
         Container(

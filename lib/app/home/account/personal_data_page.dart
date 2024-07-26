@@ -1,5 +1,6 @@
 import 'package:enreda_app/app/home/account/personal_data_form.dart';
 import 'package:enreda_app/app/home/models/interest.dart';
+import 'package:enreda_app/app/home/models/specificinterest.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
@@ -24,6 +25,8 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
     Set<Interest> userInterests = Set.from([]);
     Set<Interest> interests = {};
     List<String> interestsSelectedName = [];
+    Set<SpecificInterest> specificInterests = {};
+
     return StreamBuilder<UserEnreda>(
         stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
         builder: (context, snapshot) {
@@ -51,10 +54,21 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
                                       for (Interest interest in userInterests) {
                                         interestsSelectedName.add(interest.name);
                                       }
-                                      return PersonalDataForm(
-                                        user: user,
-                                        interestsSet: interests,
-                                        userInterestsSelectedName: interestsSelectedName,
+                                      return StreamBuilder<List<SpecificInterest>>(
+                                          stream: database.specificInterestsStream(),
+                                          builder: (context, snapshot) {
+                                            if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                                            if (snapshot.hasData) {
+                                              specificInterests = snapshot.data!.toSet();
+                                              return PersonalDataForm(
+                                                user: user,
+                                                interestsSet: interests,
+                                                userInterestsSelectedName: interestsSelectedName,
+                                                specificInterestsSet: specificInterests,
+                                              );
+                                            }
+                                            return Container();
+                                          }
                                       );
                                     }
                                     return Container();
@@ -67,6 +81,7 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
                       user: user,
                       interestsSet: interests,
                       userInterestsSelectedName: interestsSelectedName,
+                      specificInterestsSet: specificInterests,
                     );
                   }
                   return Container();

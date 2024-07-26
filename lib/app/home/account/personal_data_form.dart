@@ -18,6 +18,7 @@ import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_g
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_nation.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_province.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_social_entity.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_specificInterests.dart';
 import 'package:enreda_app/common_widgets/custom_text_form_field_title.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/flex_row_column.dart';
@@ -50,10 +51,12 @@ class PersonalDataForm extends StatefulWidget {
     required this.user,
     required this.interestsSet,
     required this.userInterestsSelectedName,
+    required this.specificInterestsSet,
   }) : super(key: key);
   final UserEnreda user;
   final Set<Interest> interestsSet;
   final List<String> userInterestsSelectedName;
+  final Set<SpecificInterest> specificInterestsSet;
 
   @override
   State<PersonalDataForm> createState() => _PersonalDataFormState();
@@ -87,12 +90,15 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
   Education? selectedEducation;
   SocialEntity? selectedSocialEntity;
   Set<Interest> _interests = Set.from([]);
-  List<String> specificInterests = [];
   List<String> _selectedInterestsNameList = [];
-  Set<SpecificInterest> selectedSpecificInterestsSet = {};
+
+  Set<SpecificInterest> selectedSpecificInterests = {};
+  String specificInterestsNames = "";
+
   bool? profileDataChanged;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _textFieldController = TextEditingController();
+  TextEditingController textEditingControllerSpecificInterests = TextEditingController();
 
   @override
   void initState() {
@@ -115,6 +121,12 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
     _phoneCode = '${user.phone?[0]}${user.phone?[1]}${user.phone?[2]}';
     _interests = widget.interestsSet;
     _selectedInterestsNameList = widget.userInterestsSelectedName;
+    selectedSpecificInterests = widget.specificInterestsSet.where((s) => user.specificInterests.contains(s.specificInterestId)).toSet();
+    var concatenate = StringBuffer();
+    selectedSpecificInterests.forEach((item){
+      concatenate.write(item.name +' / ');
+    });
+    textEditingControllerSpecificInterests.text = concatenate.toString();
   }
 
   @override
@@ -359,6 +371,9 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
   }
 
   Widget _buildInterestsContainer(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    double fontSize = responsiveSize(context, 14, 16, md: 15);
+
     return Padding(
       padding:Responsive.isMobile(context) ? const EdgeInsets.symmetric(horizontal: 25.0, vertical: 0.0) : const EdgeInsets.symmetric(horizontal: 60.0, vertical: 0.0),
       child: Column(
@@ -408,6 +423,59 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
                   ),
                 )
               : Container(),
+          SpaceH20(),
+          Text(
+            StringConst.FORM_SPECIFIC_INTERESTS,
+            style: TextStyle(
+                fontFamily: GoogleFonts.outfit().fontFamily,
+                fontWeight: FontWeight.w300,
+                color: AppColors.primary900,
+                fontSize: 24.0),
+          ),
+          SpaceH20(),
+          Padding(
+            padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
+            child: Container(
+              height: 60,
+              child: TextFormField(
+                controller: textEditingControllerSpecificInterests,
+                decoration: InputDecoration(
+                  labelText: StringConst.FORM_SPECIFIC_INTERESTS,
+                  labelStyle: textTheme.bodySmall?.copyWith(
+                    color: AppColors.greyDark,
+                    height: 1.5,
+                    fontWeight: FontWeight.w400,
+                    fontSize: fontSize,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: AppColors.greyUltraLight,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: AppColors.greyUltraLight,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+                onTap: () => _showMultiSelectSpecificInterests(context),
+                validator: (value) => value!.isNotEmpty ?
+                null : StringConst.FORM_MOTIVATION_ERROR,
+                //onSaved: (value) => value = _interestId,
+                maxLines: 2,
+                readOnly: true,
+                style: textTheme.bodySmall?.copyWith(
+                  height: 1.5,
+                  color: AppColors.greyDark,
+                  fontWeight: FontWeight.w400,
+                  fontSize: fontSize,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -424,6 +492,9 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
           .forEach((interest) {
         interestsSelectedIds.add(interest.interestId!);
       });
+
+      List<String> selectedSpecificInterestsIds = selectedSpecificInterests.map((s) => s.specificInterestId??"").toList();
+
       final updatedUser = user.copyWith(
         userId: _userId,
         firstName: _firstName,
@@ -432,6 +503,7 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
         phone: _phone,
         gender: _gender,
         interests: interestsSelectedIds,
+        specificInterests: selectedSpecificInterestsIds,
         address: Address(
             country: _country!,
             province: _province!,
@@ -661,6 +733,32 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
     );
   }
 
+  void _showMultiSelectSpecificInterests(BuildContext context) async {
+    final selectedInterests = _interests.where((i) => _selectedInterestsNameList.any((interestName) => i.name == interestName)).toSet();
+
+    final selectedValues = await showDialog<Set<SpecificInterest>>(
+      context: context,
+      builder: (BuildContext context) {
+        return streamBuilderDropdownSpecificInterests(context, selectedInterests, selectedSpecificInterests);
+        },
+      );
+      getValuesFromKeySpecificInterests(selectedValues);
+  }
+
+  void getValuesFromKeySpecificInterests (selectedValues) {
+    var concatenate = StringBuffer();
+    //List<String> specificInterestsIds = [];
+    selectedValues.forEach((item){
+      concatenate.write(item.name +' / ');
+      //specificInterestsIds.add(item.specificInterestId);
+    });
+    setState(() {
+      specificInterestsNames = concatenate.toString();
+      this.textEditingControllerSpecificInterests.text = concatenate.toString();
+      this.selectedSpecificInterests = selectedValues;
+    });
+  }
+
   Future<void> _displayReportDialog(BuildContext context) async {
     final database = Provider.of<Database>(context, listen: false);
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -796,7 +894,4 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
       print(e.toString());
     }
   }
-
-
-
 }

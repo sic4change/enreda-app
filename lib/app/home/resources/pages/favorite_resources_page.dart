@@ -108,6 +108,10 @@ class _FavoriteResourcesPageState extends State<FavoriteResourcesPage> {
                 },
                 emptyTitle: 'Sin recursos',
                 emptyMessage: 'No tienes recursos en favoritos',
+              ) : snapshot.connectionState == ConnectionState.waiting ?
+              Padding(
+                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                child: Center(child: CircularProgressIndicator(),),
               ) : NoResourcesIlustration(
                   title: StringConst.NO_FAVORITES_TITLE,
                   subtitle: StringConst.NO_RESOURCES_SUBTITLE,

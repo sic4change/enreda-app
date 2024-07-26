@@ -104,10 +104,16 @@ class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
               },
               emptyTitle: 'Sin recursos',
               emptyMessage: 'No estás inscrito a ningún recurso',
-            ) : NoResourcesIlustration(
-                title: StringConst.NO_RESOURCES_TITLE,
-                subtitle: StringConst.NO_RESOURCES_SUBTITLE,
-                imagePath: ImagePath.NO_RESOURCES,);
+            ) : snapshot.connectionState == ConnectionState.waiting ?
+            Padding(
+              padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+              child: Center(child: CircularProgressIndicator(),),
+            ) :
+            NoResourcesIlustration(
+              title: StringConst.NO_RESOURCES_TITLE,
+              subtitle: StringConst.NO_RESOURCES_SUBTITLE,
+              imagePath: ImagePath.NO_RESOURCES,
+            );
           }),
     );
   }

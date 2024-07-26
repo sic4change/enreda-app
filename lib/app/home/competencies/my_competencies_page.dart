@@ -181,11 +181,17 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
                                       ),
                                     );
                                   },
+                                )
+                                    : snapshot.connectionState == ConnectionState.waiting?
+                                Padding(
+                                  padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                                  child: Center(child: CircularProgressIndicator(),),
                                 ) :
                                 NoResourcesIlustration(
                                   title: StringConst.NO_COMPETENCIES_TITLE,
                                   subtitle: StringConst.NO_COMPETENCIES_SUBTITLE,
-                                  imagePath: ImagePath.NO_COMPETENCIES,);
+                                  imagePath: ImagePath.NO_COMPETENCIES,
+                                );
                               });
                         });
                   }),

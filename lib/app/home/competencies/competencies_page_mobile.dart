@@ -188,9 +188,9 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
             Container(
               width: 210,
               child: TextButton(
-                onPressed: () => auth.isNullUser
-                    ? _showAlertNullUser(context)
-                    : CupertinoScaffold.controller.index = 2,
+                onPressed: () => auth.isNullUser? _showAlertNullUser(context)
+                    : Responsive.isMobile(context)? CupertinoScaffold.controller.index = 2
+                    : widget.showChatNotifier.value = !widget.showChatNotifier.value,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Row(

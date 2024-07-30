@@ -1,7 +1,6 @@
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/app/sign_in/email_sign_in_form_change_notifier.dart';
-import 'package:enreda_app/app/sign_in/access/sections/background_web.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
@@ -42,7 +41,6 @@ class _AccessPageWebState extends State<AccessPageWeb> {
     double fontSize = responsiveSize(context, 20, 30, md: 22);
     return Stack(
       children: [
-        AccessBackgroundWeb(),
         Center(
           child: Container(
             height: heightSize * 0.80,
@@ -194,7 +192,6 @@ class _AccessPageWebState extends State<AccessPageWeb> {
     double fontSize = responsiveSize(context, 20, 30, md: 22);
     return Stack(
       children: [
-        AccessBackgroundWeb(),
         Center(
           child: Container(
             height: heightSize * 0.80,

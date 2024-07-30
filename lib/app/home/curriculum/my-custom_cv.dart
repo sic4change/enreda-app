@@ -193,151 +193,156 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
 
   Widget _myCurriculumWeb(BuildContext context){
     var profilePic = widget.user?.profilePic?.src ?? "";
-    return Container(
-      margin: EdgeInsets.all(20.0),
-      height: MediaQuery.of(context).size.height * 0.90,
-      width: MediaQuery.of(context).size.width * 0.80,
-      padding: EdgeInsets.all(30.0),
-      decoration: BoxDecoration(
-        color: Constants.lightLilac,
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 4.0,
-            offset: Offset(0.0, 1.0),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-              padding: EdgeInsets.only(
-                  top: 20.0, bottom: 20, right: 5, left: 20),
-              width: Responsive.isDesktop(context) ? 330 : Responsive.isDesktopS(context) ? 290.0 : 290,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                color: Constants.white,
-                shape: BoxShape.rectangle,
-                border: Border.all(color: Constants.lilac, width: 1),
-                borderRadius: BorderRadius.circular(20.0),
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: Constants.maxWidth),
+        child: Container(
+          margin: EdgeInsets.all(20.0),
+          height: MediaQuery.of(context).size.height * 0.90,
+          width: MediaQuery.of(context).size.width * 0.80,
+          padding: EdgeInsets.all(30.0),
+          decoration: BoxDecoration(
+            color: Constants.lightLilac,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(20.0),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 4.0,
+                offset: Offset(0.0, 1.0),
               ),
-              child: SingleChildScrollView(
-                controller: ScrollController(),
-                child: Padding(
-                  padding: EdgeInsets.only(right: 10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        onTap: (){
-                          setState(() {
-                            _isSelectedPhoto = !_isSelectedPhoto;
-                          });
-                        },
-                        child: Stack(
-                          children: [
-                            Padding(
-                              padding: Responsive.isMobile(context)
-                                  ? const EdgeInsets.all(8.0)
-                                  : const EdgeInsets.all(20.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  !kIsWeb ?
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.all(Radius.circular(60)),
-                                    child:
-                                    Center(
-                                      child:
-                                      profilePic == "" ?
-                                      Container(
-                                        color:  Colors.transparent,
-                                        height: 120,
-                                        width: 120,
-                                        child: Image.asset(ImagePath.USER_DEFAULT),
-                                      ):
-                                      CachedNetworkImage(
-                                          width: 120,
-                                          height: 120,
-                                          fit: BoxFit.cover,
-                                          alignment: Alignment.center,
-                                          imageUrl: profilePic),
-                                    ),
-                                  ):
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.all(Radius.circular(60)),
-                                    child:
-                                    widget.user?.profilePic?.src == "" ?
-                                    Container(
-                                      color:  Colors.transparent,
-                                      height: 120,
-                                      width: 120,
-                                      child: Image.asset(ImagePath.USER_DEFAULT),
-                                    ):
-                                    CachedNetworkImage(
-                                        width: 120,
-                                        height: 120,
-                                        fit: BoxFit.cover,
-                                        alignment: Alignment.center,
-                                        imageUrl: widget.user!.profilePic!.src),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              right: 20,
-                              top: 20,
-                              child: Icon(
-                                _isSelectedPhoto ? Icons.check_box : Icons.crop_square,
-                                color: Constants.darkGray,
-                                size: 20.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SpaceH20(),
-                      _buildPersonalData(context),
-                      SpaceH20(),
-                      _buildAboutMe(context),
-                      SpaceH20(),
-                      _buildMyDataOfInterest(context),
-                      SpaceH20(),
-                      _buildMyLanguages(context),
-                      SpaceH20(),
-                      _buildMyReferences(context),
-                      SpaceH20(),
-                    ],
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                  padding: EdgeInsets.only(
+                      top: 20.0, bottom: 20, right: 5, left: 20),
+                  width: Responsive.isDesktop(context) ? 330 : Responsive.isDesktopS(context) ? 290.0 : 290,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Constants.white,
+                    shape: BoxShape.rectangle,
+                    border: Border.all(color: Constants.lilac, width: 1),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
-                ),
-              )),
-          SpaceW20(),
-          Expanded(
-              child: SingleChildScrollView(
-                controller: ScrollController(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildCVHeader(context),
-                    SpaceH40(),
-                    _buildMyEducation(context),
-                    SpaceH40(),
-                    _buildMySecondaryEducation(context),
-                    SpaceH40(),
-                    _buildMyExperiences(context),
-                    SpaceH40(),
-                    _buildMyPersonalExperiences(context),
-                    SpaceH40(),
-                    _buildMyCompetencies(context),
-                  ],
-                ),
-              ))
-        ],
+                  child: SingleChildScrollView(
+                    controller: ScrollController(),
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          InkWell(
+                            onTap: (){
+                              setState(() {
+                                _isSelectedPhoto = !_isSelectedPhoto;
+                              });
+                            },
+                            child: Stack(
+                              children: [
+                                Padding(
+                                  padding: Responsive.isMobile(context)
+                                      ? const EdgeInsets.all(8.0)
+                                      : const EdgeInsets.all(20.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      !kIsWeb ?
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.all(Radius.circular(60)),
+                                        child:
+                                        Center(
+                                          child:
+                                          profilePic == "" ?
+                                          Container(
+                                            color:  Colors.transparent,
+                                            height: 120,
+                                            width: 120,
+                                            child: Image.asset(ImagePath.USER_DEFAULT),
+                                          ):
+                                          CachedNetworkImage(
+                                              width: 120,
+                                              height: 120,
+                                              fit: BoxFit.cover,
+                                              alignment: Alignment.center,
+                                              imageUrl: profilePic),
+                                        ),
+                                      ):
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.all(Radius.circular(60)),
+                                        child:
+                                        widget.user?.profilePic?.src == "" ?
+                                        Container(
+                                          color:  Colors.transparent,
+                                          height: 120,
+                                          width: 120,
+                                          child: Image.asset(ImagePath.USER_DEFAULT),
+                                        ):
+                                        CachedNetworkImage(
+                                            width: 120,
+                                            height: 120,
+                                            fit: BoxFit.cover,
+                                            alignment: Alignment.center,
+                                            imageUrl: widget.user!.profilePic!.src),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 20,
+                                  top: 20,
+                                  child: Icon(
+                                    _isSelectedPhoto ? Icons.check_box : Icons.crop_square,
+                                    color: Constants.darkGray,
+                                    size: 20.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SpaceH20(),
+                          _buildPersonalData(context),
+                          SpaceH20(),
+                          _buildAboutMe(context),
+                          SpaceH20(),
+                          _buildMyDataOfInterest(context),
+                          SpaceH20(),
+                          _buildMyLanguages(context),
+                          SpaceH20(),
+                          _buildMyReferences(context),
+                          SpaceH20(),
+                        ],
+                      ),
+                    ),
+                  )),
+              SpaceW20(),
+              Expanded(
+                  child: SingleChildScrollView(
+                    controller: ScrollController(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildCVHeader(context),
+                        SpaceH40(),
+                        _buildMyEducation(context),
+                        SpaceH40(),
+                        _buildMySecondaryEducation(context),
+                        SpaceH40(),
+                        _buildMyExperiences(context),
+                        SpaceH40(),
+                        _buildMyPersonalExperiences(context),
+                        SpaceH40(),
+                        _buildMyCompetencies(context),
+                      ],
+                    ),
+                  ))
+            ],
+          ),
+        ),
       ),
     );
   }

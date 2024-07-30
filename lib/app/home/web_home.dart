@@ -19,6 +19,7 @@ import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
+import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
@@ -305,61 +306,68 @@ class _WebHomeState extends State<WebHome> {
                 ),
               ],
             ),
-            body: WebHome.selectedIndex.value == 1 ? bodyWidget[1] :
-                  WebHome.selectedIndex.value == 2 ? bodyWidget[2] :
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 1600),
-                      child: Padding(
-                        padding: !isSmallScreen ? const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble) : EdgeInsets.zero,
-                        child: Row(
-                          children: [
-                            !isSmallScreen ? SideBarWidget(controller: WebHome.controller, user: user, keyWebHome: _key,) : Container(),
-                            Expanded(child: Center(child: Padding(
-                              padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 10) : EdgeInsets.only(top: 0),
-                              child: AnimatedBuilder(
-                                animation: WebHome.controller,
-                                builder: (context, child){
-                                  _key.currentState?.closeDrawer();
-                                  switch(WebHome.controller.selectedIndex){
-                                    case 0:
-                                      return auth.currentUser == null ? AccessPage() : !isSmallScreen ? ControlPanelPage(user: user,) : hasEntity ?
-                                      ControlPanelMobileInterventionPage(user: user) :
-                                      ControlPanelMobileNoInterventionPage(user: user);
-                                    case 1:
-                                      return MyCurriculumPage();
-                                    case 2:
-                                      return PersonalDataPage();
-                                    case 3:
-                                      return MyCompetenciesPage();
-                                    case 4:
-                                      return MyResourcesPage();
-                                    case 5:
-                                      return GamificationPage(
-                                        showChatNotifier: widget.showChatNotifier,
-                                        goBackToCV: () => setState(() {
-                                          WebHome.controller.selectIndex(1);
-                                        }),
-                                        goBackToCompetencies: () => setState(() {
-                                          WebHome.controller.selectIndex(3);
-                                        }),
-                                      );
-                                    case 6:
-                                      return EnredaContactPage();
-                                    case 7:
-                                      return ParticipantDocumentationPage(participantUser: user);
-                                    default:
-                                      return ResourcesPage();
-                                  }
-                                },
-                              ),
-                            ),))
-                          ],
-                        ),
+            body: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: Constants.maxWidth),
+                child: WebHome.selectedIndex.value == 1 ? bodyWidget[1] :
+                WebHome.selectedIndex.value == 2 ? bodyWidget[2] :
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: 1600),
+                    child: Padding(
+                      padding: !isSmallScreen ? const EdgeInsets.only(left: Sizes.kDefaultPaddingDouble) : EdgeInsets.zero,
+                      child: Row(
+                        children: [
+                          !isSmallScreen ? SideBarWidget(controller: WebHome.controller, user: user, keyWebHome: _key,) : Container(),
+                          Expanded(child: Center(child: Padding(
+                            padding: Responsive.isMobile(context) ? EdgeInsets.only(top: 10) : EdgeInsets.only(top: 0),
+                            child: AnimatedBuilder(
+                              animation: WebHome.controller,
+                              builder: (context, child){
+                                _key.currentState?.closeDrawer();
+                                switch(WebHome.controller.selectedIndex){
+                                  case 0:
+                                    return auth.currentUser == null ? AccessPage() : !isSmallScreen ? ControlPanelPage(user: user,) : hasEntity ?
+                                    ControlPanelMobileInterventionPage(user: user) :
+                                    ControlPanelMobileNoInterventionPage(user: user);
+                                  case 1:
+                                    return MyCurriculumPage();
+                                  case 2:
+                                    return PersonalDataPage();
+                                  case 3:
+                                    return MyCompetenciesPage();
+                                  case 4:
+                                    return MyResourcesPage();
+                                  case 5:
+                                    return GamificationPage(
+                                      showChatNotifier: widget.showChatNotifier,
+                                      goBackToCV: () => setState(() {
+                                        WebHome.controller.selectIndex(1);
+                                      }),
+                                      goBackToCompetencies: () => setState(() {
+                                        WebHome.controller.selectIndex(3);
+                                      }),
+                                    );
+                                  case 6:
+                                    return EnredaContactPage();
+                                  case 7:
+                                    return ParticipantDocumentationPage(participantUser: user);
+                                  default:
+                                    return ResourcesPage();
+                                }
+                              },
+                            ),
+                          ),))
+                        ],
                       ),
                     ),
                   ),
+                ),
+              )
+            ),
+
+
           );
         });
 
@@ -486,8 +494,15 @@ class _WebHomeState extends State<WebHome> {
                 ),
               ],
             ),
-            body: WebHome.selectedIndex.value == 1 ? bodyWidget[1]
-                : WebHome.selectedIndex.value == 2 ? bodyWidget[2] : AccessPage(),
+            body: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: Constants.maxWidth),
+                child: WebHome.selectedIndex.value == 1 ? bodyWidget[1]
+                    : WebHome.selectedIndex.value == 2 ? bodyWidget[2] : AccessPage(),
+              ),
+            )
+
+
           );
         });
 

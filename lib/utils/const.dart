@@ -78,6 +78,7 @@ class Constants {
   static double headerHeight = 228.5;
   static double mainPadding = 20.0;
   static double sidebarWidth = 440.0;
+  static double maxWidth = 1580.0;
 }
 
 enum BackgroundHeight {

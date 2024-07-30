@@ -71,7 +71,9 @@ class _HomePageState extends State<HomePage> {
                 showChatNotifier.value = !showChatNotifier.value; // Optimizado sin setState
               },
             ),
-            right: Constants.mainPadding,
+            right: Responsive.isDesktopL(context)?
+                ((MediaQuery.sizeOf(context).width - Constants.maxWidth) / 2) + Constants.mainPadding
+                : Constants.mainPadding,
             bottom: showChat ? -120.0 : Constants.mainPadding,
           );
         });

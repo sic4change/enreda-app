@@ -17,24 +17,25 @@ import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import '../../../services/auth.dart';
 
 class TrainingPillListTile extends StatefulWidget {
-  const TrainingPillListTile({Key? key, required this.trainingPill, this.showDescription = true, this.onTap})
+  const TrainingPillListTile({
+    Key? key,
+    required this.trainingPill,
+    this.showDescription = true,
+    required this.pauseOthers,
+    required this.controller
+  })
       : super(key: key);
   final TrainingPill trainingPill;
   final bool showDescription;
-  final VoidCallback? onTap;
+  final Function(String pillId) pauseOthers;
+  final YoutubePlayerController controller;
 
   @override
   State<TrainingPillListTile> createState() => _TrainingPillListTileState();
 }
 
 class _TrainingPillListTileState extends State<TrainingPillListTile> {
-  late YoutubePlayerController _controller;
   bool _isVideoVisible = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,56 +194,9 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
     );
   }
 
-  Widget playAreaMobile() {
-    String urlYoutubeVideo = widget.trainingPill.urlVideo;
-    String idYoutubeVideo =
-        urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
-    if (!_isVideoVisible)
-      return AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(
-                    YoutubePlayerController.getThumbnail(
-                      videoId: idYoutubeVideo,
-                      quality: ThumbnailQuality.max,
-                    ),
-                  ),
-                  fit: BoxFit.fitWidth,
-                ),
-                borderRadius: Responsive.isMobile(context)
-                    ? BorderRadius.circular(10)
-                    : BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
-              ),
-            ),
-          ],
-        ),
-      );
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-      ),
-      child: YoutubePlayerControllerProvider(
-          // Provides controller to all the widget below it.
-          controller: _controller,
-          child: YoutubePlayer(
-            controller: _controller,
-            aspectRatio: 16 / 9,
-            enableFullScreenOnVerticalDrag: true,
-          )),
-    );
-  }
-
   Widget playAreaDesktop() {
     String urlYoutubeVideo = widget.trainingPill.urlVideo;
-    String idYoutubeVideo =
-        urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
+    String idYoutubeVideo = urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
     if (!_isVideoVisible)
       return AspectRatio(
         aspectRatio: 16 / 9,
@@ -269,12 +223,9 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
               default:
                 break;
             }
-
             setState(() {
-              setState(() {
-                _isVideoVisible = !_isVideoVisible;
-                _initializeVideo(idYoutubeVideo);
-              });
+              _isVideoVisible = !_isVideoVisible;
+              _initializeVideo(idYoutubeVideo);
             });
           },
           child: Stack(
@@ -308,43 +259,43 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
           ),
         ),
       );
+
     return Container(
+      clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10), topRight: Radius.circular(10)),
       ),
-      child: YoutubePlayerControllerProvider(
-          // Provides controller to all the widget below it.
-          controller: _controller,
-          child: YoutubePlayer(
-            controller: _controller,
-            aspectRatio: 16 / 9,
-          )),
+      child: YoutubePlayer(
+        controller: widget.controller,
+        aspectRatio: 16 / 9,
+      ),
     );
   }
 
   _initializeVideo(String id) {
-    // Generate a new controller and set as global _controller
-    final controller = YoutubePlayerController.fromVideoId(
-      videoId: id,
-      autoPlay: true,
-      params: const YoutubePlayerParams(
-        showControls: true,
-        mute: false,
-        showFullscreenButton: true,
-      ),
-    );
     setState(() {
-      _controller = controller;
       if (_isVideoVisible == false) {
         _isVideoVisible = true;
       }
     });
+
+    widget.pauseOthers(widget.trainingPill.id);
+    widget.controller.loadVideoById(videoId: id);
+
+    /* It's not working well with more than 1 controller
+    widget.controller.listen((value) {
+       if (value.playerState == PlayerState.playing ) {
+         widget.pauseOthers(widget.trainingPill.id);
+       }
+    });
+    */
+
     if (!kIsWeb) {
-      _controller..setFullScreenListener(
+      widget.controller..setFullScreenListener(
             (_) async {
-          final videoData = await _controller.videoData;
-          final startSeconds = await _controller.currentTime;
+          final videoData = await widget.controller.videoData;
+          final startSeconds = await widget.controller.currentTime;
           final currentTime =
           await FullscreenYoutubePlayer.launch(
             context,
@@ -352,9 +303,9 @@ class _TrainingPillListTileState extends State<TrainingPillListTile> {
             startSeconds: startSeconds,
           );
           if (currentTime != null) {
-            _controller.seekTo(seconds: currentTime);
+            widget.controller.seekTo(seconds: currentTime);
           }
-          _controller.seekTo(seconds: currentTime!);
+          widget.controller.seekTo(seconds: currentTime!);
         },
       );
     }

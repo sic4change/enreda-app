@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/filterResource.dart';
@@ -32,6 +34,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import '../../../../utils/functions.dart';
 
 class ResourcesPage extends StatefulWidget {
@@ -82,6 +85,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
   }
 
   var bodyWidget = [];
+
+  Map<String, YoutubePlayerController> _controllers = {};
 
   void setStateIfMounted(f) {
     if (mounted) setState(f);
@@ -142,12 +147,26 @@ class _ResourcesPageState extends State<ResourcesPage> {
     }
   }
 
+  void _loadPillControllers() async {
+    final database = Provider.of<Database>(context, listen: false);
+    final trainingPills = await database.filteredTrainingPillStream(filterTrainingPill).first;
+    trainingPills.forEach((pill) {
+      _controllers[pill.id] = YoutubePlayerController(
+        params: const YoutubePlayerParams(
+          showControls: true,
+          showFullscreenButton: true,
+        ),
+      );
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _loadScrollPosition();
     getMessage();
     getResourceCategories();
+    _loadPillControllers();
   }
 
 
@@ -155,6 +174,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   void dispose() {
     _searchTextController.dispose();
     _scrollController.dispose();
+    _controllers.values.forEach((c) => c.close());
     super.dispose();
   }
 
@@ -625,6 +645,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   Widget _buildTrainingPillsList(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
+
     return Container(
       padding: Responsive.isMobile(context)
           ? EdgeInsets.symmetric(horizontal: 10)
@@ -641,27 +662,39 @@ class _ResourcesPageState extends State<ResourcesPage> {
               mainAxisExtentValue = Responsive.isDesktopS(context) ? 310 : 400;
               maxCrossAxisExtentValue = Responsive.isDesktopS(context) ? 350 : 490;
               showDescription = false;
+
+              return ListItemBuilderGrid<TrainingPill>(
+                  scrollController: ScrollController(),
+                  snapshot: snapshot,
+                  maxCrossAxisExtentValue: maxCrossAxisExtentValue,
+                  mainAxisExtentValue: mainAxisExtentValue,
+                  itemBuilder: (context, trainingPill) {
+                    trainingPill.setTrainingPillCategoryName();
+                    return Container(
+                      key: Key('trainingPill-${trainingPill.id}'),
+                      child: TrainingPillListTile(
+                        trainingPill: trainingPill,
+                        showDescription: showDescription,
+                        controller: _controllers[trainingPill.id]!,
+                        pauseOthers: _pauseOthers,
+                      ),
+                    );
+                  }
+              );
             }
-            return ListItemBuilderGrid<TrainingPill>(
-              scrollController: ScrollController(),
-              snapshot: snapshot,
-              maxCrossAxisExtentValue: maxCrossAxisExtentValue,
-              mainAxisExtentValue: mainAxisExtentValue,
-              itemBuilder: (context, trainingPill) {
-                trainingPill.setTrainingPillCategoryName();
-                return Container(
-                  key: Key('trainingPill-${trainingPill.id}'),
-                  child: TrainingPillListTile(
-                    trainingPill: trainingPill,
-                    showDescription: showDescription,
-                    onTap: () => context.push(
-                        '${StringConst.PATH_TRAINING_PILLS}/${trainingPill.id}'),
-                  ),
-                );
-              }
-            );
+
+            return Center(child: CircularProgressIndicator(),);
+
           }),
     );
+  }
+
+  void _pauseOthers(String pillId) {
+    for (var key in _controllers.keys) {
+      if (key != pillId) {
+        _controllers[key]!.pauseVideo();
+      }
+    }
   }
 
   Widget _buildTrainingPillsListMobile(BuildContext context) {

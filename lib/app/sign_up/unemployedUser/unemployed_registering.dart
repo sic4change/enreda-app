@@ -464,8 +464,8 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                   _buildEducationStreamBuilder_setState, null, StringConst.FORM_EDUCATION),
               SpaceH20(),
               ///Definir user assinedById cuando unemployed se registre solo, error en Contact Page
-              // streamBuilderForSocialEntity(context, selectedSocialEntity,
-              //     _buildSocialEntityStreamBuilder_setState, null, StringConst.FORM_SOCIAL_ENTITY),
+              streamBuilderForSocialEntity(context, selectedSocialEntity,
+                   _buildSocialEntityStreamBuilder_setState, null, StringConst.FORM_SOCIAL_ENTITY),
             ]),
       );
   }

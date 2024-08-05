@@ -849,6 +849,8 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
       this.textEditingControllerInterests.text = concatenate.toString();
       this.interests = interestsIds;
       this.selectedInterests = selectedValues;
+      selectedSpecificInterests.removeWhere((si) => !selectedInterests.any((i) => i.interestId == si.interestId));
+      getValuesFromKeySpecificInterests(selectedSpecificInterests);
     });
     print(interestsNames);
     print(interestsIds);

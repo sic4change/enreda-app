@@ -403,7 +403,12 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
                           defaultActionText: StringConst.FORM_ACCEPT,
                         );
                       } else {
-                        setState(() => _selectedInterestsNameList = val);
+                        setState(() {
+                          _selectedInterestsNameList = val;
+                          final selectedInterests = _interests.where((i) => _selectedInterestsNameList.any((interestName) => i.name == interestName)).toSet();
+                          selectedSpecificInterests.removeWhere((si) => !selectedInterests.any((i) => i.interestId == si.interestId));
+                          getValuesFromKeySpecificInterests(selectedSpecificInterests);
+                        });
                       }
                     },
                     choiceItems: C2Choice.listFrom<String, String>(

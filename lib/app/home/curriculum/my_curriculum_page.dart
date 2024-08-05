@@ -28,11 +28,13 @@ import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -1196,30 +1198,50 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     );
   }
 
+
   Widget _buildFinalCheck(BuildContext context, UserEnreda? user){
     final database = Provider.of<Database>(context, listen: false);
-    final textTheme = Theme.of(context).textTheme;
     final bool checkFinal = user?.checkAgreeCV ?? false;
-    return Row(
+    TextTheme textTheme = Theme.of(context).textTheme;
+    double fontSize = responsiveSize(context, 12, 14, md: 13);
+    return  Row(
       children: [
         IconButton(
-          icon: Icon(checkFinal ? Icons.check_box : Icons.crop_square),
-          color: Constants.darkGray,
-          iconSize: 20.0,
-          onPressed: (){
-            database.setUserEnreda(
-                user!.copyWith(checkAgreeCV: !checkFinal));
-              }),
-        Expanded(
-          child: Text(
-            StringConst.PERSONAL_DATA_LAW,
-            maxLines: 5,
-            softWrap: true,
-            style: textTheme.titleMedium?.copyWith(
-              fontSize: Responsive.isDesktop(context) ? 13 : 12,
-              color: Constants.darkGray),
-          ),
+            icon: Icon(checkFinal ? Icons.check_box : Icons.crop_square),
+            color: AppColors.primary900,
+            iconSize: 20.0,
+            onPressed: (){
+              database.setUserEnreda(user!.copyWith(checkAgreeCV: !checkFinal));
+            }
         ),
+        Flexible(
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: StringConst.PERSONAL_DATA_LAW,
+                  style: textTheme.titleMedium?.copyWith(
+                    color: AppColors.primary900,
+                    height: 1.5,
+                    fontSize: fontSize,
+                  ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      launchURL(StringConst.PERSONAL_DATA_LAW_PDF);
+                    },
+                ),
+                TextSpan(
+                  text: StringConst.PERSONAL_DATA_LAW_TEXT,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: AppColors.primary900,
+                    height: 1.5,
+                    fontSize: fontSize,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
       ],
     );
   }

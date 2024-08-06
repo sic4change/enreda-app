@@ -35,7 +35,7 @@ import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_k
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_nation.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_province.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_social_entity.dart';
-import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_specificInterests.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/select_specific_interests_dialog.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_timeSearching.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_timeSpentWeekly.dart';
 import 'package:enreda_app/common_widgets/custom_date_picker_title.dart';
@@ -857,10 +857,18 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   }
 
   void _showMultiSelectSpecificInterests(BuildContext context) async {
+    final database = Provider.of<Database>(context, listen: false);
+    final allSpecificInterests = await database.specificInterestsStream().first;
+
     final selectedValues = await showDialog<Set<SpecificInterest>>(
       context: context,
       builder: (BuildContext context) {
-        return streamBuilderDropdownSpecificInterests(context, selectedInterests, selectedSpecificInterests);
+        return selectSpecificInterestsDialog(
+            context,
+            selectedInterests,
+            selectedSpecificInterests,
+            allSpecificInterests
+        );
       },
     );
     print(selectedValues);

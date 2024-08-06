@@ -18,7 +18,7 @@ import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_g
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_nation.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_province.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_social_entity.dart';
-import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_specificInterests.dart';
+import 'package:enreda_app/app/sign_up/validating_form_controls/select_specific_interests_dialog.dart';
 import 'package:enreda_app/common_widgets/custom_text_form_field_title.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/flex_row_column.dart';
@@ -739,12 +739,20 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
   }
 
   void _showMultiSelectSpecificInterests(BuildContext context) async {
+    final database = Provider.of<Database>(context, listen: false);
+
     final selectedInterests = _interests.where((i) => _selectedInterestsNameList.any((interestName) => i.name == interestName)).toSet();
+    final allSpecificInterests = await database.specificInterestsStream().first;
 
     final selectedValues = await showDialog<Set<SpecificInterest>>(
       context: context,
       builder: (BuildContext context) {
-        return streamBuilderDropdownSpecificInterests(context, selectedInterests, selectedSpecificInterests);
+        return selectSpecificInterestsDialog(
+            context,
+            selectedInterests,
+            selectedSpecificInterests,
+            allSpecificInterests
+        );
         },
       );
       getValuesFromKeySpecificInterests(selectedValues);

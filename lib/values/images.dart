@@ -33,6 +33,7 @@ class ImagePath {
   static const String ARROW_B = '$imageDir/flecha-back.png';
   static const String USER_DEFAULT = '$imageDir/user_default.jpg';
   static const String IMAGE_DEFAULT = '$imageDir/placeholder-image.png';
+  static const String THUMBNAIL_DEFAULT = '$imageDir/default-thumbnail.png';
 
   //Competencies
   static const String EMPTY_BADGE_SAMPLE = '$imageDir/empty_900x503.png';
@@ -100,6 +101,7 @@ class ImagePath {
   static const String ARROW_BACK_SHADOW = '$imageDir/arrow_back_alt.png';
   static const String ARROW_FORWARD = '$imageDir/arrow_forward.png';
   static const String ARROW_FORWARD_ALT = '$imageDir/arrow-forward.png';
+  static const String ARROW_DOWN_2 = '$imageDir/arrow_down_2.png';
   static const String DOWNLOAD = '$imageDir/download-icon.png';
   static const String LOGOUT = '$imageDir/icon-logout.png';
   static const String ICON_SHARE = '$imageDir/icon-share.png';
@@ -139,6 +141,11 @@ class ImagePath {
   static const String ICON_ARROW_UP = '$imageDir/icon-arrow_up.png';
   static const String ICON_ARROW_DOWN = '$imageDir/icon-arrow_down.png';
   static const String ICON_PLAY = '$imageDir/icon-play-pildoras.png';
+  static const String ICON_CLOUD = '$imageDir/cloud.png';
+  static const String ICON_EDIT = '$imageDir/edit.png';
+  static const String ICON_EYE = '$imageDir/eye.png';
+  static const String ICON_TRASH_ALT  = '$imageDir/trash.png';
+  static const String ICON_PLUS = '$imageDir/plus_outline.png';
 
   //Resources
   static const String BACKGROUND_1 = '$imageDir/desktop-background-empleo.png';

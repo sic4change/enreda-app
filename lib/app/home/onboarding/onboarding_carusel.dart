@@ -9,18 +9,18 @@ import '../../../../../values/values.dart';
 const double kSpacing = 28.0;
 const double kRunSpacing = 16.0;
 
-class OnboardingCarrusel extends StatefulWidget {
-  OnboardingCarrusel({
+class OnboardingCarousel extends StatefulWidget {
+  OnboardingCarousel({
     Key? key}) : super(key: key);
 
   @override
-  _OnboardingCarruselState createState() => _OnboardingCarruselState();
+  _OnboardingCarouselState createState() => _OnboardingCarouselState();
 }
 
-class _OnboardingCarruselState extends State<OnboardingCarrusel> {
+class _OnboardingCarouselState extends State<OnboardingCarousel> {
   final int pageLength = Data.mainPageData.length;
   int currentPageIndex = 0;
-  CarouselController _carouselController = CarouselController();
+  CarouselSliderController _carouselController = CarouselSliderController();
 
   @override
   Widget build(BuildContext context) {

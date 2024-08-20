@@ -29,7 +29,7 @@ class _TrainingTooltipVideoState extends State<TrainingTooltipVideo> {
   late YoutubePlayerController _controller;
   bool _isVideoVisible = false;
   late String urlYoutubeVideo;
-  late String idYoutubeVideo;
+  late String idYoutubeVideo = '';
 
   @override
   void initState() {
@@ -46,8 +46,9 @@ class _TrainingTooltipVideoState extends State<TrainingTooltipVideo> {
         if (!_isVideoVisible) Stack(
             children: [
               Container(
-                  width: widget.maxi? 600: 300,
-                  child: videoThumbnailArea(idYoutubeVideo)),
+                  //width: widget.maxi? 600: 300,
+                  child: videoThumbnailArea(idYoutubeVideo)
+              ),
               Positioned(
                 left: 20,
                 right: 20,

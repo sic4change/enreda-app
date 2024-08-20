@@ -6,7 +6,6 @@ import 'package:enreda_app/app/home/control_panel/control_panel_mobile_intervent
 import 'package:enreda_app/app/home/control_panel/control_panel_mobile_no_intervention.dart';
 import 'package:enreda_app/app/home/control_panel/control_panel_page.dart';
 import 'package:enreda_app/app/home/curriculum/my_curriculum_page.dart';
-import 'package:enreda_app/app/home/documentation/documentation_page.dart';
 import 'package:enreda_app/app/home/contact/enreda_contact_page.dart';
 import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
@@ -31,6 +30,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'account/personal_data_page.dart';
+import 'control_panel/documentation_page.dart';
+import 'documentation/participant_documentation_page.dart';
 import 'models/userEnreda.dart';
 
 

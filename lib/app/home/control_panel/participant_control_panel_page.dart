@@ -53,7 +53,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                     _buildCompetenciesSection(context),
                     SpaceH20(),
                     widget.participantUser.assignedEntityId != null && widget.participantUser.assignedEntityId != "" ?
-                      ParticipantDocumentationPage(participantUser: widget.participantUser,) :
+                     ParticipantDocumentationList(participantUser: widget.participantUser,) :
                     _buildResourcesSection(context),
                     SpaceH8(),
                     if(widget.participantUser.assignedEntityId != null && widget.participantUser.assignedEntityId != "")
@@ -93,7 +93,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
           _buildCvSection(context),
           SpaceH30(),
           widget.participantUser.assignedEntityId != null && widget.participantUser.assignedEntityId != "" ?
-          ParticipantDocumentationPage(participantUser: widget.participantUser,) :
+          ParticipantDocumentationList(participantUser: widget.participantUser,) :
           _buildResourcesSection(context),
           SpaceH30(),
           if(widget.participantUser.assignedEntityId != null && widget.participantUser.assignedEntityId != "")

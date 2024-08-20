@@ -33,6 +33,9 @@ class APIPath {
   static String trainingPills() => 'trainingPills';
   static String trainingPill(String? trainingPillId) => 'trainingPills/$trainingPillId';
   static String personalDocumentType() => 'personalDocumentType';
+  static String documentCategories() => 'documentCategories';
+  static String documentationParticipants() => 'documentationParticipants';
+  static String oneDocumentationParticipant(String fileId) => 'documentationParticipants/$fileId';
 
   static String chatQuestion(String id) => 'chatQuestions/$id';
   static String chatQuestions() => 'chatQuestions';

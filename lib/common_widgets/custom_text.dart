@@ -139,8 +139,10 @@ class CustomTextNormalSmall extends StatelessWidget {
 
 class CustomTextSmall extends StatelessWidget {
 
-  CustomTextSmall({ required this.text });
+  const CustomTextSmall({super.key,  required this.text, this.height = 1.5, this.color = AppColors.greyAlt});
   final String text;
+  final double height;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -149,9 +151,33 @@ class CustomTextSmall extends StatelessWidget {
     return Text(
       text,
       style: textTheme.bodySmall?.copyWith(
-        height: 1.5,
+        color: color,
+        height: height,
         fontSize: fontSize,
       ),
+    );
+  }
+}
+
+class CustomTextSmallBold extends StatelessWidget {
+
+  CustomTextSmallBold({ required this.title, this.color = AppColors.greyTxtAlt });
+  final String title;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    double fontSize = responsiveSize(context, 12, 15, md: 14);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Text(
+      title,
+      style: textTheme.titleSmall?.copyWith(
+          height: 1.5,
+          color: color,
+          fontSize: fontSize
+      ),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }
@@ -295,6 +321,37 @@ class CustomTextLargeBold extends StatelessWidget {
         height: 1.5,
         fontSize: fontSize
       ),
+    );
+  }
+}
+
+class CustomTextSmallIcon extends StatelessWidget {
+
+  const CustomTextSmallIcon({super.key,  required this.text, this.height = 1.5, this.color = AppColors.primary900});
+  final String text;
+  final double height;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    double fontSize = responsiveSize(context, 12, 15, md: 14);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Row(
+      children: [
+        Text(
+          text,
+          style: textTheme.bodySmall?.copyWith(
+            color: color,
+            height: height,
+            fontSize: fontSize,
+          ),
+        ),
+        SizedBox(width: 5,),
+        Container(
+            padding: const EdgeInsets.only(top: 3),
+            alignment: Alignment.center,
+            child: Image.asset(ImagePath.ARROW_DOWN_2, height: 8, width: 8,)),
+      ],
     );
   }
 }

@@ -1,4 +1,3 @@
-
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sidebarx/sidebarx.dart';
-
 
 class SideBarWidget extends StatefulWidget {
   const SideBarWidget({
@@ -87,7 +85,6 @@ class _SideBarWidgetState extends State<SideBarWidget> {
           color: AppColors.white,
         ),
       ),
-      //footerDivider: Divider(color: Colors.grey.withOpacity(0.5), height: 1),
       showToggleButton: false,
       headerBuilder: (context, extended) {
         final database = Provider.of<Database>(context, listen: false);
@@ -99,13 +96,8 @@ class _SideBarWidgetState extends State<SideBarWidget> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(
-                  ImagePath.LOGO,
-                  height: 30,
-                ),
                 Column(
                   children: [
-                    SizedBox(height: 20),
                     StreamBuilder<UserEnreda>(
                         stream: database.userEnredaStreamByUserId(widget.user.userId),
                         builder: (context, snapshot) {

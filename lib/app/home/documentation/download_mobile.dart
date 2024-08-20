@@ -1,12 +1,24 @@
-
 import 'dart:io';
+import 'package:dio/dio.dart';
 
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path_provider/path_provider.dart';
+Future<void> downloadDocument(String url, String filename) async {
+  Dio dio = Dio();
+  try {
+    Directory publicDownloadDir = Directory("/storage/emulated/0/Download");
+    String savePath = "${publicDownloadDir.path}/$filename";
 
-Future downloadDocument (String urlDocument, String documentName) async {
-  final ref = FirebaseStorage.instance.refFromURL(urlDocument);
-  final dir = await getApplicationDocumentsDirectory();
-  final file = File('${dir.path}/${ref.name}');
-  await ref.writeToFile(file);
+    await dio.download(
+      url,
+      savePath,
+      onReceiveProgress: (received, total) {
+        if (total != -1) {
+          print((received / total * 100).toStringAsFixed(0) + "%");
+        }
+      },
+    );
+
+    print("File is saved to $savePath");
+  } catch (e) {
+    print("Error: $e");
+  }
 }

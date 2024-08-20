@@ -41,6 +41,8 @@ import 'package:enreda_app/services/api_path.dart';
 import 'package:enreda_app/services/firestore_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../app/home/models/certificationRequest.dart';
+import '../app/home/models/documentCategory.dart';
+import '../app/home/models/documentationParticipant.dart';
 import '../app/home/models/personalDocument.dart';
 import '../app/home/models/resourcePicture.dart';
 import '../app/home/models/activity.dart';
@@ -116,6 +118,9 @@ abstract class Database {
   Stream<List<SocialEntity>> socialEntitiesStream();
   Stream<List<KeepLearningOption>> keepLearningOptionsStream();
   Stream<List<PersonalDocumentType>> personalDocumentTypeStream();
+  Stream<List<DocumentCategory>> documentCategoriesStream();
+  Stream<List<PersonalDocumentType>> documentSubCategoriesByCategoryStream(String categoryId);
+  Stream<List<DocumentationParticipant>> documentationParticipantBySubCategoryStream(PersonalDocumentType documentSubCategory, UserEnreda user);
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> addUserEnreda(UserEnreda userEnreda);
@@ -139,6 +144,10 @@ abstract class Database {
   Future<void> updateCertificationRequest(CertificationRequest certificationRequest, bool certified, bool referenced );
   Future<void> setTrainingPill(TrainingPill trainingPill);
   Future<void> uploadPersonalDocument(UserEnreda user, Uint8List data, String name, PersonalDocument document, int position);
+  Future<void> addDocumentationParticipant(String userId, String fileName, Uint8List data, DocumentationParticipant document);
+  Future<void> editFileDocumentationParticipant(String userId, String fileName, Uint8List data, DocumentationParticipant document);
+  Future<void> updateDocumentationParticipant(DocumentationParticipant document);
+  Future<void> deleteDocumentationParticipant(DocumentationParticipant document);
   Stream<List<String>> nationsSpanishStream();
 }
 
@@ -583,6 +592,70 @@ class FirestoreDatabase implements Database {
   }
 
   @override
+  Future<void> addDocumentationParticipant(String userId, String fileName, Uint8List data, DocumentationParticipant document) async {
+    var firebaseStorageRef =
+    FirebaseStorage.instance.ref().child('users/$userId/files/$fileName');
+    UploadTask uploadTask = firebaseStorageRef.putData(data);
+    TaskSnapshot taskSnapshot = await uploadTask;
+    await taskSnapshot.ref.getDownloadURL().then(
+          (value) {
+        _service.addDataFile(path: APIPath.documentationParticipants(), data: {
+          "file": {
+            'src': '$value',
+            'title': '$fileName',
+          },
+          "userId": userId,
+          "name": document.name,
+          "createDate": document.createDate,
+          "renovationDate": document.renovationDate,
+          "documentCategoryId": document.documentCategoryId,
+          "documentSubCategoryId": document.documentSubCategoryId,
+          "createdBy": document.createdBy
+        },).then((value) => _service.updateData(
+            path: APIPath.oneDocumentationParticipant(value),
+            data: {
+              "documentationParticipantId": value,
+            })
+        );
+      },
+    );
+  }
+
+  @override
+  Future<void> editFileDocumentationParticipant(String userId, String fileName, Uint8List data, DocumentationParticipant document) async {
+    try {
+      var firebaseStorageRef = FirebaseStorage.instance.ref().child('users/$userId/files/$fileName');
+      UploadTask uploadTask = firebaseStorageRef.putData(data);
+
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+      await _service.updateData(
+          path: APIPath.oneDocumentationParticipant(document.documentationParticipantId!),
+          data: {
+            "file": {
+              'src': '$downloadUrl',
+              'title': '$fileName',
+            },
+            "name": document.name,
+            "createDate": document.createDate,
+            "renovationDate": document.renovationDate,
+          }
+      );
+    } catch (e) {
+      print('An error occurred: $e');
+    }
+  }
+
+  @override
+  Future<void> updateDocumentationParticipant(DocumentationParticipant document) => _service.updateData(
+      path: APIPath.oneDocumentationParticipant(document.documentationParticipantId!), data: document.toMap());
+
+  @override
+  Future<void> deleteDocumentationParticipant(DocumentationParticipant document) =>
+      _service.deleteData(path: APIPath.oneDocumentationParticipant(document.documentationParticipantId!));
+
+  @override
   Stream<List<Country>> countryFormatedStream() => _service.collectionStream(
         path: APIPath.countries(),
         queryBuilder: (query) => query.where('name', isNotEqualTo: 'Online'),
@@ -766,6 +839,33 @@ class FirestoreDatabase implements Database {
     sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
   );
 
+  @override
+  Stream<List<DocumentCategory>> documentCategoriesStream() => _service.collectionStream(
+    path: APIPath.documentCategories(),
+    queryBuilder: (query) => query.where('name', isNotEqualTo: null),
+    builder: (data, documentId) => DocumentCategory.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+  );
+
+  @override
+  Stream<List<PersonalDocumentType>> documentSubCategoriesByCategoryStream(String? categoryId) =>
+      _service.collectionStream(
+        path: APIPath.personalDocumentType(),
+        queryBuilder: (query) =>
+            query.where('documentCategoryId', isEqualTo: categoryId),
+        builder: (data, documentId) =>
+            PersonalDocumentType.fromMap(data, documentId),
+        sort: (lhs, rhs) => lhs.order.compareTo(rhs.order),
+      );
+
+  @override
+  Stream<List<DocumentationParticipant>> documentationParticipantBySubCategoryStream(PersonalDocumentType documentSubCategory, UserEnreda user) => _service.collectionStream(
+    path: APIPath.documentationParticipants(),
+    queryBuilder: (query) => query.where('userId', isEqualTo: user.userId)
+        .where('documentSubCategoryId', isEqualTo: documentSubCategory.personalDocId),
+    builder: (data, documentId) => DocumentationParticipant.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
+  );
 
   @override
   Future<void> addChatQuestion(ChatQuestion chatQuestion) => _service.addData(

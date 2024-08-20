@@ -2,6 +2,9 @@ import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common_widgets/custom_text.dart';
+import '../../../values/values.dart';
+
 class EmptyContent extends StatelessWidget {
   const EmptyContent({
     Key? key,
@@ -13,7 +16,6 @@ class EmptyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = Responsive.isMobile(context) ? 16 : 18;
     return Padding(
       padding: EdgeInsets.only(left: Constants.mainPadding, right: Constants.mainPadding),
       child: Center(
@@ -21,23 +23,8 @@ class EmptyContent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(
-              title!,
-              style: TextStyle(
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.bold,
-                  color: Constants.textDark
-              ),
-            ),
-            Text(
-              message!,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: fontSize,
-                fontWeight: FontWeight.normal,
-                color: Constants.salmonLight,
-              ),
-            ),
+            CustomTextSmallBold(title: title!, color: AppColors.primary900,),
+            CustomTextSmall(text: message!, color: AppColors.primary900,)
           ],
         ),
       ),

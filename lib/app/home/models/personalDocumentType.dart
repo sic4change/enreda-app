@@ -1,19 +1,23 @@
+// TODO: Rename, this class refers to documentSubCategory
 class PersonalDocumentType {
   PersonalDocumentType({
     required this.title,
     required this.order,
-    required this.personalDocId,
+    required this.personalDocId,  // Refers to documentSubCategoryId
+    required this.documentCategoryId,
   });
 
   final String title;
   final int order;
   final String personalDocId;
+  final String documentCategoryId;
 
   factory PersonalDocumentType.fromMap(Map<String, dynamic> data, String documentId) {
     return PersonalDocumentType(
       title: data['title'] ?? "",
       order: data['order'] ?? 0, //TODO
-      personalDocId: data['personalDocId'] ?? '',
+      personalDocId: documentId,
+      documentCategoryId: data['documentCategoryId'] ?? '',
     );
   }
 
@@ -30,11 +34,7 @@ class PersonalDocumentType {
       'title': title,
       'order': order,
       'personalDocId': personalDocId,
+      'documentCategoryId': documentCategoryId,
     };
   }
-
-  @override
-  // TODO: implement hashCode
-  int get hashCode => super.hashCode;
-
 }

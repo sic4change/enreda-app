@@ -357,7 +357,6 @@ class StringConst {
   static const String NO_COMPETENCIES_TITLE = "¡Todavía no has conseguido ninguna competencia!";
   static const String NO_COMPETENCIES_SUBTITLE = "¿No sabes por dónde empezar con tu búsqueda de empleo?";
 
-
   //Resource modalities
   static const String FACE_TO_FACE = 'Presencial';
   static const String BLENDED = 'Semipresencial';
@@ -609,11 +608,34 @@ class StringConst {
   static const String PERSONAL_DOCUMENTATION = "Documentación personal";
   static const String DOCUMENTATION = "Documentación";
   static const String ADD_DOCUMENTS = "Añadir documentos";
-  static const String SET_DOCUMENT_NAME = "Introduce el nombre del documento";
+  static const String SET_DOCUMENT_NAME_ALT = "Introduce el nombre del documento";
   static const String FORM_GENERIC_ERROR = 'Es obligatorio rellenar este campo';
   static const String NAME_IN_USE = 'Nombre en uso';
   static const String PREVIEW = 'Vista previa';
   static const String DOCUMENT = 'Documento';
+  static const String OPEN = "Abrir";
+  static const String EDIT = "Editar";
+  static const String CREATION_DATE = "Creado";
+  static const String RENEW_DATE = "Renovar";
+  static const String DOC_NAME = "Nombre del documento";
+  static const String SAVE_SUCCEED = "Se ha guardado con éxito";
+  static const String DOWNLOAD_PDF = "Descargar";
+  static const String ADD_DOC = 'Añadir documento';
+  static const String EDIT_DOC = 'Editar documento';
+  static const String SET_DOCUMENT_NAME = "Añadir nuevo documento:  ";
+  static const String DOCUMENT_NAME = "Nombre del documento";
+  static const String CREATION_DOCUMENT = "Fecha de creación";
+  static const String RENOVATION_DOCUMENT = "Fecha de renovación";
+  static const String FORM_ENTITY_ERROR = 'Hay algún campo faltante en el formulario';
+  static const String FORM_ENTITY_CHECK = 'Por favor, revisa los campos marcados en rojo.';
+  static const String FORM_MISSING_DOCUMENT_TITLE = 'Falta añadir un nuevo documento.';
+  static const String FORM_MISSING_DOCUMENT = 'Añadir documento';
+  static const String CREATE_DOCUMENT = "Documento creado";
+  static const String UPDATED_DOCUMENT = "Documento actualizado";
+  static const String CREATE_DOC_SUCCESS = "¡El Documento ha sido creado con éxito!";
+  static const String UPDATED_DOC_SUCCESS = "¡El Documento ha sido actualizado con éxito!";
+  static const String EDIT_DOCUMENT_TITLE = "Editar documento: ";
+  static const String DELETE_DOCUMENT = 'Si pulsa en "Aceptar" se procederá a la eliminación del documento.\nEsta acción no se podrá deshacer. ¿Está seguro que quiere continuar?';
 
   //AssignedContact
   static const String ASSIGNED_USER = 'Tu técnica de referencia es ';

@@ -13,16 +13,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class ParticipantDocumentationPage extends StatefulWidget {
-  ParticipantDocumentationPage({required this.participantUser, super.key});
+class ParticipantDocumentationList extends StatefulWidget {
+  ParticipantDocumentationList({required this.participantUser, super.key});
 
   final UserEnreda participantUser;
 
   @override
-  State<ParticipantDocumentationPage> createState() => _ParticipantDocumentationPageState();
+  State<ParticipantDocumentationList> createState() => _ParticipantDocumentationListState();
 }
 
-class _ParticipantDocumentationPageState extends State<ParticipantDocumentationPage> {
+class _ParticipantDocumentationListState extends State<ParticipantDocumentationList> {
   List<PersonalDocument> _userDocuments = [];
 
   @override

@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
         builder: (context, snapshot) {
           final isBigScreen = !Responsive.isMobile(context);
           return !snapshot.hasData && !kIsWeb
-              ? OnboardingCarrusel()
+              ? OnboardingCarousel()
               : Stack(
             children: [
               isBigScreen ? WebHome(showChatNotifier: showChatNotifier)

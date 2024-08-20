@@ -359,9 +359,9 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
                         educationSetState, user, StringConst.FORM_EDUCATION),
                   ),
                   CustomFlexRowColumn(
-                    childLeft: Container(),
-                    childRight: streamBuilderForSocialEntity(context, selectedSocialEntity,
+                    childLeft: streamBuilderForSocialEntity(context, selectedSocialEntity,
                         socialEntityStreamBuilderSetState, user, StringConst.FORM_SOCIAL_ENTITY),
+                    childRight: Container(),
                   ),
                   SpaceH20(),
                 ],),

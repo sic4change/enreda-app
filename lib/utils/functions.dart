@@ -2,8 +2,16 @@ import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../app/home/models/documentationParticipant.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as p;
+import 'package:pdf/widgets.dart' as pw;
+
 
 const kDuration = Duration(milliseconds: 600);
 
@@ -24,6 +32,38 @@ Future<void> launchURL(url) async {
   }
 }
 
+Future<void> openFile(DocumentationParticipant documentParticipant) async{
+  final url = documentParticipant.urlDocument;
+  if (url == null) {
+    throw ArgumentError('URL cannot be null');
+  }
+  var response = await http.get(Uri.parse(url));
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load document');
+  }
+  var pdfData = response.bodyBytes;
+  var extension = p.extension(url).substring(0,4);
+  if(extension != '.pdf'){
+    printNotPDF(url);
+  }
+  else {
+    await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => pdfData);
+  }
+}
+
+Future<void> printNotPDF(String path) async{
+  final doc = pw.Document();
+  final netImage = await networkImage(path);
+  doc.addPage(pw.Page(
+      build: (pw.Context context) {
+        return pw.Center(
+          child: pw.Image(netImage),
+        );
+      })
+  );
+  await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => doc.save());
+}
 
 Future<void> sendWhatsAppWebMessage(String phoneNumber, String message) async {
   var whatsappWebUrl = "https://web.whatsapp.com/send?phone=$phoneNumber&text=${Uri.encodeFull(message)}";

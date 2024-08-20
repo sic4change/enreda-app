@@ -619,7 +619,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               iconTheme: IconThemeData(color: AppColors.white),
             ),
             child: InkWell(
-              mouseCursor: MaterialStateMouseCursor.clickable,
+              mouseCursor: WidgetStateMouseCursor.clickable,
               onTap: () => !kIsWeb? _displayPickImageDialog()
                   : _onImageButtonPressed(ImageSource.gallery),
               child: Container(
@@ -781,18 +781,17 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         uiSettings: [
           WebUiSettings(
               context: context,
-              presentStyle: CropperPresentStyle.dialog,
-              boundary: CroppieBoundary(
-                width: 400,
-                height: 400,
+              presentStyle: WebPresentStyle.dialog,
+              viewwMode: WebViewMode.mode_1,
+              dragMode: WebDragMode.move,
+              size: const CropperSize(
+                width: 520,
+                height: 520,
               ),
-              viewPort:
-              CroppieViewPort(width: 300, height: 300, type: 'circle',),
-              enableExif: true,
-              enableZoom: true,
-              showZoomer: true,
-              enableResize: false,
-              mouseWheelZoom: true,
+              cropBoxMovable: true,
+              cropBoxResizable: true,
+              movable: true,
+              toggleDragModeOnDblclick: true,
               translations: WebTranslations(
                 title: 'Recortar imagen',
                 rotateLeftTooltip: 'Rotar 90 grados a la izquierda',
@@ -815,6 +814,11 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             doneButtonTitle: 'Listo',
             cancelButtonTitle: 'Cancelar',
             resetAspectRatioEnabled: true,
+            aspectRatioPresets: [
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.ratio4x3,
+            ],
           ),
         ]
     );

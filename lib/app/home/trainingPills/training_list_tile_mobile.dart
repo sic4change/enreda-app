@@ -61,7 +61,11 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
                     children: [
                       Expanded(
                           flex: 1,
-                          child: videoThumbnailArea(idYoutubeVideo)),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: AppColors.primary900),
+                              ),
+                              child: videoThumbnailArea(idYoutubeVideo))),
                       Expanded(
                           flex: 1,
                           child: videoDescription(AppColors.primary900, AppColors.blue400)),

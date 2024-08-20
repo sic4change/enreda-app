@@ -11,6 +11,7 @@ import '../../../values/strings.dart';
 import '../../../values/values.dart';
 import '../assistant/list_item_builder.dart';
 import '../models/userEnreda.dart';
+import '../web_home.dart';
 import 'expandable_doc_category_tile.dart';
 import 'list_item_builder_doc.dart';
 
@@ -24,6 +25,17 @@ class ParticipantDocumentationPage extends StatefulWidget {
 }
 
 class _ParticipantDocumentationPageState extends State<ParticipantDocumentationPage> {
+
+
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
@@ -39,13 +51,30 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
             child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-                    border: Border.all(color: AppColors.greyBorder)
+                    border: Responsive.isMobile(context) ? null : Border.all(color: AppColors.greyBorder)
                 ),
                 child: Stack(
                   children: [
                     Column(
                       children: [
-                        Padding(
+                        Responsive.isMobile(context) ? InkWell(
+                          onTap: () {
+                            setStateIfMounted(() {
+                              WebHome.controller.selectIndex(0);});
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0, left: 15.0, right: 15.0),
+                            child: Row(
+                              children: [
+                                Image.asset(ImagePath.ARROW_B, height: 30),
+                                Spacer(),
+                                CustomTextMediumBold(text: StringConst.PERSONAL_DOCUMENTATION),
+                                Spacer(),
+                                SizedBox(width: 30),
+                              ],
+                            ),
+                          ),
+                        ) : Padding(
                           padding: Responsive.isMobile(context) ? EdgeInsets.only(left: 20.0 , top: 10, bottom: 15)
                               : EdgeInsets.only(left: 50, top: 15, bottom: 15),
                           child: Row(
@@ -93,7 +122,7 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
                     ),
                     Container(
                       color: Colors.white,
-                      margin: Responsive.isMobile(context) ? const EdgeInsets.only(top: 85) : const EdgeInsets.only(top: 103),
+                      margin: Responsive.isMobile(context) ? const EdgeInsets.only(top: 79) : const EdgeInsets.only(top: 103),
                       child: SingleChildScrollView(
                         child: Column(
                           children: [

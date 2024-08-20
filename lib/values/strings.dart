@@ -605,7 +605,7 @@ class StringConst {
   static const String CANNOT_LOAD_DATA = 'No se pudo cargar los datos';
 
   //Documentation
-  static const String PERSONAL_DOCUMENTATION = "Documentación personal";
+  static const String PERSONAL_DOCUMENTATION = "Mis documentos";
   static const String DOCUMENTATION = "Documentación";
   static const String ADD_DOCUMENTS = "Añadir documentos";
   static const String SET_DOCUMENT_NAME_ALT = "Introduce el nombre del documento";

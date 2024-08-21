@@ -55,7 +55,7 @@ class _DocumentCategoryTileState extends State<DocumentCategoryTile> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: Responsive.isMobile(context) ? const EdgeInsets.only(left: 20.0, right: 31.0) :
+                        padding: Responsive.isMobile(context) ? const EdgeInsets.only(left: 20.0, right: 17.0) :
                         const EdgeInsets.symmetric(horizontal: 55.0, vertical: 0.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -114,7 +114,7 @@ class _DocumentCategoryTileState extends State<DocumentCategoryTile> {
               return Container(
                 height: 30,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.file_copy_outlined, color: AppColors.greyAlt, size: 20.0,),
                     Container(

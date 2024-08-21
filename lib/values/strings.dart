@@ -617,6 +617,7 @@ class StringConst {
   static const String EDIT = "Editar";
   static const String CREATION_DATE = "Creado";
   static const String RENEW_DATE = "Renovar";
+  static const String CREATED_BY = "Credo por";
   static const String DOC_NAME = "Nombre del documento";
   static const String SAVE_SUCCEED = "Se ha guardado con éxito";
   static const String DOWNLOAD_PDF = "Descargar";

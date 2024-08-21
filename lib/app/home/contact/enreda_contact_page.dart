@@ -134,7 +134,7 @@ class _EnredaContactPageState extends State<EnredaContactPage> {
       alignment: Responsive.isMobile(context) ? Alignment.topCenter : Alignment.center,
       child: SingleChildScrollView(
         child: MainContainer(
-          height: MediaQuery.of(context).size.height * 0.7,
+          height: Responsive.isMobile(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.height * 0.7,
           padding: Responsive.isMobile(context) ?
             EdgeInsets.symmetric(vertical: 0, horizontal: 10 ) :
             const EdgeInsets.symmetric(vertical: Sizes.kDefaultPaddingDouble * 2),

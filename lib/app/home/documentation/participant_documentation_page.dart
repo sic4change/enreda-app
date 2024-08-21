@@ -95,23 +95,23 @@ class _ParticipantDocumentationPageState extends State<ParticipantDocumentationP
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                    width: Responsive.isMobile(context) ? 170 : Responsive.isDesktopS(context) ? 220 : 370,
+                                    width: Responsive.isMobile(context) ? 150 : Responsive.isDesktopS(context) ? 220 : 370,
                                     child: CustomTextSmallIcon(text: StringConst.DOC_NAME)),
                                 Spacer(),
                                 Container(
-                                    width: 85,
+                                    width: Responsive.isMobile(context) ? 60 : 85,
                                     child: CustomTextSmallIcon(text: StringConst.CREATION_DATE)),
                                 Spacer(),
                                 Container(
-                                    width: 88,
+                                    width: Responsive.isMobile(context) ? 65 : 85,
                                     child: CustomTextSmallIcon(text: StringConst.RENEW_DATE)),
                                 Spacer(),
                                 Responsive.isMobile(context) ? Container() : Container(
                                     width: 94,
-                                    child: CustomTextSmallIcon(text: 'Creado por')),
+                                    child: CustomTextSmallIcon(text: StringConst.CREATED_BY)),
                                 Spacer(),
-                                Container(
-                                  width: Responsive.isMobile(context) ? 25 : 30,
+                                Responsive.isMobile(context) ? Container() : Container(
+                                  width: 30,
                                 ),
                               ],
                             ),

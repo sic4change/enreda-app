@@ -91,7 +91,7 @@ class _ExpandableDocCategoryTileState extends State<ExpandableDocCategoryTile> {
                         imagePath,
                         color: AppColors.primary900,
                       )),
-                  SizedBox(width: 20),
+                  Responsive.isMobile(context) ? SizedBox(width: 5) : SizedBox(width: 20),
                 ],
               )),
         ],

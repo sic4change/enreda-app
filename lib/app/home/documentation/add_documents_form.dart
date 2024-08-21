@@ -165,6 +165,7 @@ class _AddDocumentsFormState extends State<AddDocumentsForm> {
                                   fontSize: fontSizeButton)),
                         )),
                     SizedBox(width: 20,),
+                    SizedBox(height: 20,),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primaryColor,

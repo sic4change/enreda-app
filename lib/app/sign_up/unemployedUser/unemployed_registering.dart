@@ -283,7 +283,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           unemployedType: unemployedType,
           nationality: selectedNationality,
           ///Definir user assinedById cuando unemployed se registre solo
-          //assignedEntityId: selectedSocialEntity!.socialEntityId ?? null,
+          assignedEntityId: selectedSocialEntity?.socialEntityId ?? null,
           gamificationFlags: {
             UserEnreda.FLAG_SIGN_UP: true,
           },

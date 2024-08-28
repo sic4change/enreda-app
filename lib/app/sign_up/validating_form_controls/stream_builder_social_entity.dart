@@ -19,9 +19,9 @@ Widget streamBuilderForSocialEntity (BuildContext context, SocialEntity? selecte
         if (snapshotSocialEntities.hasData) {
           final socialEntities = [SocialEntity(name: "Ninguna")].followedBy(snapshotSocialEntities.data!);
           socialEntityItems = socialEntities.map((SocialEntity socialEntity) {
-            if (selectedSocialEntity == null && socialEntity.socialEntityId == genericType?.assignedEntityId) {
+            /*if (selectedSocialEntity == null && socialEntity.socialEntityId == genericType?.assignedEntityId) {
               selectedSocialEntity = socialEntity;
-            }
+            } */
             return DropdownMenuItem<SocialEntity>(
               value: socialEntity,
               child: Text(socialEntity.name),

@@ -41,6 +41,7 @@ import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_t
 import 'package:enreda_app/common_widgets/custom_date_picker_title.dart';
 import 'package:enreda_app/common_widgets/custom_padding.dart';
 import 'package:enreda_app/common_widgets/custom_phone_form_field_title.dart';
+import 'package:enreda_app/common_widgets/custom_stepper.dart';
 import 'package:enreda_app/common_widgets/custom_text_form_field_title.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/flex_row_column.dart';
@@ -57,6 +58,8 @@ import 'package:provider/provider.dart';
 import '../../../../../../services/database.dart';
 import '../../../../../../utils/responsive.dart';
 import '../../../../../../values/values.dart';
+import '../../../common_widgets/custom_text.dart';
+import '../../../common_widgets/rounded_container.dart';
 
 const double contactBtnWidthLg = 200.0;
 const double contactBtnWidthSm = 120.0;
@@ -144,6 +147,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   String? unemployedType;
   String? futureLearning;
   String? _keepLearningOptionId;
+  TextTheme? textTheme;
 
   TextEditingController textEditingControllerDateInput = TextEditingController();
   TextEditingController textEditingControllerAbilities = TextEditingController();
@@ -277,7 +281,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           gender: genderName,
           birthday: _birthday,
           interests: interestsSet,
-          educationId: selectedEducation?.educationId??"",
+          educationId: selectedEducation?.educationId ?? "",
           address: address,
           role: 'Desempleado',
           unemployedType: unemployedType,
@@ -674,27 +678,49 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   }
 
   Widget _revisionForm(BuildContext context) {
-    return Column(
-      children: [
-        unemployedRevisionForm(
-          context,
-          _firstName!,
-          _lastName!,
-          _email!,
-          _phone!,
-          nationalityName,
-          genderName,
-          countryName,
-          provinceName,
-          cityName,
-          _postalCode!,
-          educationName,
-          specificInterestsNames,
-          interestsNames,
-          keepLearningOptionsNames,
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(ImagePath.LOGO_LINES),
+          //fit: BoxFit.cover,
         ),
-        checkboxForm(context, _checkFieldKey, _isChecked, functionSetState)
-      ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          RoundedContainer(
+            width: Responsive.isMobile(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width * 0.5,
+            margin: Responsive.isMobile(context) ? EdgeInsets.all(0) : EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+            contentPadding: Responsive.isMobile(context) ? EdgeInsets.all(0) : EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+            borderColor: Responsive.isMobile(context) ? Colors.transparent : AppColors.greyLight,
+            child: unemployedRevisionForm(
+              context,
+              _firstName!,
+              _lastName!,
+              _email!,
+              _phone!,
+              nationalityName,
+              genderName,
+              countryName,
+              provinceName,
+              cityName,
+              _postalCode!,
+              educationName,
+              specificInterestsNames,
+              interestsNames,
+              keepLearningOptionsNames,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              checkboxForm(context, _checkFieldKey, _isChecked, functionSetState),
+            ],
+          )
+        ],
+      ),
     );
   }
 
@@ -921,26 +947,70 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   }
 
 
-  List<Step> getSteps() => [
-    Step(
+  List<CustomStep> getSteps() => [
+    CustomStep(
       isActive: currentStep >= 0,
-      state: currentStep > 0 ? StepState.complete : StepState.indexed,
-      title: Text(StringConst.FORM_GENERAL_INFO.toUpperCase()),
+      state: currentStep > 0 ? CustomStepState.complete : CustomStepState.indexed,
+      title: Container(
+        padding: EdgeInsets.all(Sizes.kDefaultPaddingDouble/2),
+        decoration: BoxDecoration(
+          color: currentStep >= 0? AppColors.yellowAlt : AppColors.white,
+          borderRadius: BorderRadius.circular(Sizes.kDefaultPaddingDouble*2),
+          border: Border.all(color: AppColors.greyLight, width: 2.0,),
+        ),
+        child: Text(StringConst.FORM_GENERAL_INFO,
+            style: TextStyle(
+                color: AppColors.primary900,
+                fontWeight: FontWeight.w800,
+                fontSize: 15
+            )
+        )
+      ),
       content: _buildForm(context),
     ),
-    Step(
+    CustomStep(
       isActive: currentStep >= 1,
-      state: currentStep > 1 ? StepState.complete : StepState.disabled,
-      title: Text(StringConst.FORM_INTERESTS.toUpperCase()),
+      state: currentStep > 1 ? CustomStepState.complete : CustomStepState.disabled,
+      title: Container(
+        padding: EdgeInsets.all(Sizes.kDefaultPaddingDouble/2),
+        decoration: BoxDecoration(
+          color: currentStep >= 1? AppColors.yellowAlt : AppColors.white,
+          borderRadius: BorderRadius.circular(Sizes.kDefaultPaddingDouble*2),
+          border: Border.all(color: AppColors.greyLight, width: 2.0,),
+        ),
+        child: Text(
+          StringConst.FORM_INTERESTS,
+          style: TextStyle(
+              color: AppColors.primary900,
+              fontWeight: FontWeight.w800,
+              fontSize: 15
+          )
+        ),
+      ),
       content: _buildFormInterests(context),
     ),
-    Step(
+    CustomStep(
       isActive: currentStep >= 2,
-      title: Text(StringConst.FORM_REVISION.toUpperCase()),
+      state: currentStep > 2 ? CustomStepState.complete : CustomStepState.disabled,
+      title: Container(
+        padding: EdgeInsets.all(Sizes.kDefaultPaddingDouble/2),
+        decoration: BoxDecoration(
+          color: currentStep >= 2? AppColors.yellowAlt: AppColors.white,
+          borderRadius: BorderRadius.circular(Sizes.kDefaultPaddingDouble*2),
+          border: Border.all(color: AppColors.greyLight, width: 2.0,),
+        ),
+        child: Text(
+          StringConst.FORM_REVISION,
+            style: TextStyle(
+                color: AppColors.primary900,
+                fontWeight: FontWeight.w800,
+                fontSize: 15
+            )
+        ),
+      ),
       content: _revisionForm(context),
     ),
   ];
-
 
   onStepContinue() async {
     // If invalid form, just return
@@ -1000,116 +1070,86 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                   padding: EdgeInsets.all(Constants.mainPadding),
                   child: Image.asset(
                     ImagePath.LOGO,
-                    height: Sizes.HEIGHT_24,
+                    height: Sizes.HEIGHT_30,
                   ),
                 ),
-                Responsive.isMobile(context) ? Container() : SizedBox(width: Constants.mainPadding),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2), child: Text(StringConst.FORM_UNEMPLOYED.toUpperCase(),
-                        style: TextStyle(color: AppColors.greyDark)),),
-                    Padding(
-                      padding: EdgeInsets.only(right: Responsive.isMobile(context) || Responsive.isTablet(context)? 30.0: 0.0),
-                      child: Container(
-                          width: 34,
-                          child: PillTooltip(title: StringConst.PILL_TRAVEL_BEGINS, pillId: TrainingPill.TRAVEL_BEGINS_ID)),
-                    ),
-                  ],
-                )
+                Container(
+                    padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
+                    child: CustomTextMediumBold(text: StringConst.FORM_UNEMPLOYED,)),
               ],
             ),
           ),
-          body: Stack(
-            children: [
-              Center(
-                child:
-                    SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Container(
-                            height: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.height * 0.70,
-                            width: Responsive.isMobile(context) || Responsive.isTablet(context) ? MediaQuery.of(context).size.width : MediaQuery.of(context).size.width * 0.70,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(Borders.kDefaultPaddingDouble / 2),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  spreadRadius: 2,
-                                  blurRadius: 2,
-                                  offset: Offset(0, 2), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: Stack(
-                              children: [
-                                Stepper(
-                                  type: Responsive.isMobile(context) ? StepperType.vertical : StepperType.horizontal,
-                                  steps: getSteps(),
-                                  currentStep: currentStep,
-                                  onStepContinue: onStepContinue,
-                                  onStepTapped: (step) => goToStep(step),
-                                  onStepCancel: onStepCancel,
-                                  controlsBuilder: (context, _) {
-                                    return Container(
-                                      height: Borders.kDefaultPaddingDouble * 2,
-                                      margin: EdgeInsets.only(top: Borders.kDefaultPaddingDouble * 2),
-                                      padding: const EdgeInsets.symmetric(horizontal: Borders.kDefaultPaddingDouble / 2),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: <Widget>[
-                                          if(currentStep !=0)
-                                            EnredaButton(
-                                              buttonTitle: StringConst.FORM_BACK,
-                                              width: contactBtnWidth,
-                                              onPressed: onStepCancel,
-                                            ),
-                                          SizedBox(width: Borders.kDefaultPaddingDouble),
-                                          isLoading ? Center(child: CircularProgressIndicator(color: AppColors.primary300,)) :
-                                          EnredaButton(
-                                            buttonTitle: isLastStep ? StringConst.FORM_CONFIRM : StringConst.FORM_NEXT,
-                                            width: contactBtnWidth,
-                                            buttonColor: AppColors.primaryColor,
-                                            titleColor: AppColors.white,
-                                            onPressed: onStepContinue,
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                                Responsive.isTablet(context) || Responsive.isMobile(context) ?
-                                Positioned(
-                                  top: screenHeight * 0.45,
-                                  left: -10,
-                                  child: Container(
-                                    height: 300 * 0.50,
-                                    child: ClipRRect(
-                                      child: Image.asset(ImagePath.CHICA_LATERAL),
-                                    ),
+          body: Center(
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: Responsive.isMobile(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.height * 0.9,
+                maxWidth: Responsive.isMobile(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.width * 0.7,
+              ),
+              child: RoundedContainer(
+                color: AppColors.grey80,
+                borderColor: Responsive.isMobile(context) ? Colors.transparent : AppColors.gre600,
+                margin: Responsive.isMobile(context) ? EdgeInsets.all(0) : EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                contentPadding: Responsive.isMobile(context) ? EdgeInsets.all(0) : EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                child: Stack(
+                  alignment: Alignment.topLeft,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 3),
+                      child: CustomStepper(
+                        elevation: 0.0,
+                        type: Responsive.isMobile(context) ? CustomStepperType.vertical : CustomStepperType.horizontal,
+                        steps: getSteps(),
+                        currentStep: currentStep,
+                        onStepContinue: onStepContinue,
+                        onStepTapped: (step) => goToStep(step),
+                        onStepCancel: onStepCancel,
+                        controlsBuilder: (context, _) {
+                          return Container(
+                            height: Borders.kDefaultPaddingDouble * 2,
+                            margin: EdgeInsets.only(top: Borders.kDefaultPaddingDouble * 2),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                if(currentStep != 0)
+                                  EnredaButton(
+                                    buttonTitle: StringConst.FORM_BACK,
+                                    width: contactBtnWidth,
+                                    onPressed: onStepCancel,
                                   ),
-                                ) : Container(),
+                                SizedBox(width: Borders.kDefaultPaddingDouble),
+                                isLoading ? Center(child: CircularProgressIndicator(color: AppColors.primary300,)) :
+                                EnredaButton(
+                                  buttonTitle: isLastStep ? StringConst.FORM_CONFIRM : StringConst.FORM_NEXT,
+                                  width: contactBtnWidth,
+                                  buttonColor: AppColors.primaryColor,
+                                  titleColor: AppColors.white,
+                                  onPressed: onStepContinue,
+                                ),
                               ],
                             ),
+                          );
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                      child: Row(
+                        children: [
+                          CustomTextMedium(text: StringConst.FORM_CREATE_PROFILE,),
+                          Spacer(),
+                          Padding(
+                            padding: EdgeInsets.only(right: Responsive.isMobile(context) || Responsive.isTablet(context)? 30.0: 0.0),
+                            child: Container(
+                                width: 34,
+                                child: PillTooltip(title: StringConst.PILL_TRAVEL_BEGINS, pillId: TrainingPill.TRAVEL_BEGINS_ID)),
                           ),
                         ],
                       ),
                     ),
-
-              ),
-              Responsive.isTablet(context) || Responsive.isMobile(context) ? Container() :
-              Positioned(
-                top: screenHeight * 0.51,
-                left: Responsive.isDesktopS(context) ? screenWidth * 0.06 : screenWidth * 0.075,
-                child: Container(
-                  height: 300,
-                  child: ClipRRect(
-                    child: Image.asset(ImagePath.CHICA_LATERAL),
-                  ),
+                  ],
                 ),
               ),
-            ],
+            ),
           )
       ),
     );

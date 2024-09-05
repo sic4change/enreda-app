@@ -369,6 +369,7 @@ class StringConst {
   static const String FORM_MENTOR_REGISTER = "Quiero colaborar";
   static const String FORM_ORGANIZATION_REGISTER = "Soy organización";
   static const String FORM_UNEMPLOYED = "Busco trabajo";
+  static const String FORM_CREATE_PROFILE = "Crear nuevo perfil";
   static const String FORM_NAME = "Nombre";
   static const String FORM_ORGANIZATION_NAME = "Nombre de la Organización";
   static const String FORM_ORGANIZATION_INFO = "Información de la organización";
@@ -432,9 +433,9 @@ class StringConst {
   static const String FORM_MOTIVATION = "Motivaciones";
   static const String FORM_INTERESTS = "Intereses";
   static const String FORM_REVISION = "Revisión";
-  static const String FORM_CONFIRM = "ACEPTAR";
-  static const String FORM_NEXT = "SIGUIENTE";
-  static const String FORM_BACK = "ATRÁS";
+  static const String FORM_CONFIRM = "Aceptar";
+  static const String FORM_NEXT = "Siguiente";
+  static const String FORM_BACK = "Atrás";
   static const String FORM_ACCEPTANCE = "Si está conforme con la información proporcionada, por favor, pulse en 'ACEPTAR'. En cualquier otro caso, puede volver 'ATRÁS' y modificar la información.";
   static const String FORM_ACCEPTANCE_ERROR = "Debe aceptar las Políticas y Condiciones";
   static const String FORM_ACCEPT_SENTENCE = "Acepto las";

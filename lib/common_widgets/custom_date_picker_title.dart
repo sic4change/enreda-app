@@ -27,6 +27,7 @@ class CustomDatePickerTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final now = DateTime.now();
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -94,8 +95,8 @@ class CustomDatePickerTitle extends StatelessWidget {
                 context: context,
                 locale: Locale('es', 'ES'),
                 firstDate: DateTime(DateTime.now().year - 100, DateTime.now().month, DateTime.now().day),
-                initialDate: currentValue ?? DateTime.now(),
-                lastDate: DateTime(DateTime.now().year + 100, DateTime.now().month, DateTime.now().day),
+                initialDate: currentValue ?? DateTime(now.year - 16, now.month, now.day),
+                lastDate: DateTime(now.year - 16, now.month, now.day),
               );
             },
           ),

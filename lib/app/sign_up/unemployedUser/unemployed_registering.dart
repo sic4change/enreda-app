@@ -60,6 +60,7 @@ import '../../../../../../utils/responsive.dart';
 import '../../../../../../values/values.dart';
 import '../../../common_widgets/custom_text.dart';
 import '../../../common_widgets/rounded_container.dart';
+import '../validating_form_controls/checkbox_data_form.dart';
 
 const double contactBtnWidthLg = 200.0;
 const double contactBtnWidthSm = 120.0;
@@ -77,6 +78,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   final _formKeyMotivations = GlobalKey<FormState>();
   final _formKeyInterests = GlobalKey<FormState>();
   final _checkFieldKey = GlobalKey<FormState>();
+  final _checkFieldKeyDataProtectionPolicy = GlobalKey<FormState>();
   bool isLoading = false;
 
   String? _email;
@@ -95,6 +97,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   int usersIds = 0;
   int currentStep = 0;
   bool _isChecked = false;
+  bool _isCheckedDataProtectionPolicy = false;
 
   List<String> countries = [];
   List<String> provinces = [];
@@ -234,8 +237,20 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     return false;
   }
 
+  bool _validateCheckDataField() {
+    final checkKeyData = _checkFieldKeyDataProtectionPolicy.currentState;
+    if (checkKeyData!.validate() && isRegistered == 0) {
+      checkKeyData.save();
+      return true;
+    }
+    return false;
+  }
+
   Future<void> _submit() async {
-    if (_validateCheckField()) {
+    bool checkFieldValid = _validateCheckField();
+    bool checkDataFieldValid = _validateCheckDataField();
+
+    if (checkFieldValid && checkDataFieldValid) {
 
       final address = Address(
         country: _country,
@@ -274,23 +289,23 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
         });
 
       final unemployedUser = UnemployedUser(
-          firstName: _firstName,
-          lastName: _lastName,
-          email: _email,
-          phone: _phone,
-          gender: genderName,
-          birthday: _birthday,
-          interests: interestsSet,
-          educationId: selectedEducation?.educationId ?? "",
-          address: address,
-          role: 'Desempleado',
-          unemployedType: unemployedType,
-          nationality: selectedNationality,
-          ///Definir user assinedById cuando unemployed se registre solo
-          assignedEntityId: selectedSocialEntity?.socialEntityId ?? null,
-          gamificationFlags: {
-            UserEnreda.FLAG_SIGN_UP: true,
-          },
+        firstName: _firstName,
+        lastName: _lastName,
+        email: _email,
+        phone: _phone,
+        gender: genderName,
+        birthday: _birthday,
+        interests: interestsSet,
+        educationId: selectedEducation?.educationId ?? "",
+        address: address,
+        role: 'Desempleado',
+        unemployedType: unemployedType,
+        nationality: selectedNationality,
+        assignedEntityId: selectedSocialEntity?.socialEntityId ?? null,
+        checkAgreeCV: _isCheckedDataProtectionPolicy,
+        gamificationFlags: {
+          UserEnreda.FLAG_SIGN_UP: true,
+        },
       );
       try {
         final database = Provider.of<Database>(context, listen: false);
@@ -315,6 +330,25 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
       } on FirebaseException catch (e) {
         showExceptionAlertDialog(context,
             title: StringConst.FORM_ERROR, exception: e).then((value) => Navigator.pop(context));
+      }
+    } else {
+      if (!checkFieldValid) {
+        showAlertDialog(
+          context,
+          title: 'Aviso',
+          content: 'Para continuar debe aceptar las Políticas y Condiciones de uso.',
+          defaultActionText: 'Aceptar',
+        );
+        return;
+      }
+      if (!checkDataFieldValid) {
+        showAlertDialog(
+          context,
+          title: 'Aviso',
+          content: 'Para continuar debe autorizar el uso de sus datos personales.',
+          defaultActionText: 'Aceptar',
+        );
+        return;
       }
     }
   }
@@ -680,9 +714,10 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   Widget _revisionForm(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        image: DecorationImage(
+        image: Responsive.isMobile(context) ? null // No image on mobile devices
+        : DecorationImage(
           image: AssetImage(ImagePath.LOGO_LINES),
-          //fit: BoxFit.cover,
+          fit: BoxFit.cover, // Ensures the image covers the entire container
         ),
       ),
       child: Column(
@@ -712,12 +747,16 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
               keepLearningOptionsNames,
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              checkboxForm(context, _checkFieldKey, _isChecked, functionSetState),
-            ],
+          Padding(
+            padding: Responsive.isMobile(context) ? EdgeInsets.all(0) : const EdgeInsets.symmetric(horizontal: Sizes.kDefaultPaddingDouble),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                checkboxForm(context, _checkFieldKey, _isChecked, functionSetState),
+                checkboxDataForm(context, _checkFieldKeyDataProtectionPolicy, _isCheckedDataProtectionPolicy, functionDataSetState),
+              ],
+            ),
           )
         ],
       ),
@@ -727,6 +766,12 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   void functionSetState(bool? val) {
     setState(() {
       _isChecked = val!;
+    });
+  }
+
+  void functionDataSetState(bool? val) {
+    setState(() {
+      _isCheckedDataProtectionPolicy = val!;
     });
   }
 

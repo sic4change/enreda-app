@@ -551,8 +551,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         final checkAgreeDownload = user?.checkAgreeCV ?? false;
         if(!checkAgreeDownload){
           showAlertDialog(context,
-              title: 'Error',
-              content: 'Por favor, acepta las condiciones antes de continuar',
+              title: 'Aviso',
+              content: 'Para continuar debe autorizar el uso de sus datos personales.',
               defaultActionText: 'Aceptar'
           );
           return;
@@ -1210,11 +1210,21 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     double fontSize = responsiveSize(context, 12, 14, md: 13);
     return  Row(
       children: [
+        user?.checkAgreeCV == true ? Padding(
+          padding: const EdgeInsets.only(right: 10.0),
+          child: Icon(Icons.check_box, color: AppColors.primary900),
+        ) :
         IconButton(
             icon: Icon(checkFinal ? Icons.check_box : Icons.crop_square),
             color: AppColors.primary900,
             iconSize: 20.0,
             onPressed: (){
+              showAlertDialog(
+                context,
+                title: 'Aviso',
+                content: 'Se ha guardado la autorización de uso de datos.',
+                defaultActionText: 'Aceptar',
+              );
               database.setUserEnreda(user!.copyWith(checkAgreeCV: !checkFinal));
             }
         ),
@@ -1222,6 +1232,14 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           child: RichText(
             text: TextSpan(
               children: [
+                TextSpan(
+                  text: StringConst.FORM_ACCORDING,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: AppColors.primary900,
+                    height: 1.5,
+                    fontSize: fontSize,
+                  ),
+                ),
                 TextSpan(
                   text: StringConst.PERSONAL_DATA_LAW,
                   style: textTheme.titleMedium?.copyWith(

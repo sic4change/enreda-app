@@ -252,8 +252,7 @@ class StringConst {
   static const String PHONE_NUMBER = "+34 613 04 24 34";
   static const String MAIL_ME = "Contáctanos";
   static const String FOLLOW_ME_2 = "Follow Me";
-  static const String RIGHTS_RESERVED = "Política de privacidad";
-  static const String BUILT_BY = "Condiciones de uso";
+  static const String PRIVACY_POLICIES = "Política de privacidad";
   static const String SIC4CHANGE_FOOTER = "SIC4Change";
   static const String DESIGNED_BY = "";
   static const String WEB_SIC4Change = "https://www.sic4change.org/";
@@ -437,9 +436,11 @@ class StringConst {
   static const String FORM_NEXT = "Siguiente";
   static const String FORM_BACK = "Atrás";
   static const String FORM_ACCEPTANCE = "Si está conforme con la información proporcionada, por favor, pulse en 'ACEPTAR'. En cualquier otro caso, puede volver 'ATRÁS' y modificar la información.";
-  static const String FORM_ACCEPTANCE_ERROR = "Debe aceptar las Políticas y Condiciones";
-  static const String FORM_ACCEPT_SENTENCE = "Acepto las";
-  static const String FORM_ACCEPT_SENTENCE_Y = "y";
+  static const String FORM_ACCEPTANCE_ERROR = "Para continuar debe aceptar las Políticas y Condiciones de uso.";
+  static const String FORM_PRIVACY_DATA_ERROR = "Para continuar debe autorizar el uso de sus datos personales.";
+  static const String FORM_ACCORDING = "Según la ";
+  static const String FORM_ACCEPT_SENTENCE = "Acepto las ";
+  static const String FORM_ACCEPT_SENTENCE_Y = " y ";
   static const String FORM_SUCCESS = "¡Registro exitoso!";
   static const String FORM_SUCCESS_MAIL = "Por favor revisa tu correo electrónico.";
   static const String FORM_ACCEPT = "Aceptar";
@@ -550,7 +551,7 @@ class StringConst {
   static const String NO_REFERENCES = 'Todavía no cuentas con ninguna referencia personal. ¡Certifica tus competencias!';
   static const String PERSONAL_DATA_LAW_PDF = 'https://firebasestorage.googleapis.com/v0/b/enreda-d3b41.appspot.com/o/BOE-A-2018-16673-consolidado.pdf?alt=media&token=5a8ee31a-1288-487c-8dd6-1de1eed79860';
   static const String PERSONAL_DATA_LAW = 'Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales';
-  static const String PERSONAL_DATA_LAW_TEXT = ', autorizo a la empresa al uso y tratamiento de mis datos con fines exclusivamente de selección de personal y bolsas de empleo.';
+  static const String PERSONAL_DATA_LAW_TEXT = ', autorizo a la empresa el uso y tratamiento de mis datos con fines exclusivamente de selección de personal y bolsas de empleo.';
   static const String PAGE_WARNING_1 = 'Con menos de 9 elementos principales te recomendamos crear tu curriculum con 1 página.';
   static const String PAGE_WARNING_2 = 'Con más de 9 elementos principales te recomendamos crear tu curriculum con 2 páginas';
   static const String PAGE_WARNING_4 = 'Te recomendamos seleccionar máximo 5 elementos personales para una página';
@@ -576,7 +577,7 @@ class StringConst {
   static const String CHANGE_PASSWORD = 'Cambiar contraseña';
   static const String PRIVACY_POLICY = 'Política de privacidad';
   static const String DELETE_ACCOUNT = 'Eliminar cuenta';
-  static const String USE_CONDITIONS = 'Condiciones de uso';
+  static const String USE_CONDITIONS = 'Condiciones de uso.';
   static const String SEND_FEEDBACK = 'Ayúdanos a mejorar';
   static const String SIGN_OUT = 'Cerrar sesión';
   static const String UPDATED_DATA_TITLE = 'Información actualizada';

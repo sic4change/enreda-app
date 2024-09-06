@@ -26,6 +26,7 @@ class UnemployedUser {
     this.unemployedType,
     this.assignedEntityId,
     this.nationality,
+    this.checkAgreeCV,
     this.gamificationFlags = const {},
   });
 
@@ -51,6 +52,7 @@ class UnemployedUser {
   final String? assignedEntityId;
   final String? nationality;
   final Map<String, bool> gamificationFlags;
+  final bool? checkAgreeCV;
 
   factory UnemployedUser.fromMap(Map<String, dynamic> data, String documentId) {
 
@@ -106,6 +108,8 @@ class UnemployedUser {
       });
     }
 
+    final bool? checkAgreeCV = data['checkAgreeCV'];
+
     return UnemployedUser(
         email: data['email'],
         firstName: data['firstName'],
@@ -124,6 +128,8 @@ class UnemployedUser {
         assignedEntityId: data['assignedEntityId'],
         nationality: data['nationality'],
         gamificationFlags: gamificationFlags,
+        checkAgreeCV: checkAgreeCV
+
     );
   }
 
@@ -144,6 +150,7 @@ class UnemployedUser {
       'assignedEntityId': assignedEntityId,
       'nationality': nationality,
       'gamificationFlags': gamificationFlags,
+      'checkAgreeCV': checkAgreeCV
     };
   }
 }

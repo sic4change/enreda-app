@@ -23,14 +23,6 @@ Widget checkboxDataForm(BuildContext context, _checkFieldKey, bool _isChecked, f
                     value: state.value,
                     onChanged: (bool? val) => { functionSetState(val), state.didChange(val)}
                 ),
-                // IconButton(
-                //     icon: Icon(_isChecked ? Icons.check_box : Icons.crop_square),
-                //     color: AppColors.primary900,
-                //     iconSize: 20.0,
-                //     onPressed: (){
-                //       //database.setUserEnreda(user!.copyWith(checkAgreeCV: !_isChecked));
-                //     }
-                // ),
                 Flexible(
                   child: RichText(
                     text: TextSpan(

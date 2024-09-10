@@ -54,6 +54,8 @@ Widget streamBuilderForSocialEntity (BuildContext context, SocialEntity? selecte
                 //onChanged: null,
                 validator: (value) => selectedSocialEntity != null ? null : StringConst.FORM_FIELD_ERROR,
                 decoration: InputDecoration(
+                  filled: true,
+                  fillColor: AppColors.white,
                   errorStyle: TextStyle(height: 0.01),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),

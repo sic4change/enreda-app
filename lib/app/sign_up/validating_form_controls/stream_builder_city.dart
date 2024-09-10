@@ -54,6 +54,8 @@ Widget streamBuilderForCity (BuildContext context, String? selectedProvinceId, C
                 validator: (value) => selectedCity != null ?
                 null : StringConst.CITY_ERROR,
                 decoration: InputDecoration(
+                  filled: true,
+                  fillColor: AppColors.white,
                   errorStyle: TextStyle(height: 0.01),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),

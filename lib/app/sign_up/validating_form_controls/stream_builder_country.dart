@@ -123,6 +123,8 @@ Widget streamBuilderForCountry (BuildContext context, Country? selectedCountry, 
                 onChanged: (value) => functionToWriteBackThings(value),
                 validator: (value) => selectedCountry != null ? null : StringConst.COUNTRY_ERROR,
                 decoration: InputDecoration(
+                  fillColor: AppColors.white,
+                  filled: true,
                   errorStyle: TextStyle(height: 0.01),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),

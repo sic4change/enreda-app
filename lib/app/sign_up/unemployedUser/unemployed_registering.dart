@@ -486,12 +486,9 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                 separatorSize: Sizes.kDefaultPaddingDouble,
                 childLeft: streamBuilderForCity(context, selectedProvince?.provinceId, selectedCity,
                     _buildCityStreamBuilder_setState, null),
-                //childLeft: Container(),
                 childRight: CustomTextFormFieldTitle(
                     labelText: StringConst.FORM_POSTAL_CODE,
                     initialValue: _postalCode!,
-                    /*validator: (value) =>
-                      value!.isNotEmpty ? null : StringConst.POSTAL_CODE_ERROR,*/
                     onSaved: _postalCode_setState,
                   validator: (value) =>
                   value!.isNotEmpty ? null : StringConst.POSTAL_CODE_ERROR,
@@ -501,7 +498,6 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
               streamBuilderDropdownEducation(context, selectedEducation,
                   _buildEducationStreamBuilder_setState, null, StringConst.FORM_EDUCATION),
               SpaceH20(),
-              ///Definir user assinedById cuando unemployed se registre solo, error en Contact Page
               streamBuilderForSocialEntity(context, selectedSocialEntity,
                    _buildSocialEntityStreamBuilder_setState, null, StringConst.FORM_SOCIAL_ENTITY),
             ]),

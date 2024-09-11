@@ -15,6 +15,7 @@ import '../../../../services/auth.dart';
 import '../../../../services/database.dart';
 import '../../../../values/strings.dart';
 import '../../../../values/values.dart';
+import '../../../common_widgets/custom_date_open_values.dart';
 import '../../../common_widgets/show_alert_dialog.dart';
 import '../../../utils/adaptive.dart';
 import '../../../utils/responsive.dart';
@@ -122,7 +123,7 @@ class _AddDocumentsFormState extends State<AddDocumentsForm> {
                   onSaved: (value) => _documentName = value!,
                 ),
                 SizedBox(height: 20,),
-                CustomDatePickerTitle(
+                CustomDateOpenValues(
                   labelText: StringConst.CREATION_DOCUMENT,
                   initialValue: _creationDate,
                   onChanged: (value){
@@ -135,7 +136,7 @@ class _AddDocumentsFormState extends State<AddDocumentsForm> {
                   validator: (value) => value != null ? null : StringConst.FORM_GENERIC_ERROR,
                 ),
                 SizedBox(height: 20,),
-                CustomDatePickerTitle(
+                CustomDateOpenValues(
                   labelText: StringConst.RENOVATION_DOCUMENT,
                   onChanged: (value){
                     _formattedBDate = DateFormat('dd-MM-yyyy').format(value!);

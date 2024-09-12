@@ -539,7 +539,7 @@ class StringConst {
     'Sí',
     'No'
   ];
-  static const List<String> FORMATION_INSTITUTIONS = ['Colegio', 'Instituto', 'Universidad'];
+  static const List<String> FORMATION_INSTITUTIONS = ['Colegio', 'Instituto', 'Universidad', 'Centro de Formación', 'Empresa', 'Fundación'];
   static const String EDUCATION_ID = 'oohtyRAfa2eFMuumwBAD';
   static const String COMPETENCIES_INFO = 'Te ayudamos a identificar y a evaluar tus competencias a través de nuestro chat interno!\n\n'
       'Sólo necesitas 6 minutos para contarnos tus experiencias profesionales, personales o formativas y en base a ellas obtendrás las competencias correspondientes.\n\n'

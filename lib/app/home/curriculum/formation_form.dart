@@ -252,11 +252,11 @@ class _FormationFormState extends State<FormationForm> {
                 onChanged: (dateTime) {
                   setState(() => _endDate = Timestamp.fromDate(dateTime!));
                 },
-                validator: (value) {
-                  if (value == null || value.toString().isEmpty)
-                    return 'La fecha de inicio no puede estar vacía';
-                  return null;
-                },
+                // validator: (value) {
+                //   if (value == null || value.toString().isEmpty)
+                //     return 'La fecha de inicio no puede estar vacía';
+                //   return null;
+                // },
               ),
             ),
 
@@ -401,7 +401,8 @@ class _FormationFormState extends State<FormationForm> {
           position: '',
           professionActivitiesText: '',
           nameFormation: _nameFormationController.text,
-          education: widget.isMainEducation ? _selectedEducation!.label : '',
+          //education: widget.isMainEducation ? _selectedEducation!.label : '',
+          education: '',
           institution: _institution,
           extraData: _extraDataController.text,
       );

@@ -200,7 +200,7 @@ class _FormationFormState extends State<FormationForm> {
             CustomFlexRowColumn(
               childLeft: DateTimeField(
                 initialValue: _startDate?.toDate(),
-                format: DateFormat('dd/MM/yyyy'),
+                format: DateFormat('yyyy'),
                 decoration: InputDecoration(
                   labelText: 'Año de inicio',
                   labelStyle: textTheme.bodyMedium,
@@ -212,6 +212,8 @@ class _FormationFormState extends State<FormationForm> {
                 onShowPicker: (context, currentValue) {
                   return showDatePicker(
                     context: context,
+                    confirmText: StringConst.FORM_CONFIRM,
+                    initialDatePickerMode: DatePickerMode.year,
                     locale: Locale('es', 'ES'),
                     firstDate: new DateTime(DateTime.now().year - 100,),
                     initialDate: currentValue ?? _endDate?.toDate() ?? DateTime.now(),
@@ -224,13 +226,13 @@ class _FormationFormState extends State<FormationForm> {
                 },
                 validator: (value) {
                   if (value == null || value.toString().isEmpty)
-                    return 'La fecha de inicio es un campo obligatorio';
+                    return 'El año de inicio es un campo obligatorio';
                   return null;
                 },
               ),
               childRight: DateTimeField(
                 initialValue: _endDate?.toDate(),
-                format: DateFormat('dd/MM/yyyy'),
+                format: DateFormat('yyyy'),
                 decoration: InputDecoration(
                   labelText: 'Año de fin',
                   labelStyle: textTheme.bodyMedium,
@@ -242,6 +244,8 @@ class _FormationFormState extends State<FormationForm> {
                 onShowPicker: (context, currentValue) {
                   return showDatePicker(
                     context: context,
+                    confirmText: StringConst.FORM_CONFIRM,
+                    initialDatePickerMode: DatePickerMode.year,
                     locale: Locale('es', 'ES'),
                     firstDate: _startDate?.toDate() ?? new DateTime(DateTime.now().year - 100,),
                     initialDate: currentValue ?? DateTime.now(),

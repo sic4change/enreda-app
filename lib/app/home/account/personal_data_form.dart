@@ -44,6 +44,7 @@ import '../../../common_widgets/custom_chip.dart';
 import '../../../common_widgets/custom_date_picker.dart';
 import '../../../common_widgets/custom_text.dart';
 import '../../../utils/adaptive.dart';
+import '../../sign_up/validating_form_controls/bubbled_container.dart';
 import '../models/interest.dart';
 
 class PersonalDataForm extends StatefulWidget {
@@ -97,6 +98,7 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
 
   bool? profileDataChanged;
   final _formKey = GlobalKey<FormState>();
+  final _specificInterestsFormKey = GlobalKey<FormState>();
   final TextEditingController _textFieldController = TextEditingController();
   TextEditingController textEditingControllerSpecificInterests = TextEditingController();
 
@@ -360,7 +362,7 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
                   ),
                   CustomFlexRowColumn(
                     childLeft: streamBuilderForSocialEntity(context, selectedSocialEntity,
-                        socialEntityStreamBuilderSetState, user, StringConst.FORM_SOCIAL_ENTITY),
+                        socialEntityStreamBuilderSetState, user, StringConst.FORM_SOCIAL_ENTITY, false),
                     childRight: Container(),
                   ),
                   SpaceH20(),
@@ -438,46 +440,55 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
                 fontSize: 24.0),
           ),
           SpaceH20(),
-          Padding(
-            padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
-            child: Container(
-              height: 60,
-              child: TextFormField(
-                controller: textEditingControllerSpecificInterests,
-                decoration: InputDecoration(
-                  labelText: StringConst.FORM_SPECIFIC_INTERESTS,
-                  labelStyle: textTheme.bodySmall?.copyWith(
-                    color: AppColors.greyDark,
-                    height: 1.5,
-                    fontWeight: FontWeight.w400,
-                    fontSize: fontSize,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                    borderSide: BorderSide(
-                      color: AppColors.greyUltraLight,
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                    borderSide: BorderSide(
-                      color: AppColors.greyUltraLight,
-                      width: 1.0,
-                    ),
-                  ),
-                ),
-                onTap: () => _showMultiSelectSpecificInterests(context),
-                validator: (value) => value!.isNotEmpty ?
-                null : StringConst.FORM_MOTIVATION_ERROR,
-                //onSaved: (value) => value = _interestId,
-                maxLines: 2,
-                readOnly: true,
-                style: textTheme.bodySmall?.copyWith(
-                  height: 1.5,
-                  color: AppColors.greyDark,
-                  fontWeight: FontWeight.w400,
-                  fontSize: fontSize,
-                ),
+          Form(
+            key: _specificInterestsFormKey,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FormField(
+                  validator: (value) {
+                    if (selectedSpecificInterests.isEmpty) {
+                      return 'Por favor seleccione al menos un interés específico';
+                    }
+                    return null;
+                  },
+                  builder: (FormFieldState<dynamic> field) {
+                    return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget> [
+                          CustomTextSmall(text: StringConst.FORM_SPECIFIC_INTERESTS,),
+                          InkWell(
+                            onTap: () => {_showMultiSelectSpecificInterests(context) },
+                            child: Container(
+                              width: double.infinity,
+                              constraints: BoxConstraints(minHeight: 50),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  border: Border.all(
+                                      color: AppColors.greyUltraLight
+                                  )
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
+                                child: Wrap(
+                                  spacing: 5,
+                                  children: selectedSpecificInterests.map((s) =>
+                                      BubbledContainer(s.name),
+                                  ).toList(),
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (!field.isValid && field.errorText != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                field.errorText!,
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                        ]);
+                  }
               ),
             ),
           ),
@@ -488,7 +499,7 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
 
   Future<void> _submit(UserEnreda user) async {
 
-    if (_validateAndSaveForm()) {
+    if (_validateAndSaveForm() && _validateAndSaveFormInterests()) {
 
       List<String> interestsSelectedIds = [];
       _interests
@@ -542,6 +553,15 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
 
   bool _validateAndSaveForm() {
     final form = _formKey.currentState;
+    if (form != null && form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+
+  bool _validateAndSaveFormInterests() {
+    final form = _specificInterestsFormKey.currentState;
     if (form != null && form.validate()) {
       form.save();
       return true;
@@ -603,7 +623,10 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
     setState(() {
       selectedSocialEntity = socialEntity!;
     });
-    _socialEntity = socialEntity?.socialEntityId;
+    if(selectedSocialEntity == SocialEntity(name: "Ninguna")) {
+      _socialEntity = '';
+    }
+    else _socialEntity = socialEntity?.socialEntityId;
   }
 
   void buildCountryStreamBuilderSetState(Country? country) {

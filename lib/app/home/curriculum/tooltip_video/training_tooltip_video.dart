@@ -46,13 +46,13 @@ class _TrainingTooltipVideoState extends State<TrainingTooltipVideo> {
         if (!_isVideoVisible) Stack(
             children: [
               Container(
-                  //width: widget.maxi? 600: 300,
                   child: videoThumbnailArea(idYoutubeVideo)
               ),
               Positioned(
                 left: 20,
                 right: 20,
-                bottom: widget.maxi? 140: 60,
+                bottom: 20,
+                top: 20,
                 child: IconButton(
                   padding: EdgeInsets.zero,
                   onPressed: () {

@@ -4,6 +4,8 @@ import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../values/strings.dart';
+
 class CustomDateOpenValues extends StatelessWidget {
   const CustomDateOpenValues({
     super.key,
@@ -93,6 +95,7 @@ class CustomDateOpenValues extends StatelessWidget {
             onShowPicker: (context, currentValue) {
               return showDatePicker(
                 context: context,
+                confirmText: StringConst.FORM_CONFIRM,
                 locale: Locale('es', 'ES'),
                 firstDate: DateTime(now.year - 100, now.month, now.day),
                 initialDate: currentValue ?? DateTime(now.year, now.month, now.day),

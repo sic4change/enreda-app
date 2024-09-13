@@ -117,6 +117,8 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
                                   user: user,
                                   snapshot: snapshot,
                                   fitSmallerLayout: true,
+                                  emptyTitle: StringConst.FORM_NO_COMPETENCIES,
+                                  emptyMessage: StringConst.FORM_ADD_COMPETENCIES,
                                   itemBuilder: (context, competency) {
                                     final status =
                                         user?.competencies[competency.id] ??

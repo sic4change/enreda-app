@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
+import '../values/strings.dart';
+
 Widget customDatePicker(BuildContext context, DateTime? time, String labelText, String errorText, functionSetState) {
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = Responsive.isMobile(context) ? 13 : Responsive.isTablet(context) ? 14 : 16;
@@ -45,6 +47,7 @@ Widget customDatePicker(BuildContext context, DateTime? time, String labelText, 
       return showDatePicker(
         context: context,
         locale: Locale('es', 'ES'),
+        confirmText: StringConst.FORM_CONFIRM,
         firstDate: DateTime(DateTime.now().year - 100, DateTime.now().month, DateTime.now().day),
         initialDate: currentValue ?? DateTime.now(),
         lastDate: DateTime(DateTime.now().year + 100, DateTime.now().month, DateTime.now().day),

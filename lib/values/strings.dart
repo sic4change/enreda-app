@@ -403,12 +403,13 @@ class StringConst {
   static const String FORM_SIZE_ERROR = "El tamaño no puede estar vacío";
   static const String FORM_ABILITIES = "¿Qué aspectos crees que tienes que reforzar?";
   static const String FORM_INTERESTS_QUESTION = "¿Cuáles son tus intereses?";
-  static const String FORM_SPECIFIC_INTERESTS = "Intereses específicos";
+  static const String FORM_SPECIFIC_INTERESTS = "¿Cuáles son tus intereses específicos?";
   static const String FORM_INTEREST_EMPTY = "Selecciona primero tus intereses";
   static const String FORM_ACTIVITIES_EMPTY = "Selecciona primero la actividad";
   static const String FORM_ABILITIES_REV = "Aspectos a reforzar";
   static const String FORM_MOTIVATION_ERROR = "Este campo no puede estar vacío";
   static const String FORM_DEDICATION = "¿Tienes claro a lo que te gustaría dedicarte?";
+  static const String FORM_KEEP_LEARNING_OPTIONS = "¿Qué te gustaría seguir aprendiendo?";
   static const String FORM_DEDICATION_REV = "Dedicación";
   static const String FORM_TIME_SEARCHING = "¿Cuánto tiempo llevas buscando empleo?";
   static const String FORM_TIME_SEARCHING_REV = "Búsqueda";
@@ -425,8 +426,11 @@ class StringConst {
   static const String FORM_CURRENT_COUNTRY = "País actual";
   static const String FORM_CURRENT_NATIONALITY = "Nacionalidad";
   static const String FORM_EDUCATION_REV_CREATE = "Nivel educativo";
+  static const String FORM_SOCIAL_ENTITY_REV = "Entidad social";
   static const String FORM_GOALS = 'Objetivos';
   static const String FORM_SOCIAL_ENTITY_ERROR = "El campo no puede estar vacío";
+  static const String FORM_NO_COMPETENCIES = "Sin competencias";
+  static const String FORM_ADD_COMPETENCIES = "Te invitamos a ver la píldora informativa acerca de las competencias y a identificar tus competencias en el chat.";
 
   static const String FORM_GENERAL_INFO = "Información general";
   static const String FORM_MOTIVATION = "Motivaciones";

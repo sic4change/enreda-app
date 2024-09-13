@@ -1,10 +1,12 @@
 import 'package:enreda_app/app/home/models/interest.dart';
 import 'package:enreda_app/app/home/models/specificinterest.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../services/database.dart';
+import '../../../utils/const.dart';
 import 'multi_select_list_button.dart';
 
 Widget selectSpecificInterestsDialog (
@@ -37,14 +39,21 @@ Widget selectSpecificInterestsDialog (
     );
   }
   return AlertDialog(
-    content: Text(StringConst.FORM_INTEREST_EMPTY),
+    backgroundColor: AppColors.primary050,
+    content: Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: CustomTextSmall(text: StringConst.FORM_INTEREST_EMPTY),
+    ),
     actions: <Widget>[
       ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Constants.turquoise,
+          ),
           onPressed: () => Navigator.pop(context),
-          child: Text(StringConst.FORM_ACCEPT, style: TextStyle(
-              color: AppColors.white,
-              fontWeight: FontWeight.bold))
-      ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CustomTextSmall(text: StringConst.FORM_ACCEPT),
+          )),
     ],
   );
 }

@@ -243,7 +243,8 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
               ),
 
             ),
-            !_isProfesional && !_general ?
+            !_isProfesional && !_general && _type?.name == 'Personal' && _subtype?.name == 'Deporte' ||
+                !_isProfesional && !_general && _type?.name == 'Personal' && _subtype?.name == 'Ocio' ?
             CustomFlexRowColumn(
               childLeft:  _buildActivityDropdown(database, setState),
               childRight: _buildRoleDropdown(setState),
@@ -251,7 +252,7 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
 
             //FOR LEVEL
 
-            !_general && _type?.name == 'Personal' ?
+            !_general && _type?.name == 'Personal' && _subtype?.name == 'Deporte' ?
             Padding(
               padding: const EdgeInsets.all(Borders.kDefaultPaddingDouble / 2),
                 child: _buildLevelDropdown(setState),
@@ -295,9 +296,9 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
             !_general ? CustomFlexRowColumn(
               childLeft: DateTimeField(
                 initialValue: _startDate?.toDate(),
-                format: DateFormat('dd/MM/yyyy'),
+                format: DateFormat('yyyy'),
                 decoration: InputDecoration(
-                  labelText: 'Fecha inicio *',
+                  labelText: 'Año inicio *',
                   labelStyle: textTheme.bodyMedium,
                   suffixIcon: Icon(
                     Icons.event,
@@ -307,6 +308,8 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                 onShowPicker: (context, currentValue) {
                   return showDatePicker(
                     context: context,
+                    confirmText: StringConst.FORM_CONFIRM,
+                    initialDatePickerMode: DatePickerMode.year,
                     locale: Locale('es', 'ES'),
                     firstDate: new DateTime(DateTime.now().year - 100,),
                     initialDate: currentValue ?? _endDate?.toDate() ?? DateTime.now(),
@@ -319,15 +322,15 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                 },
                 validator: (value) {
                   if (value == null || value.toString().isEmpty)
-                    return 'La fecha de inicio es un campo obligatorio';
+                    return 'El año de inicio es un campo obligatorio';
                   return null;
                 },
               ),
               childRight: DateTimeField(
                 initialValue: _endDate?.toDate(),
-                format: DateFormat('dd/MM/yyyy'),
+                format: DateFormat('yyyy'),
                 decoration: InputDecoration(
-                  labelText: 'Fecha fin',
+                  labelText: 'Año fin',
                   labelStyle: textTheme.bodyMedium,
                   suffixIcon: Icon(
                     Icons.event,
@@ -337,6 +340,8 @@ class _ExperienceFormUpdateState extends State<ExperienceFormUpdate> {
                 onShowPicker: (context, currentValue) {
                   return showDatePicker(
                     context: context,
+                    confirmText: StringConst.FORM_CONFIRM,
+                    initialDatePickerMode: DatePickerMode.year,
                     locale: Locale('es', 'ES'),
                     firstDate: _startDate?.toDate() ?? new DateTime(DateTime.now().year - 100,),
                     initialDate: currentValue ?? DateTime.now(),

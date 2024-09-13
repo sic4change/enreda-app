@@ -1,5 +1,6 @@
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
+import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -93,6 +94,7 @@ class CustomDatePickerTitle extends StatelessWidget {
             onShowPicker: (context, currentValue) {
               return showDatePicker(
                 context: context,
+                confirmText: StringConst.FORM_CONFIRM,
                 locale: Locale('es', 'ES'),
                 firstDate: DateTime(DateTime.now().year - 100, DateTime.now().month, DateTime.now().day),
                 initialDate: currentValue ?? DateTime(now.year - 16, now.month, now.day),

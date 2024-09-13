@@ -46,17 +46,12 @@ class _PillTooltipState extends State<PillTooltip> {
         children: [
           GestureDetector(onTap: () => _overlayEntry.remove(),),
           Positioned(
-            // Position the tooltip relative to the widget
-            top: Responsive.isMobile(context)? (MediaQuery.of(context).size.height * 0.5) - 150
-              : y - 20,
-            /*top: Responsive.isMobile(context) ? 100
+            top: Responsive.isMobile(context) ? 100
                 : Responsive.isTablet(context) || Responsive.isDesktopS(context) ? 200
-                    : MediaQuery.of(context).size.height * 0.32,*/
-            left: Responsive.isMobile(context)? (MediaQuery.of(context).size.width * 0.5) - 150
-                : x - 20,
-            /*right: x - 20,Responsive.isMobile(context) ? 20
+                    : MediaQuery.of(context).size.height * 0.10,
+            right: Responsive.isMobile(context) ? 20
                 : Responsive.isTablet(context) || Responsive.isDesktopS(context) ? 50
-                    : MediaQuery.of(context).size.width * 0.25,*/
+                    : MediaQuery.of(context).size.width * 0.25,
             child: Card(
               color: Colors.transparent,
               elevation: 0,
@@ -69,7 +64,7 @@ class _PillTooltipState extends State<PillTooltip> {
                       color: AppColors.primary900,
                       borderRadius: BorderRadius.circular(20.0),
                     ),
-                    width: 300,
+                    width: Responsive.isMobile(context) ? 300 : Responsive.isDesktopS(context) ? 500 : 700,
                     child: Column(
                       children: [
                         Padding(

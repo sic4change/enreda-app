@@ -7,7 +7,7 @@ import '../../../../../../services/database.dart';
 import '../../../utils/adaptive.dart';
 import '../../../values/values.dart';
 
-Widget streamBuilderForSocialEntity (BuildContext context, SocialEntity? selectedSocialEntity, functionToWriteBackThings, genericType, String title) {
+Widget streamBuilderForSocialEntity (BuildContext context, SocialEntity? selectedSocialEntity, functionToWriteBackThings, genericType, String title, bool? validated) {
   final database = Provider.of<Database>(context, listen: false);
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
@@ -19,9 +19,9 @@ Widget streamBuilderForSocialEntity (BuildContext context, SocialEntity? selecte
         if (snapshotSocialEntities.hasData) {
           final socialEntities = [SocialEntity(name: "Ninguna")].followedBy(snapshotSocialEntities.data!);
           socialEntityItems = socialEntities.map((SocialEntity socialEntity) {
-            /*if (selectedSocialEntity == null && socialEntity.socialEntityId == genericType?.assignedEntityId) {
+            if (selectedSocialEntity == null && socialEntity.socialEntityId == genericType?.assignedEntityId) {
               selectedSocialEntity = socialEntity;
-            } */
+            }
             return DropdownMenuItem<SocialEntity>(
               value: socialEntity,
               child: Text(socialEntity.name),
@@ -51,9 +51,24 @@ Widget streamBuilderForSocialEntity (BuildContext context, SocialEntity? selecte
                 value: selectedSocialEntity,
                 items: socialEntityItems,
                 onChanged: (value) => functionToWriteBackThings(value),
-                //onChanged: null,
-                validator: (value) => selectedSocialEntity != null ? null : StringConst.FORM_FIELD_ERROR,
+                validator: (value) {
+                  if (selectedSocialEntity != null) {
+                    return null;
+                  } else if (validated == false) {
+                    return null;
+                  } else {
+                    return StringConst.FORM_FIELD_ERROR;
+                  }
+                },
                 decoration: InputDecoration(
+                  labelText: 'Ninguna',
+                  labelStyle: textTheme.bodySmall?.copyWith(
+                    height: 1.4,
+                    color: AppColors.greyDark,
+                    fontWeight: FontWeight.w400,
+                    fontSize: fontSize,
+                  ),
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
                   filled: true,
                   fillColor: AppColors.white,
                   errorStyle: TextStyle(height: 0.01),

@@ -1,4 +1,5 @@
 import 'package:enreda_app/app/home/models/dedication.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../services/database.dart';
@@ -25,7 +26,6 @@ Widget streamBuilderDropdownDedication (BuildContext context, Dedication? select
         }
 
         return DropdownButtonFormField<Dedication>(
-          hint: Text(StringConst.FORM_DEDICATION, maxLines: 2, overflow: TextOverflow.ellipsis),
           isDense: true,
           isExpanded: true,
           value: selectedDedication,
@@ -35,6 +35,8 @@ Widget streamBuilderDropdownDedication (BuildContext context, Dedication? select
           iconDisabledColor: AppColors.greyDark,
           iconEnabledColor: AppColors.primaryColor,
           decoration: InputDecoration(
+            fillColor: Colors.white,
+            filled: true,
             labelStyle: textTheme.bodySmall?.copyWith(
               height: 1.5,
               color: AppColors.greyDark,

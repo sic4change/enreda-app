@@ -60,6 +60,7 @@ import '../../../../../../utils/responsive.dart';
 import '../../../../../../values/values.dart';
 import '../../../common_widgets/custom_text.dart';
 import '../../../common_widgets/rounded_container.dart';
+import '../validating_form_controls/bubbled_container.dart';
 import '../validating_form_controls/checkbox_data_form.dart';
 
 const double contactBtnWidthLg = 200.0;
@@ -138,6 +139,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   late String interestsNames;
   late String specificInterestsNames;
   late String keepLearningOptionsNames;
+  late String entityName;
   String? _abilityId;
   String? _interestId;
   int? dedicationValue;
@@ -195,7 +197,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     nationalityName = '';
     keepLearningOptionsNames = '';
     _belongOrganization = "";
-
+    entityName = "Ninguna";
   }
 
   bool _validateAndSaveForm() {
@@ -499,7 +501,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                   _buildEducationStreamBuilder_setState, null, StringConst.FORM_EDUCATION),
               SpaceH20(),
               streamBuilderForSocialEntity(context, selectedSocialEntity,
-                   _buildSocialEntityStreamBuilder_setState, null, StringConst.FORM_SOCIAL_ENTITY),
+                   _buildSocialEntityStreamBuilder_setState, null, StringConst.FORM_SOCIAL_ENTITY, true),
             ]),
       );
   }
@@ -561,146 +563,168 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   }
 
   Widget _buildFormInterests(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 14, 16, md: 15);
     return
       Form(
         key: _formKeyInterests,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget> [
-              CustomPadding(child: Container(
-                  height: 60,
-                  child: streamBuilderDropdownDedication(context, selectedDedication, _buildDedicationStreamBuilder_setState))),
+              CustomPadding(child:
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTextSmall(text: StringConst.FORM_DEDICATION,),
+                  Container(
+                      height: 60,
+                      child: streamBuilderDropdownDedication(context, selectedDedication, _buildDedicationStreamBuilder_setState)),
+                ],
+              )),
               Padding(
-                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
-                child: Container(
-                  height: 60,
-                  child: TextFormField(
-                    controller: textEditingControllerInterests,
-                    decoration: InputDecoration(
-                      hintText: StringConst.FORM_INTERESTS_QUESTION,
-                      hintMaxLines: 2,
-                      labelStyle: textTheme.bodySmall?.copyWith(
-                        color: AppColors.greyDark,
-                        height: 1.5,
-                        fontWeight: FontWeight.w400,
-                        fontSize: fontSize,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: AppColors.greyUltraLight,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: AppColors.greyUltraLight,
-                          width: 1.0,
-                        ),
-                      ),
-                    ),
-                    onTap: () => {_showMultiSelectInterests(context) },
-                    validator: (value) => value!.isNotEmpty ?
-                    null : StringConst.FORM_MOTIVATION_ERROR,
-                    onSaved: (value) => value = _interestId,
-                    maxLines: 2,
-                    readOnly: true,
-                    style: textTheme.bodySmall?.copyWith(
-                      height: 1.5,
-                      color: AppColors.greyDark,
-                      fontWeight: FontWeight.w400,
-                      fontSize: fontSize,
-                    ),
-                  ),
+                padding: const EdgeInsets.all(8.0),
+                child: FormField(
+                  validator: (value) {
+                    if (selectedInterests.isEmpty) {
+                      return 'Por favor seleccione al menos un interés';
+                    }
+                    return null;
+                  },
+                  builder: (FormFieldState<dynamic> field) {
+                    return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget> [
+                          CustomTextSmall(text: StringConst.FORM_INTERESTS_QUESTION,),
+                          InkWell(
+                            onTap: () => {_showMultiSelectInterests(context) },
+                            child: Container(
+                              width: double.infinity,
+                              constraints: BoxConstraints(minHeight: 50),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  border: Border.all(
+                                      color: AppColors.greyUltraLight
+                                  )
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
+                                child: Wrap(
+                                  spacing: 5,
+                                  children: selectedInterests.map((s) =>
+                                      BubbledContainer(s.name),
+                                  ).toList(),
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (!field.isValid && field.errorText != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                field.errorText!,
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                        ]);
+                  }
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
-                child: Container(
-                  height: 60,
-                  child: TextFormField(
-                    controller: textEditingControllerSpecificInterests,
-                    decoration: InputDecoration(
-                      labelText: StringConst.FORM_SPECIFIC_INTERESTS,
-                      labelStyle: textTheme.bodySmall?.copyWith(
-                        color: AppColors.greyDark,
-                        height: 1.5,
-                        fontWeight: FontWeight.w400,
-                        fontSize: fontSize,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: AppColors.greyUltraLight,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: AppColors.greyUltraLight,
-                          width: 1.0,
-                        ),
-                      ),
-                    ),
-                    onTap: () => {_showMultiSelectSpecificInterests(context) },
-                    validator: (value) => value!.isNotEmpty ?
-                    null : StringConst.FORM_MOTIVATION_ERROR,
-                    onSaved: (value) => value = _interestId,
-                    maxLines: 2,
-                    readOnly: true,
-                    style: textTheme.bodySmall?.copyWith(
-                      height: 1.5,
-                      color: AppColors.greyDark,
-                      fontWeight: FontWeight.w400,
-                      fontSize: fontSize,
-                    ),
-                  ),
+                padding: const EdgeInsets.all(8.0),
+                child: FormField(
+                    validator: (value) {
+                      if (selectedSpecificInterests.isEmpty) {
+                        return 'Por favor seleccione al menos un interés específico';
+                      }
+                      return null;
+                    },
+                    builder: (FormFieldState<dynamic> field) {
+                      return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget> [
+                            CustomTextSmall(text: StringConst.FORM_SPECIFIC_INTERESTS,),
+                            InkWell(
+                              onTap: () => {_showMultiSelectSpecificInterests(context) },
+                              child: Container(
+                                width: double.infinity,
+                                constraints: BoxConstraints(minHeight: 50),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    border: Border.all(
+                                        color: AppColors.greyUltraLight
+                                    )
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
+                                  child: Wrap(
+                                    spacing: 5,
+                                    children: selectedSpecificInterests.map((s) =>
+                                        BubbledContainer(s.name),
+                                    ).toList(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (!field.isValid && field.errorText != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  field.errorText!,
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                          ]);
+                    }
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
-                child: Container(
-                  height: 60,
-                  child: TextFormField(
-                    controller: textEditingControllerKeepLearningOptions,
-                    decoration: InputDecoration(
-                      hintText: '¿Qué te gustaría seguir aprendiendo?',
-                      hintMaxLines: 2,
-                      labelStyle: textTheme.bodySmall?.copyWith(
-                        color: AppColors.greyDark,
-                        height: 1.5,
-                        fontWeight: FontWeight.w400,
-                        fontSize: fontSize,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: AppColors.greyUltraLight,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                          color: AppColors.greyUltraLight,
-                          width: 1.0,
-                        ),
-                      ),
-                    ),
-                    onTap: () => {_showMultiSelectKeepLearningOptions(context) },
-                    validator: (value) => value!.isNotEmpty ?
-                    null : StringConst.FORM_MOTIVATION_ERROR,
-                    onSaved: (value) => value = _keepLearningOptionId,
-                    maxLines: 2,
-                    readOnly: true,
-                    style: textTheme.bodySmall?.copyWith(
-                      height: 1.5,
-                      color: AppColors.greyDark,
-                      fontWeight: FontWeight.w400,
-                      fontSize: fontSize,
-                    ),
-                  ),
+                padding: const EdgeInsets.all(8.0),
+                child: FormField(
+                    validator: (value) {
+                      if (selectedKeepLearningOptions.isEmpty) {
+                        return 'Por favor seleccione al menos una opción';
+                      }
+                      return null;
+                    },
+                    builder: (FormFieldState<dynamic> field) {
+                      return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget> [
+                            CustomTextSmall(text: StringConst.FORM_KEEP_LEARNING_OPTIONS,),
+                            InkWell(
+                              onTap: () => {_showMultiSelectKeepLearningOptions(context) },
+                              child: Container(
+                                width: double.infinity,
+                                constraints: BoxConstraints(minHeight: 50),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    border: Border.all(
+                                        color: AppColors.greyUltraLight
+                                    )
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
+                                  child: Wrap(
+                                    spacing: 5,
+                                    children: selectedKeepLearningOptions.map((s) =>
+                                        BubbledContainer(s.title),
+                                    ).toList(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (!field.isValid && field.errorText != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  field.errorText!,
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                          ]);
+                    }
                 ),
               ),
             ]),
@@ -713,7 +737,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
         image: Responsive.isMobile(context) ? null // No image on mobile devices
         : DecorationImage(
           image: AssetImage(ImagePath.LOGO_LINES),
-          fit: BoxFit.cover, // Ensures the image covers the entire container
+          fit: BoxFit.fitWidth, // Ensures the image covers the entire container
         ),
       ),
       child: Column(
@@ -738,6 +762,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
               cityName,
               _postalCode!,
               educationName,
+              entityName,
               specificInterestsNames,
               interestsNames,
               keepLearningOptionsNames,
@@ -843,6 +868,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   void _buildSocialEntityStreamBuilder_setState(SocialEntity? socialEntity) {
     setState(() {
       this.selectedSocialEntity = socialEntity;
+      entityName = socialEntity != null ? socialEntity.name : "";
     });
   }
 
@@ -907,9 +933,15 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   void getValuesFromKeyInterests (selectedValues) {
     var concatenate = StringBuffer();
     List<String> interestsIds = [];
-    selectedValues.forEach((item){
-      concatenate.write(item.name +' / ');
+    int count = 0;
+    int totalItems = selectedValues.length;
+    selectedValues.forEach((item) {
+      concatenate.write(item.name);
       interestsIds.add(item.interestId);
+      if (count != totalItems - 1) {
+        concatenate.write(' / ');
+      }
+      count++;
     });
     setState(() {
       this.interestsNames = concatenate.toString();
@@ -942,12 +974,18 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     getValuesFromKeySpecificInterests(selectedValues);
   }
 
-  void getValuesFromKeySpecificInterests (selectedValues) {
+  void getValuesFromKeySpecificInterests(selectedValues) {
     var concatenate = StringBuffer();
     List<String> specificInterestsIds = [];
-    selectedValues.forEach((item){
-      concatenate.write(item.name +' / ');
+    int count = 0;
+    int totalItems = selectedValues.length;
+    selectedValues.forEach((item) {
+      concatenate.write(item.name);
       specificInterestsIds.add(item.specificInterestId);
+      if (count != totalItems - 1) {
+        concatenate.write(' / ');
+      }
+      count++;
     });
     setState(() {
       this.specificInterestsNames = concatenate.toString();
@@ -955,10 +993,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
       this.specificInterests = specificInterestsIds;
       this.selectedSpecificInterests = selectedValues;
     });
-    print(interestsNames);
-    print(specificInterestsIds);
   }
-
   void _showMultiSelectKeepLearningOptions(BuildContext context) async {
     final selectedOptions = await showDialog<Set<KeepLearningOption>>(
       context: context,
@@ -973,9 +1008,15 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   void getValuesFromKeyKeepLearningOptions (selectedOptions) {
     var concatenate = StringBuffer();
     List<String> keepLearningIds = [];
-    selectedOptions.forEach((item){
-      concatenate.write(item.title +' / ');
+    int count = 0;
+    int totalItems = selectedOptions.length;
+    selectedOptions.forEach((item) {
+      concatenate.write(item.title);
       keepLearningIds.add(item.keepLearningOptionId);
+      if (count != totalItems - 1) {
+        concatenate.write(' / ');
+      }
+      count++;
     });
     setState(() {
       this.keepLearningOptionsNames = concatenate.toString();

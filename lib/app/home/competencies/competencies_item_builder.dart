@@ -5,6 +5,9 @@ import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common_widgets/empty_list.dart';
+import '../../../values/values.dart';
+
 typedef ItemWidgetBuilder<T> = Widget Function(BuildContext context, T item);
 
 class CompetenciesItemBuilder<T> extends StatelessWidget {
@@ -36,8 +39,7 @@ class CompetenciesItemBuilder<T> extends StatelessWidget {
       if (items.isNotEmpty) {
         return _build(items, context);
       } else {
-        return EmptyContent(
-            title: emptyTitle ?? '', message: emptyMessage ?? '');
+        return EmptyList(title: emptyTitle ?? '', subtitle: emptyMessage ?? '', imagePath: ImagePath.NO_RESOURCES);
       }
     } else if (snapshot.hasError) {
       return EmptyContent(

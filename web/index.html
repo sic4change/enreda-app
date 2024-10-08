@@ -43,16 +43,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 
 </head>
-<body>
+<script src="flutter.js" async></script>
 
-<script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('flutter-first-frame', function () {
-        navigator.serviceWorker.register('flutter_service_worker.js');
-      });
-    }
-  </script>
-  <!-- STEP 1: ADD core Firebase JS SDK -->
+<body>
+ <!-- STEP 1: ADD core Firebase JS SDK -->
 
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -81,14 +75,8 @@
       firebase.initializeApp(firebaseConfig);
       firebase.analytics();
     </script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('flutter-first-frame', function () {
-        navigator.serviceWorker.register('flutter_service_worker.js');
-      });
-    }
-  </script>
-  <script src="main.dart.js" type="application/javascript"></script>
+ <script src="main.dart.js" type="application/javascript"></script>
+
 
   <script type="text/javascript"> window.flutterWebRenderer = "html"; </script>
 

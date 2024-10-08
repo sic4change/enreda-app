@@ -707,10 +707,10 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               children: [
                 Responsive.isDesktop(context) ? Container() : _buildDownloadCV(),
                 Responsive.isDesktop(context) ? Container() : SpaceH50(),
-                PillTooltip(
+                /*PillTooltip(
                   title: StringConst.PILL_TRAVEL_BEGINS,
                   pillId: TrainingPill.TRAVEL_BEGINS_ID,
-                ),
+                ),*/
               ],
             ),
           ),
@@ -1847,6 +1847,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final controller = TextEditingController();
     final textTheme = Theme.of(context).textTheme;
+    final _formKey = GlobalKey<FormState>();
     if (currentText.isNotEmpty) {
       controller.text = currentText;
     }
@@ -1867,11 +1868,20 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   ),
                 ),
                 SpaceH12(),
-                TextField(
-                  controller: controller,
-                  style: textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14.0,
+                Form(
+                  key: _formKey,
+                  child: TextFormField(
+                    controller: controller,
+                    style: textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 14.0,
+                    ),
+                    validator: (value){
+                      if (value == null || value.isEmpty){
+                        return 'Este campo no puede estar vacío';
+                      }
+                      return null;
+                    },
                   ),
                 )
               ],
@@ -1882,12 +1892,16 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         cancelActionText: StringConst.CANCEL,
         dismissible: true,
         onDefaultActionPressed: (context) {
-          if (currentText.isNotEmpty) {
-            user!.dataOfInterest.remove(currentText);
+          if (_formKey.currentState!.validate()) {
+            if (currentText.isNotEmpty) {
+              user!.dataOfInterest.remove(currentText);
+            }
+            user!.dataOfInterest.add(controller.text);
+            database.setUserEnreda(user!);
+            Navigator.of(context).pop();
           }
-          user!.dataOfInterest.add(controller.text);
-          database.setUserEnreda(user!);
-          Navigator.of(context).pop();
+          else{
+          }
        });
 
     setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_DATA_OF_INTEREST);

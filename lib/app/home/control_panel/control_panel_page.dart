@@ -1,5 +1,7 @@
 import 'package:enreda_app/app/home/control_panel/participant_control_panel_page.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/trainingPills/videos_tooltip_widget/pill_tooltip.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
@@ -82,6 +84,16 @@ class _ControlPanelPageState extends State<ControlPanelPage> {
                                         color: AppColors.greyAlt),),
                                 )
                               ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(22.0),
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: PillTooltip(
+                              title: StringConst.PILL_TRAVEL_BEGINS,
+                              pillId: TrainingPill.TRAVEL_BEGINS_ID,
                             ),
                           ),
                         ),

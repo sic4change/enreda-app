@@ -223,6 +223,8 @@ class _FormationFormState extends State<FormationForm> {
                 },
                 onChanged: (dateTime) {
                   setState(() => _startDate = Timestamp.fromDate(dateTime!));
+                  print("fecha inicio: $_startDate, fecha fin: $_endDate");
+
                 },
                 validator: (value) {
                   if (value == null || value.toString().isEmpty)
@@ -255,6 +257,8 @@ class _FormationFormState extends State<FormationForm> {
                 },
                 onChanged: (dateTime) {
                   setState(() => _endDate = Timestamp.fromDate(dateTime!));
+                  print("fecha inicio: ${_startDate!.toDate()}, fecha fin: $_endDate");
+
                 },
                 // validator: (value) {
                 //   if (value == null || value.toString().isEmpty)

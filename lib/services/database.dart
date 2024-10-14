@@ -17,6 +17,7 @@ import 'package:enreda_app/app/home/models/filterResource.dart';
 import 'package:enreda_app/app/home/models/filterTrainingPills.dart';
 import 'package:enreda_app/app/home/models/gender.dart';
 import 'package:enreda_app/app/home/models/interest.dart';
+import 'package:enreda_app/app/home/models/jobOfferApplication.dart';
 import 'package:enreda_app/app/home/models/keepLearningOptions.dart';
 import 'package:enreda_app/app/home/models/mentorUser.dart';
 import 'package:enreda_app/app/home/models/nature.dart';
@@ -121,6 +122,7 @@ abstract class Database {
   Stream<List<DocumentCategory>> documentCategoriesStream();
   Stream<List<PersonalDocumentType>> documentSubCategoriesByCategoryStream(String categoryId);
   Stream<List<DocumentationParticipant>> documentationParticipantBySubCategoryStream(PersonalDocumentType documentSubCategory, UserEnreda user);
+  Stream<List<JobOfferApplication>> applicantStreamByJobOffer(String? jobOfferId, String? userId);
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> addUserEnreda(UserEnreda userEnreda);
@@ -148,6 +150,7 @@ abstract class Database {
   Future<void> editFileDocumentationParticipant(String userId, String fileName, Uint8List data, DocumentationParticipant document);
   Future<void> updateDocumentationParticipant(DocumentationParticipant document);
   Future<void> deleteDocumentationParticipant(DocumentationParticipant document);
+  Future<void> addJobOfferApplication(JobOfferApplication jobOfferApplication);
   Stream<List<String>> nationsSpanishStream();
 }
 
@@ -159,6 +162,10 @@ class FirestoreDatabase implements Database {
   @override
   Future<void> addResource(Resource resource) =>
       _service.addData(path: APIPath.resources(), data: resource.toMap());
+
+  @override
+  Future<void> addJobOfferApplication(JobOfferApplication jobOfferApplication) =>
+      _service.addData(path: APIPath.jobOfferApplications(), data: jobOfferApplication.toMap());
 
   @override
   Future<void> setResource(Resource resource) => _service.updateData(
@@ -236,7 +243,8 @@ class FirestoreDatabase implements Database {
     return _service.filteredCollectionStream(
       path: APIPath.resources(),
       queryBuilder: (query) {
-        query = query.where('status', isEqualTo: 'Disponible').where('trust', isEqualTo: true);
+        //query = query.where('status', isEqualTo: 'Disponible').where('trust', isEqualTo: true);
+        query = query.where('status', isEqualTo: 'Disponible');
         return query;
       },
       builder: (data, documentId) {
@@ -866,6 +874,22 @@ class FirestoreDatabase implements Database {
     builder: (data, documentId) => DocumentationParticipant.fromMap(data, documentId),
     sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
   );
+
+  @override
+  Stream<List<JobOfferApplication>> applicantStreamByJobOffer(String? jobOfferId, String? userId) {
+    return _service.collectionStream<JobOfferApplication>(
+      path: APIPath.jobOfferApplications(),
+      queryBuilder: (query) {
+        query = query.where('jobOfferId', isEqualTo: jobOfferId);
+        if (userId != null) {
+          query = query.where('userId', isEqualTo: userId);
+        }
+        return query;
+      },
+      builder: (data, documentId) => JobOfferApplication.fromMap(data, documentId),
+      sort: (lhs, rhs) => rhs.match!.compareTo(lhs.match!),
+    );
+  }
 
   @override
   Future<void> addChatQuestion(ChatQuestion chatQuestion) => _service.addData(

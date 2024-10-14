@@ -36,6 +36,8 @@ class APIPath {
   static String documentCategories() => 'documentCategories';
   static String documentationParticipants() => 'documentationParticipants';
   static String oneDocumentationParticipant(String fileId) => 'documentationParticipants/$fileId';
+  static String jobOfferApplications() => 'jobOfferApplications';
+  static String jobOfferApplication(String? jobOfferApplicationId) => 'jobOfferApplications/$jobOfferApplicationId';
 
   static String chatQuestion(String id) => 'chatQuestions/$id';
   static String chatQuestions() => 'chatQuestions';

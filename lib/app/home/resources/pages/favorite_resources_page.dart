@@ -112,7 +112,7 @@ class _FavoriteResourcesPageState extends State<FavoriteResourcesPage> {
               Padding(
                 padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
                 child: Center(child: CircularProgressIndicator(),),
-              ) : NoResourcesIlustration(
+              ) : NoResourcesIllustration(
                   title: StringConst.NO_FAVORITES_TITLE,
                   subtitle: StringConst.NO_RESOURCES_SUBTITLE,
                   imagePath: ImagePath.LEARNING_GIRL,);

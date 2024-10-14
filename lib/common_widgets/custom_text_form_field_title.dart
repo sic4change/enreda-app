@@ -142,3 +142,49 @@ Widget customTextFormField(BuildContext context, String formValue, String labelT
     keyboardType: TextInputType.name,
   );
 }
+
+Widget customTextFormMultiline(BuildContext context, String formValue, String labelText, String errorText, functionSetState, int? maxLength) {
+  TextTheme textTheme = Theme.of(context).textTheme;
+  return TextFormField(
+    maxLength: maxLength,
+    keyboardType: TextInputType.multiline,
+    decoration: InputDecoration(
+      filled: true,
+      fillColor: Colors.white,
+      labelText: labelText,
+      focusColor: AppColors.primaryColor,
+      labelStyle: textTheme.bodyLarge?.copyWith(
+        color: AppColors.greyDark,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5.0),
+        borderSide: const BorderSide(
+          color: AppColors.greyUltraLight,
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5.0),
+        borderSide: const BorderSide(
+          color: AppColors.greyUltraLight,
+          width: 1.0,
+        ),
+      ),
+    ),
+    initialValue: formValue,
+    validator: (value) {
+      if (value!.isEmpty) {
+        return errorText;
+      } else if (value.length < 100) {
+        return 'El texto debe tener al menos 100 caracteres';
+      }
+      return null;
+    },
+    onSaved: (String? val) => functionSetState(val),
+    textCapitalization: TextCapitalization.sentences,
+    minLines: 3,
+    maxLines: 3,
+    style: textTheme.bodyMedium?.copyWith(
+      color: AppColors.greyDark,
+    ),
+  );
+}

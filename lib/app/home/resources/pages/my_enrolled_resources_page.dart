@@ -42,8 +42,8 @@ class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
               itemBuilder: (context, resource) {
                 return StreamBuilder(
                   stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
-                  resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
-                      : database.mentorStream(resource.organizer),
+                  resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer) :
+                    database.mentorStream(resource.organizer),
                   builder: (context, snapshotOrganizer) {
                     if (snapshotOrganizer.hasData) {
                       if (resource.organizerType == 'Organización') {
@@ -109,7 +109,7 @@ class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
               padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
               child: Center(child: CircularProgressIndicator(),),
             ) :
-            NoResourcesIlustration(
+            NoResourcesIllustration(
               title: StringConst.NO_RESOURCES_TITLE,
               subtitle: StringConst.NO_RESOURCES_SUBTITLE,
               imagePath: ImagePath.NO_RESOURCES,

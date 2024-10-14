@@ -332,6 +332,7 @@ class StringConst {
   static String SHARE_TEXT_PILLS(String title, String trainingPillId) => 'La píldora formativa: "$title" podría interesarte.\n\nhttps://enredawebapp.web.app/pills/$trainingPillId';
   static const String JOIN_RESOURCE = 'Me interesa participar';
   static const String QUIT_RESOURCE = 'No me interesa participar';
+  static const String JOIN_JOB_OFFER = 'Postular a la oferta de empleo';
   static const String ENTER = 'Entrar';
   static const String CANCEL = 'Cancelar';
   static const String CLOSE = 'Cerrar';
@@ -643,6 +644,13 @@ class StringConst {
   static const String UPDATED_DOC_SUCCESS = "¡El Documento ha sido actualizado con éxito!";
   static const String EDIT_DOCUMENT_TITLE = "Editar documento: ";
   static const String DELETE_DOCUMENT = 'Si pulsa en "Aceptar" se procederá a la eliminación del documento.\nEsta acción no se podrá deshacer. ¿Está seguro que quiere continuar?';
+  static const String CREATE_JOB_OFFER = "Postulación iniciada";
+  static const String CREATE_JOB_OFFER_SUCCESS = "¡La postulación ha sido iniciada con éxito!";
+  static const String SET_JOB_OFFER_APPLICATION = "Postular a la oferta de empleo:  ";
+  static const String PRESENTATION_LETTER = "Carta de presentación";
+  static const String ADD_JOB_OFFER_APPLICATION = "Postular a la oferta";
+  static const String ALREADY_APPLIED_TITLE = "Ya fue enviada la postulación";
+  static const String ALREADY_APPLIED = "Solo se recibe una postulación por usuario.";
 
   //AssignedContact
   static const String ASSIGNED_USER = 'Tu técnica de referencia es ';

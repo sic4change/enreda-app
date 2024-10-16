@@ -6,8 +6,8 @@ import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 
-class NoResourcesIlustration extends StatelessWidget {
-  const NoResourcesIlustration(
+class NoResourcesIllustration extends StatelessWidget {
+  const NoResourcesIllustration(
       {Key? key, required this.title, required this.subtitle, required this.imagePath})
       : super(key: key);
   final String title;

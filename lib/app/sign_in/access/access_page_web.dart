@@ -42,39 +42,42 @@ class _AccessPageWebState extends State<AccessPageWeb> {
     return Stack(
       children: [
         Center(
-          child: Container(
-            height: heightSize * 0.80,
-            width: widthSize * 0.70,
-            child: Card(
-              color: AppColors.primary900,
-              elevation: 5,
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: Image.asset(
-                      height: heightSize * 0.85,
-                      ImagePath.ACCESS_PHOTO,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Expanded(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 1600),
+            child: Container(
+              height: heightSize * 0.80,
+              width: widthSize * 0.80,
+              child: Card(
+                color: AppColors.primary900,
+                elevation: 5,
+                child: Row(
+                  children: [
+                    Expanded(
                       flex: 5,
-                      child: Container()),
-                ],
+                      child: Image.asset(
+                        height: heightSize * 0.85,
+                        ImagePath.ACCESS_PHOTO,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Expanded(
+                        flex: 5,
+                        child: Container()),
+                  ],
+                ),
               ),
             ),
           ),
         ),
         Positioned(
-          top: Responsive.isDesktopS(context) ? 70 : 35,
+          top: Responsive.isDesktopS(context) ? 70 : 150,
           left: 0,
           right: 0,
           child: Center(
             child: Container(
               padding: EdgeInsets.only(left: 4, right: 25),
               height: heightSize * 0.70,
-              width: widthSize * 0.70,
+              width: widthSize * 0.80,
               child: Image.asset(ImagePath.ACCESS_VECTOR)),
           ),
         ),
@@ -82,7 +85,7 @@ class _AccessPageWebState extends State<AccessPageWeb> {
           child: Container(
             color: Colors.transparent,
             height: heightSize * 0.80,
-            width: widthSize * 0.70,
+            width: widthSize * 0.80,
             child: Card(
               color: Colors.transparent,
               elevation: 0,

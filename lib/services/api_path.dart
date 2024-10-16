@@ -36,6 +36,8 @@ class APIPath {
   static String documentCategories() => 'documentCategories';
   static String documentationParticipants() => 'documentationParticipants';
   static String oneDocumentationParticipant(String fileId) => 'documentationParticipants/$fileId';
+  static String jobOfferApplications() => 'jobOfferApplications';
+  static String jobOfferApplication(String? jobOfferApplicationId) => 'jobOfferApplications/$jobOfferApplicationId';
 
   static String chatQuestion(String id) => 'chatQuestions/$id';
   static String chatQuestions() => 'chatQuestions';
@@ -62,6 +64,8 @@ class APIPath {
   static String gamificationFlags() => 'gamificationFlags';
   static String socialEntity(String socialEntityId) => 'socialEntities/$socialEntityId';
   static String socialEntities() => 'socialEntities';
+  static String company(String companyId) => 'companies/$companyId';
+  static String companies() => 'companies';
   static String competenciesCategory(String competencyCategoryId) => 'competenciesCategories/$competencyCategoryId';
   static String competenciesCategories() => 'competenciesCategories';
   static String competenciesSubCategory(String competencySubCategoryId) => 'competenciesSubCategories/$competencySubCategoryId';

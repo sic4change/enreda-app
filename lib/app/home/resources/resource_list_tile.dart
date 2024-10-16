@@ -53,7 +53,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
     TextTheme textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 14, 15, md: 14);
     double sidePadding = responsiveSize(context, 15, 20, md: 17);
-
+    String resourceCategoryName = widget.resource.resourceCategoryName ?? '';
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: Container(
@@ -209,8 +209,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                 padding: EdgeInsets.only(
                                     left: sidePadding, right: sidePadding),
                                 child: Text(
-                                  widget.resource.resourceCategoryName!
-                                      .toUpperCase(),
+                                  resourceCategoryName.toUpperCase(),
                                   textAlign: TextAlign.left,
                                   maxLines: 1,
                                   style: TextStyle(

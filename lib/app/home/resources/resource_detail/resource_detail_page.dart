@@ -7,6 +7,7 @@ import 'package:enreda_app/app/home/models/socialEntity.dart';
 import 'package:enreda_app/app/home/resources/build_share_button.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/app/home/resources/resource_detail/box_item_data.dart';
+import 'package:enreda_app/app/home/resources/resource_detail/create_job_offer_application.dart';
 import 'package:enreda_app/app/home/resources/streams/competencies_by_resource.dart';
 import 'package:enreda_app/app/home/resources/streams/interests_by_resource.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
@@ -29,6 +30,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:enreda_app/app/home/resources/global.dart' as globals;
 
+import '../../../../common_widgets/custom_button.dart';
+import '../../models/company.dart';
+import '../../models/jobOfferApplication.dart';
 import '../../models/userEnreda.dart';
 
 class ResourceDetailPage extends StatefulWidget {
@@ -68,7 +72,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     return StreamBuilder(
       stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
       resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
-          : database.mentorStream(resource.organizer),
+          : resource.organizerType == 'Empresa' ? database.companyStream(resource.organizer) :
+        database.mentorStream(resource.organizer),
       builder: (context, snapshotOrganizer) {
         if (snapshotOrganizer.hasData) {
           if (resource.organizerType == 'Organización') {
@@ -77,6 +82,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
             resource.organizerImage = organization.photo;
           } else if (resource.organizerType == 'Entidad Social') {
             final organization = snapshotOrganizer.data as SocialEntity;
+            resource.organizerName = organization.name;
+            resource.organizerImage = organization.photo;
+          } else if (resource.organizerType == 'Empresa') {
+            final organization = snapshotOrganizer.data as Company;
             resource.organizerName = organization.name;
             resource.organizerImage = organization.photo;
           } else {
@@ -395,7 +404,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                     ),
                     SpaceH20(),
                     _buildBoxes(resource),
-                    Responsive.isMobile(context)  ? _buildButton(context, resource) : Container(),
+                    Responsive.isMobile(context)  ? _buildRegisterButton(context, resource) : Container(),
                     SpaceH20(),
                   ]
               ),
@@ -513,13 +522,14 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               ],
             )),
         const SizedBox(height: 30,),
-        _buildButton(context, resource),
+        resource.organizerType == "Empresa" ? _buildCreateJobOfferApplication(context, resource) :
+          _buildRegisterButton(context, resource),
         Responsive.isMobile(context) ?  SizedBox(height: 50,) : SizedBox(height: 30,),
       ],
     );
   }
 
-  Widget _buildButton(BuildContext context, Resource resource) {
+  Widget _buildRegisterButton(BuildContext context, Resource resource) {
     final auth = Provider.of<AuthBase>(context);
     final userId = auth.currentUser?.uid ?? '';
     final textTheme = Theme.of(context).textTheme;
@@ -557,14 +567,67 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
           ),
           style: ButtonStyle(
               backgroundColor:
-              MaterialStateProperty.all(resource.participants.contains(userId)
+              WidgetStateProperty.all(resource.participants.contains(userId)
                   ? AppColors.grey70 : Constants.turquoise),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ))),
         ),
       ],
+    );
+  }
+
+  Widget _buildCreateJobOfferApplication(BuildContext context, Resource resource) {
+    final auth = Provider.of<AuthBase>(context);
+    final database = Provider.of<Database>(context, listen: false);
+    final userId = auth.currentUser?.uid ?? '';
+    return StreamBuilder<List<JobOfferApplication>>(
+      stream: database.applicantStreamByJobOffer(resource.jobOfferId!, userId),
+      builder: (context, snapshot) {
+        return snapshot.data == null || snapshot.data!.isEmpty  ? Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: Sizes.mainPadding),
+              child: CustomButton(
+                  text: StringConst.JOIN_JOB_OFFER,
+                  onTap: () async {
+                    if (auth.currentUser == null) {
+                      showAlertNullUser(context);
+                    }
+                    showDialog(
+                        context: context,
+                        builder: (context){
+                          return CreateJobOfferApplication(resource: resource);
+                        }
+                    );
+                    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_JOIN_RESOURCE);
+                  },
+                  color: AppColors.white,),
+            ),
+          ],
+        ) : Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: Sizes.mainPadding),
+              child: CustomButton(
+                text: StringConst.JOIN_JOB_OFFER,
+                onTap: () async {
+                  await showAlertDialog(context,
+                      title: StringConst.ALREADY_APPLIED_TITLE,
+                      content: StringConst.ALREADY_APPLIED,
+                      defaultActionText: StringConst.CLOSE);
+                },
+                color: AppColors.white,
+                backgroundColor: AppColors.greyUltraLight,
+              ),
+            ),
+          ],
+        );
+
+      },
     );
   }
 

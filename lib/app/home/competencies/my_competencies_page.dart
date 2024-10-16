@@ -189,7 +189,7 @@ class _MyCompetenciesPageState extends State<MyCompetenciesPage> {
                                   padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
                                   child: Center(child: CircularProgressIndicator(),),
                                 ) :
-                                NoResourcesIlustration(
+                                NoResourcesIllustration(
                                   title: StringConst.NO_COMPETENCIES_TITLE,
                                   subtitle: StringConst.NO_COMPETENCIES_SUBTITLE,
                                   imagePath: ImagePath.NO_COMPETENCIES,

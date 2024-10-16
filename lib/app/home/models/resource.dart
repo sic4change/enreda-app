@@ -43,6 +43,7 @@ class Resource {
     required this.createdate,
     this.interests,
     this.competencies,
+    this.jobOfferId,
   });
 
   factory Resource.fromMap(Map<String, dynamic> data, String documentId) {
@@ -50,6 +51,7 @@ class Resource {
     final String title = data['title'];
     final String description = data['description'];
     final String organizer = data['organizer'];
+    final String? jobOfferId = data['jobOfferId'];
     final String? organizerType = data['organizerType'];
     final String? organizerName = data['organizerName'];
     final String? organizerImage = data['organizerImage'];
@@ -106,6 +108,7 @@ class Resource {
       title: title,
       description: description,
       organizer: organizer,
+      jobOfferId: jobOfferId,
       organizerType : organizerType,
       organizerName: organizerName,
       organizerImage: organizerImage,
@@ -150,6 +153,7 @@ class Resource {
   final String resourceId;
   final String title;
   final String organizer;
+  String? jobOfferId;
   String? organizerType;
   String? organizerName;
   String? organizerImage;
@@ -196,6 +200,7 @@ class Resource {
       'title': title,
       'description': description,
       'organizer': organizer,
+      'jobOfferId': jobOfferId,
       'organizerType': organizerType,
       'organizerName': organizerName,
       'organizerImage': organizerImage,

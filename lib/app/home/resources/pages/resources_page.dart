@@ -36,6 +36,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import '../../../../utils/functions.dart';
+import '../../models/company.dart';
+import '../../models/socialEntity.dart';
 
 class ResourcesPage extends StatefulWidget {
   ResourcesPage({Key? key})
@@ -747,124 +749,203 @@ class _ResourcesPageState extends State<ResourcesPage> {
         child: StreamBuilder<List<Resource>>(
             stream: database.filteredResourcesCategoryStream(filterResource),
             builder: (context, snapshot) {
-              return ListItemBuilderGrid<Resource>(
-                scrollController: _scrollController,
-                snapshot: snapshot,
-                itemBuilder: (context, resource) {
-                  if (resource.organizerType == 'Organización') {
-                    return StreamBuilder<Organization>(
-                      stream: database.organizationStream(resource.organizer),
-                      builder: (context, snapshot) {
-                        final organization = snapshot.data;
-                        resource.organizerName =
-                            organization == null ? '' : organization.name;
-                        resource.organizerImage =
-                            organization == null ? '' : organization.photo;
-                        resource.setResourceTypeName();
-                        resource.setResourceCategoryName();
-                        return StreamBuilder<Country>(
-                            stream: database.countryStream(resource.country),
-                            builder: (context, snapshot) {
-                              final country = snapshot.data;
-                              resource.countryName =
-                                  country == null ? '' : country.name;
-                              return StreamBuilder<Province>(
-                                stream:
-                                    database.provinceStream(resource.province),
+              return StreamBuilder<List<Resource>>(
+                  stream: database.filteredResourcesCategoryStream(filterResource),
+                  builder: (context, snapshot) {
+                    return ListItemBuilderGrid<Resource>(
+                      scrollController: _scrollController,
+                      snapshot: snapshot,
+                      itemBuilder: (context, resource) {
+                        return StreamBuilder(
+                          stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
+                          resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
+                              : resource.organizerType == 'Empresa' ? database.companyStream(resource.organizer) :
+                          database.mentorStream(resource.organizer),
+                          builder: (context, snapshotOrganizer) {
+                            if (snapshotOrganizer.hasData) {
+                              if (snapshotOrganizer.data is Organization) {
+                                final organization = snapshotOrganizer.data as Organization;
+                                resource.organizerName = organization.name;
+                                resource.organizerImage = organization.photo;
+                              } else if (snapshotOrganizer.data is SocialEntity) {
+                                final organization = snapshotOrganizer.data as SocialEntity;
+                                resource.organizerName = organization.name;
+                                resource.organizerImage = organization.photo;
+                              } else if (snapshotOrganizer.data is Company) {
+                                final organization = snapshotOrganizer.data as Company;
+                                resource.organizerName = organization.name;
+                                resource.organizerImage = organization.photo;
+                              } else {
+                                final mentor = snapshotOrganizer.data as UserEnreda;
+                                resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
+                                resource.organizerImage = mentor.photo;
+                              }
+                              resource.setResourceTypeName();
+                              resource.setResourceCategoryName();
+                            }
+                            return StreamBuilder<Country>(
+                                stream: database.countryStream(resource.country),
                                 builder: (context, snapshot) {
-                                  final province = snapshot.data;
-                                  resource.provinceName =
-                                      province == null ? '' : province.name;
-                                  return StreamBuilder<City>(
-                                      stream: database.cityStream(resource.city),
-                                      builder: (context, snapshot) {
-                                        final city = snapshot.data;
-                                        resource.cityName = city == null ? '' : city.name;
-                                        return Container(
-                                          key: Key(
-                                              'resource-${resource.resourceId}'),
-                                          child: ResourceListTile(
-                                            resource: resource,
-                                            onTap: () {
-                                              _saveScrollPosition();
-                                              setState(() {
-                                                globals.currentResource = resource;
-                                                ResourcesPage.selectedIndex.value = 3;
-                                              });
-                                            },
-                                            // onTap: () => context.push(
-                                            //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                          ),
-                                        );
-                                      });
-                                },
-                              );
-                            });
-                      },
-                    );
-                  } else {
-                    return StreamBuilder<UserEnreda>(
-                      stream: database.mentorStream(resource.organizer),
-                      builder: (context, snapshot) {
-                        final mentor = snapshot.data;
-                        resource.organizerName = mentor == null
-                            ? ''
-                            : '${mentor.firstName} ${mentor.lastName} ';
-                        resource.organizerImage =
-                            mentor == null ? '' : mentor.photo;
-                        resource.setResourceTypeName();
-                        resource.setResourceCategoryName();
-                        return StreamBuilder<Country>(
-                            stream: database.countryStream(resource.country),
-                            builder: (context, snapshot) {
-                              final country = snapshot.data;
-                              resource.countryName =
+                                  final country = snapshot.data;
+                                  resource.countryName =
                                   country == null ? '' : country.name;
-                              return StreamBuilder<Province>(
-                                stream:
-                                    database.provinceStream(resource.province),
-                                builder: (context, snapshot) {
-                                  final province = snapshot.data;
-                                  resource.provinceName =
-                                      province == null ? '' : province.name;
-                                  return StreamBuilder<City>(
-                                      stream:
-                                          database.cityStream(resource.city),
-                                      builder: (context, snapshot) {
-                                        final city = snapshot.data;
-                                        resource.cityName =
+                                  return StreamBuilder<Province>(
+                                    stream: database
+                                        .provinceStream(resource.province),
+                                    builder: (context, snapshot) {
+                                      final province = snapshot.data;
+                                      resource.provinceName = province == null
+                                          ? ''
+                                          : province.name;
+                                      return StreamBuilder<City>(
+                                          stream: database
+                                              .cityStream(resource.city),
+                                          builder: (context, snapshot) {
+                                            final city = snapshot.data;
+                                            resource.cityName =
                                             city == null ? '' : city.name;
-                                        return Container(
-                                          key: Key(
-                                              'resource-${resource.resourceId}'),
-                                          child: ResourceListTile(
-                                            resource: resource,
-                                            onTap: () {
-                                              _saveScrollPosition();
-                                              setState(() {
-                                                globals.currentResource = resource;
-                                                ResourcesPage.selectedIndex.value = 3;
-                                              });
-                                            },
-                                            // onTap: () => context.push(
-                                            //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                          ),
-                                        );
-                                      });
-                                },
-                              );
-                            });
+                                            return Container(
+                                              key: Key(
+                                                  'resource-${resource.resourceId}'),
+                                              child: ResourceListTile(
+                                                resource: resource,
+                                                onTap: () {
+                                                  _saveScrollPosition();
+                                                  setState(() {
+                                                    globals.currentResource = resource;
+                                                    ResourcesPage.selectedIndex.value = 3;
+                                                  });
+                                                },
+                                              ),
+                                            );
+                                          });
+                                    },
+                                  );
+                                });
+                          },
+                        );
+                        // if (resource.organizerType == 'Organización') {
+                        //   return StreamBuilder<Organization>(
+                        //     stream:
+                        //         database.organizationStream(resource.organizer),
+                        //     builder: (context, snapshot) {
+                        //       final organization = snapshot.data;
+                        //       resource.organizerName =
+                        //           organization == null ? '' : organization.name;
+                        //       resource.organizerImage = organization == null
+                        //           ? ''
+                        //           : organization.photo;
+                        //       resource.setResourceTypeName();
+                        //       resource.setResourceCategoryName();
+                        //       return StreamBuilder<Country>(
+                        //           stream:
+                        //               database.countryStream(resource.country),
+                        //           builder: (context, snapshot) {
+                        //             final country = snapshot.data;
+                        //             resource.countryName =
+                        //                 country == null ? '' : country.name;
+                        //             return StreamBuilder<Province>(
+                        //               stream: database
+                        //                   .provinceStream(resource.province),
+                        //               builder: (context, snapshot) {
+                        //                 final province = snapshot.data;
+                        //                 resource.provinceName = province == null
+                        //                     ? ''
+                        //                     : province.name;
+                        //                 return StreamBuilder<City>(
+                        //                     stream: database
+                        //                         .cityStream(resource.city),
+                        //                     builder: (context, snapshot) {
+                        //                       final city = snapshot.data;
+                        //                       resource.cityName =
+                        //                           city == null ? '' : city.name;
+                        //                       return Container(
+                        //                         key: Key(
+                        //                             'resource-${resource.resourceId}'),
+                        //                         child: ResourceListTile(
+                        //                           resource: resource,
+                        //                           onTap: () {
+                        //                             _saveScrollPosition();
+                        //                             setState(() {
+                        //                               globals.currentResource = resource;
+                        //                               ResourcesPage.selectedIndex.value = 3;
+                        //                             });
+                        //                           },
+                        //                           // onTap: () => context.push(
+                        //                           //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                        //                         ),
+                        //                       );
+                        //                     });
+                        //               },
+                        //             );
+                        //           });
+                        //     },
+                        //   );
+                        // } else {
+                        //   return StreamBuilder<UserEnreda>(
+                        //     stream: database.mentorStream(resource.organizer),
+                        //     builder: (context, snapshot) {
+                        //       final mentor = snapshot.data;
+                        //       resource.organizerName = mentor == null
+                        //           ? ''
+                        //           : '${mentor.firstName} ${mentor.lastName} ';
+                        //       resource.organizerImage =
+                        //           mentor == null ? '' : mentor.photo;
+                        //       resource.setResourceTypeName();
+                        //       resource.setResourceCategoryName();
+                        //       return StreamBuilder<Country>(
+                        //           stream:
+                        //               database.countryStream(resource.country),
+                        //           builder: (context, snapshot) {
+                        //             final country = snapshot.data;
+                        //             resource.countryName =
+                        //                 country == null ? '' : country.name;
+                        //             return StreamBuilder<Province>(
+                        //               stream: database
+                        //                   .provinceStream(resource.province),
+                        //               builder: (context, snapshot) {
+                        //                 final province = snapshot.data;
+                        //                 resource.provinceName = province == null
+                        //                     ? ''
+                        //                     : province.name;
+                        //                 return StreamBuilder<City>(
+                        //                     stream: database
+                        //                         .cityStream(resource.city),
+                        //                     builder: (context, snapshot) {
+                        //                       final city = snapshot.data;
+                        //                       resource.cityName =
+                        //                           city == null ? '' : city.name;
+                        //                       return Container(
+                        //                         key: Key(
+                        //                             'resource-${resource.resourceId}'),
+                        //                         child: ResourceListTile(
+                        //                           resource: resource,
+                        //                           onTap: () {
+                        //                             _saveScrollPosition();
+                        //                             setState(() {
+                        //                               globals.currentResource = resource;
+                        //                               ResourcesPage.selectedIndex.value = 3;
+                        //                             });
+                        //                           },
+                        //                           // onTap: () => context.push(
+                        //                           //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                        //                         ),
+                        //                       );
+                        //                     });
+                        //               },
+                        //             );
+                        //           });
+                        //     },
+                        //   );
+                        // }
                       },
+                      emptyTitle: 'Sin recursos',
+                      emptyMessage: 'Aún no tenemos recursos que mostrarte',
                     );
-                  }
-                },
-                emptyTitle: 'Sin recursos',
-                emptyMessage: 'Aún no tenemos recursos que mostrarte',
-              );
+                  });
             }),
       );
     }
-
     String email = auth.currentUser!.email ?? '';
     return Container(
       padding: Responsive.isMobile(context)
@@ -887,7 +968,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       _signOut(context);
                       if (!isAlertBoxOpened) {
                         adminSignOut(context);
-                        //_showDialogNotValidUser(context);
                       }
                     });
                   }
@@ -900,120 +980,188 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       scrollController: _scrollController,
                       snapshot: snapshot,
                       itemBuilder: (context, resource) {
-                        if (resource.organizerType == 'Organización') {
-                          return StreamBuilder<Organization>(
-                            stream:
-                                database.organizationStream(resource.organizer),
-                            builder: (context, snapshot) {
-                              final organization = snapshot.data;
-                              resource.organizerName =
-                                  organization == null ? '' : organization.name;
-                              resource.organizerImage = organization == null
-                                  ? ''
-                                  : organization.photo;
+                        return StreamBuilder(
+                          stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
+                          resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
+                              : resource.organizerType == 'Empresa' ? database.companyStream(resource.organizer) :
+                          database.mentorStream(resource.organizer),
+                          builder: (context, snapshotOrganizer) {
+                            if (snapshotOrganizer.hasData) {
+                              if (snapshotOrganizer.data is Organization) {
+                                final organization = snapshotOrganizer.data as Organization;
+                                resource.organizerName = organization.name;
+                                resource.organizerImage = organization.photo;
+                              } else if (snapshotOrganizer.data is SocialEntity) {
+                                final organization = snapshotOrganizer.data as SocialEntity;
+                                resource.organizerName = organization.name;
+                                resource.organizerImage = organization.photo;
+                              } else if (snapshotOrganizer.data is Company) {
+                                final organization = snapshotOrganizer.data as Company;
+                                resource.organizerName = organization.name;
+                                resource.organizerImage = organization.photo;
+                              } else {
+                                final mentor = snapshotOrganizer.data as UserEnreda;
+                                resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
+                                resource.organizerImage = mentor.photo;
+                              }
                               resource.setResourceTypeName();
                               resource.setResourceCategoryName();
-                              return StreamBuilder<Country>(
-                                  stream:
-                                      database.countryStream(resource.country),
+                            }
+                            return StreamBuilder<Country>(
+                              stream: database.countryStream(resource.country),
+                              builder: (context, snapshot) {
+                                final country = snapshot.data;
+                                resource.countryName =
+                                    country == null ? '' : country.name;
+                                return StreamBuilder<Province>(
+                                  stream: database
+                                      .provinceStream(resource.province),
                                   builder: (context, snapshot) {
-                                    final country = snapshot.data;
-                                    resource.countryName =
-                                        country == null ? '' : country.name;
-                                    return StreamBuilder<Province>(
-                                      stream: database
-                                          .provinceStream(resource.province),
-                                      builder: (context, snapshot) {
-                                        final province = snapshot.data;
-                                        resource.provinceName = province == null
-                                            ? ''
-                                            : province.name;
-                                        return StreamBuilder<City>(
-                                            stream: database
-                                                .cityStream(resource.city),
-                                            builder: (context, snapshot) {
-                                              final city = snapshot.data;
-                                              resource.cityName =
-                                                  city == null ? '' : city.name;
-                                              return Container(
-                                                key: Key(
-                                                    'resource-${resource.resourceId}'),
-                                                child: ResourceListTile(
-                                                  resource: resource,
-                                                  onTap: () {
-                                                    _saveScrollPosition();
-                                                    setState(() {
-                                                      globals.currentResource = resource;
-                                                      ResourcesPage.selectedIndex.value = 3;
-                                                    });
-                                                  },
-                                                  // onTap: () => context.push(
-                                                  //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                                ),
-                                              );
-                                            });
-                                      },
-                                    );
-                                  });
-                            },
-                          );
-                        } else {
-                          return StreamBuilder<UserEnreda>(
-                            stream: database.mentorStream(resource.organizer),
-                            builder: (context, snapshot) {
-                              final mentor = snapshot.data;
-                              resource.organizerName = mentor == null
-                                  ? ''
-                                  : '${mentor.firstName} ${mentor.lastName} ';
-                              resource.organizerImage =
-                                  mentor == null ? '' : mentor.photo;
-                              resource.setResourceTypeName();
-                              resource.setResourceCategoryName();
-                              return StreamBuilder<Country>(
-                                  stream:
-                                      database.countryStream(resource.country),
-                                  builder: (context, snapshot) {
-                                    final country = snapshot.data;
-                                    resource.countryName =
-                                        country == null ? '' : country.name;
-                                    return StreamBuilder<Province>(
-                                      stream: database
-                                          .provinceStream(resource.province),
-                                      builder: (context, snapshot) {
-                                        final province = snapshot.data;
-                                        resource.provinceName = province == null
-                                            ? ''
-                                            : province.name;
-                                        return StreamBuilder<City>(
-                                            stream: database
-                                                .cityStream(resource.city),
-                                            builder: (context, snapshot) {
-                                              final city = snapshot.data;
-                                              resource.cityName =
-                                                  city == null ? '' : city.name;
-                                              return Container(
-                                                key: Key(
-                                                    'resource-${resource.resourceId}'),
-                                                child: ResourceListTile(
-                                                  resource: resource,
-                                                  onTap: () {
-                                                    _saveScrollPosition();
-                                                    setState(() {
-                                                      globals.currentResource = resource;
-                                                      ResourcesPage.selectedIndex.value = 3;
-                                                    });
-                                                  },
-                                                  // onTap: () => context.push(
-                                                  //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                                ),
-                                              );
-                                            });
-                                      },
-                                    );
-                                  });
-                            },
-                          );
-                        }
+                                    final province = snapshot.data;
+                                    resource.provinceName = province == null
+                                        ? ''
+                                        : province.name;
+                                    return StreamBuilder<City>(
+                                        stream: database
+                                            .cityStream(resource.city),
+                                        builder: (context, snapshot) {
+                                          final city = snapshot.data;
+                                          resource.cityName =
+                                              city == null ? '' : city.name;
+                                          return Container(
+                                            key: Key(
+                                                'resource-${resource.resourceId}'),
+                                            child: ResourceListTile(
+                                              resource: resource,
+                                              onTap: () {
+                                                _saveScrollPosition();
+                                                setState(() {
+                                                  globals.currentResource = resource;
+                                                  ResourcesPage.selectedIndex.value = 3;
+                                                });
+                                              },
+                                            ),
+                                          );
+                                        });
+                                  },
+                                );
+                              });
+                          },
+                        );
+                        // if (resource.organizerType == 'Organización') {
+                        //   return StreamBuilder<Organization>(
+                        //     stream:
+                        //         database.organizationStream(resource.organizer),
+                        //     builder: (context, snapshot) {
+                        //       final organization = snapshot.data;
+                        //       resource.organizerName =
+                        //           organization == null ? '' : organization.name;
+                        //       resource.organizerImage = organization == null
+                        //           ? ''
+                        //           : organization.photo;
+                        //       resource.setResourceTypeName();
+                        //       resource.setResourceCategoryName();
+                        //       return StreamBuilder<Country>(
+                        //           stream:
+                        //               database.countryStream(resource.country),
+                        //           builder: (context, snapshot) {
+                        //             final country = snapshot.data;
+                        //             resource.countryName =
+                        //                 country == null ? '' : country.name;
+                        //             return StreamBuilder<Province>(
+                        //               stream: database
+                        //                   .provinceStream(resource.province),
+                        //               builder: (context, snapshot) {
+                        //                 final province = snapshot.data;
+                        //                 resource.provinceName = province == null
+                        //                     ? ''
+                        //                     : province.name;
+                        //                 return StreamBuilder<City>(
+                        //                     stream: database
+                        //                         .cityStream(resource.city),
+                        //                     builder: (context, snapshot) {
+                        //                       final city = snapshot.data;
+                        //                       resource.cityName =
+                        //                           city == null ? '' : city.name;
+                        //                       return Container(
+                        //                         key: Key(
+                        //                             'resource-${resource.resourceId}'),
+                        //                         child: ResourceListTile(
+                        //                           resource: resource,
+                        //                           onTap: () {
+                        //                             _saveScrollPosition();
+                        //                             setState(() {
+                        //                               globals.currentResource = resource;
+                        //                               ResourcesPage.selectedIndex.value = 3;
+                        //                             });
+                        //                           },
+                        //                           // onTap: () => context.push(
+                        //                           //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                        //                         ),
+                        //                       );
+                        //                     });
+                        //               },
+                        //             );
+                        //           });
+                        //     },
+                        //   );
+                        // } else {
+                        //   return StreamBuilder<UserEnreda>(
+                        //     stream: database.mentorStream(resource.organizer),
+                        //     builder: (context, snapshot) {
+                        //       final mentor = snapshot.data;
+                        //       resource.organizerName = mentor == null
+                        //           ? ''
+                        //           : '${mentor.firstName} ${mentor.lastName} ';
+                        //       resource.organizerImage =
+                        //           mentor == null ? '' : mentor.photo;
+                        //       resource.setResourceTypeName();
+                        //       resource.setResourceCategoryName();
+                        //       return StreamBuilder<Country>(
+                        //           stream:
+                        //               database.countryStream(resource.country),
+                        //           builder: (context, snapshot) {
+                        //             final country = snapshot.data;
+                        //             resource.countryName =
+                        //                 country == null ? '' : country.name;
+                        //             return StreamBuilder<Province>(
+                        //               stream: database
+                        //                   .provinceStream(resource.province),
+                        //               builder: (context, snapshot) {
+                        //                 final province = snapshot.data;
+                        //                 resource.provinceName = province == null
+                        //                     ? ''
+                        //                     : province.name;
+                        //                 return StreamBuilder<City>(
+                        //                     stream: database
+                        //                         .cityStream(resource.city),
+                        //                     builder: (context, snapshot) {
+                        //                       final city = snapshot.data;
+                        //                       resource.cityName =
+                        //                           city == null ? '' : city.name;
+                        //                       return Container(
+                        //                         key: Key(
+                        //                             'resource-${resource.resourceId}'),
+                        //                         child: ResourceListTile(
+                        //                           resource: resource,
+                        //                           onTap: () {
+                        //                             _saveScrollPosition();
+                        //                             setState(() {
+                        //                               globals.currentResource = resource;
+                        //                               ResourcesPage.selectedIndex.value = 3;
+                        //                             });
+                        //                           },
+                        //                           // onTap: () => context.push(
+                        //                           //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
+                        //                         ),
+                        //                       );
+                        //                     });
+                        //               },
+                        //             );
+                        //           });
+                        //     },
+                        //   );
+                        // }
                       },
                       emptyTitle: 'Sin recursos',
                       emptyMessage: 'Aún no tenemos recursos que mostrarte',
@@ -1021,23 +1169,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   });
             }
             return Container();
-            // else {
-            //   //if (!snapshot.hasData && snapshot.connectionState == ConnectionState.active)
-            //   //if (!snapshot.hasData && snapshot.connectionState == ConnectionState.active)
-            //     if (!widget._errorNotValidUser) {
-            //     widget._errorNotValidUser = true;
-            //     Future.delayed(Duration.zero, () {
-            //       _signOut(context);
-            //       if (!isAlertBoxOpened) {
-            //         _showDialogNotValidUser(context);
-            //       }
-            //     });
-            //   }
-            //   return Container(
-            //     width: 0.0,
-            //     height: 0.0,
-            //   );
-            // }
           }),
     );
   }

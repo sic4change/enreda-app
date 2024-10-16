@@ -1,4 +1,5 @@
 import 'package:enreda_app/app/home/models/city.dart';
+import 'package:enreda_app/app/home/models/company.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/organization.dart';
 import 'package:enreda_app/app/home/models/province.dart';
@@ -47,7 +48,8 @@ class _FavoriteResourcesPageState extends State<FavoriteResourcesPage> {
                   return StreamBuilder(
                     stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
                     resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
-                        : database.mentorStream(resource.organizer),
+                        : resource.organizerType == 'Empresa' ? database.companyStream(resource.organizer) :
+                      database.mentorStream(resource.organizer),
                     builder: (context, snapshotOrganizer) {
                       if (snapshotOrganizer.hasData) {
                         if (resource.organizerType == 'Organización') {
@@ -56,6 +58,10 @@ class _FavoriteResourcesPageState extends State<FavoriteResourcesPage> {
                           resource.organizerImage = organization.photo;
                         } else if (resource.organizerType == 'Entidad Social') {
                           final organization = snapshotOrganizer.data as SocialEntity;
+                          resource.organizerName = organization.name;
+                          resource.organizerImage = organization.photo;
+                        } else if (resource.organizerType == 'Empresa') {
+                          final organization = snapshotOrganizer.data as Company;
                           resource.organizerName = organization.name;
                           resource.organizerImage = organization.photo;
                         } else {

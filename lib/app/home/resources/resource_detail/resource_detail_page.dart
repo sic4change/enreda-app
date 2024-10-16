@@ -31,6 +31,7 @@ import 'package:provider/provider.dart';
 import 'package:enreda_app/app/home/resources/global.dart' as globals;
 
 import '../../../../common_widgets/custom_button.dart';
+import '../../models/company.dart';
 import '../../models/jobOfferApplication.dart';
 import '../../models/userEnreda.dart';
 
@@ -71,7 +72,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     return StreamBuilder(
       stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
       resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
-          : database.mentorStream(resource.organizer),
+          : resource.organizerType == 'Empresa' ? database.companyStream(resource.organizer) :
+        database.mentorStream(resource.organizer),
       builder: (context, snapshotOrganizer) {
         if (snapshotOrganizer.hasData) {
           if (resource.organizerType == 'Organización') {
@@ -80,6 +82,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
             resource.organizerImage = organization.photo;
           } else if (resource.organizerType == 'Entidad Social') {
             final organization = snapshotOrganizer.data as SocialEntity;
+            resource.organizerName = organization.name;
+            resource.organizerImage = organization.photo;
+          } else if (resource.organizerType == 'Empresa') {
+            final organization = snapshotOrganizer.data as Company;
             resource.organizerName = organization.name;
             resource.organizerImage = organization.photo;
           } else {
@@ -579,7 +585,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     return StreamBuilder<List<JobOfferApplication>>(
       stream: database.applicantStreamByJobOffer(resource.jobOfferId!, userId),
       builder: (context, snapshot) {
-        return snapshot.data!.length == 0  ? Row(
+        return snapshot.data == null || snapshot.data!.isEmpty  ? Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(

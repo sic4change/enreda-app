@@ -42,6 +42,7 @@ import 'package:enreda_app/services/api_path.dart';
 import 'package:enreda_app/services/firestore_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../app/home/models/certificationRequest.dart';
+import '../app/home/models/company.dart';
 import '../app/home/models/documentCategory.dart';
 import '../app/home/models/documentationParticipant.dart';
 import '../app/home/models/personalDocument.dart';
@@ -68,6 +69,7 @@ abstract class Database {
   Stream<Organization> organizationStream(String organizationId);
   Stream<SocialEntity> socialEntityStream(String socialEntityId);
   Stream<UserEnreda> mentorStream(String mentorId);
+  Stream<Company> companyStream(String companyId);
   Stream<List<Country>> countriesStream();
   Stream<List<Country>> countryFormatedStream();
   Stream<Country> countryStream(String? countryId);
@@ -401,6 +403,13 @@ class FirestoreDatabase implements Database {
       _service.documentStream<SocialEntity>(
         path: APIPath.socialEntity(socialEntityId),
         builder: (data, documentId) => SocialEntity.fromMap(data, documentId),
+      );
+
+  @override
+  Stream<Company> companyStream(String? companyId) =>
+      _service.documentStream<Company>(
+        path: APIPath.company(companyId!),
+        builder: (data, documentId) => Company.fromMap(data, documentId),
       );
 
   Stream<UserEnreda> mentorStream(String mentorId) =>

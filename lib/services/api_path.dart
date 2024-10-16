@@ -64,6 +64,8 @@ class APIPath {
   static String gamificationFlags() => 'gamificationFlags';
   static String socialEntity(String socialEntityId) => 'socialEntities/$socialEntityId';
   static String socialEntities() => 'socialEntities';
+  static String company(String companyId) => 'companies/$companyId';
+  static String companies() => 'companies';
   static String competenciesCategory(String competencyCategoryId) => 'competenciesCategories/$competencyCategoryId';
   static String competenciesCategories() => 'competenciesCategories';
   static String competenciesSubCategory(String competencySubCategoryId) => 'competenciesSubCategories/$competencySubCategoryId';

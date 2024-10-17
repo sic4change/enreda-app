@@ -59,7 +59,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
         body: Container(
           margin: const EdgeInsets.all(5.0),
           child: InkWell(
-            mouseCursor: MaterialStateMouseCursor.clickable,
+            mouseCursor: WidgetStateMouseCursor.clickable,
             onTap: widget.onTap,
             child: Container(
               decoration: BoxDecoration(

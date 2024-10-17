@@ -620,7 +620,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                       content: StringConst.ALREADY_APPLIED,
                       defaultActionText: StringConst.CLOSE);
                 },
-                color: AppColors.white,
+                color: AppColors.primary900,
                 backgroundColor: AppColors.greyUltraLight,
               ),
             ),

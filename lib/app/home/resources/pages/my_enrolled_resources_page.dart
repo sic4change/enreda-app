@@ -48,15 +48,15 @@ class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
                   database.mentorStream(resource.organizer),
                   builder: (context, snapshotOrganizer) {
                     if (snapshotOrganizer.hasData) {
-                      if (resource.organizerType == 'Organización') {
+                      if (snapshotOrganizer.data is Organization) {
                         final organization = snapshotOrganizer.data as Organization;
                         resource.organizerName = organization.name;
                         resource.organizerImage = organization.photo;
-                      } else if (resource.organizerType == 'Entidad Social') {
+                      } else if (snapshotOrganizer.data is SocialEntity) {
                         final organization = snapshotOrganizer.data as SocialEntity;
                         resource.organizerName = organization.name;
                         resource.organizerImage = organization.photo;
-                      } else if (resource.organizerType == 'Empresa') {
+                      } else if (snapshotOrganizer.data is Company) {
                         final organization = snapshotOrganizer.data as Company;
                         resource.organizerName = organization.name;
                         resource.organizerImage = organization.photo;
@@ -65,6 +65,8 @@ class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
                         resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
                         resource.organizerImage = mentor.photo;
                       }
+                      resource.setResourceTypeName();
+                      resource.setResourceCategoryName();
                     }
                     resource.setResourceTypeName();
                     resource.setResourceCategoryName();

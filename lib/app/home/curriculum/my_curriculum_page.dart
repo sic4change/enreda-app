@@ -784,9 +784,9 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               presentStyle: WebPresentStyle.dialog,
               viewwMode: WebViewMode.mode_1,
               dragMode: WebDragMode.move,
-              size: const CropperSize(
-                width: 520,
-                height: 520,
+              size: CropperSize(
+                width: 420,
+                height: (heightOfScreen(context)*0.5).round(),
               ),
               cropBoxMovable: true,
               cropBoxResizable: true,

@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "target": "test-enreda",
+    "target": "enredapp",
     "public": "build/web",
     "ignore": [
       "firebase.json",

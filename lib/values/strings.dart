@@ -564,6 +564,7 @@ class StringConst {
   static const String PAGE_WARNING_6 = 'Si requieres un texto largo del elemento "Un poco más sobre mi" reducir a máximo 330 caracteres y seleccionar: \n\n • Máximo 9 elementos de formación y experiencias. \n\n • Máximo 4 elementos personales.';
   static const String PAGE_WARNING_5 = 'Para 1 página te recomendamos seleccionar: \n\n • Máximo 9 elementos de formación y experiencias. \n\n • Máximo 5 elementos personales.';
   static const String WARNING = 'Aviso';
+  static const String WARNING_VIEW_ANYWAYS = 'Ver igualmente';
 
   // Profile
   static const String MY_PROFILE = 'Mi perfil';

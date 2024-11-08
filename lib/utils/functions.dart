@@ -168,6 +168,7 @@ Future<void> setGamificationFlag({
     if (!user.gamificationFlags.containsKey(flagId) ||
         !user.gamificationFlags[flagId]!) {
       user.gamificationFlags[flagId] = true;
+      print(user.gamificationFlags[flagId]);
       await database.setUserEnreda(user);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),

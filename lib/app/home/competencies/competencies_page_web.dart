@@ -157,10 +157,10 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
                 children: [
                   Text(
                     StringConst.COMPETENCY_LEVELS,
-                    style: textTheme.bodySmall?.copyWith(
+                    style: textTheme.titleLarge?.copyWith(
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold,
-                        color: Constants.darkGray),
+                        color: AppColors.primary900),
                   ),
                   SpaceH20(),
                   Text(

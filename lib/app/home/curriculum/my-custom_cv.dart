@@ -739,18 +739,21 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   return;
                 }
                 if(getTotalRightElements() < 9 && _isSelected2Page){
-                  showAlertDialogImg(
+                  var response = await showAlertDialogImg(
                     context,
                     title: StringConst.WARNING,
                     content: StringConst.PAGE_WARNING_1,
                     defaultActionText: StringConst.FORM_ACCEPT,
+                    cancelActionText: StringConst.WARNING_VIEW_ANYWAYS,
                     image: Container(
                         width: 300,
                         height: 450,
                         child: Image.asset(ImagePath.CV_WARNING_1)
                     ),
                   );
+                if (response){
                   return;
+                }
                 }
                 Navigator.push(
                   context,

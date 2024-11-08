@@ -602,9 +602,11 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
               showAlertNullUser(context);
             } else if (resource.participants.contains(userId)) {
               removeUserToResource(context: context, userId: userId, resource: resource);
-            } else if ((resource.link == null || resource.link!.isEmpty) &&
+            } /*else if ((resource.link == null || resource.link!.isEmpty) &&
                 (resource.contactEmail == null || resource.contactEmail!.isEmpty) &&
-                (resource.contactPhone == null || resource.contactPhone!.isEmpty)) {
+                (resource.contactPhone == null || resource.contactPhone!.isEmpty))*/
+            else if (resource.canSignUp!)
+            {
               addUserToResource(context: context, userId: userId, resource: resource);
               setGamificationFlag(context: context, flagId: UserEnreda.FLAG_JOIN_RESOURCE);
             } else if (resource.link != null) {

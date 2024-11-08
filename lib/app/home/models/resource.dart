@@ -44,6 +44,7 @@ class Resource {
     this.interests,
     this.competencies,
     this.jobOfferId,
+    this.canSignUp,
   });
 
   factory Resource.fromMap(Map<String, dynamic> data, String documentId) {
@@ -102,6 +103,7 @@ class Resource {
     final String? resourcePhoto = data['resourcePhoto'];
     final String? searchText = data['searchText'];
     final DateTime createdate = data['createdate'].toDate();
+    final bool canSignUp = data['canSignUp'] ?? false;
 
     return Resource(
       resourceId: documentId,
@@ -147,6 +149,7 @@ class Resource {
       createdate: createdate,
       interests: interests,
       competencies: competencies,
+      canSignUp: canSignUp,
     );
   }
 
@@ -193,6 +196,7 @@ class Resource {
   final DateTime createdate;
   final List<String>? interests;
   final List<String>? competencies;
+  final bool? canSignUp;
 
   Map<String, dynamic> toMap() {
     return {
@@ -237,6 +241,7 @@ class Resource {
       'createdate': createdate,
       'interests' : interests,
       'competencies' : competencies,
+      'canSignUp': canSignUp,
     };
   }
 

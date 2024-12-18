@@ -185,7 +185,7 @@ class StringConst {
 
   //Awards & Section
   static const String MY = "My";
-  static const String CV = "Mi curriculum";
+  static const String CV = "Mi currículum";
   static const String TAG_ENREDA = "¿Qué es Enreda?";
   static const String WHAT_ENREDA_TITLE = "Ya somos muchos, ¿y tú? ¿te Enredas?";
   static const String AWARDS_DESC =
@@ -237,7 +237,7 @@ class StringConst {
   //Control Panel Section
   static const String WELCOME_COMPANY = "Te damos la bienvenida";
   static const String WELCOME_TEXT = "Desde aquí puedes gestionar tu búsqueda de empleo. \nInscribirte a recursos, visualizar videos prácticos y formativos, y crear tu currículum. \nAprovecha todas las herramientas disponibles para avanzar en tu camino hacia la inserción laboral.";
-  static const String GAMIFICATION = "Gamificación";
+  static const String GAMIFICATION = "Mis logros";
   static const String NO_COMPETENCIES = "Aquí aparecerán las competencias evaluadas a través de los microtests";
   static const String NO_DOCUMENTS = "Aquí aparecerán los documentos agregados";
   static const String NO_RESOURCES = "Aquí aparecerán los recursos en los que te has inscrito";
@@ -410,7 +410,7 @@ class StringConst {
   static const String FORM_ABILITIES_REV = "Aspectos a reforzar";
   static const String FORM_MOTIVATION_ERROR = "Este campo no puede estar vacío";
   static const String FORM_DEDICATION = "¿Tienes claro a lo que te gustaría dedicarte?";
-  static const String FORM_KEEP_LEARNING_OPTIONS = "¿Qué te gustaría seguir aprendiendo?";
+  static const String FORM_KEEP_LEARNING_OPTIONS = "¿Qué te gustaría aprender?";
   static const String FORM_DEDICATION_REV = "Dedicación";
   static const String FORM_TIME_SEARCHING = "¿Cuánto tiempo llevas buscando empleo?";
   static const String FORM_TIME_SEARCHING_REV = "Búsqueda";
@@ -577,7 +577,7 @@ class StringConst {
 
   static const String LOREM_IMPSUM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor neque, tortor amet, adipiscing felis nullam. Aliquet commodo est pretium vitae hendrerit fames vitae. Orci, feugiat consectetur aliquet sodales mus sodales a urna.\n\n'
       'Rhoncus id volutpat, diam adipiscing risus, enim cursus ac. Amet nunc nec eu diam. Tincidunt at vulputate arcu dis justo. Ut egestas ac rhoncus, sapien.';
-  static const String GAMIFICATION_PHASE_COMPLETED = "¡Enhorabuena! ¡Has completado una Fase de la Gamificación!";
+  static const String GAMIFICATION_PHASE_COMPLETED = "¡Enhorabuena! ¡Has completado una Fase de tus logros!";
   static const String UPDATE_DATA = 'Actualizar mis datos';
   static const String ACCOUNT_PARAMETERS = 'Parámetros de la cuenta';
   static const String CHANGE_PASSWORD = 'Cambiar contraseña';

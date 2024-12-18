@@ -682,12 +682,15 @@ class FirestoreDatabase implements Database {
 
   @override
   Stream<List<Province>> provincesCountryStream(String? countryId) {
-    if (countryId == null) return Stream<List<Province>>.empty();
+
+    if (countryId == null) {
+      return const Stream<List<Province>>.empty();
+    }
 
     return _service.collectionStream(
       path: APIPath.provinces(),
       builder: (data, documentId) => Province.fromMap(data, documentId),
-      queryBuilder: (query) => query.where('countryId', isEqualTo: countryId),
+      queryBuilder: (query) => query.where('countryId', isEqualTo: countryId).where('active', isEqualTo: true),
       sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
     );
   }

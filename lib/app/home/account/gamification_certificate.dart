@@ -144,7 +144,7 @@ class _GamificationCertificateState extends State<GamificationCertificate> {
               child: pw.Divider(color: PdfColors.grey, thickness: 1.5),
             ),
             pw.Text(
-              'HA COMPLETADO SATISFACTORIAMENTE LA',
+              'HA COMPLETADO SATISFACTORIAMENTE',
               style: pw.TextStyle(
                 font: robotoLight,
                 fontSize: 10,
@@ -163,7 +163,7 @@ class _GamificationCertificateState extends State<GamificationCertificate> {
                 pw.Padding(
                   padding: const pw.EdgeInsets.symmetric(horizontal: 10),
                   child: pw.Text(
-                    'Gamificación de enreda',
+                    'Logros de enreda',
                     style: const pw.TextStyle(
                       fontSize: 10,
                     ),

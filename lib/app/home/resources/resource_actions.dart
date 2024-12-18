@@ -88,6 +88,7 @@ void showAlertNullUser(BuildContext context) async {
   if (signIn == true) {
     if(!isSmallScreen) {
       WebHome.selectedIndex.value = 0;
+      GoRouter.of(context).go(StringConst.PATH_HOME);
     }
     if(isSmallScreen) {
       CupertinoScaffoldAnonymous.controller.index = 2;

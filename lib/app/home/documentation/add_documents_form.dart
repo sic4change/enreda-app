@@ -87,7 +87,7 @@ class _AddDocumentsFormState extends State<AddDocumentsForm> {
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
-            physics: kIsWeb ? NeverScrollableScrollPhysics() : BouncingScrollPhysics(),
+            physics: BouncingScrollPhysics(),//kIsWeb ? NeverScrollableScrollPhysics() : BouncingScrollPhysics(),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[

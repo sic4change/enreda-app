@@ -94,7 +94,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   String? _nationality;
   String? _belongOrganization;
 
-  int? isRegistered;
+  int isRegistered = 0;
   int usersIds = 0;
   int currentStep = 0;
   bool _isChecked = false;

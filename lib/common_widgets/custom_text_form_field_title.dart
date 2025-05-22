@@ -85,7 +85,7 @@ class CustomTextFormFieldTitle extends StatelessWidget {
         ),
       ),
       initialValue: initialValue,
-      validator: (value) =>
+      validator: validator ?? (value) =>
       value!.isNotEmpty ? null : StringConst.FORM_FIELD_ERROR,
       onSaved: onSaved,
       keyboardType: keyboardType,

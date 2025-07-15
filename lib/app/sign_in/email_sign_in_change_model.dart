@@ -25,9 +25,9 @@ class EmailSignInChangeModel with EmailAndPasswordValidator, ChangeNotifier {
     updateWith(submitted: true, isLoading: true);
     try {
       if (formType == EmailSignFormType.sigIn) {
-        await auth.signInWithEmailAndPassword(email, password);
+        auth.signInWithEmailAndPassword(email, password);
       } else {
-        await auth.createUserWithEmailAndPassword(email, password);
+        auth.createUserWithEmailAndPassword(email, password);
       }
     } catch (e) {
       updateWith(isLoading: false);

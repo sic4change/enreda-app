@@ -27,7 +27,7 @@
     </queries>
 
    <application
-       android:name=".Application"
+        android:name="io.flutter.embedding.android.FlutterApplication"
         android:label="Enreda"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"

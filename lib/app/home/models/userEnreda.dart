@@ -43,6 +43,7 @@ class UserEnreda {
     this.motivation,
     this.personalDocuments = const [],
     required this.resources,
+    this.cv_state,
   });
 
   factory UserEnreda.fromMap(Map<String, dynamic> data, String documentId) {
@@ -191,6 +192,8 @@ class UserEnreda {
       });
     }
 
+    final String? cv_state = data['cv_state'] ?? 'blank';
+
     return UserEnreda(
       email: email,
       firstName: firstName,
@@ -228,6 +231,7 @@ class UserEnreda {
       personalDocuments: personalDocuments,
       assignedById: assignedById,
       resources: resources,
+      cv_state: cv_state,
     );
   }
 
@@ -267,7 +271,7 @@ class UserEnreda {
   final Motivation? motivation;
   final List<PersonalDocument> personalDocuments;
   final List<String> resources;
-
+  final String? cv_state;
 
   Map<String, dynamic> toMap() {
     InterestsUserEnreda interestUserEnreda = InterestsUserEnreda(
@@ -303,6 +307,7 @@ class UserEnreda {
       'motivation': motivation?.toMap(),
       'personalDocuments': personalDocuments.map((e) => e.toMap()).toList(),
       'resources': resources,
+      'cv_state': cv_state,
     };
   }
 
@@ -346,6 +351,8 @@ class UserEnreda {
     Motivation? motivation,
     List<PersonalDocument>? personalDocuments,
     List<String>? resources,
+    String? cv_state,
+    List<String>? certifications,
   }) {
     return UserEnreda(
       email: email ?? this.email,
@@ -383,6 +390,8 @@ class UserEnreda {
       motivation: motivation ?? this.motivation,
       personalDocuments: personalDocuments ?? this.personalDocuments,
       resources: resources ?? this.resources,
+      cv_state: cv_state ?? this.cv_state,
+      certifications: certifications ?? this.certifications,
     );
   }
 

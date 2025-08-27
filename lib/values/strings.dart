@@ -660,4 +660,9 @@ class StringConst {
   static const String ASSIGNED_CONTACT_TITLE = 'Técnica de inserción laboral';
   static const String ASSIGNED_CONTACT_DESCRIPTION = 'Técnica de inserción laboral';
 
+  //Stepper CV
+
+  static const String STEPPER_CV_TITLE_1 = '¡Vamos a crear tu currículum!';
+  static const String STEPPER_CV_TEXT_1 = 'Antes de empezar, mira este breve vídeo sobre competencias clave. Te ayudará a identificarlas y resaltarlas en tu perfil para destacar en tus candidaturas. \n¡Dale play y seguimos! 🚀';
+
 }

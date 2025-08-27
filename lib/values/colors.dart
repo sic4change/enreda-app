@@ -96,6 +96,7 @@ class AppColors {
   static const Color greySearch = Color(0xFFEBF1F2);
   static const Color chatDarkGray = Color(0xFF44494B);
   static const Color darkGray = Color(0xFF535A5F);
+  static const Color greyHint = Color(0xFFB1B1B1);
 
   //Alternative
   static const Color red = Color(0xFFF1291A);

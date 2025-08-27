@@ -1,0 +1,2035 @@
+import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
+import 'package:enreda_app/app/home/curriculum/formation_form.dart';
+import 'package:enreda_app/app/home/curriculum/stepper_experience_form.dart';
+import 'package:enreda_app/app/home/curriculum/stepper_formation_form.dart';
+import 'package:enreda_app/app/home/curriculum/tooltip_video/training_tooltip_video.dart';
+import 'package:enreda_app/app/home/models/experience.dart';
+import 'package:enreda_app/app/home/models/language.dart';
+import 'package:enreda_app/app/home/models/trainingPill.dart';
+import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/common_widgets/custom_text.dart';
+import 'package:enreda_app/common_widgets/flex_row_column.dart';
+import 'package:enreda_app/common_widgets/rounded_container.dart';
+import 'package:enreda_app/common_widgets/spaces.dart';
+import 'package:enreda_app/services/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:enreda_app/utils/functions.dart';
+import 'package:enreda_app/utils/responsive.dart';
+import 'package:enreda_app/values/strings.dart';
+import 'package:enreda_app/values/values.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+
+class CvData extends ChangeNotifier {
+  // Ejemplo: usa tus TextEditingController / ValueNotifier ya existentes
+  final tipoExperiencia = ValueNotifier<String?>(null);
+  final sectorController = TextEditingController();
+  final organismoController = TextEditingController();
+  DateTime? fechaInicio;
+  DateTime? fechaFin;
+
+  bool get fechasOk =>
+      fechaInicio != null &&
+      fechaFin != null &&
+      !fechaFin!.isBefore(fechaInicio!);
+
+  @override
+  void dispose() {
+    sectorController.dispose();
+    organismoController.dispose();
+    tipoExperiencia.dispose();
+    super.dispose();
+  }
+}
+
+/// DEFINICIÓN DE PASOS
+class StepMeta {
+  final String id;
+  final IconData icon;
+  StepMeta(this.id, this.icon);
+}
+
+final steps = <StepMeta>[
+  StepMeta('welcome', Icons.category_outlined),
+  StepMeta('formacion', Icons.category_outlined),
+  StepMeta('formacion_complementaria', Icons.work_outline),
+  StepMeta('organismo', Icons.apartment_outlined),
+  StepMeta('organismo', Icons.apartment_outlined),
+  StepMeta('about_me', Icons.event_outlined),
+  StepMeta('interests', Icons.interests_outlined),
+  StepMeta('languages', Icons.language_outlined),
+  StepMeta('end', Icons.interests_outlined),
+  // añade más...
+];
+
+/// HEADER DE PUNTOS
+class StepperHeader extends StatelessWidget {
+  const StepperHeader({
+    super.key,
+    required this.current,
+    required this.onTap,
+  });
+
+  final int current;
+  final ValueChanged<int> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (_, c) {
+        return Row(
+          children: [
+            for (int i = 0; i < steps.length; i++) ...[
+              InkWell(
+                onTap: i <= current ? () => onTap(i) : null, // sólo hacia atrás
+                borderRadius: BorderRadius.circular(24),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: i < current
+                            ? Theme.of(context).colorScheme.primary
+                            : (i == current
+                                ? Theme.of(context).colorScheme.primaryContainer
+                                : Theme.of(context).colorScheme.surfaceVariant),
+                        border: Border.all(
+                          color: i <= current
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).dividerColor,
+                        ),
+                      ),
+                      child: Icon(
+                        steps[i].icon,
+                        size: 16,
+                        color: i < current
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    
+              
+                  ],
+                ),
+              ),
+              if (i != steps.length - 1)
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 12),
+                    height: 2,
+                    color: i < current
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).dividerColor,
+                  ),
+                ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+typedef BeforeNextHandler = Future<bool> Function();
+final Map<String, BeforeNextHandler> _beforeNextByStepId = {};
+
+/// WIZARD PRINCIPAL
+class CvWizard extends StatefulWidget {
+  const CvWizard({super.key, required this.user});
+  final UserEnreda user;
+
+  @override
+  State<CvWizard> createState() => _CvWizardState();
+}
+
+class _CvWizardState extends State<CvWizard> {
+  final data = CvData();
+
+  // Un Form por paso
+  final formKeys = List.generate(steps.length, (_) => GlobalKey<FormState>());
+  int index = 0;
+  
+  // Preservar el estado del PageView
+  final _pageStorageKey = const PageStorageKey<String>('cv_wizard_page');
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Restaurar la posición guardada del PageView
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final savedIndex = PageStorage.of(context).readState(context, identifier: _pageStorageKey) as int?;
+      if (savedIndex != null && savedIndex != index) {
+        _goTo(savedIndex);
+      }
+    });
+  }
+
+  void _goTo(int i) {
+    setState(() => index = i);
+    
+    // Guardar la posición actual en PageStorage
+    PageStorage.of(context).writeState(context, i, identifier: _pageStorageKey);
+  }
+
+  bool _validateCurrent() {
+    final ok = formKeys[index].currentState?.validate() ?? true;
+    // validaciones cruzadas del paso (ej.: fechas)
+    if (ok && steps[index].id == 'fechas' && !data.fechasOk) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('La fecha fin debe ser posterior al inicio.')),
+      );
+      return false;
+    }
+    return ok;
+  }
+
+Future<void> _next() async {
+  final stepId = steps[index].id;
+
+  // Si el paso actual registró un handler (p. ej. StepFormation), úsalo
+  if (_beforeNextByStepId.containsKey(stepId)) {
+    final ok = await _beforeNextByStepId[stepId]!();
+    if (!ok) return;
+    if(!mounted) return;
+  } else {
+    // Si no hay handler, usa tu validación genérica
+    //if (!_validateCurrent()) return;
+  }
+
+  if (index < steps.length - 1) {
+    _goTo(index + 1);
+  } else {
+    _submit();
+  }
+}
+
+  void _submit() {
+    // TODO: persiste a tu backend / Firestore
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('CV guardado/enviado.')),
+    );
+  }
+
+  void _saveDraft() {
+    final draftUser = widget.user.copyWith(cv_state: 'draft');
+    final db = Provider.of<Database>(context, listen: false);
+    db.setUserEnreda(draftUser);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Borrador guardado.')),
+    );
+  }
+
+  @override
+  void dispose() {
+    data.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RoundedContainer(
+      margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+        const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+      contentPadding: Responsive.isMobile(context) ?
+        EdgeInsets.all(Sizes.mainPadding) :
+        EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+      child: FocusTraversalGroup(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CustomTextMediumBold(text: StringConst.MY_CV),
+            const SizedBox(height: 16),
+            StepperHeader(current: index, onTap: _goTo),
+            const SizedBox(height: 16),
+            Expanded(
+              child: IndexedStack(
+                index: index,
+                children: [
+                  _StepWelcome(key: formKeys[0], data: data),
+                  _StepFormation(key: formKeys[1], isMainEducation: true, onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['formacion'] = fn,),
+                  _StepFormation(key: formKeys[2], isMainEducation: false, onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, title: 'Formación complementaria', question: '¿Quieres añadir alguna formación complementaria?', user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['formacion_complementaria'] = fn,),
+                  _StepExperience(key: formKeys[3], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) => _goTo(index + 1)),
+                  _StepExperience(key: formKeys[4], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) => _goTo(index + 1), isProfesional: false, title: 'Experiencia personal', question: 'Ahora vamos con las experiencias personales',),
+                  _StepAboutMe(formKey: formKeys[5], data: data, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['about_me'] = fn,),
+                  _StepInterests(key: formKeys[6], data: data, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['interests'] = fn,),
+                  _StepLanguages(key: formKeys[7], user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['languages'] = fn,),
+                  _StepEnd(key: formKeys[8], user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['end'] = fn,),
+                  // añade más aquí...
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            index == 0 ? 
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: AppColors.blue050),
+              ),
+              onPressed: index == 0 ? () => _goTo(index + 1) : null,
+              child: const Text('Saltar vídeo y empezar CV', style: TextStyle(color: AppColors.blue050),),
+            ) 
+            : 
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: AppColors.blue050),
+                  ),
+                  onPressed: index > 0 ? () => _goTo(index - 1) : null,
+                  child: const Text('Volver', style: TextStyle(color: AppColors.blue050),),
+                ),
+                const SizedBox(width: 12),
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: AppColors.blue050),
+                  ),
+                  onPressed: _saveDraft,
+                  child: const Text('Guardar en borrador', style: TextStyle(color: AppColors.blue050),),
+                ),
+                const SizedBox(width: 12),
+                FilledButton(
+                  onPressed: _next,
+                  child: Text(index == steps.length - 1 ? 'Finalizar' : 'Siguiente', style: TextStyle(color: AppColors.white),),
+                  
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// === PASO 1: Tipo de experiencia ===
+class _StepWelcome extends StatefulWidget {
+  const _StepWelcome({super.key, required this.data});
+  final CvData data;
+
+  @override
+  State<_StepWelcome> createState() => _StepWelcomeState();
+}
+
+class _StepWelcomeState extends State<_StepWelcome> with AutomaticKeepAliveClientMixin {
+  late YoutubePlayerController _controller;
+  
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        CustomTextMediumBold(text: StringConst.STEPPER_CV_TITLE_1),
+        const SizedBox(height: 16),
+        CustomTextMediumCenter(text: StringConst.STEPPER_CV_TEXT_1),
+        const SizedBox(height: 20),
+        StreamBuilder<TrainingPill>(
+          stream: database.trainingPillStreamById(TrainingPill.HOW_TO_DO_CV_ID),
+          builder: (context, snapshot) {
+            if(snapshot.hasData) {
+              TrainingPill trainingPill = snapshot.data!;
+              trainingPill.setTrainingPillCategoryName();
+              final videoId = YoutubePlayerController.convertUrlToId(trainingPill.urlVideo) ?? '';
+              _controller = YoutubePlayerController.fromVideoId(
+              videoId: videoId,
+              autoPlay: false,
+              params: const YoutubePlayerParams(
+                showFullscreenButton: true,
+              ),
+            );
+              return Container(
+                width: MediaQuery.of(context).size.width/3.5,
+                key: Key('trainingPill-${trainingPill.id}'),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: AppColors.primary020,
+                    width: 1.0,
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: YoutubePlayer(
+                      controller: _controller,
+                    ),
+                  ),
+                ),
+              );
+            } else
+            return Container();
+          }),
+      ],
+    );
+  }
+}
+
+class FormacionData {
+  final String titulo;
+  final String centro;
+  final String nivel;
+  final DateTime? inicio;
+  final DateTime? fin;
+
+  FormacionData({
+    required this.titulo,
+    required this.centro,
+    required this.nivel,
+    this.inicio,
+    this.fin,
+  });
+}
+
+/// === PASO 1: Tipo de experiencia ===
+class _StepFormation extends StatefulWidget {
+  const _StepFormation({
+    super.key,
+    required this.onSelectNoAndContinue,
+    required this.onSaveSiValido,
+    required this.user,
+    this.title = 'Formación',
+    this.question = '¿Tienes algún tipo de formación?',
+    required this.registerBeforeNext,
+    required this.isMainEducation,
+  });
+
+  final VoidCallback onSelectNoAndContinue; // Avanzar al siguiente paso
+  final ValueChanged<FormacionData> onSaveSiValido; // Te devuelve los datos válidos
+  final String title;
+  final String question;
+  final UserEnreda user;
+  final void Function(Future<bool> Function()) registerBeforeNext;
+  final bool isMainEducation;
+
+  @override
+  State<_StepFormation> createState() => _StepFormationState();
+}
+
+class _StepFormationState extends State<_StepFormation>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  final _formKey = GlobalKey<FormState>();
+  final _tituloCtrl = TextEditingController();
+  final _centroCtrl = TextEditingController();
+  final _nivelCtrl = TextEditingController();
+
+  int? _activeIndex;
+  bool _creatingNew = false;      // borrador para “crear nueva”
+  
+  @override
+  bool get wantKeepAlive => true;
+
+  bool? _tieneFormacion; // null = sin elegir, true = Sí, false = No
+  DateTime? _inicio;
+  DateTime? _fin;
+
+  List<Experience>? myEducation = [];
+  List<Experience> myCustomEducation = [];
+  List<int> mySelectedEducation = [];
+
+  final _stepperKey = GlobalKey<StepperFormationFormState>();
+
+
+
+    Future<bool> _validateSaveAndNotify() async {
+    final form = _formKey.currentState;
+    if (form == null || !form.validate()) return false;
+    if (_tieneFormacion == false) {
+      return true; // avanzar
+    }
+
+    await _stepperKey.currentState?.saveExperience(); // guarda en BD
+    // Si quieres pasar algún dato real, cámbialo aquí (id, experiencia, etc.)
+    widget.onSaveSiValido(FormacionData(
+      titulo: _tituloCtrl.text.trim(),
+      centro: _centroCtrl.text.trim(),
+      nivel: _nivelCtrl.text.trim(),
+      inicio: _inicio,
+      fin: _fin,
+    ));
+    return true;
+  }
+
+    @override
+  void initState() {
+    super.initState();
+    widget.registerBeforeNext(_validateSaveAndNotify);
+  }
+
+  @override
+  void dispose() {
+    _tituloCtrl.dispose();
+    _centroCtrl.dispose();
+    _nivelCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+    final user = widget.user;
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 920),
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Expanded(child: 
+            Text(widget.title, style: TextStyle(fontWeight: FontWeight.w100, color: AppColors.primary900, fontSize: 35, fontFamily: GoogleFonts.outfit().fontFamily),)),
+            const SizedBox(height: 8),
+            Text(
+              widget.question,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),
+            ),
+            const SizedBox(height: 18),
+
+            // Fila Sí / No
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              spacing: 16,
+              children: [
+                ChoiceCard(
+                  selected: _tieneFormacion == true,
+                  icon: Icons.check_rounded,
+                  label: 'Sí',
+                  onTap: () => setState(() => _tieneFormacion = true),
+                ),
+                ChoiceCard(
+                  selected: _tieneFormacion == false,
+                  icon: Icons.close_rounded,
+                  label: 'No',
+                  onTap: () {
+                    setState(() => _tieneFormacion = false);
+                    // Avanza inmediatamente
+                    widget.onSelectNoAndContinue();
+                  },
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            // Despliegue del formulario cuando es "Sí"
+          StreamBuilder<List<Experience>>(
+            stream: database.myExperiencesStream(user.userId ?? ''),
+            builder: (context, snapshot) {
+              if (!(snapshot.hasData && snapshot.connectionState == ConnectionState.active)) {
+      return const SizedBox.shrink();
+    }
+
+    String educationType = widget.isMainEducation ? 'Formativa' : 'Complementaria';
+
+    // 1) Construimos tus listas
+    myEducation = snapshot.data!
+        .where((experience) => experience.type == educationType)
+        .toList();
+    myCustomEducation = myEducation!.map((e) => e).toList();
+    mySelectedEducation = List.generate(myCustomEducation.length, (i) => i);
+
+                // 2) Decidir qué se edita:
+    //    - Si no hay experiencias => formulario vacío
+    //    - Si hay y no hay índice activo y no estamos creando => primera
+    if (mySelectedEducation.isEmpty) {
+      _creatingNew = true;
+      _activeIndex = null;
+    } else {
+      if (!_creatingNew && _activeIndex == null) {
+        _activeIndex = 0;
+      }
+      // Si por cambios en el stream el índice queda fuera de rango
+      if (_activeIndex != null && _activeIndex! >= mySelectedEducation.length) {
+        _activeIndex = mySelectedEducation.isNotEmpty ? 0 : null;
+      }
+    }
+
+    // 3) Índices plegados (excluye el activo cuando se está editando uno existente)
+    final foldedIndices = mySelectedEducation.where((i) {
+      if (_creatingNew) return true; // si es nuevo, todas van plegadas
+      return _activeIndex == null ? true : i != _activeIndex!;
+    }).toList();
+
+    // 4) ¿Mostramos formulario vacío?
+    final showEmptyForm = _creatingNew || mySelectedEducation.isEmpty;
+
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeInOut,
+      alignment: Alignment.topCenter,
+      child: (_tieneFormacion == true)
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Fichas plegadas arriba
+                if (foldedIndices.isNotEmpty) ...[
+                  for (final i in foldedIndices)
+                    _CollapsedExperienceTile(
+                      title: (myCustomEducation[i].nameFormation ?? '').isNotEmpty
+                          ? myCustomEducation[i].nameFormation!
+                          : 'Sin título',
+                      subtitle: myCustomEducation[i].institution ?? '',
+                      onEdit: () {
+                        setState(() {
+                          _creatingNew = false;
+                          _activeIndex = i;
+                        });
+                      },
+                        onDelete: () async {
+                        final exp = myCustomEducation[i];
+                        final confirmed = await showDialog<bool>(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: const Text('Eliminar formación'),
+                                content: Text(
+                                  '¿Quieres eliminar "${(exp.nameFormation ?? 'esta formación')}"? Esta acción no se puede deshacer.',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context, false),
+                                    child: const Text('Cancelar'),
+                                  ),
+                                  FilledButton(
+                                    onPressed: () => Navigator.pop(context, true),
+                                    child: const Text('Eliminar'),
+                                  ),
+                                ],
+                              ),
+                            ) ??
+                            false;
+
+                        if (!confirmed) return;
+
+                        try {
+                          await database.deleteExperience(exp); // <- ajusta según tu repositorio
+                          // No hace falta tocar el estado: el Stream se actualizará y sacará la tarjeta
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('No se pudo eliminar: $e')),
+                          );
+                        }
+                      },
+                    ),
+                  const SizedBox(height: 12),
+                ],
+
+                // Formulario activo (vacío o con experiencia)
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: showEmptyForm
+                      ? StepperFormationForm(
+                          isMainEducation: widget.isMainEducation,
+                          onComingBack: () {},
+                          formKey: _formKey,
+                          key: _stepperKey,
+                        )
+                      : StepperFormationForm(
+                          isMainEducation: widget.isMainEducation,
+                          onComingBack: () {},
+                          experience: myCustomEducation[_activeIndex!],
+                          formKey: _formKey,
+                          key: _stepperKey,
+                        ),
+                ),
+
+                const SizedBox(height: 12),
+
+                // Botón crear nueva formación
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: CreateEducationButton(
+                    onPressed: () async {
+                      final form = _formKey.currentState;
+                      if (form != null && form.validate()) {
+                        try {
+                          print('dentro de try');
+                          await _stepperKey.currentState?.saveExperience(); // <--- guarda en el hijo
+                          if (!mounted) return;
+
+                          // tras guardar, abre un formulario nuevo vacío
+                          setState(() {
+                            _creatingNew = true;
+                            _activeIndex = null;
+                          });
+                        } catch (e) {
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('No se pudo guardar: $e')),
+                          );
+                        }
+                      }
+                    },
+                  ),
+                ),
+
+
+              ],
+            )
+          : const SizedBox.shrink(),
+    );
+  }
+)
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StepExperience extends StatefulWidget {
+  const _StepExperience({
+    super.key,
+    required this.onSelectNoAndContinue,
+    required this.onSaveSiValido,
+    this.title = 'Experiencia profesional',
+    this.question = '¿Qué tipo de experiencia quieres añadir?',
+    this.isProfesional = true,
+  });
+
+  final VoidCallback onSelectNoAndContinue; // Avanzar al siguiente paso
+  final ValueChanged<FormacionData> onSaveSiValido; // Te devuelve los datos válidos
+  final String title;
+  final String question;
+  final bool isProfesional;
+
+  @override
+  State<_StepExperience> createState() => _StepExperienceState();
+}
+
+class _StepExperienceState extends State<_StepExperience>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  final _formKey = GlobalKey<FormState>();
+  final _tituloCtrl = TextEditingController();
+  final _centroCtrl = TextEditingController();
+  final _nivelCtrl = TextEditingController();
+  
+  @override
+  bool get wantKeepAlive => true;
+
+  bool? _tieneFormacion; // null = sin elegir, true = Sí, false = No
+  DateTime? _inicio;
+  DateTime? _fin;
+
+  /// Llama a esto desde tu wizard cuando el usuario pulsa "Siguiente".
+  /// - Si el usuario marcó "No": devuelve true (puedes avanzar).
+  /// - Si marcó "Sí": valida el formulario (y si está ok, llama onSaveSiValido).
+  bool validateAndMaybeSubmit() {
+    if (_tieneFormacion == false) {
+      return true; // avanzar
+    }
+    if (_tieneFormacion == true) {
+      final ok = _formKey.currentState?.validate() ?? false;
+      final fechasOk = _validarFechas(context);
+      if (ok && fechasOk) {
+        widget.onSaveSiValido(
+          FormacionData(
+            titulo: _tituloCtrl.text.trim(),
+            centro: _centroCtrl.text.trim(),
+            nivel: _nivelCtrl.text.trim(),
+            inicio: _inicio,
+            fin: _fin,
+          ),
+        );
+        return true;
+      }
+      return false;
+    }
+    // si no eligió nada, forzamos al usuario a elegir
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Selecciona Sí o No para continuar.')),
+    );
+    return false;
+  }
+
+  Future<void> _pickDate(bool inicio) async {
+    final now = DateTime.now();
+    final selected = await showDatePicker(
+      context: context,
+      firstDate: DateTime(now.year - 80),
+      lastDate: DateTime(now.year + 5),
+      initialDate: (inicio ? _inicio : _fin) ?? now,
+    );
+    if (selected != null) {
+      setState(() {
+        if (inicio) {
+          _inicio = selected;
+        } else {
+          _fin = selected;
+        }
+      });
+    }
+  }
+
+  bool _validarFechas(BuildContext context) {
+    if (_inicio != null && _fin != null && _fin!.isBefore(_inicio!)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('La fecha de fin debe ser posterior a la de inicio.'),
+        ),
+      );
+      return true; //TODO: Cambiar a false
+    }
+    return true;
+  }
+
+  @override
+  void dispose() {
+    _tituloCtrl.dispose();
+    _centroCtrl.dispose();
+    _nivelCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 920),
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Expanded(child: 
+            Text(widget.title, style: TextStyle(fontWeight: FontWeight.w100, color: AppColors.primary900, fontSize: 35, fontFamily: GoogleFonts.outfit().fontFamily),)),
+            const SizedBox(height: 8),
+            Text(
+              widget.question,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),
+            ),
+            const SizedBox(height: 18),
+
+            // Fila Sí / No
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              spacing: 16,
+              children: [
+                ChoiceCard(
+                  selected: _tieneFormacion == true,
+                  icon: Icons.check_rounded,
+                  label: 'Sí',
+                  onTap: () => setState(() => _tieneFormacion = true),
+                ),
+                ChoiceCard(
+                  selected: _tieneFormacion == false,
+                  icon: Icons.close_rounded,
+                  label: 'No',
+                  onTap: () {
+                    setState(() => _tieneFormacion = false);
+                    // Avanza inmediatamente
+                    widget.onSelectNoAndContinue();
+                  },
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            // Despliegue del formulario cuando es "Sí"
+            AnimatedSize(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              child: (_tieneFormacion == true)
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: StepperExperienceForm(
+                        isProfesional: widget.isProfesional,
+                        onComingBack: (isProfesional) {},
+                      )
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// === PASO 3: Organismo ===
+class _StepOrganismo extends StatefulWidget {
+  const _StepOrganismo({super.key, required this.data});
+  final CvData data;
+
+  @override
+  State<_StepOrganismo> createState() => _StepOrganismoState();
+}
+
+class _StepOrganismoState extends State<_StepOrganismo> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 760),
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              Text('¿En qué tipo de organismo la realizaste?',
+                  style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: widget.data.organismoController,
+                decoration: const InputDecoration(
+                  labelText: 'Empresa/organización',
+                ),
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// === PASO 4: Fechas ===
+class _StepAboutMe extends StatefulWidget {
+  const _StepAboutMe({super.key, required this.data, required this.user, required this.registerBeforeNext, required this.formKey});
+  final CvData data;
+  final UserEnreda user;
+  final void Function(Future<bool> Function()) registerBeforeNext;
+  final GlobalKey<FormState> formKey;
+
+  @override
+  State<_StepAboutMe> createState() => _StepAboutMeState();
+}
+
+class _StepAboutMeState extends State<_StepAboutMe> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+  TextEditingController textController = TextEditingController();
+
+
+  @override
+  void initState() {
+    super.initState();
+    textController.text = widget.user.aboutMe ?? '';
+    widget.registerBeforeNext(_validateSaveAndNotify);
+  }
+
+Future<bool> _validateSaveAndNotify() async {
+  // Captura dependencias ANTES del await
+  final db = Provider.of<Database>(context, listen: false);
+  final updated = widget.user.copyWith(aboutMe: textController.text);
+
+  try {
+    await db.setUserEnreda(updated);
+  } catch (e) {
+    if (mounted) {
+      // Si quieres, muestra error AQUÍ (usa context antes de avanzar de paso)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo guardar: $e')),
+      );
+    }
+    return false;
+  }
+  setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_ABOUT_ME);
+
+  return true;
+}
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Form(
+      key: widget.formKey,
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 920),
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              Text('¿Qué puedes contarnos de ti?', style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),),
+              SpaceH20(),
+              AutoGrowTextFormField(
+                controller: textController, // o initialValue: '...'
+                hint:
+                    'Aquí te proponemos un ejemplo: Soy una persona responsable y con muchas ganas '
+                    'de aprender. Me gusta trabajar en equipo y ayudar a los demás. En mi último '
+                    'trabajo como dependiente, aprendí a tratar con clientes y resolver problemas rápidamente.',
+                minLines: 5,              // arranque alto como en la captura
+                maxLines: null,           // que crezca libremente
+                textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Este campo es obligatorio' : null,
+              ),
+              
+              const SizedBox(height: 8),
+              
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StepInterests extends StatefulWidget {
+  const _StepInterests({super.key, required this.data, required this.user, required this.registerBeforeNext});
+  final CvData data;
+  final UserEnreda user;
+  final void Function(Future<bool> Function()) registerBeforeNext;
+
+  @override
+  State<_StepInterests> createState() => _StepInterestsState();
+}
+
+class _StepInterestsState extends State<_StepInterests> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  List<String> _skills = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _skills = widget.user.dataOfInterest;
+    widget.registerBeforeNext(_validateSaveAndNotify);
+  }
+
+  Future<bool> _validateSaveAndNotify() async {
+    final db = Provider.of<Database>(context, listen: false);
+    final updated = widget.user.copyWith(dataOfInterest: _skills);
+    await db.setUserEnreda(updated);
+    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_DATA_OF_INTEREST);
+    return true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    final defaults = [
+      'Carnet de conducir', 'Deportes', 'Lectura', 'Pintura y Dibujo',
+      'Fotografía', 'Viajar', 'Arte', 'Gastronomía', 'Danza',
+      'Juegos y tecnología', 'Cine y series', 'Senderismo', 'Meditación',
+    ];
+    return Form(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 920),
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              Text('¿Hay algo más que las empresas deban saber sobre ti?', style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),),
+              SpaceH20(),
+              SkillsSelector(
+                defaultOptions: defaults,
+                selected: _skills,
+                onChanged: (list) => setState(() => _skills = list),
+                addLabel: 'Añade nueva habilidad',
+                inputHint: 'Escribe una habilidad',
+              ),
+              
+              const SizedBox(height: 8),
+              
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StepLanguages extends StatefulWidget {
+  const _StepLanguages({super.key, required this.user, required this.registerBeforeNext});
+  final UserEnreda user;
+  final void Function(Future<bool> Function()) registerBeforeNext;
+
+  @override
+  State<_StepLanguages> createState() => _StepLanguagesState();
+}
+
+class _StepLanguagesState extends State<_StepLanguages> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+  final _stepperKey = GlobalKey<LanguagesLevelSectionState>();
+
+
+  @override
+  void initState() {
+    super.initState();
+    widget.registerBeforeNext(_validateSaveAndNotify);
+  }
+  
+  Future<bool> _validateSaveAndNotify() async {
+    _stepperKey.currentState?.saveAndNotify();
+    return true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Form(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 920),
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              Text('¿Qué idioma quieres añadir?', style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),),
+              SpaceH20(),
+              LanguagesLevelSection(
+                key: _stepperKey,
+                initialLanguages: widget.user.languagesLevels,
+                onChanged: (list) => {},
+                user: widget.user,
+              ),
+              
+              const SizedBox(height: 8),
+              
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class _StepEnd extends StatefulWidget {
+  const _StepEnd({super.key, required this.user, required this.registerBeforeNext});
+  final UserEnreda user;
+  final void Function(Future<bool> Function()) registerBeforeNext;
+  
+
+  @override
+  State<_StepEnd> createState() => _StepEndState();
+}
+
+class _StepEndState extends State<_StepEnd> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.registerBeforeNext(_validateSaveAndNotify);
+  }
+  
+  Future<bool> _validateSaveAndNotify() async {
+    final db = Provider.of<Database>(context, listen: false);
+    final updated = widget.user.copyWith(cv_state: 'completed');
+    await db.setUserEnreda(updated);
+    return true;
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 920),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text('¡Buen trabajo!', style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),),
+              SpaceH20(),
+             Text('Siempre podrás editar y actualizar tu currículum.\n ¿Quieres visualizarlo?', style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.w300, color: AppColors.primary900, fontSize: 26),
+                  textAlign: TextAlign.center,),
+              
+              const SizedBox(height: 20),
+
+              Expanded(
+                flex: 5,
+                child: Image.asset(
+                  height: 300,
+                  ImagePath.STEPPER_CV_END,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              
+               const SizedBox(height: 40),
+
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+/// ---- Tarjeta de opción Sí / No ----
+class ChoiceCard extends StatelessWidget {
+  const ChoiceCard({
+    super.key,
+    required this.selected,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final bool selected;
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor = selected
+        ? Theme.of(context).colorScheme.primary
+        : AppColors.grey120;
+
+    final borderWidth = selected ? 3.0 : 1.0;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(28),
+      child: Container(
+
+        width: MediaQuery.of(context).size.width/4.5,
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: borderColor, width: borderWidth),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: borderColor, width: 1.6),
+              ),
+              child: Icon(
+                icon,
+                size: 20,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// TextFormField que crece según el número de líneas escritas,
+/// manteniendo la decoración de _appDecoration.
+class AutoGrowTextFormField extends StatelessWidget {
+  const AutoGrowTextFormField({
+    super.key,
+    this.controller,
+    this.initialValue,
+    required this.hint,
+    this.minLines = 4,          // altura inicial como en el mock
+    this.maxLines,              // déjalo null para crecimiento libre
+    this.textStyle,
+    this.onChanged,
+    this.validator,
+    this.maxLength,             // opcional: límite de caracteres
+  }) : assert(controller == null || initialValue == null,
+         'No puedes usar controller e initialValue a la vez');
+
+  final TextEditingController? controller;
+  final String? initialValue;
+  final String hint;
+  final int minLines;
+  final int? maxLines;
+  final TextStyle? textStyle;
+  final ValueChanged<String>? onChanged;
+  final FormFieldValidator<String>? validator;
+  final int? maxLength;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return TextFormField(
+      controller: controller,
+      initialValue: controller == null ? initialValue : null,
+      keyboardType: TextInputType.multiline,
+      textInputAction: TextInputAction.newline,
+      minLines: minLines,
+      maxLines: maxLines, // null => crece sin límite
+      style: textStyle ?? theme.textTheme.bodyMedium?.copyWith(height: 1.5),
+      onChanged: onChanged,
+      validator: validator,
+      maxLength: maxLength,
+      // Oculta el contador si se define maxLength
+      buildCounter: maxLength == null
+          ? null
+          : (context, {required int currentLength, required bool isFocused, int? maxLength}) => null,
+      decoration: _appDecoration(hint).copyWith(
+        // Para que el hint largo se muestre en varias líneas
+        hintMaxLines: 6,
+        alignLabelWithHint: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
+      ),
+      // Calidad de escritura
+      autocorrect: true,
+      enableSuggestions: true,
+    );
+  }
+}
+
+ InputDecoration _appDecoration(String hintText) {
+    const radius = 30.0;
+    final baseBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(radius),
+      borderSide: const BorderSide(color: AppColors.primary100, width: 1),
+    );
+
+    return InputDecoration(
+      hintText: hintText,
+      hintStyle: const TextStyle(color: AppColors.greyHint, fontSize: 12),
+      filled: false,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
+      enabledBorder: baseBorder,
+      disabledBorder: baseBorder,
+      focusedBorder: baseBorder.copyWith(
+        borderSide: const BorderSide(color: AppColors.primary100, width: 3),
+      ),
+      errorBorder: baseBorder.copyWith(
+        borderSide: const BorderSide(color: Colors.redAccent, width: 2),
+      ),
+      focusedErrorBorder: baseBorder.copyWith(
+        borderSide: const BorderSide(color: Colors.redAccent, width: 2),
+      ),
+    );
+  }
+
+
+/// Selector de opciones estilo “píldoras” con sugerencias + entrada libre.
+/// - defaultOptions: lista de sugerencias (aparecen con +)
+/// - selected: lista de seleccionados (se muestran con ✔)
+/// - onChanged: callback con la lista actualizada
+class SkillsSelector extends StatefulWidget {
+  const SkillsSelector({
+    super.key,
+    required this.defaultOptions,
+    required this.selected,
+    required this.onChanged,
+    this.addLabel = 'Añade nueva habilidad',
+    this.inputHint = 'Escribe una habilidad',
+    this.runSpacing = 12,
+    this.spacing = 14,
+  });
+
+  final List<String> defaultOptions;
+  final List<String> selected;
+  final ValueChanged<List<String>> onChanged;
+
+  final String addLabel;
+  final String inputHint;
+  final double runSpacing;
+  final double spacing;
+
+  @override
+  State<SkillsSelector> createState() => _SkillsSelectorState();
+}
+
+class _SkillsSelectorState extends State<SkillsSelector> {
+  late List<String> _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = List<String>.from(widget.selected);
+  }
+
+  String _normalize(String s) =>
+      s.trim().replaceAll(RegExp(r'\s+'), ' ').toLowerCase();
+
+  bool _isSelected(String label) =>
+      _selected.map(_normalize).contains(_normalize(label));
+
+  void _toggle(String label) {
+    final norm = _normalize(label);
+    final idx = _selected.indexWhere((e) => _normalize(e) == norm);
+    setState(() {
+      if (idx >= 0) {
+        _selected.removeAt(idx);
+      } else {
+        _selected.add(label.trim());
+      }
+    });
+    widget.onChanged(List.unmodifiable(_selected));
+  }
+
+  Future<void> _addCustomDialog() async {
+    final ctrl = TextEditingController();
+    final result = await showDialog<String>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('Añadir habilidad', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+          content: TextField(
+            controller: ctrl,
+            autofocus: true,
+            decoration: _appDecoration(widget.inputHint),
+            onSubmitted: (v) => Navigator.of(ctx).pop(v),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop(ctrl.text),
+              child: const Text('Añadir'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != null && result.trim().isNotEmpty) {
+      // Evitar duplicados (case-insensitive)
+      if (!_isSelected(result)) {
+        setState(() => _selected.add(result.trim()));
+        widget.onChanged(List.unmodifiable(_selected));
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    // Para no duplicar: solo pintamos custom que no estén en las sugerencias
+    final defaultNorms = widget.defaultOptions.map(_normalize).toSet();
+    final customSelected = _selected
+        .where((s) => !defaultNorms.contains(_normalize(s)))
+        .toList();
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: AppColors.primary100, width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Botón "Añade nueva habilidad"
+          InkWell(
+            borderRadius: BorderRadius.circular(30),
+            onTap: _addCustomDialog,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.primary100, width: 1.5),
+                    ),
+                    child: const Icon(Icons.add_rounded,
+                        size: 22, color: AppColors.primary100),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    widget.addLabel,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: AppColors.primary100,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Sugerencias
+          Wrap(
+            spacing: widget.spacing,
+            runSpacing: widget.runSpacing,
+            children: [
+              for (final opt in widget.defaultOptions)
+                _TagPill(
+                  label: opt,
+                  selected: _isSelected(opt),
+                  onTap: () => _toggle(opt),
+                ),
+              // Custom seleccionados (no presentes en defaultOptions)
+              for (final custom in customSelected)
+                _TagPill(
+                  label: custom,
+                  selected: true,
+                  onTap: () => _toggle(custom),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Píldora visual con borde “pill” y badge de + / ✔
+class _TagPill extends StatelessWidget {
+  const _TagPill({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final borderColor =
+        selected ? theme.colorScheme.primary : AppColors.primary100;
+    final borderWidth = selected ? 3.0 : 1.0;
+    final icon =
+        selected ? Icons.check_rounded : Icons.add_rounded; // ✔ o +
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: borderColor, width: borderWidth),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Badge circular
+            Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: borderColor, width: 1.6),
+              ),
+              child: Icon(icon, size: 16, color: borderColor),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              label,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color:AppColors.greyDark,
+                fontWeight: FontWeight.w400,
+                fontSize: 14
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LanguagesLevelSection extends StatefulWidget {
+  const LanguagesLevelSection({
+    super.key,
+    this.initialLanguages,
+    required this.onChanged,
+    required this.user,
+  });
+
+  /// Si no pasas nada, se crean Español/Francés/Inglés por defecto.
+  final List<Language>? initialLanguages;
+  final ValueChanged<List<Language>> onChanged;
+  final UserEnreda user;
+
+  @override
+  State<LanguagesLevelSection> createState() => LanguagesLevelSectionState();
+}
+
+class LanguagesLevelSectionState extends State<LanguagesLevelSection> {
+  late List<Language> _langs;
+
+  @override
+  void initState() {
+    super.initState();
+    _langs = widget.initialLanguages ??
+        [
+          Language(name: 'Español', speakingLevel: 1, writingLevel: 1),
+          Language(name: 'Francés', speakingLevel: 1, writingLevel: 1),
+          Language(name: 'Inglés', speakingLevel: 1, writingLevel: 1),
+        ];
+  }
+
+  Future<void> saveAndNotify() async {
+    final db = Provider.of<Database>(context, listen: false);
+    final updated = widget.user.copyWith(languagesLevels: _langs);
+    await db.setUserEnreda(updated);
+    print('languages saved');
+  }
+
+  void _notify() => widget.onChanged(List.unmodifiable(_langs));
+
+  Future<void> _addLanguage() async {
+    final added = await showAddLanguageDialog(context);
+    if (added != null) {
+      setState(() => _langs.add(added));
+      _notify();
+    }
+  }
+
+    void _updateLang(int index, {int? speaking, int? writing}) {
+    final curr = _langs[index];
+    final updated = Language(
+      name: curr.name,
+      speakingLevel: speaking ?? curr.speakingLevel,
+      writingLevel: writing ?? curr.writingLevel,
+    );
+    setState(() => _langs[index] = updated);
+    _notify();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (var i = 0; i < _langs.length; i++) ...[
+          LanguageLevelCard(
+            key: ValueKey('lang_${i}_${_langs[i].name}'),
+            language: _langs[i],
+            onSpeakingChanged: (v) => _updateLang(i, speaking: v.toInt()),
+            onWritingChanged: (v) => _updateLang(i, writing: v.toInt()),
+          ),
+          const SizedBox(height: 18),
+        ],
+
+        // Botón "Añadir otro idioma"
+        Align(
+          alignment: Alignment.centerLeft,
+          child: InkWell(
+            onTap: _addLanguage,
+            borderRadius: BorderRadius.circular(28),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0x0F13B8A6), // un fondo suave (ajústalo a tu paleta)
+                borderRadius: BorderRadius.circular(28),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 34, height: 34,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.primary900, // círculo lleno
+                    ),
+                    child: const Icon(Icons.add, color: Colors.white, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Añadir otro idioma',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: AppColors.greyDark,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class LanguageLevelCard extends StatelessWidget {
+  const LanguageLevelCard({
+    super.key,
+    required this.language,
+    required this.onSpeakingChanged,
+    required this.onWritingChanged,
+  });
+
+  final Language language;
+  final ValueChanged<double> onSpeakingChanged;
+  final ValueChanged<double> onWritingChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: AppColors.primary100, width: 1),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isNarrow = constraints.maxWidth < 700;
+          final content = [
+            // Badge de idioma + nombre
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 44, height: 44,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.primary100, width: 1.5),
+                  ),
+                  child: const Icon(Icons.translate, color: AppColors.primary900, size: 26),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  language.name,
+                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                ),
+              ],
+            ),
+
+            // Expresión oral
+            _RatingRow(
+              label: 'Expresión oral',
+              value: language.speakingLevel.toDouble(),
+              onChanged: onSpeakingChanged,
+            ),
+
+            // Expresión escrita
+            _RatingRow(
+              label: 'Expresión escrita',
+              value: language.writingLevel.toDouble(),
+              onChanged: onWritingChanged,
+            ),
+          ];
+
+          return isNarrow
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    content[0],
+                    const SizedBox(height: 12),
+                    content[1],
+                    const SizedBox(height: 10),
+                    content[2],
+                  ],
+                )
+              : Row(
+                  children: [
+                    content[0],
+                    const Spacer(),
+                    content[1],
+                    const SizedBox(width: 24),
+                    content[2],
+                  ],
+                );
+        },
+      ),
+    );
+  }
+}
+
+class _RatingRow extends StatelessWidget {
+  const _RatingRow({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String label;
+  final double value;            // 0..3
+  final ValueChanged<double> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(label, style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+        const SizedBox(width: 12),
+        SmoothStarRating(
+          starCount: 3,
+          rating: value,
+          allowHalfRating: false,
+          onRatingChanged: onChanged,
+          size: 22,
+          spacing: 10,
+          filledIconData: Icons.circle,           // ● seleccionado
+          defaultIconData: Icons.circle_outlined, // ○ vacío
+          color: AppColors.primary900,
+          borderColor: AppColors.primary900,
+        ),
+      ],
+    );
+  }
+}
+
+Future<Language?> showAddLanguageDialog(BuildContext context, {Language? initial}) {
+  int speakingLevel = initial?.speakingLevel ?? 0;
+  int writingLevel  = initial?.writingLevel  ?? 0;
+  final nameCtrl = TextEditingController(text: initial?.name ?? '');
+
+  return showDialog<Language>(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (ctx, set) {
+          return AlertDialog(
+            title: Text(initial == null ? 'Añadir idioma' : 'Editar idioma'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Idioma')),
+                const SizedBox(height: 12),
+                _buildSpeakingLevelRow(
+                  value: speakingLevel.toDouble(),
+                  textTheme: Theme.of(ctx).textTheme,
+                  onValueChanged: (v) => set(() => speakingLevel = v.toInt()),
+                ),
+                const SizedBox(height: 12),
+                _buildWritingLevelRow(
+                  value: writingLevel.toDouble(),
+                  textTheme: Theme.of(ctx).textTheme,
+                  onValueChanged: (v) => set(() => writingLevel = v.toInt()),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+              FilledButton(
+                onPressed: () {
+                  final lang = Language(
+                    name: nameCtrl.text.trim(),
+                    speakingLevel: speakingLevel,
+                    writingLevel: writingLevel,
+                  );
+                  Navigator.pop(ctx, lang);
+                },
+                child: const Text('Guardar'),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
+
+Widget _buildSpeakingLevelRow({
+  required TextTheme textTheme,
+  required double value,
+  double iconSize = 22.0,
+  Function(double)? onValueChanged,
+}) {
+  return Row(
+    children: [
+      Expanded(
+        child: Text('Expresión oral', style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.normal)),
+      ),
+      SmoothStarRating(
+        allowHalfRating: false,
+        onRatingChanged: onValueChanged,
+        starCount: 3,
+        rating: value,
+        size: iconSize,
+        filledIconData: Icons.circle,
+        defaultIconData: Icons.circle_outlined,
+        color: AppColors.primary900,
+        borderColor: AppColors.primary900,
+        spacing: 10.0,
+      ),
+    ],
+  );
+}
+
+Widget _buildWritingLevelRow({
+  required TextTheme textTheme,
+  required double value,
+  double iconSize = 22.0,
+  Function(double)? onValueChanged,
+}) {
+  return Row(
+    children: [
+      Expanded(
+        child: Text('Expresión escrita', style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.normal)),
+      ),
+      SmoothStarRating(
+        allowHalfRating: false,
+        onRatingChanged: onValueChanged,
+        starCount: 3,
+        rating: value,
+        size: iconSize,
+        filledIconData: Icons.circle,
+        defaultIconData: Icons.circle_outlined,
+        color: AppColors.primary900,
+        borderColor: AppColors.primary900,
+        spacing: 10.0,
+      ),
+    ],
+  );
+}
+
+
+// Tarjeta plegada con lápiz de editar
+class _CollapsedExperienceTile extends StatelessWidget {
+  const _CollapsedExperienceTile({
+    required this.title,
+    required this.subtitle,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  final String title;
+  final String subtitle;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.primary500),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.menu_book_rounded, size: 22),
+          const SizedBox(width: 12),
+          Text(title.toUpperCase(),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary500,
+                        )),
+          Text(' - ' + subtitle.toUpperCase(),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.greyAlt,
+                        )),
+          const Spacer(),
+          IconButton(
+            onPressed: onEdit,
+            icon: const Icon(Icons.edit_rounded),
+            tooltip: 'Editar',
+          ),
+          IconButton(
+            onPressed: onDelete,
+            icon: const Icon(Icons.delete_rounded),
+            color: AppColors.red,
+            tooltip: 'Eliminar',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CreateEducationButton extends StatelessWidget {
+  const CreateEducationButton({
+    super.key,
+    required this.onPressed,
+    this.label = 'Crear nueva formación',
+  });
+
+  final VoidCallback onPressed;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    const pillBg = Color(0xFFEFF6F6); // fondo claro (puedes ajustarlo)
+    final dark = AppColors.primary900; // tu color principal oscuro
+
+    return Material(
+      color: pillBg,
+      borderRadius: BorderRadius.circular(999),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(999),
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: dark,
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: const Icon(Icons.add, color: Colors.white, size: 22),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontFamily: GoogleFonts.outfit().fontFamily,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w300,
+                      color: dark,
+                    ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+

@@ -304,6 +304,27 @@ class CustomTextMedium extends StatelessWidget {
   }
 }
 
+class CustomTextMediumCenter extends StatelessWidget {
+
+  const CustomTextMediumCenter({super.key,  required this.text });
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    double fontSize = responsiveSize(context, 15, 20, md: 16);
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return Text(
+      text,
+      textAlign: TextAlign.center,
+      style: textTheme.bodyMedium?.copyWith(
+        color: AppColors.primary900,
+        height: 1.5,
+        fontSize: fontSize,
+      ),
+    );
+  }
+}
+
 class CustomTextLargeBold extends StatelessWidget {
 
   const CustomTextLargeBold({super.key,  required this.text });

@@ -6,6 +6,7 @@ import 'package:enreda_app/app/home/curriculum/experience_tile.dart';
 import 'package:enreda_app/app/home/curriculum/formation_form.dart';
 import 'package:enreda_app/app/home/curriculum/my-custom_cv.dart';
 import 'package:enreda_app/app/home/curriculum/reference_tile.dart';
+import 'package:enreda_app/app/home/curriculum/stepper_cv.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
@@ -97,6 +98,9 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   String _userId = '';
   String _photo = '';
 
+  UserEnreda? _userCache;
+  List<Competency> _compsCache = const [];
+
   void setStateIfMounted(f) {
     if (mounted) setState(f);
   }
@@ -106,66 +110,94 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
     return StreamBuilder<List<UserEnreda>>(
-        stream: database.userStream(auth.currentUser?.email ?? ''),
-        builder: (context, snapshot) {
-          if (snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.active) {
-            user = snapshot.data!.isNotEmpty ? snapshot.data!.first : null;
-            var profilePic = user?.profilePic?.src ?? "";
-            return StreamBuilder<List<Competency>>(
-                stream: database.competenciesStream(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) return Container();
-                  if (snapshot.hasError)
-                    return Center(child: Text('Ocurrió un error'));
-                  List<Competency> competencies = snapshot.data!;
-                  final competenciesIds = user!.competencies.keys.toList();
-                  competencies = competencies
-                      .where((competency) => competenciesIds.any((id) => competency.id == id))
-                      .toList();
-                  competencies.forEach((competency) {
-                    final status =
-                        user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
-                    if (competency.name !="" && status != StringConst.BADGE_EMPTY && status != StringConst.BADGE_IDENTIFIED ) {
-                      final index1 = competenciesNames.indexWhere((element) => element == competency.name);
-                      if (index1 == -1) competenciesNames.add(competency.name);
-                    }
-                  });
+  stream: database.userStream(auth.currentUser?.email ?? ''),
+  builder: (context, su) {
+    // Actualiza cache si llegó user válido
+    if (su.hasData && su.data!.isNotEmpty) {
+      _userCache = su.data!.first;
+    }
 
-                  final myAboutMe = user?.aboutMe ?? "";
-                  myCustomAboutMe = myAboutMe;
+    // Primer arranque sin user aún → loader
+    if (_userCache == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-                  final myEmail = user?.email ?? "";
-                  myCustomEmail = myEmail;
+    // A partir de aquí SIEMPRE devolvemos wizard/mini usando el cache
+    return StreamBuilder<List<Competency>>(
+      stream: database.competenciesStream(),
+      builder: (context, sc) {
+        // Actualiza cache de competencias si hay datos
+        if (sc.hasData) {
+          _compsCache = sc.data!;
+        } else if (sc.hasError && _compsCache.isEmpty) {
+          // Solo muestra error si jamás tuvimos datos
+          return const Center(child: Text('Ocurrió un error'));
+        }
 
-                  final myPhone = user?.phone ?? "";
-                  myCustomPhone = myPhone;
+        final user = _userCache!;
+        _photo = user.profilePic?.src ?? '';
 
-                  myCustomCompetencies = competenciesNames.map((element) => element).toList();
-                  mySelectedCompetencies = List.generate(myCustomCompetencies.length, (i) => i);
+        // Deriva competency names con el cache
+        final competenciesIds = user.competencies.keys.toList();
+        final filtered = _compsCache
+            .where((c) => competenciesIds.contains(c.id))
+            .toList();
 
-                  final myDataOfInterest = user?.dataOfInterest ?? [];
-                  myCustomDataOfInterest = myDataOfInterest.map((element) => element).toList();
-                  mySelectedDataOfInterest = List.generate(myCustomDataOfInterest.length, (i) => i);
-
-                  final myLanguages = user?.languagesLevels ?? [];
-                  myCustomLanguages = myLanguages.map((element) => element).toList();
-                  mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
-
-                  _photo = profilePic;
-                  if (widget.mini)
-                    return _myCurriculumMini(context, user, profilePic, competenciesNames );
-                  else {
-                    return Responsive.isDesktop(context)
-                        ? _myCurriculumWeb(context, user, profilePic, competenciesNames )
-                        : _myCurriculumMobile(context, user, profilePic, competenciesNames);
-                  }
-                });
-          } else {
-            return Center(child: CircularProgressIndicator());
+        final competenciesNames = <String>[];
+        for (final c in filtered) {
+          final status = user.competencies[c.id] ?? StringConst.BADGE_EMPTY;
+          if (c.name.isNotEmpty &&
+              status != StringConst.BADGE_EMPTY &&
+              status != StringConst.BADGE_IDENTIFIED) {
+            if (!competenciesNames.contains(c.name)) {
+              competenciesNames.add(c.name);
+            }
           }
-        });
-  }
+        }
+
+        // (Opcional) Si sigues usando estas variables en otro sitio, mantenlas:
+        final myAboutMe = user.aboutMe ?? "";
+        myCustomAboutMe = myAboutMe;
+
+        final myEmail = user.email ?? "";
+        myCustomEmail = myEmail;
+
+        final myPhone = user.phone ?? "";
+        myCustomPhone = myPhone;
+
+        myCustomCompetencies = competenciesNames.map((e) => e).toList();
+        mySelectedCompetencies =
+            List.generate(myCustomCompetencies.length, (i) => i);
+
+        final myDataOfInterest = user.dataOfInterest ?? [];
+        myCustomDataOfInterest = myDataOfInterest.map((e) => e).toList();
+        mySelectedDataOfInterest =
+            List.generate(myCustomDataOfInterest.length, (i) => i);
+
+        final myLanguages = user.languagesLevels ?? [];
+        myCustomLanguages = myLanguages.map((e) => e).toList();
+        mySelectedLanguages =
+            List.generate(myCustomLanguages.length, (i) => i);
+
+        if (widget.mini) {
+          return _myCurriculumMini(context, user, _photo, competenciesNames);
+        } else {
+          return user.cv_state == 'draft' || user.cv_state == 'blank' ? CvWizard(user: user) : _myCurriculumWeb(context, user, _photo, competenciesNames ); // sin key dinámica
+
+                      /*return Responsive.isDesktop(context)
+                        ? _myCurriculumWeb(context, user, profilePic, competenciesNames )
+                        : _myCurriculumMobile(context, user, profilePic, competenciesNames);*/
+                  
+        }
+      },
+    );
+  },
+);
+}
+
+                    
+
+
 
   Widget _myCurriculumMini(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames){
     final textTheme = Theme.of(context).textTheme;
@@ -239,13 +271,13 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 ),
               ),
               SpaceH20(),
-              _buildPersonalData(context),
+              _buildPersonalData(context, user),
               SpaceH20(),
-              _buildAboutMe(context),
+              _buildAboutMe(context, user),
               SpaceH20(),
-              _buildMyDataOfInterest(context),
+              _buildMyDataOfInterest(context, user),
               SpaceH20(),
-              _buildMyLanguages(context),
+              _buildMyLanguages(context, user),
               SpaceH20(),
               _buildMyReferences(context, user),
             ],
@@ -328,13 +360,13 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                           children: [
                             _buildMyProfilePhoto(user),
                             SpaceH20(),
-                            _buildPersonalData(context),
+                            _buildPersonalData(context, user),
                             SpaceH20(),
-                            _buildAboutMe(context),
+                            _buildAboutMe(context, user),
                             SpaceH20(),
-                            _buildMyDataOfInterest(context),
+                            _buildMyDataOfInterest(context, user),
                             SpaceH20(),
-                            _buildMyLanguages(context),
+                            _buildMyLanguages(context, user),
                             SpaceH20(),
                             _buildMyReferences(context, user),
                           ],
@@ -491,11 +523,11 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   SpaceH8(),
                   _buildMyLocation(context, user),
                   SpaceH24(),
-                  _buildAboutMe(context),
+                  _buildAboutMe(context, user),
                   SpaceH24(),
-                  _buildMyDataOfInterest(context),
+                  _buildMyDataOfInterest(context, user),
                   SpaceH24(),
-                  _buildMyLanguages(context),
+                  _buildMyLanguages(context, user),
                   SpaceH24(),
                   _buildMyReferences(context, user),
                   SpaceH24(),
@@ -847,7 +879,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     }
   }
 
-  Widget _buildMyCareer(BuildContext context) {
+  Widget _buildMyCareer(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
 
     return StreamBuilder(
@@ -895,7 +927,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         });
   }
 
-  Widget _buildAboutMe(BuildContext context) {
+  Widget _buildAboutMe(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
     var isEditable = false;
@@ -950,7 +982,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     });
   }
 
-  Widget _buildPersonalData(BuildContext context) {
+  Widget _buildPersonalData(BuildContext context, UserEnreda? user) {
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
@@ -1294,7 +1326,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             ),
           ],
         ),
-        _buildMyCareer(context),
+        _buildMyCareer(context, user),
         SpaceH20(),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -1644,7 +1676,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     );
   }
 
-  Widget _buildMyDataOfInterest(BuildContext context) {
+  Widget _buildMyDataOfInterest(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
     final myDataOfInterest = user?.dataOfInterest ?? [];
 
@@ -1704,7 +1736,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     );
   }
 
-  Widget _buildMyLanguages(BuildContext context) {
+  Widget _buildMyLanguages(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
     final myLanguages = user?.languagesLevels ?? [];

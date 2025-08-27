@@ -32,6 +32,7 @@ class StepperExperienceForm extends StatefulWidget {
     required this.isProfesional,
     this.general,
     this.onComingBack,
+    this.formKey,
   })
       : super(key: key);
 
@@ -39,12 +40,13 @@ class StepperExperienceForm extends StatefulWidget {
   final bool isProfesional; //if false -> personal exprience
   final bool? general;
   final void Function(bool isProfesional)? onComingBack;
+  final GlobalKey<FormState>? formKey;
 
   @override
-  State<StepperExperienceForm> createState() => _StepperExperienceFormState();
+  State<StepperExperienceForm> createState() => StepperExperienceFormState();
 }
 
-class _StepperExperienceFormState extends State<StepperExperienceForm> {
+class StepperExperienceFormState extends State<StepperExperienceForm> {
   bool _isProfesional = true;
   bool _general = false;
   Stream<List<Choice>> _experienceActivitiesStream = Stream.empty();
@@ -59,7 +61,6 @@ class _StepperExperienceFormState extends State<StepperExperienceForm> {
   final _locationController = TextEditingController();
   Timestamp? _startDate, _endDate;
   String? _workType, _context, _contextPlace;
-  final _formKey = GlobalKey<FormState>();
   bool _experienceIsLoaded = false;
   Map<String, int> userCompetencies = {};
 
@@ -230,7 +231,7 @@ class _StepperExperienceFormState extends State<StepperExperienceForm> {
     final textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 15, 16, md: 15);
     return Form(
-      key: _formKey,
+      key: widget.formKey,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -763,12 +764,13 @@ class _StepperExperienceFormState extends State<StepperExperienceForm> {
       // TODO: Update competencies of other fields (in assistant_page too)
       await showCompetencies(context, userCompetencies: userCompetencies,
           onDismiss: (dialogContext) async {
-        Navigator.of(context).pop();
-        Navigator.of(context).pop();
-        await showAlertDialog(context,
+        //Navigator.of(context).pop();
+        //Navigator.of(context).pop();
+        /*await showAlertDialog(context,
             title: 'Información guardada',
             content: 'La información ha sido guardada en tu CV correctamente',
             defaultActionText: 'Ok');
+        */
         if (widget.onComingBack != null) {
           widget.onComingBack!(_isProfesional);
         }
@@ -797,11 +799,12 @@ class _StepperExperienceFormState extends State<StepperExperienceForm> {
 
       sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
       await database.updateExperience(experience);
-      Navigator.of(context).pop();
-      await showAlertDialog(context,
+      //Navigator.of(context).pop();
+      /*await showAlertDialog(context,
           title: 'Información guardada',
           content: 'La información ha sido guardada en tu CV correctamente',
           defaultActionText: 'Ok');
+          */
     }
   }
 

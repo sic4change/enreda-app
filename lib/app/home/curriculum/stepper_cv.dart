@@ -7,6 +7,7 @@ import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/flex_row_column.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
@@ -49,20 +50,19 @@ class CvData extends ChangeNotifier {
 /// DEFINICIÓN DE PASOS
 class StepMeta {
   final String id;
-  final IconData icon;
-  StepMeta(this.id, this.icon);
+  StepMeta(this.id);
 }
 
 final steps = <StepMeta>[
-  StepMeta('welcome', Icons.category_outlined),
-  StepMeta('formacion', Icons.category_outlined),
-  StepMeta('formacion_complementaria', Icons.work_outline),
-  StepMeta('organismo', Icons.apartment_outlined),
-  StepMeta('organismo', Icons.apartment_outlined),
-  StepMeta('about_me', Icons.event_outlined),
-  StepMeta('interests', Icons.interests_outlined),
-  StepMeta('languages', Icons.language_outlined),
-  StepMeta('end', Icons.interests_outlined),
+  StepMeta('welcome'),
+  StepMeta('formacion'),
+  StepMeta('formacion_complementaria'),
+  StepMeta('experiencia'),
+  StepMeta('experiencia_personal'),
+  StepMeta('about_me'),
+  StepMeta('interests'),
+  StepMeta('languages'),
+  StepMeta('end'),
   // añade más...
 ];
 
@@ -78,64 +78,76 @@ class StepperHeader extends StatelessWidget {
   final ValueChanged<int> onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (_, c) {
-        return Row(
-          children: [
-            for (int i = 0; i < steps.length; i++) ...[
-              InkWell(
-                onTap: i <= current ? () => onTap(i) : null, // sólo hacia atrás
-                borderRadius: BorderRadius.circular(24),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: i < current
+Widget build(BuildContext context) {
+  return LayoutBuilder(
+    builder: (_, c) {
+      return Row(
+        children: [
+          for (int i = 0; i < steps.length; i++) ...[
+            InkWell(
+              onTap: i <= current ? () => onTap(i) : null, // sólo hacia atrás
+              borderRadius: BorderRadius.circular(24),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      // Relleno para hechos o actual; vacío para futuros
+                      color: (i < current || i == current)
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.transparent,
+                      border: Border.all(
+                        width: 2,
+                        color: (i < current || i == current)
                             ? Theme.of(context).colorScheme.primary
-                            : (i == current
-                                ? Theme.of(context).colorScheme.primaryContainer
-                                : Theme.of(context).colorScheme.surfaceVariant),
-                        border: Border.all(
-                          color: i <= current
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).dividerColor,
-                        ),
-                      ),
-                      child: Icon(
-                        steps[i].icon,
-                        size: 16,
-                        color: i < current
-                            ? Theme.of(context).colorScheme.onPrimary
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                            : Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.35),
                       ),
                     ),
-                    
-              
-                  ],
+                    // Puntito blanco SOLO en el paso actual (como en la captura)
+                    child: i == current
+                        ? Center(
+                            child: Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        : null,
+                  ),
+                ],
+              ),
+            ),
+            if (i != steps.length - 1)
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 12),
+                  height: 2,
+                  // Línea activa en primario; inactiva con primario suave (no gris)
+                  color: i < current
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.35),
                 ),
               ),
-              if (i != steps.length - 1)
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
-                    height: 2,
-                    color: i < current
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).dividerColor,
-                  ),
-                ),
-            ],
           ],
-        );
-      },
-    );
-  }
+        ],
+      );
+    },
+  );
+}
+
 }
 
 typedef BeforeNextHandler = Future<bool> Function();
@@ -219,13 +231,17 @@ Future<void> _next() async {
     );
   }
 
-  void _saveDraft() {
+  void _saveDraft() async {
     final draftUser = widget.user.copyWith(cv_state: 'draft');
     final db = Provider.of<Database>(context, listen: false);
+    _next();
     db.setUserEnreda(draftUser);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Borrador guardado.')),
     );
+    setState(() {
+      WebHome.controller.selectIndex(0);
+    });
   }
 
   @override
@@ -257,8 +273,8 @@ Future<void> _next() async {
                   _StepWelcome(key: formKeys[0], data: data),
                   _StepFormation(key: formKeys[1], isMainEducation: true, onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['formacion'] = fn,),
                   _StepFormation(key: formKeys[2], isMainEducation: false, onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, title: 'Formación complementaria', question: '¿Quieres añadir alguna formación complementaria?', user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['formacion_complementaria'] = fn,),
-                  _StepExperience(key: formKeys[3], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) => _goTo(index + 1)),
-                  _StepExperience(key: formKeys[4], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) => _goTo(index + 1), isProfesional: false, title: 'Experiencia personal', question: 'Ahora vamos con las experiencias personales',),
+                  _StepExperience(key: formKeys[3], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) => _goTo(index + 1), user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['experiencia'] = fn,),
+                  _StepExperience(key: formKeys[4], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) => _goTo(index + 1), isProfesional: false, title: 'Experiencia personal', question: 'Ahora vamos con las experiencias personales', user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['experiencia_personal'] = fn,),
                   _StepAboutMe(formKey: formKeys[5], data: data, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['about_me'] = fn,),
                   _StepInterests(key: formKeys[6], data: data, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['interests'] = fn,),
                   _StepLanguages(key: formKeys[7], user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['languages'] = fn,),
@@ -269,37 +285,52 @@ Future<void> _next() async {
             ),
             const SizedBox(height: 8),
             index == 0 ? 
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: AppColors.blue050),
+            Container(
+              height: 50,
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: AppColors.blue050),
+                ),
+                onPressed: index == 0 ? () => _goTo(index + 1) : null,
+                child: const Text('Saltar vídeo y empezar CV', style: TextStyle(color: AppColors.blue050),),
               ),
-              onPressed: index == 0 ? () => _goTo(index + 1) : null,
-              child: const Text('Saltar vídeo y empezar CV', style: TextStyle(color: AppColors.blue050),),
             ) 
             : 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: AppColors.blue050),
+                Container(
+                  width: 200,
+                  height: 50,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColors.blue050),
+                    ),
+                    onPressed: index > 0 ? () => _goTo(index - 1) : null,
+                    child: const Text('Volver', style: TextStyle(color: AppColors.blue050),),
                   ),
-                  onPressed: index > 0 ? () => _goTo(index - 1) : null,
-                  child: const Text('Volver', style: TextStyle(color: AppColors.blue050),),
                 ),
                 const SizedBox(width: 12),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: AppColors.blue050),
+                Container(
+                  width: 200,
+                  height: 50,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColors.blue050),
+                    ),
+                    onPressed: _saveDraft,
+                    child: const Text('Guardar en borrador', style: TextStyle(color: AppColors.blue050),),
                   ),
-                  onPressed: _saveDraft,
-                  child: const Text('Guardar en borrador', style: TextStyle(color: AppColors.blue050),),
                 ),
                 const SizedBox(width: 12),
-                FilledButton(
-                  onPressed: _next,
-                  child: Text(index == steps.length - 1 ? 'Finalizar' : 'Siguiente', style: TextStyle(color: AppColors.white),),
-                  
+                Container(
+                  width: 200,
+                  height: 50,
+                  child: FilledButton(
+                    onPressed: _next,
+                    child: Text(index == steps.length - 1 ? 'Finalizar' : 'Siguiente', style: TextStyle(color: AppColors.white),),
+                    
+                  ),
                 ),
               ],
             ),
@@ -696,13 +727,17 @@ class _StepExperience extends StatefulWidget {
     super.key,
     required this.onSelectNoAndContinue,
     required this.onSaveSiValido,
+    required this.user,
+    required this.registerBeforeNext,
     this.title = 'Experiencia profesional',
     this.question = '¿Qué tipo de experiencia quieres añadir?',
     this.isProfesional = true,
   });
 
-  final VoidCallback onSelectNoAndContinue; // Avanzar al siguiente paso
-  final ValueChanged<FormacionData> onSaveSiValido; // Te devuelve los datos válidos
+  final VoidCallback onSelectNoAndContinue;                // Avanzar si pulsa "No"
+  final ValueChanged<FormacionData> onSaveSiValido;        // Callback tras guardar OK
+  final UserEnreda user;                                   // <- nuevo (como en StepFormation)
+  final void Function(Future<bool> Function()) registerBeforeNext; // <- nuevo
   final String title;
   final String question;
   final bool isProfesional;
@@ -713,78 +748,35 @@ class _StepExperience extends StatefulWidget {
 
 class _StepExperienceState extends State<_StepExperience>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  final _formKey = GlobalKey<FormState>();
-  final _tituloCtrl = TextEditingController();
-  final _centroCtrl = TextEditingController();
-  final _nivelCtrl = TextEditingController();
-  
   @override
   bool get wantKeepAlive => true;
 
-  bool? _tieneFormacion; // null = sin elegir, true = Sí, false = No
+  // --- Keys para validar y guardar desde el padre / botón crear ---
+  final _formKey = GlobalKey<FormState>();
+  final _stepperKey = GlobalKey<StepperExperienceFormState>();
+
+  // --- Estado UI ---
+  bool? _tieneExperiencia;     // null = sin elegir, true = Sí, false = No
+  int? _activeIndex;           // índice de la experiencia activa
+  bool _creatingNew = false;   // si estamos creando una nueva (form vacío)
+
+  // Campos simples que sigues usando en tu FormacionData
+  final _tituloCtrl = TextEditingController();
+  final _centroCtrl = TextEditingController();
+  final _nivelCtrl  = TextEditingController();
   DateTime? _inicio;
   DateTime? _fin;
 
-  /// Llama a esto desde tu wizard cuando el usuario pulsa "Siguiente".
-  /// - Si el usuario marcó "No": devuelve true (puedes avanzar).
-  /// - Si marcó "Sí": valida el formulario (y si está ok, llama onSaveSiValido).
-  bool validateAndMaybeSubmit() {
-    if (_tieneFormacion == false) {
-      return true; // avanzar
-    }
-    if (_tieneFormacion == true) {
-      final ok = _formKey.currentState?.validate() ?? false;
-      final fechasOk = _validarFechas(context);
-      if (ok && fechasOk) {
-        widget.onSaveSiValido(
-          FormacionData(
-            titulo: _tituloCtrl.text.trim(),
-            centro: _centroCtrl.text.trim(),
-            nivel: _nivelCtrl.text.trim(),
-            inicio: _inicio,
-            fin: _fin,
-          ),
-        );
-        return true;
-      }
-      return false;
-    }
-    // si no eligió nada, forzamos al usuario a elegir
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Selecciona Sí o No para continuar.')),
-    );
-    return false;
-  }
+  // Listas locales provenientes del stream
+  List<Experience>? myExperience = [];
+  List<Experience> myCustomExperience = [];
+  List<int> mySelectedExperience = [];
 
-  Future<void> _pickDate(bool inicio) async {
-    final now = DateTime.now();
-    final selected = await showDatePicker(
-      context: context,
-      firstDate: DateTime(now.year - 80),
-      lastDate: DateTime(now.year + 5),
-      initialDate: (inicio ? _inicio : _fin) ?? now,
-    );
-    if (selected != null) {
-      setState(() {
-        if (inicio) {
-          _inicio = selected;
-        } else {
-          _fin = selected;
-        }
-      });
-    }
-  }
-
-  bool _validarFechas(BuildContext context) {
-    if (_inicio != null && _fin != null && _fin!.isBefore(_inicio!)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('La fecha de fin debe ser posterior a la de inicio.'),
-        ),
-      );
-      return true; //TODO: Cambiar a false
-    }
-    return true;
+  @override
+  void initState() {
+    super.initState();
+    // El padre llamará a este handler al pulsar "Siguiente"
+    widget.registerBeforeNext(_validateSaveAndNotify);
   }
 
   @override
@@ -795,8 +787,32 @@ class _StepExperienceState extends State<_StepExperience>
     super.dispose();
   }
 
+  // --- Handler único: validar → guardar (StepperExperienceForm) → notificar padre ---
+  Future<bool> _validateSaveAndNotify() async {
+    final form = _formKey.currentState;
+    if (_tieneExperiencia == false) return true;        // si marcó "No", avanza
+    if (form == null || !form.validate()) return false; // valida UI
+
+    await _stepperKey.currentState?.saveExperience();   // llama al hijo (persistencia)
+    // Notifica con tu estructura (ajusta si quieres pasar datos reales)
+    widget.onSaveSiValido(
+      FormacionData(
+        titulo: _tituloCtrl.text.trim(),
+        centro: _centroCtrl.text.trim(),
+        nivel: _nivelCtrl.text.trim(),
+        inicio: _inicio,
+        fin: _fin,
+      ),
+    );
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    final database = Provider.of<Database>(context, listen: false);
+    final user = widget.user;
+
     return Align(
       alignment: Alignment.topCenter,
       child: ConstrainedBox(
@@ -804,38 +820,46 @@ class _StepExperienceState extends State<_StepExperience>
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Expanded(child: 
-            Text(widget.title, style: TextStyle(fontWeight: FontWeight.w100, color: AppColors.primary900, fontSize: 35, fontFamily: GoogleFonts.outfit().fontFamily),)),
+            // Título + pregunta
+            Text(
+              widget.title,
+              style: TextStyle(
+                fontWeight: FontWeight.w100,
+                color: AppColors.primary900,
+                fontSize: 35,
+                fontFamily: GoogleFonts.outfit().fontFamily,
+              ),
+            ),
             const SizedBox(height: 8),
             Text(
               widget.question,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.primary900,
+                    fontSize: 30,
+                  ),
             ),
             const SizedBox(height: 18),
 
-            // Fila Sí / No
+            // Sí / No
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               spacing: 16,
               children: [
                 ChoiceCard(
-                  selected: _tieneFormacion == true,
+                  selected: _tieneExperiencia == true,
                   icon: Icons.check_rounded,
                   label: 'Sí',
-                  onTap: () => setState(() => _tieneFormacion = true),
+                  onTap: () => setState(() => _tieneExperiencia = true),
                 ),
                 ChoiceCard(
-                  selected: _tieneFormacion == false,
+                  selected: _tieneExperiencia == false,
                   icon: Icons.close_rounded,
                   label: 'No',
                   onTap: () {
-                    setState(() => _tieneFormacion = false);
-                    // Avanza inmediatamente
-                    widget.onSelectNoAndContinue();
+                    setState(() => _tieneExperiencia = false);
+                    widget.onSelectNoAndContinue(); // avanza
                   },
                 ),
               ],
@@ -843,27 +867,193 @@ class _StepExperienceState extends State<_StepExperience>
 
             const SizedBox(height: 12),
 
-            // Despliegue del formulario cuando es "Sí"
-            AnimatedSize(
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeInOut,
-              alignment: Alignment.topCenter,
-              child: (_tieneFormacion == true)
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: StepperExperienceForm(
-                        isProfesional: widget.isProfesional,
-                        onComingBack: (isProfesional) {},
-                      )
-                    )
-                  : const SizedBox.shrink(),
+            // Contenido cuando es "Sí"
+            StreamBuilder<List<Experience>>(
+              stream: database.myExperiencesStream(user.userId ?? ''),
+              builder: (context, snapshot) {
+                if (!(snapshot.hasData &&
+                    snapshot.connectionState == ConnectionState.active)) {
+                  return const SizedBox.shrink();
+                }
+
+                // Filtra por tipo (ajusta strings a tu BD)
+                final expType = widget.isProfesional ? 'Profesional' : 'Personal';
+                myExperience = snapshot.data!
+                    .where((e) => e.type == expType)
+                    .toList();
+                myCustomExperience = myExperience!.map((e) => e).toList();
+                mySelectedExperience =
+                    List.generate(myCustomExperience.length, (i) => i);
+
+                // Decidir activa vs crear nueva
+                if (mySelectedExperience.isEmpty) {
+                  _creatingNew = true;
+                  _activeIndex = null;
+                } else {
+                  if (!_creatingNew && _activeIndex == null) _activeIndex = 0;
+                  if (_activeIndex != null &&
+                      _activeIndex! >= mySelectedExperience.length) {
+                    _activeIndex =
+                        mySelectedExperience.isNotEmpty ? 0 : null;
+                  }
+                }
+
+                final foldedIndices = mySelectedExperience.where((i) {
+                  if (_creatingNew) return true;
+                  return _activeIndex == null ? true : i != _activeIndex!;
+                }).toList();
+
+                final showEmptyForm =
+                    _creatingNew || mySelectedExperience.isEmpty;
+
+                return AnimatedSize(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeInOut,
+                  alignment: Alignment.topCenter,
+                  child: (_tieneExperiencia == true)
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // Tarjetas plegadas
+                            if (foldedIndices.isNotEmpty) ...[
+                              for (final i in foldedIndices)
+                                _CollapsedExperienceTile(
+                                  title: _expTitle(myCustomExperience[i]),
+                                  subtitle: _expSubtitle(myCustomExperience[i]),
+                                  onEdit: () {
+                                    setState(() {
+                                      _creatingNew = false;
+                                      _activeIndex = i;
+                                    });
+                                  },
+                                  onDelete: () async {
+                                    final exp = myCustomExperience[i];
+                                    final confirmed =
+                                        await showDialog<bool>(
+                                              context: context,
+                                              builder: (_) => AlertDialog(
+                                                title: const Text(
+                                                    'Eliminar experiencia'),
+                                                content: Text(
+                                                  '¿Quieres eliminar "${_expTitle(exp)}"? '
+                                                  'Esta acción no se puede deshacer.',
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () => Navigator
+                                                        .pop(context, false),
+                                                    child: const Text('Cancelar'),
+                                                  ),
+                                                  FilledButton(
+                                                    onPressed: () => Navigator
+                                                        .pop(context, true),
+                                                    child: const Text('Eliminar'),
+                                                  ),
+                                                ],
+                                              ),
+                                            ) ??
+                                            false;
+
+                                    if (!confirmed) return;
+
+                                    try {
+                                      await database.deleteExperience(exp);
+                                    } catch (e) {
+                                      if (!mounted) return;
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                              'No se pudo eliminar: $e'),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              const SizedBox(height: 12),
+                            ],
+
+                            // Formulario activo (vacío o con experiencia)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 12),
+                              child: showEmptyForm
+                                  ? StepperExperienceForm(
+                                      key: _stepperKey,
+                                      formKey: _formKey,
+                                      isProfesional: widget.isProfesional,
+                                      onComingBack: (isProfesional) {},
+                                    )
+                                  : StepperExperienceForm(
+                                      key: _stepperKey,
+                                      formKey: _formKey,
+                                      isProfesional: widget.isProfesional,
+                                      onComingBack: (isProfesional) {},
+                                      experience:
+                                          myCustomExperience[_activeIndex!],
+                                    ),
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            // Botón crear nueva experiencia (usa MISMO flujo)
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: CreateEducationButton(
+                                label: 'Crear nueva experiencia',
+                                onPressed: () async {
+                                  final form = _formKey.currentState;
+                                  if (form != null && form.validate()) {
+                                    try {
+                                      await _stepperKey.currentState
+                                          ?.saveExperience();
+                                      if (!mounted) return;
+                                      setState(() {
+                                        _creatingNew = true;
+                                        _activeIndex = null;
+                                      });
+                                    } catch (e) {
+                                      if (!mounted) return;
+                                      
+                                    }
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
+                );
+              },
             ),
           ],
         ),
       ),
     );
   }
+
+  // ---- Helpers de UI para título/subtítulo de la tarjeta plegada ----
+  String _expTitle(Experience e) {
+    final p = (e.position ?? '').trim();
+    final a = (e.activity ?? '').trim();
+    final o = (e.organization ?? '').trim();
+    return p.isNotEmpty
+        ? p
+        : (a.isNotEmpty ? a : (o.isNotEmpty ? o : 'Sin título'));
+  }
+
+  String _expSubtitle(Experience e) {
+    final org = (e.organization ?? '').trim();
+    final yr = [
+      if (e.startDate != null) e.startDate!.toDate().year.toString(),
+      if (e.endDate != null) e.endDate!.toDate().year.toString(),
+    ].where((s) => s.isNotEmpty).join(' - ');
+    final parts = [
+      if (org.isNotEmpty) org,
+      if (yr.isNotEmpty) yr,
+    ];
+    return parts.join(' · ');
+  }
 }
+
 
 /// === PASO 3: Organismo ===
 class _StepOrganismo extends StatefulWidget {
@@ -880,6 +1070,7 @@ class _StepOrganismoState extends State<_StepOrganismo> with AutomaticKeepAliveC
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Form(
       child: Align(
         alignment: Alignment.topCenter,
@@ -942,9 +1133,9 @@ Future<bool> _validateSaveAndNotify() async {
   } catch (e) {
     if (mounted) {
       // Si quieres, muestra error AQUÍ (usa context antes de avanzar de paso)
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No se pudo guardar: $e')),
-      );
+     
+        print('No se pudo guardar: $e');
+      
     }
     return false;
   }
@@ -1155,6 +1346,7 @@ class _StepEndState extends State<_StepEnd> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Form(
       child: Align(
         alignment: Alignment.topCenter,

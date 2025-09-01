@@ -6,7 +6,7 @@ import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -150,7 +150,7 @@ class _PdfPreviewScreenState extends State<PdfPreviewScreen> {
     final file = File('$appDocPath/miCurriculum.pdf');
     print('Save as file ${file.path} ...');
     await file.writeAsBytes(bytes);
-    await OpenFile.open(file.path);
+    await OpenFilex.open(file.path);
   }
 
   @override

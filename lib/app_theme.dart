@@ -28,7 +28,9 @@ class AppTheme {
 
   static ThemeData themeData(ColorScheme colorScheme, Color focusColor) {
     return ThemeData(
-      dialogTheme: DialogTheme().copyWith(surfaceTintColor: Colors.white,),
+      dialogTheme: const DialogThemeData(
+        surfaceTintColor: Colors.white,
+      ),
       primarySwatch: white,
       useMaterial3: true,
       textTheme: _textTheme,

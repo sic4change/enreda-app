@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 Future<void> sendBasicAnalyticsEvent(BuildContext context, String analytic) async {
-  FirebaseAnalytics analytics = Provider.of<FirebaseAnalytics>(context);
+  FirebaseAnalytics analytics = Provider.of<FirebaseAnalytics>(context, listen: false);
   await analytics.logEvent(
       name: analytic,
       parameters: {
@@ -15,7 +15,7 @@ Future<void> sendBasicAnalyticsEvent(BuildContext context, String analytic) asyn
 }
 
 Future<void> sendResourceAnalyticsEvent(BuildContext context, String analytic, String type) async {
-  FirebaseAnalytics analytics = Provider.of<FirebaseAnalytics>(context);
+  FirebaseAnalytics analytics = Provider.of<FirebaseAnalytics>(context, listen: false);
   await analytics.logEvent(
       name: analytic,
       parameters: {

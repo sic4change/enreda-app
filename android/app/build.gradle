@@ -11,16 +11,17 @@ if (localPropertiesFile.exists()) {
         localProperties.load(reader)
     }
 }
-
+/*
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
+}*/
 
 android {
     namespace "org.sic4change.enreda_app"
     compileSdkVersion 35
+    ndkVersion "29.0.14033849"
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -34,7 +35,7 @@ android {
         versionName '1.0.37'
         multiDexEnabled true
     }
-
+/*
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
@@ -51,6 +52,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    */
 
     lintOptions {
         abortOnError false

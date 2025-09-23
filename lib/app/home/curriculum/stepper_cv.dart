@@ -19,6 +19,7 @@ import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -273,8 +274,8 @@ Future<void> _next() async {
                   _StepWelcome(key: formKeys[0], data: data),
                   _StepFormation(key: formKeys[1], isMainEducation: true, onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['formacion'] = fn,),
                   _StepFormation(key: formKeys[2], isMainEducation: false, onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, title: 'Formación complementaria', question: '¿Quieres añadir alguna formación complementaria?', user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['formacion_complementaria'] = fn,),
-                  _StepExperience(key: formKeys[3], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) => _goTo(index + 1), user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['experiencia'] = fn,),
-                  _StepExperience(key: formKeys[4], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) => _goTo(index + 1), isProfesional: false, title: 'Experiencia personal', question: 'Ahora vamos con las experiencias personales', user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['experiencia_personal'] = fn,),
+                  _StepExperience(key: formKeys[3], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['experiencia'] = fn,),
+                  _StepExperience(key: formKeys[4], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, title: 'Experiencia personal', question: 'Ahora vamos con las experiencias personales', user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['experiencia_personal'] = fn,),
                   _StepAboutMe(formKey: formKeys[5], data: data, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['about_me'] = fn,),
                   _StepInterests(key: formKeys[6], data: data, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['interests'] = fn,),
                   _StepLanguages(key: formKeys[7], user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['languages'] = fn,),
@@ -843,7 +844,7 @@ class _EducationFormCard extends StatelessWidget {
 
 
 class _StepExperience extends StatefulWidget {
-  const _StepExperience({
+    _StepExperience({
     super.key,
     required this.onSelectNoAndContinue,
     required this.onSaveSiValido,
@@ -851,7 +852,7 @@ class _StepExperience extends StatefulWidget {
     required this.registerBeforeNext,
     this.title = 'Experiencia profesional',
     this.question = '¿Qué tipo de experiencia quieres añadir?',
-    this.isProfesional = true,
+    this.isProfesional = false,
   });
 
   final VoidCallback onSelectNoAndContinue;                // Avanzar si pulsa "No"
@@ -860,76 +861,90 @@ class _StepExperience extends StatefulWidget {
   final void Function(Future<bool> Function()) registerBeforeNext; // <- nuevo
   final String title;
   final String question;
-  final bool isProfesional;
+  late bool isProfesional;
 
   @override
   State<_StepExperience> createState() => _StepExperienceState();
 }
 
+
 class _StepExperienceState extends State<_StepExperience>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  // Ya no usamos _activeIndex / _creatingNew ni los TextEditingController del padre.
+  final _formKeysById = <String, GlobalKey<FormState>>{};
+  final _stepperKeysById = <String, GlobalKey<StepperExperienceFormState>>{};
+
+  // Borradores "nueva formación"
+  int _newCounter = 0;
+  final List<String> _draftIds = []; // ej: ["_new_0", "_new_1", ...]
+  String? _expandedId;
+
+  bool? _tieneExperiencia = true; // null = sin elegir, true = Sí, false = No
   @override
   bool get wantKeepAlive => true;
-
-  // --- Keys para validar y guardar desde el padre / botón crear ---
-  final _formKey = GlobalKey<FormState>();
-  final _stepperKey = GlobalKey<StepperExperienceFormState>();
-
-  // --- Estado UI ---
-  bool? _tieneExperiencia;     // null = sin elegir, true = Sí, false = No
-  int? _activeIndex;           // índice de la experiencia activa
-  bool _creatingNew = false;   // si estamos creando una nueva (form vacío)
-
-  // Campos simples que sigues usando en tu FormacionData
-  final _tituloCtrl = TextEditingController();
-  final _centroCtrl = TextEditingController();
-  final _nivelCtrl  = TextEditingController();
-  DateTime? _inicio;
-  DateTime? _fin;
-
-  // Listas locales provenientes del stream
-  List<Experience>? myExperience = [];
-  List<Experience> myCustomExperience = [];
-  List<int> mySelectedExperience = [];
 
   @override
   void initState() {
     super.initState();
-    // El padre llamará a este handler al pulsar "Siguiente"
     widget.registerBeforeNext(_validateSaveAndNotify);
   }
 
-  @override
-  void dispose() {
-    _tituloCtrl.dispose();
-    _centroCtrl.dispose();
-    _nivelCtrl.dispose();
-    super.dispose();
+  // Crea/recupera keys estables por id
+  GlobalKey<FormState> _formKeyFor(String id) =>
+      _formKeysById.putIfAbsent(id, () => GlobalKey<FormState>());
+
+  GlobalKey<StepperExperienceFormState> _stepperKeyFor(String id) =>
+      _stepperKeysById.putIfAbsent(id, () => GlobalKey<StepperExperienceFormState>());
+
+  void _addDraft() {
+    final id = '_new_${_newCounter++}';
+    setState(() {
+      _draftIds.insert(0, id);   // << siempre arriba
+      _expandedId = id;          // << abrirla al crear
+    });
   }
 
-  // --- Handler único: validar → guardar (StepperExperienceForm) → notificar padre ---
+  // Guardado masivo al pasar de paso (opción A: devolvemos la última)
   Future<bool> _validateSaveAndNotify() async {
-    final form = _formKey.currentState;
-    if (_tieneExperiencia == false) return true;        // si marcó "No", avanza
-    if (form == null || !form.validate()) return false; // valida UI
+    if (_tieneExperiencia == false) return true;
 
-    await _stepperKey.currentState?.saveExperience();   // llama al hijo (persistencia)
-    // Notifica con tu estructura (ajusta si quieres pasar datos reales)
-    if (widget.isProfesional) {
-      setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PROFESSIONAL);
-    } else {
-      setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_PERSONAL);
+    // Recolectamos todos los ids presentes en pantalla (existentes + borradores)
+    final allIds = <String>[];
+    if (mounted) {
+      // Los existentes llegarán vía stream; aquí sólo guardamos lo que tengamos en _stepperKeysById
+      allIds.addAll(_stepperKeysById.keys);
     }
-    widget.onSaveSiValido(
-      FormacionData(
-        titulo: _tituloCtrl.text.trim(),
-        centro: _centroCtrl.text.trim(),
-        nivel: _nivelCtrl.text.trim(),
-        inicio: _inicio,
-        fin: _fin,
-      ),
-    );
-    return true;
+    bool anyValid = false;
+    FormacionData? lastData; // para Opción A
+
+    for (final id in allIds) {
+      final fk = _formKeysById[id];
+      final sk = _stepperKeysById[id];
+      if (fk?.currentState != null && fk!.currentState!.validate()) {
+        anyValid = true;
+        // Guarda en BD (el hijo conoce su Experience o es nuevo)
+        await sk?.currentState?.saveExperience();
+
+        // Si tu Stepper puede exponer los datos, ideal:
+        // final data = sk?.currentState?.toFormacionData();
+        // lastData = data;
+
+        // Fallback: construye un placeholder mínimo si no puedes extraer data real
+        lastData ??= FormacionData(
+          titulo: '',
+          centro: '',
+          nivel: '',
+          inicio: null,
+          fin: null,
+        );
+      }
+    }
+
+    if (anyValid) {
+      widget.onSaveSiValido(lastData ??
+          FormacionData(titulo: '', centro: '', nivel: '', inicio: null, fin: null));
+    }
+    return anyValid;
   }
 
   @override
@@ -946,236 +961,291 @@ class _StepExperienceState extends State<_StepExperience>
           padding: const EdgeInsets.all(16),
           children: [
             // Título + pregunta
-            Text(
-              widget.title,
-              style: TextStyle(
-                fontWeight: FontWeight.w100,
-                color: AppColors.primary900,
-                fontSize: 35,
-                fontFamily: GoogleFonts.outfit().fontFamily,
-              ),
-            ),
+            Text(widget.isProfesional ? 'Experiencia profesional' : 'Experiencia personal',
+                style: TextStyle(
+                  fontWeight: FontWeight.w100,
+                  color: AppColors.primary900,
+                  fontSize: 35,
+                  fontFamily: GoogleFonts.outfit().fontFamily,
+                )),
             const SizedBox(height: 8),
             Text(
               widget.question,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.primary900,
-                    fontSize: 30,
-                  ),
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),
             ),
             const SizedBox(height: 18),
 
             // Sí / No
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
               spacing: 16,
               children: [
                 ChoiceCard(
-                  selected: _tieneExperiencia == true,
-                  icon: Icons.check_rounded,
-                  label: 'Sí',
-                  onTap: () => setState(() => _tieneExperiencia = true),
+                  selected: widget.isProfesional == true,
+                  svgAsset: ImagePath.ICON_PROFESIONAL,
+                  label: 'Profesional',
+                  onTap: () => setState(() => widget.isProfesional = true),
                 ),
                 ChoiceCard(
-                  selected: _tieneExperiencia == false,
-                  icon: Icons.close_rounded,
-                  label: 'No',
-                  onTap: () {
-                    setState(() => _tieneExperiencia = false);
-                    //widget.onSelectNoAndContinue(); // avanza
-                  },
+                  selected: widget.isProfesional == false,
+                  svgAsset: ImagePath.ICON_PERSONAL,
+                  label: 'Personal',
+                  onTap: () => setState(() => widget.isProfesional = false),
                 ),
               ],
             ),
-
             const SizedBox(height: 12),
 
-            // Contenido cuando es "Sí"
-            StreamBuilder<List<Experience>>(
-              stream: database.myExperiencesStream(user.userId ?? ''),
-              builder: (context, snapshot) {
-                if (!(snapshot.hasData &&
-                    snapshot.connectionState == ConnectionState.active)) {
-                  return const SizedBox.shrink();
-                }
-
-                // Filtra por tipo (ajusta strings a tu BD)
-                final expType = widget.isProfesional ? 'Profesional' : 'Personal';
-                myExperience = snapshot.data!
-                    .where((e) => e.type == expType)
-                    .toList();
-                myCustomExperience = myExperience!.map((e) => e).toList();
-                mySelectedExperience =
-                    List.generate(myCustomExperience.length, (i) => i);
-
-                // Decidir activa vs crear nueva
-                if (mySelectedExperience.isEmpty) {
-                  _creatingNew = true;
-                  _activeIndex = null;
-                } else {
-                  if (!_creatingNew && _activeIndex == null) _activeIndex = 0;
-                  if (_activeIndex != null &&
-                      _activeIndex! >= mySelectedExperience.length) {
-                    _activeIndex =
-                        mySelectedExperience.isNotEmpty ? 0 : null;
+            // Lista de tarjetas, cada una con su propio formulario
+            if (_tieneExperiencia == true)
+              StreamBuilder<List<Experience>>(
+                stream: database.myExperiencesStream(user.userId ?? ''),
+                builder: (context, snapshot) {
+                  if (!(snapshot.hasData && snapshot.connectionState == ConnectionState.active)) {
+                    return const SizedBox.shrink();
                   }
-                }
 
-                final foldedIndices = mySelectedExperience.where((i) {
-                  if (_creatingNew) return true;
-                  return _activeIndex == null ? true : i != _activeIndex!;
-                }).toList();
+                  final educationType =
+                      widget.isProfesional ? 'Profesional' : 'Personal';
 
-                final showEmptyForm =
-                    _creatingNew || mySelectedExperience.isEmpty;
+                  final existing = snapshot.data!
+                      .where((e) => e.type == educationType)
+                      .toList();
 
-                return AnimatedSize(
-                  duration: const Duration(milliseconds: 220),
-                  curve: Curves.easeInOut,
-                  alignment: Alignment.topCenter,
-                  child: (_tieneExperiencia == true)
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            // Tarjetas plegadas
-                            if (foldedIndices.isNotEmpty) ...[
-                              for (final i in foldedIndices)
-                                _CollapsedExperienceTile(
-                                  title: _expTitle(myCustomExperience[i]),
-                                  subtitle: _expSubtitle(myCustomExperience[i]),
-                                  onEdit: () {
-                                    setState(() {
-                                      _creatingNew = false;
-                                      _activeIndex = i;
-                                    });
-                                  },
-                                  onDelete: () async {
-                                    final exp = myCustomExperience[i];
-                                    final confirmed =
-                                        await showDialog<bool>(
-                                              context: context,
-                                              builder: (_) => AlertDialog(
-                                                title: const Text(
-                                                    'Eliminar experiencia'),
-                                                content: Text(
-                                                  '¿Quieres eliminar "${_expTitle(exp)}"? '
-                                                  'Esta acción no se puede deshacer.',
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () => Navigator
-                                                        .pop(context, false),
-                                                    child: const Text('Cancelar'),
-                                                  ),
-                                                  FilledButton(
-                                                    onPressed: () => Navigator
-                                                        .pop(context, true),
-                                                    child: const Text('Eliminar'),
-                                                  ),
-                                                ],
-                                              ),
-                                            ) ??
-                                            false;
+                  final items = <_EduItem>[
+                    ..._draftIds.map((id) => _EduItem(id: id, exp: null, isDraft: true)),
+                    ...existing.map((exp) => _EduItem(
+                          id: exp.id ?? exp.hashCode.toString(),
+                          exp: exp,
+                          isDraft: false,
+                        )),
+                  ];
 
-                                    if (!confirmed) return;
-
-                                    try {
-                                      await database.deleteExperience(exp);
-                                    } catch (e) {
-                                      if (!mounted) return;
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                              'No se pudo eliminar: $e'),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final it in items)
+                        _ExperienceFormCard(
+                          id: it.id,
+                          experience: it.exp,
+                          isProfesional: widget.isProfesional,
+                          expanded: _expandedId == it.id,
+                          onToggle: () => setState(() {
+                            _expandedId = (_expandedId == it.id) ? null : it.id;
+                          }),
+                          formKey: _formKeyFor(it.id),
+                          stepperKey: _stepperKeyFor(it.id),
+                          onSaved: () {
+                            // Opcional: tras guardar puedes dejarla abierta o cerrarla
+                            // setState(() => _expandedId = null);
+                          },
+                          onDelete: () async {
+                            if (it.isDraft) {
+                              setState(() {
+                                _draftIds.remove(it.id);
+                                if (_expandedId == it.id) _expandedId = null;
+                              });
+                            } else {
+                              final confirmed = await showDialog<bool>(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: Text('Eliminar formación'),
+                                      content: Text('¿Confirmas la eliminación?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.of(context).pop(false),
+                                          child: const Text('Cancelar'),
                                         ),
-                                      );
-                                    }
-                                  },
-                                ),
-                              const SizedBox(height: 12),
-                            ],
-
-                            // Formulario activo (vacío o con experiencia)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 12),
-                              child: showEmptyForm
-                                  ? StepperExperienceForm(
-                                      key: _stepperKey,
-                                      formKey: _formKey,
-                                      isProfesional: widget.isProfesional,
-                                      onComingBack: (isProfesional) {},
-                                    )
-                                  : StepperExperienceForm(
-                                      key: _stepperKey,
-                                      formKey: _formKey,
-                                      isProfesional: widget.isProfesional,
-                                      onComingBack: (isProfesional) {},
-                                      experience:
-                                          myCustomExperience[_activeIndex!],
+                                        FilledButton.icon(
+                                          icon: const Icon(Icons.delete_outline_rounded),
+                                          onPressed: () => Navigator.of(context).pop(true),
+                                          label: const Text('Eliminar'),
+                                        ),
+                                      ],
                                     ),
-                            ),
+                                  ) ?? false;
+                              if (!confirmed) return;
+                              try {
+                                await database.deleteExperience(it.exp!);
+                                if (mounted && _expandedId == it.id) {
+                                  setState(() => _expandedId = null);
+                                }
+                              } catch (e) {
+                                if (!mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('No se pudo eliminar: $e')),
+                                );
+                              }
+                            }
+                          },
+                        ),
 
-                            const SizedBox(height: 12),
-
-                            // Botón crear nueva experiencia (usa MISMO flujo)
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: CreateEducationButton(
-                                label: 'Crear nueva experiencia',
-                                onPressed: () async {
-                                  final form = _formKey.currentState;
-                                  if (form != null && form.validate()) {
-                                    try {
-                                      await _stepperKey.currentState
-                                          ?.saveExperience();
-                                      if (!mounted) return;
-                                      setState(() {
-                                        _creatingNew = true;
-                                        _activeIndex = null;
-                                      });
-                                    } catch (e) {
-                                      if (!mounted) return;
-                                      
-                                    }
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
-                        )
-                      : const SizedBox.shrink(),
-                );
-              },
-            ),
+                      const SizedBox(height: 12),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: CreateEducationButton(onPressed: _addDraft),
+                      ),
+                    ],
+                  );
+                },
+              ),
           ],
         ),
       ),
     );
   }
+}
 
-  // ---- Helpers de UI para título/subtítulo de la tarjeta plegada ----
-  String _expTitle(Experience e) {
-    final p = (e.position ?? '').trim();
-    final a = (e.activity ?? '').trim();
-    final o = (e.organization ?? '').trim();
-    return p.isNotEmpty
-        ? p
-        : (a.isNotEmpty ? a : (o.isNotEmpty ? o : 'Sin título'));
-  }
+class _ExperienceFormCard extends StatelessWidget {
+  const _ExperienceFormCard({
+    required this.id,
+    required this.isProfesional,
+    required this.formKey,
+    required this.stepperKey,
+    required this.expanded,
+    required this.onToggle,
+    this.experience,
+    this.onDelete,
+    this.onSaved,
+  });
 
-  String _expSubtitle(Experience e) {
-    final org = (e.organization ?? '').trim();
-    final yr = [
-      if (e.startDate != null) e.startDate!.toDate().year.toString(),
-      if (e.endDate != null) e.endDate!.toDate().year.toString(),
-    ].where((s) => s.isNotEmpty).join(' - ');
-    final parts = [
-      if (org.isNotEmpty) org,
-      if (yr.isNotEmpty) yr,
-    ];
-    return parts.join(' · ');
+  final String id;
+  final bool isProfesional;
+  final Experience? experience;
+  final GlobalKey<FormState> formKey;
+  final GlobalKey<StepperExperienceFormState> stepperKey;
+
+
+  // NUEVO:
+  final bool expanded;
+  final VoidCallback onToggle;
+
+  final VoidCallback? onDelete;
+  final VoidCallback? onSaved;
+
+  @override
+  Widget build(BuildContext context) {
+    final title = (experience?.activity ?? '').isNotEmpty
+        ? experience!.activity!
+        : (experience == null ? 'Nueva experiencia' : 'Sin título');
+
+    final subtitle = experience?.institution ?? (experience == null ? '' : '');
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: AppColors.primary300.withOpacity(.6)),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // HEADER: clickable para plegar/desplegar
+          InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: onToggle,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.primary900,
+                                )),
+                        if (subtitle.isNotEmpty)
+                          Text(subtitle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: AppColors.primary900)),
+                      ],
+                    ),
+                  ),
+                  AnimatedRotation(
+                    turns: expanded ? 0.5 : 0.0, // rota el chevron
+                    duration: const Duration(milliseconds: 180),
+                    child: const Icon(Icons.expand_more_rounded),
+                  ),
+                  if (onDelete != null)
+                    IconButton(
+                      tooltip: 'Eliminar',
+                      icon: const Icon(Icons.delete_outline_rounded),
+                      onPressed: onDelete,
+                    ),
+                ],
+              ),
+            ),
+          ),
+
+          // CUERPO: se muestra solo si expanded
+          AnimatedCrossFade(
+            crossFadeState:
+                expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            duration: const Duration(milliseconds: 220),
+            firstChild: const SizedBox(height: 0),
+            secondChild: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  StepperExperienceForm(
+                    isProfesional: isProfesional,
+                    experience: experience, // null => vacío
+                    formKey: formKey,
+                    key: stepperKey,
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      FilledButton.icon(
+                        icon: const Icon(Icons.save_rounded),
+                        label: const Text('Guardar'),
+                        onPressed: () async {
+                          final form = formKey.currentState;
+                          if (form != null && form.validate()) {
+                            try {
+                              await stepperKey.currentState?.saveExperience();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Experiencia guardada')),
+                              );
+                              onSaved?.call();
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('No se pudo guardar: $e')),
+                              );
+                            }
+                          }
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      if (onDelete != null)
+                        TextButton.icon(
+                          icon: const Icon(Icons.close_rounded),
+                          label: const Text('Descartar'),
+                          onPressed: onDelete,
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -1514,35 +1584,49 @@ class _StepEndState extends State<_StepEnd> with AutomaticKeepAliveClientMixin {
 }
 
 
-/// ---- Tarjeta de opción Sí / No ----
 class ChoiceCard extends StatelessWidget {
   const ChoiceCard({
     super.key,
     required this.selected,
-    required this.icon,
+    this.icon,
+    this.svgAsset,
     required this.label,
     required this.onTap,
-  });
+    this.iconColor,
+    this.iconSize = 20,
+    this.circleSize = 36,
+    this.widthFactor = 4.5,
+  }) : assert(
+          (icon != null) ^ (svgAsset != null),
+          'Debes proporcionar exactamente uno: icon O svgAsset.',
+        );
 
   final bool selected;
-  final IconData icon;
   final String label;
   final VoidCallback onTap;
 
+  final IconData? icon;
+  final String? svgAsset;
+
+  final Color? iconColor;
+  final double iconSize;
+  final double circleSize;
+  final double widthFactor;
+
   @override
   Widget build(BuildContext context) {
-    final borderColor = selected
-        ? Theme.of(context).colorScheme.primary
-        : AppColors.grey120;
+    final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
 
+    final borderColor = selected ? primary : AppColors.grey120;
     final borderWidth = selected ? 3.0 : 1.0;
+    final isSvg = svgAsset != null;
 
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(28),
       child: Container(
-
-        width: MediaQuery.of(context).size.width/4.5,
+        width: MediaQuery.of(context).size.width / widthFactor,
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
@@ -1551,30 +1635,46 @@ class ChoiceCard extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
+            // Ícono con círculo (modo icon) o sólo la imagen (modo svg)
             Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: borderColor, width: 1.6),
-              ),
-              child: Icon(
-                icon,
-                size: 20,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              width: circleSize,
+              height: circleSize,
+              // Sin decoración si es SVG (sin reborde)
+              decoration: isSvg
+                  ? null
+                  : BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: borderColor, width: 1.6),
+                    ),
+              alignment: Alignment.center,
+              child: _buildLeading(primary),
             ),
             const SizedBox(width: 12),
             Text(
               label,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: theme.textTheme.titleMedium,
             ),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildLeading(Color primary) {
+    if (icon != null) {
+      return Icon(icon, size: iconSize, color: iconColor ?? primary);
+    }
+    // SVG: sin colorFilter para respetar los colores originales
+    return SvgPicture.asset(
+      svgAsset!,
+      width: iconSize + 25,
+      height: iconSize + 25,
+      fit: BoxFit.contain,
+    );
+  }
 }
+
+
 
 /// TextFormField que crece según el número de líneas escritas,
 /// manteniendo la decoración de _appDecoration.

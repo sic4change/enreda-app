@@ -1,3 +1,5 @@
+import 'dart:async' show Completer;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:enreda_app/app/home/curriculum/stepper_cv.dart';
@@ -7,6 +9,7 @@ import 'package:enreda_app/app/home/models/experience.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_competencies.dart';
+import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/api_path.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -728,8 +731,10 @@ class StepperExperienceFormState extends State<StepperExperienceForm> {
   }
 
   Future<void> saveExperience() async {
-    final database = Provider.of<Database>(context, listen: false);
-    final auth = Provider.of<AuthBase>(context, listen: false);
+    final database = context.read<Database>();
+    final auth = context.read<AuthBase>();
+    print('dentro de saveExperience');
+    final stableCtx = Navigator.of(context, rootNavigator: true).context;
 
     if (widget.experience == null) {
       final experience = Experience(
@@ -752,7 +757,7 @@ class StepperExperienceFormState extends State<StepperExperienceForm> {
           otherProfessionActivityString: _otherText,
       );
 
-      sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
+      //sendBasicAnalyticsEvent(context, "enreda_app_updated_cv");
 
       await database.addExperience(experience);
       _updateCompetenciesPoints(_type);
@@ -762,8 +767,18 @@ class StepperExperienceFormState extends State<StepperExperienceForm> {
       _updateCompetenciesPoints(_level);
       _updateListCompetenciesPoints(selectedProfessionActivities);
       // TODO: Update competencies of other fields (in assistant_page too)
-      await showCompetencies(context, userCompetencies: userCompetencies,
-          onDismiss: (dialogContext) async {
+final added = await showCompetenciesAfterExperience(
+    stableCtx,
+    userCompetencies: userCompetencies,
+  );
+
+  if (!mounted) return;
+  if (added) {
+    widget.onComingBack?.call(_isProfesional);
+  }
+
+      //await showCompetencies(context, userCompetencies: userCompetencies,
+      //   onDismiss: (dialogContext) async {
         //Navigator.of(context).pop();
         //Navigator.of(context).pop();
         /*await showAlertDialog(context,
@@ -771,10 +786,10 @@ class StepperExperienceFormState extends State<StepperExperienceForm> {
             content: 'La información ha sido guardada en tu CV correctamente',
             defaultActionText: 'Ok');
         */
-        if (widget.onComingBack != null) {
-          widget.onComingBack!(_isProfesional);
-        }
-      });
+        //if (widget.onComingBack != null) {
+        //  widget.onComingBack!(_isProfesional);
+       // }
+     // });
     } else {
       final experience = Experience(
           id: widget.experience!.id,
@@ -1152,4 +1167,143 @@ class YesNoFormField extends FormField<String> {
           );
         },
       );
+}
+Future<bool> showCompetenciesAfterExperience(
+  BuildContext stableContext, {
+  required Map<String, int> userCompetencies,
+}) async {
+  final database  = stableContext.read<Database>();
+  final auth      = stableContext.read<AuthBase>();
+  final textTheme = Theme.of(stableContext).textTheme;
+
+  final sortedKeys = userCompetencies.keys.toList(growable: false)
+    ..sort((a, b) => (userCompetencies[b] ?? 0).compareTo(userCompetencies[a] ?? 0));
+  final topIds = sortedKeys.take(5).toList();
+
+  final users = await database.userStream(auth.currentUser!.email).first;
+  final userEnreda = users.first;
+
+  final recommendedCompetencies = await Future.wait(
+    topIds.map((id) => database.competencyStream(id).first),
+  );
+
+  final recommendedSet = recommendedCompetencies.map((c) => c.id).toSet();
+  final mySet = userEnreda.competencies.keys.toSet();
+
+  final completer = Completer<bool>();
+
+  // Helper seguro para cerrar el diálogo actual
+  void _closeDialog(BuildContext dialogCtx) {
+    final nav = Navigator.maybeOf(dialogCtx) ?? Navigator.of(dialogCtx, rootNavigator: true);
+    if (nav.canPop()) nav.pop();
+  }
+
+  if (mySet.containsAll(recommendedSet)) {
+    showCustomDialog(
+      stableContext,
+      content: Text(
+        'Ya has conseguido las competencias recomendadas para esta experiencia. '
+        'Sigue introduciendo experiencias para identificar nuevas competencias',
+        style: textTheme.bodySmall,
+      ),
+      defaultActionText: 'Ok',
+      onDefaultActionPressed: (dialogCtx) {
+        _closeDialog(dialogCtx);            // 👈 cierra el modal
+        if (!completer.isCompleted) completer.complete(false);
+      },
+    );
+    return completer.future;
+  }
+
+  int selectedCount = 0;
+
+  showCustomDialog(
+    stableContext,
+    dismissible: false,
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 12),
+        Text(
+          '¡Con esta experiencia desarrollaste las siguientes competencias! '
+          'Selecciona hasta 3 para añadirla/s a tu perfil:',
+          style: textTheme.bodySmall?.copyWith(fontSize: 18.0),
+        ),
+        const SizedBox(height: 12),
+        Flexible(
+          child: SingleChildScrollView(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: recommendedCompetencies.map((competency) {
+                return InkWell(
+                  onTap: () {
+                    if (userEnreda.competencies.containsKey(competency.id)) return;
+                    if (competency.selected.value) {
+                      competency.selected.value = false; selectedCount--;
+                    } else if (selectedCount < 3) {
+                      competency.selected.value = true;  selectedCount++;
+                    } else {
+                      showAlertDialog(
+                        stableContext,
+                        title: 'Error',
+                        content: 'No puedes seleccionar más de 3',
+                        defaultActionText: 'Ok',
+                      );
+                    }
+                  },
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: competency.selected,
+                    builder: (ctx, isSelected, _) {
+                      final status = userEnreda.competencies.containsKey(competency.id)
+                          ? userEnreda.competencies[competency.id]
+                          : (isSelected ? StringConst.BADGE_IDENTIFIED : StringConst.BADGE_EMPTY);
+                      return Column(
+                        children: [
+                          if (competency.badgesImages[status] != null)
+                            Image.network(competency.badgesImages[status]!, height: 200, width: 200),
+                          const SizedBox(height: 12),
+                          Text(
+                            '${userCompetencies[competency.id]} puntos',
+                            style: textTheme.bodySmall?.copyWith(fontSize: 14),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      ],
+    ),
+    defaultActionText: 'Ok',
+    onDefaultActionPressed: (dialogCtx) async {
+      if (selectedCount <= 0) {
+        await showAlertDialog(
+          dialogCtx,
+          title: 'No hay competencias seleccionadas',
+          content: 'Selecciona al menos una competencia para poder añadirla a tu CV',
+          defaultActionText: 'Ok',
+        );
+        return;
+      }
+
+      final latestUsers = await database.userStream(auth.currentUser!.email).first;
+      final latest = latestUsers.first;
+
+      for (final c in recommendedCompetencies) {
+        if (c.selected.value) {
+          latest.competencies[c.id!] = StringConst.BADGE_IDENTIFIED;
+        }
+      }
+      await database.setUserEnreda(latest);
+
+      _closeDialog(dialogCtx);              // 👈 cierra el modal
+      if (!completer.isCompleted) completer.complete(true);
+    },
+  );
+
+  return completer.future;
 }

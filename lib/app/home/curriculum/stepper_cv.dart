@@ -272,7 +272,7 @@ Future<void> _next() async {
                 index: index,
                 children: [
                   _StepWelcome(key: formKeys[0], data: data),
-                  _StepFormation(key: formKeys[1], isMainEducation: true, onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['formacion'] = fn,),
+                  _StepFormation(key: formKeys[1], isMainEducation: true, onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, title: 'Formación', question: '¿Quieres añadir alguna formación?', user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['formacion'] = fn,),
                   _StepFormation(key: formKeys[2], isMainEducation: false, onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, title: 'Formación complementaria', question: '¿Quieres añadir alguna formación complementaria?', user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['formacion_complementaria'] = fn,),
                   _StepExperience(key: formKeys[3], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['experiencia'] = fn,),
                   _StepExperience(key: formKeys[4], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, title: 'Experiencia personal', question: 'Ahora vamos con las experiencias personales', user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['experiencia_personal'] = fn,),
@@ -297,50 +297,86 @@ Future<void> _next() async {
               ),
             ) 
             : 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 200,
-                  height: 50,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: AppColors.blue050),
-                    ),
-                    onPressed: index > 0 ? () => _goTo(index - 1) : null,
-                    child: const Text('Volver', style: TextStyle(color: AppColors.blue050),),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Container(
-                  width: 200,
-                  height: 50,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: AppColors.blue050),
-                    ),
-                    onPressed: _saveDraft,
-                    child: const Text('Guardar en borrador', style: TextStyle(color: AppColors.blue050),),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Container(
-                  width: 200,
-                  height: 50,
-                  child: FilledButton(
-                    onPressed: _next,
-                    child: Text(index == steps.length - 1 ? 'Finalizar' : 'Siguiente', style: TextStyle(color: AppColors.white),),
-                    
-                  ),
-                ),
-              ],
-            ),
+            _buildAcciones(context, index, _goTo, _saveDraft, _next), 
+            
           ],
         ),
       ),
     );
   }
 }
+
+// Define un breakpoint a tu gusto
+const double _mobileBreakpoint = 600;
+
+Widget _buildAcciones(BuildContext context, int index, void Function(int) _goTo, void Function() _saveDraft, void Function() _next) {
+  return LayoutBuilder(
+    builder: (context, constraints) {
+      final isMobile = constraints.maxWidth < _mobileBreakpoint;
+
+      final volverBtn = SizedBox(
+        width: isMobile ? double.infinity : 200,
+        height: 50,
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: AppColors.blue050),
+          ),
+          onPressed: index > 0 ? () => _goTo(index - 1) : null,
+          child: const Text('Volver', style: TextStyle(color: AppColors.blue050)),
+        ),
+      );
+
+      final borradorBtn = SizedBox(
+        width: isMobile ? double.infinity : 200,
+        height: 50,
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: AppColors.blue050),
+          ),
+          onPressed: _saveDraft,
+          child: const Text('Guardar en borrador', style: TextStyle(color: AppColors.blue050)),
+        ),
+      );
+
+      final siguienteBtn = SizedBox(
+        width: isMobile ? double.infinity : 200,
+        height: 50,
+        child: FilledButton(
+          onPressed: _next,
+          child: Text(
+            index == steps.length - 1 ? 'Finalizar' : 'Siguiente',
+            style: const TextStyle(color: AppColors.white),
+          ),
+        ),
+      );
+
+      if (isMobile) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            volverBtn,
+            const SizedBox(height: 12),
+            borradorBtn,
+            const SizedBox(height: 12),
+            siguienteBtn,
+          ],
+        );
+      } else {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            volverBtn,
+            const SizedBox(width: 12),
+            borradorBtn,
+            const SizedBox(width: 12),
+            siguienteBtn,
+          ],
+        );
+      }
+    },
+  );
+}
+
 
 /// === PASO 1: Tipo de experiencia ===
 class _StepWelcome extends StatefulWidget {
@@ -382,7 +418,7 @@ class _StepWelcomeState extends State<_StepWelcome> with AutomaticKeepAliveClien
               ),
             );
               return Container(
-                width: MediaQuery.of(context).size.width/3.5,
+                width: MediaQuery.of(context).size.width > 600 ? MediaQuery.of(context).size.width/3.5 : MediaQuery.of(context).size.width,
                 key: Key('trainingPill-${trainingPill.id}'),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
@@ -631,8 +667,14 @@ class _StepFormationState extends State<_StepFormation>
                           formKey: _formKeyFor(it.id),
                           stepperKey: _stepperKeyFor(it.id),
                           onSaved: () {
-                            // Opcional: tras guardar puedes dejarla abierta o cerrarla
-                            // setState(() => _expandedId = null);
+                           setState(() {
+                            if (it.isDraft) {
+                              _draftIds.remove(it.id);             
+                              _formKeysById.remove(it.id);  
+                              _stepperKeysById.remove(it.id);
+                            }
+                            _expandedId = null;               
+                          });
                           },
                           onDelete: () async {
                             if (it.isDraft) {
@@ -809,10 +851,10 @@ class _EducationFormCard extends StatelessWidget {
                           final form = formKey.currentState;
                           if (form != null && form.validate()) {
                             try {
-                              await stepperKey.currentState?.saveExperience();
-                              ScaffoldMessenger.of(context).showSnackBar(
+                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Formación guardada')),
                               );
+                              await stepperKey.currentState?.saveExperience();
                               onSaved?.call();
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -1039,8 +1081,14 @@ class _StepExperienceState extends State<_StepExperience>
                           formKey: _formKeyFor(it.id),
                           stepperKey: _stepperKeyFor(it.id),
                           onSaved: () {
-                            // Opcional: tras guardar puedes dejarla abierta o cerrarla
-                            // setState(() => _expandedId = null);
+                            setState(() {
+                              if (it.isDraft) {
+                                _draftIds.remove(it.id);              
+                                _formKeysById.remove(it.id);          
+                                _stepperKeysById.remove(it.id);
+                              }
+                              _expandedId = null;                     
+                            });
                           },
                           onDelete: () async {
                             if (it.isDraft) {
@@ -1217,10 +1265,10 @@ class _ExperienceFormCard extends StatelessWidget {
                           final form = formKey.currentState;
                           if (form != null && form.validate()) {
                             try {
-                              await stepperKey.currentState?.saveExperience();
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              /*ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Experiencia guardada')),
-                              );
+                              );*/
+                              await stepperKey.currentState?.saveExperience();
                               onSaved?.call();
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -1626,7 +1674,7 @@ class ChoiceCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(28),
       child: Container(
-        width: MediaQuery.of(context).size.width / widthFactor,
+        width: MediaQuery.of(context).size.width > 600 ? MediaQuery.of(context).size.width/widthFactor : MediaQuery.of(context).size.width/3,
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),

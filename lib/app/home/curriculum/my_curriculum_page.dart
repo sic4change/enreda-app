@@ -134,18 +134,18 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           return const Center(child: Text('Ocurrió un error'));
         }
 
-        final user = _userCache!;
-        _photo = user.profilePic?.src ?? '';
+        user = _userCache!;
+        _photo = user!.profilePic?.src ?? '';
 
         // Deriva competency names con el cache
-        final competenciesIds = user.competencies.keys.toList();
+        final competenciesIds = user!.competencies.keys.toList();
         final filtered = _compsCache
             .where((c) => competenciesIds.contains(c.id))
             .toList();
 
         final competenciesNames = <String>[];
         for (final c in filtered) {
-          final status = user.competencies[c.id] ?? StringConst.BADGE_EMPTY;
+          final status = user!.competencies[c.id] ?? StringConst.BADGE_EMPTY;
           if (c.name.isNotEmpty &&
               status != StringConst.BADGE_EMPTY &&
               status != StringConst.BADGE_IDENTIFIED) {
@@ -156,25 +156,25 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         }
 
         // (Opcional) Si sigues usando estas variables en otro sitio, mantenlas:
-        final myAboutMe = user.aboutMe ?? "";
+        final myAboutMe = user!.aboutMe ?? "";
         myCustomAboutMe = myAboutMe;
 
-        final myEmail = user.email ?? "";
+        final myEmail = user!.email ?? "";
         myCustomEmail = myEmail;
 
-        final myPhone = user.phone ?? "";
+        final myPhone = user!.phone ?? "";
         myCustomPhone = myPhone;
 
         myCustomCompetencies = competenciesNames.map((e) => e).toList();
         mySelectedCompetencies =
             List.generate(myCustomCompetencies.length, (i) => i);
 
-        final myDataOfInterest = user.dataOfInterest ?? [];
+        final myDataOfInterest = user!.dataOfInterest ?? [];
         myCustomDataOfInterest = myDataOfInterest.map((e) => e).toList();
         mySelectedDataOfInterest =
             List.generate(myCustomDataOfInterest.length, (i) => i);
 
-        final myLanguages = user.languagesLevels ?? [];
+        final myLanguages = user!.languagesLevels ?? [];
         myCustomLanguages = myLanguages.map((e) => e).toList();
         mySelectedLanguages =
             List.generate(myCustomLanguages.length, (i) => i);
@@ -182,7 +182,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         if (widget.mini) {
           return _myCurriculumMini(context, user, _photo, competenciesNames);
         } else {
-          return user.cv_state == 'draft' || user.cv_state == 'blank' ? CvWizard(user: user) : _myCurriculumWeb(context, user, _photo, competenciesNames ); // sin key dinámica
+          return user!.cv_state == 'draft' || user!.cv_state == 'blank' ? CvWizard(user: user!) : _myCurriculumWeb(context, user, _photo, competenciesNames ); // sin key dinámica
 
                       /*return Responsive.isDesktop(context)
                         ? _myCurriculumWeb(context, user, profilePic, competenciesNames )

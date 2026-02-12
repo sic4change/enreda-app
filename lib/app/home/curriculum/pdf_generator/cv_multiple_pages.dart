@@ -9,37 +9,58 @@ import 'package:pdf/pdf.dart';
 import 'data.dart';
 
 import 'package:enreda_app/app/home/curriculum/pdf_generator/resume2_mobile.dart'
-if (dart.library.html) 'package:enreda_app/app/home/curriculum/pdf_generator/resume2_web.dart' as my_cv;
+    if (dart.library.html) 'package:enreda_app/app/home/curriculum/pdf_generator/resume2_web.dart'
+    as my_cv;
+
+import 'package:enreda_app/app/home/curriculum/pdf_generator/resume_purple_mobile.dart'
+    if (dart.library.html) 'package:enreda_app/app/home/curriculum/pdf_generator/resume_purple_web.dart'
+    as my_cv_purple;
+
+import 'package:enreda_app/app/home/curriculum/pdf_generator/resume_teal_mobile.dart'
+    if (dart.library.html) 'package:enreda_app/app/home/curriculum/pdf_generator/resume_teal_web.dart'
+    as my_cv_teal;
 
 const examplesMultiplePages = <Example>[
-  !kIsWeb ? Example('CV', 'resume2_mobile.dart', my_cv.generateResume2) : Example('CV', 'resume2_web.dart', my_cv.generateResume2),
+  !kIsWeb
+      ? Example('Plantilla 1', 'resume2_mobile.dart', my_cv.generateResume2)
+      : Example('Plantilla 1', 'resume2_web.dart', my_cv.generateResume2),
+  !kIsWeb
+      ? Example('Plantilla 2', 'resume_purple_mobile.dart',
+          my_cv_purple.generateResumePurple)
+      : Example('Plantilla 2', 'resume_purple_web.dart',
+          my_cv_purple.generateResumePurple),
+  !kIsWeb
+      ? Example('Plantilla 3', 'resume_teal_mobile.dart',
+          my_cv_teal.generateResumeTeal)
+      : Example(
+          'Plantilla 3', 'resume_teal_web.dart', my_cv_teal.generateResumeTeal),
 ];
 
 typedef LayoutCallbackWithData = Future<Uint8List> Function(
-    PdfPageFormat pageFormat,
-    CustomData data,
-    UserEnreda? user,
-    String? city,
-    String? province,
-    String? country,
-    List<Experience>? myExperiences,
-    List<Experience>? myPersonalExperiences,
-    List<Experience>? myEducation,
-    List<Experience>? mySecondaryEducation,
-    List<String>? idSelectedDateEducation,
-    List<String>? idSelectedDateSecondaryEducation,
-    List<String>? idSelectedDateExperience,
-    List<String>? idSelectedDatePersonalExperience,
-    List<String> competenciesNames,
-    List<Language> languagesNames,
-    String? aboutMe,
-    List<String> myDataOfInterest,
-    String myCustomEmail,
-    String myCustomPhone,
-    bool myPhoto,
-    List<CertificationRequest>? myCustomReferences,
-    String myMaxEducation,
-    );
+  PdfPageFormat pageFormat,
+  CustomData data,
+  UserEnreda? user,
+  String? city,
+  String? province,
+  String? country,
+  List<Experience>? myExperiences,
+  List<Experience>? myPersonalExperiences,
+  List<Experience>? myEducation,
+  List<Experience>? mySecondaryEducation,
+  List<String>? idSelectedDateEducation,
+  List<String>? idSelectedDateSecondaryEducation,
+  List<String>? idSelectedDateExperience,
+  List<String>? idSelectedDatePersonalExperience,
+  List<String> competenciesNames,
+  List<Language> languagesNames,
+  String? aboutMe,
+  List<String> myDataOfInterest,
+  String myCustomEmail,
+  String myCustomPhone,
+  bool myPhoto,
+  List<CertificationRequest>? myCustomReferences,
+  String myMaxEducation,
+);
 
 class Example {
   const Example(this.name, this.file, this.builder, [this.needsData = false]);

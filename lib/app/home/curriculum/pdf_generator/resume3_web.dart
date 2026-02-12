@@ -1,20 +1,18 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:enreda_app/app/home/curriculum/pdf_generator/data.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
-import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart' show NetworkAssetBundle, rootBundle;
+import 'package:enreda_app/app/home/models/language.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-
 import '../../../../values/strings.dart';
 import '../../../../values/values.dart';
 import '../../models/experience.dart';
+import 'package:http/http.dart';
 
 const PdfColor lilac = PdfColor.fromInt(0xF8A6A83);
 const PdfColor lightLilac = PdfColor.fromInt(0xFFF4F5FB);
@@ -27,7 +25,7 @@ const PdfColor greyLight = PdfColor.fromInt(0xFFADADAD);
 const leftWidth = 200.0;
 const rightWidth = 350.0;
 
-Future<Uint8List> generateResume2(
+Future<Uint8List> generateResume3(
   PdfPageFormat format,
   CustomData data,
   UserEnreda? user,
@@ -53,18 +51,24 @@ Future<Uint8List> generateResume2(
   String myMaxEducation,
 ) async {
   final doc = pw.Document(title: 'Mi Currículum');
+  var fontPoppins = await PdfGoogleFonts.poppinsExtraBold();
 
   var url = user?.profilePic?.src ?? "";
 
-  final profileImage = url == ""
+  Future<Uint8List> imageFromUrl(String url) async {
+    final uri = Uri.parse(url);
+    final Response response = await get(uri);
+    return response.bodyBytes;
+  }
+
+  Future<Uint8List> myFutureUint8List = imageFromUrl(url);
+  Uint8List myUint8List = await myFutureUint8List;
+
+  final profileImageWeb = url == ""
       ? pw.MemoryImage(
           (await rootBundle.load(ImagePath.USER_DEFAULT)).buffer.asUint8List(),
         )
-      : pw.MemoryImage(
-          (await NetworkAssetBundle(Uri.parse(url)).load(url))
-              .buffer
-              .asUint8List(),
-        );
+      : pw.MemoryImage(myUint8List);
 
   PdfPageFormat format1 = format.applyMargin(
       left: 0,
@@ -72,7 +76,7 @@ Future<Uint8List> generateResume2(
       right: 2.0 * PdfPageFormat.cm,
       bottom: 2.0 * PdfPageFormat.cm);
 
-  final pageTheme = await _myPageTheme(format1, myPhoto, profileImage);
+  final pageTheme = await _myPageTheme(format1, myPhoto, profileImageWeb);
   final DateFormat formatter = DateFormat('yyyy');
   List<String>? dataOfInterest = myDataOfInterest;
   List<Language>? languages = languagesNames;
@@ -100,9 +104,12 @@ Future<Uint8List> generateResume2(
                 mainAxisAlignment: pw.MainAxisAlignment.start,
                 children: <pw.Widget>[
                   pw.Text('${user?.firstName}',
-                      textScaleFactor: 1.5,
-                      style: pw.Theme.of(context).defaultTextStyle.copyWith(
-                          fontWeight: pw.FontWeight.bold, color: primary900)),
+                      textScaleFactor: 1.2,
+                      style: pw.TextStyle(
+                          font: fontPoppins,
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 18,
+                          color: primary900)),
                   pw.Text('${user?.lastName}',
                       textScaleFactor: 1.2,
                       style: pw.Theme.of(context).defaultTextStyle.copyWith(
@@ -118,9 +125,12 @@ Future<Uint8List> generateResume2(
               mainAxisAlignment: pw.MainAxisAlignment.start,
               children: <pw.Widget>[
                 pw.Text('${user?.firstName}',
-                    textScaleFactor: 1.8,
-                    style: pw.Theme.of(context).defaultTextStyle.copyWith(
-                        fontWeight: pw.FontWeight.bold, color: primary900)),
+                    textScaleFactor: 1.5,
+                    style: pw.TextStyle(
+                        font: fontPoppins,
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 18,
+                        color: primary900)),
                 pw.Text('${user?.lastName}',
                     textScaleFactor: 1.2,
                     style: pw.Theme.of(context).defaultTextStyle.copyWith(
@@ -239,8 +249,6 @@ Future<Uint8List> generateResume2(
                                                     color: grey)),
                                       ])
                                 ]),
-                            // _UrlText(
-                            //     'wholeprices.ca', 'https://wholeprices.ca'),
                           ])
                         : pw.Container(),
                     pw.SizedBox(height: 10),
@@ -296,7 +304,7 @@ Future<Uint8List> generateResume2(
             pw.Partition(
                 width: rightWidth,
                 child: pw.Padding(
-                  padding: const pw.EdgeInsets.only(left: 30.0, right: 30.0),
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 30.0),
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     mainAxisAlignment: pw.MainAxisAlignment.start,
@@ -465,7 +473,7 @@ Future<Uint8List> generateResume2(
 }
 
 Future<pw.PageTheme> _myPageTheme(
-    PdfPageFormat format, bool myPhoto, profileImage) async {
+    PdfPageFormat format, bool myPhoto, profileImageWeb) async {
   final bgShape = await rootBundle.loadString('images/polygon.svg');
   final bgShape2 = await rootBundle.loadString('images/polygon2.svg');
   format = format.applyMargin(
@@ -547,7 +555,8 @@ Future<pw.PageTheme> _myPageTheme(
                           child: pw.Container(
                             width: 80,
                             height: 80,
-                            child: pw.Image(profileImage, fit: pw.BoxFit.cover),
+                            child:
+                                pw.Image(profileImageWeb, fit: pw.BoxFit.cover),
                           ),
                         )),
                   )
@@ -853,18 +862,14 @@ class _BlockSimpleList extends pw.StatelessWidget {
                             textScaleFactor: 0.8,
                             style: pw.Theme.of(context)
                                 .defaultTextStyle
-                                .copyWith(
-                                    fontWeight: pw.FontWeight.normal,
-                                    color: primary900)),
+                                .copyWith(fontWeight: pw.FontWeight.normal)),
                         _Dots(dotsNumber: dotsSpeaking),
                         pw.SizedBox(width: 10),
                         pw.Text('Escrito:  ',
                             textScaleFactor: 0.8,
                             style: pw.Theme.of(context)
                                 .defaultTextStyle
-                                .copyWith(
-                                    fontWeight: pw.FontWeight.normal,
-                                    color: primary900)),
+                                .copyWith(fontWeight: pw.FontWeight.normal)),
                         _Dots(dotsNumber: dotsWriting),
                       ])
                 ])

@@ -179,7 +179,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
 
   Widget _myCurriculumWeb(BuildContext context) {
     var profilePic = widget.user?.profilePic?.src ?? "";
-    final double sidebarWidth = 350.0;
 
     // Custom Colors for this design
     final Color tealColor = Color(0xFF005B5B);
@@ -284,7 +283,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                         }*/
                         Navigator.push(
                           context,
-                          _isSelected2Page == true
+                          _isSelected2Page == false //TODO AJUSTAR
                               ? MaterialPageRoute(
                                   builder: (context) => MyCvMultiplePages(
                                         user: widget.user!,
@@ -362,7 +361,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 ],
               ),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     child: Column(
@@ -1255,21 +1254,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Dot decoration
-                              Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(top: 5),
-                                    width: 10,
-                                    height: 10,
-                                    decoration: BoxDecoration(
-                                      color: tealColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SpaceW12(),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1414,21 +1398,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Dot
-                                  Column(
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.only(top: 5),
-                                        width: 10,
-                                        height: 10,
-                                        decoration: BoxDecoration(
-                                          color: tealColor,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SpaceW12(),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
@@ -1561,21 +1530,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Dot
-                              Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(top: 5),
-                                    width: 10,
-                                    height: 10,
-                                    decoration: BoxDecoration(
-                                      color: tealColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SpaceW12(),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1730,21 +1684,6 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Dot
-                                Column(
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(top: 5),
-                                      width: 10,
-                                      height: 10,
-                                      decoration: BoxDecoration(
-                                        color: tealColor,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SpaceW12(),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -2134,7 +2073,7 @@ class SeparatorPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = AppColors.primary900
-      ..strokeWidth = 2;
+      ..strokeWidth = 0.75;
 
     final circleFillPaint = Paint()
       ..color = Colors.white
@@ -2142,16 +2081,17 @@ class SeparatorPainter extends CustomPainter {
 
     final circleBorderPaint = Paint()
       ..color = AppColors.primary900
-      ..strokeWidth = 2
+      ..strokeWidth = 0.75
       ..style = PaintingStyle.stroke;
 
     final centerX = size.width / 2.8;
     final circleRadius = 8.0;
+    final height = size.height - 20;
 
     // Línea vertical
     canvas.drawLine(
       Offset(centerX, 0),
-      Offset(centerX, size.height),
+      Offset(centerX, height),
       paint,
     );
 
@@ -2173,6 +2113,48 @@ class SeparatorPainter extends CustomPainter {
       Offset(centerX, 00),
       circleRadius,
       circleBorderPaint,
+    );
+
+    canvas.drawCircle(
+      Offset(centerX, height + circleRadius),
+      circleRadius,
+      circleBorderPaint,
+    );
+
+    // 1/4
+    canvas.drawCircle(
+      Offset(centerX, height / 4),
+      circleRadius,
+      circleBorderPaint,
+    );
+    canvas.drawCircle(
+      Offset(centerX, height / 4),
+      circleRadius,
+      circleFillPaint,
+    );
+
+    // 1/2
+    canvas.drawCircle(
+      Offset(centerX, height / 2),
+      circleRadius,
+      circleBorderPaint,
+    );
+    canvas.drawCircle(
+      Offset(centerX, height / 2),
+      circleRadius,
+      circleFillPaint,
+    );
+
+    // 3/4
+    canvas.drawCircle(
+      Offset(centerX, height * 3 / 4),
+      circleRadius,
+      circleBorderPaint,
+    );
+    canvas.drawCircle(
+      Offset(centerX, height * 3 / 4),
+      circleRadius,
+      circleFillPaint,
     );
   }
 

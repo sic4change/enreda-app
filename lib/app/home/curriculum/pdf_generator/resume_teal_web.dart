@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'package:enreda_app/app/home/curriculum/pdf_generator/data.dart';
-import 'package:enreda_app/app/home/curriculum/pdf_generator/resume_purple_web.dart';
+
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:flutter/services.dart';
+
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -14,19 +15,15 @@ import '../../../../values/values.dart';
 import '../../models/experience.dart';
 import 'package:http/http.dart';
 
-const PdfColor teal = PdfColor.fromInt(0xFF004D5E); // Primary
-const PdfColor tealLight = PdfColor.fromInt(0xFF054D5E); // Chips/Accents
+const PdfColor teal = PdfColor.fromInt(0xFF004D5E);
 const PdfColor greyBody = PdfColor.fromInt(0xFF535A5F);
 const PdfColor greyLight = PdfColor.fromInt(0xFFADADAD);
 const PdfColor white = PdfColor.fromInt(0xFFFFFFFF);
 
-const leftWidth = 212.0;
-const rightWidth = 383.0; // 595 - 212 = 383
-const double headerHeight = 250.0;
-const double headerHeightDivider = 260.0;
-const double dividerLeftPos = 212.0; // Updated to approx width/2.8 for A4
+const leftWidth = 200.0;
+const rightWidth = 350.0;
 
-Future<Uint8List> generateResume2(
+Future<Uint8List> generateResumeTeal(
   PdfPageFormat format,
   CustomData data,
   UserEnreda? user,
@@ -41,10 +38,10 @@ Future<Uint8List> generateResume2(
   List<String>? idSelectedDateSecondaryEducation,
   List<String>? idSelectedDateExperience,
   List<String>? idSelectedDatePersonalExperience,
-  List<String> competenciesNames,
-  List<Language> languagesNames,
+  List<String>? competenciesNames,
+  List<Language>? languagesNames,
   String? aboutMe,
-  List<String> myDataOfInterest,
+  List<String>? myDataOfInterest,
   String myCustomEmail,
   String myCustomPhone,
   bool myPhoto,
@@ -80,11 +77,16 @@ Future<Uint8List> generateResume2(
   final pageTheme = await _myPageTheme(format1);
   final DateFormat formatter = DateFormat('yyyy');
 
+  final headerSvg =
+      '<svg width="600" height="280"><path d="M0,0 L600,0 L600,280 L200,280 Q0,280 0,180 Z" fill="#004D5E" /></svg>';
+
   doc.addPage(
     pw.MultiPage(
       pageTheme: pageTheme,
       header: (pw.Context context) {
-        return pw.SizedBox(height: 30); // Standard padding for all pages top
+        return context.pageNumber == 1
+            ? pw.Container()
+            : pw.SizedBox(height: 70); // 30 (header) + 40 (padding)
       },
       footer: (pw.Context context) {
         return pw.Container(
@@ -98,15 +100,34 @@ Future<Uint8List> generateResume2(
                     .copyWith(color: PdfColors.grey)));
       },
       build: (pw.Context context) => <pw.Widget>[
-        // Header Content for Page 1
+        // Header
         pw.Container(
-          height: headerHeight,
-          padding: const pw.EdgeInsets.only(top: 50, left: 30, right: 30),
-          child: pw.Row(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
+          height: 280,
+          child: pw.Stack(
             children: [
-              // Left: Names and About Me
-              pw.Expanded(
+              pw.SvgImage(svg: headerSvg),
+              // Profile Photo
+              if (myPhoto)
+                pw.Positioned(
+                  left: 60,
+                  top: 60,
+                  child: pw.Container(
+                    width: 140,
+                    height: 140,
+                    decoration: pw.BoxDecoration(
+                      shape: pw.BoxShape.circle,
+                      border: pw.Border.all(color: white, width: 6),
+                    ),
+                    child: pw.ClipOval(
+                      child: pw.Image(profileImageWeb, fit: pw.BoxFit.cover),
+                    ),
+                  ),
+                ),
+              // Name and About Me
+              pw.Positioned(
+                left: 230,
+                top: 70,
+                right: 40,
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
@@ -114,7 +135,7 @@ Future<Uint8List> generateResume2(
                       '${user?.firstName?.toUpperCase() ?? ''}',
                       style: pw.TextStyle(
                         fontSize: 36,
-                        color: teal,
+                        color: white,
                         fontWeight: pw.FontWeight.bold,
                       ),
                     ),
@@ -122,7 +143,7 @@ Future<Uint8List> generateResume2(
                       '${user?.lastName?.toUpperCase() ?? ''}',
                       style: pw.TextStyle(
                         fontSize: 24,
-                        color: teal,
+                        color: white,
                         fontWeight: pw.FontWeight.normal,
                       ),
                     ),
@@ -131,7 +152,7 @@ Future<Uint8List> generateResume2(
                       StringConst.ABOUT_ME.toUpperCase(),
                       style: pw.TextStyle(
                         fontSize: 14,
-                        color: teal,
+                        color: white,
                         fontWeight: pw.FontWeight.bold,
                       ),
                     ),
@@ -141,39 +162,12 @@ Future<Uint8List> generateResume2(
                       maxLines: 4,
                       style: const pw.TextStyle(
                         fontSize: 9,
-                        color: greyBody,
+                        color: white,
                       ),
                     ),
                   ],
                 ),
               ),
-              // Right: Photo
-              if (myPhoto)
-                pw.Padding(
-                  padding: const pw.EdgeInsets.only(left: 20),
-                  child: pw.Container(
-                      width: 152,
-                      height: 152,
-                      decoration: pw.BoxDecoration(
-                        shape: pw.BoxShape.circle,
-                        border: pw.Border.all(color: teal, width: 0.75),
-                      ),
-                      child: pw.Padding(
-                        padding: pw.EdgeInsets.all(12),
-                        child: pw.Container(
-                          width: 140,
-                          height: 140,
-                          decoration: pw.BoxDecoration(
-                            shape: pw.BoxShape.circle,
-                            border: pw.Border.all(color: teal, width: 0.75),
-                          ),
-                          child: pw.ClipOval(
-                            child:
-                                pw.Image(profileImageWeb, fit: pw.BoxFit.cover),
-                          ),
-                        ),
-                      )),
-                ),
             ],
           ),
         ),
@@ -188,7 +182,7 @@ Future<Uint8List> generateResume2(
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
-                    //pw.SizedBox(height: 40),
+                    pw.SizedBox(height: 20),
                     // Datos Personales
                     _Category(title: StringConst.PERSONAL_DATA, color: teal),
                     _IconText(
@@ -197,7 +191,7 @@ Future<Uint8List> generateResume2(
                     _IconText(
                         iconData: 0xe8b4,
                         text:
-                            '${city ?? ''} & ${province ?? ''}\n${country?.toUpperCase() ?? ''}'),
+                            '${city ?? ''}\n${province ?? ''}\n${country?.toUpperCase() ?? ''}'),
 
                     pw.SizedBox(height: 20),
                     // Referencias
@@ -208,13 +202,14 @@ Future<Uint8List> generateResume2(
                           name: '${ref.certifierName}',
                           position: '${ref.certifierPosition}',
                           company: '${ref.certifierCompany}',
-                          contact: '${ref.phone} / ${ref.email}',
+                          contact: '${ref.email} / ${ref.phone}',
                         ),
                     ],
 
                     pw.SizedBox(height: 20),
                     // Competencias
-                    if (competenciesNames.isNotEmpty) ...[
+                    if (competenciesNames != null &&
+                        competenciesNames.isNotEmpty) ...[
                       _Category(title: StringConst.COMPETENCIES, color: teal),
                       pw.Wrap(
                         spacing: 6,
@@ -227,7 +222,8 @@ Future<Uint8List> generateResume2(
 
                     pw.SizedBox(height: 20),
                     // Datos de Interés
-                    if (myDataOfInterest.isNotEmpty) ...[
+                    if (myDataOfInterest != null &&
+                        myDataOfInterest.isNotEmpty) ...[
                       _Category(
                           title: StringConst.DATA_OF_INTEREST, color: teal),
                       for (var item in myDataOfInterest)
@@ -236,17 +232,19 @@ Future<Uint8List> generateResume2(
 
                     pw.SizedBox(height: 20),
                     // Idiomas
-                    languagesNames != null && languagesNames.isNotEmpty
-                        ? _Category(
-                            title: StringConst.LANGUAGES, color: primary900)
-                        : pw.Container(),
-                    for (var data in languagesNames)
-                      _BlockSimpleList(
-                        title: data.name,
-                        color: grey,
-                        dotsSpeaking: data.speakingLevel,
-                        dotsWriting: data.writingLevel,
-                      ),
+                    if (languagesNames != null &&
+                        languagesNames.isNotEmpty) ...[
+                      _Category(title: StringConst.LANGUAGES, color: teal),
+                      for (var lang in languagesNames)
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.only(bottom: 2),
+                          child: pw.Text(
+                            '${lang.name.toUpperCase()} | ${lang.speakingLevel == 1 ? 'PRINCIPIANTE' : lang.speakingLevel == 2 ? 'MEDIO' : 'AVANZADO'}',
+                            style: const pw.TextStyle(
+                                fontSize: 8, color: greyBody),
+                          ),
+                        ),
+                    ],
                   ],
                 ),
               ),
@@ -259,17 +257,16 @@ Future<Uint8List> generateResume2(
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
-                    //pw.SizedBox(height: 40),
+                    pw.SizedBox(height: 20),
                     // Experiencias Profesionales
-                    if ((myExperiences ?? []).isNotEmpty) ...[
-                      _Category(
+                    if (myExperiences != null && myExperiences.isNotEmpty) ...[
+                      _TimelineCategory(
                           title: StringConst.MY_PROFESIONAL_EXPERIENCES,
                           color: teal),
-                      for (var exp in (myExperiences ?? []))
+                      for (var exp in myExperiences)
                         _ExperienceBlock(
                           title: exp.activity ?? '',
-                          subtitle:
-                              '${exp.position == null || exp.position!.isEmpty ? exp.activity ?? "" : exp.position} - ${exp.organization ?? ""}',
+                          subtitle: '${exp.position} - ${exp.organization}',
                           date:
                               '${exp.startDate != null ? formatter.format(exp.startDate!.toDate()) : '-'} / ${exp.endDate != null ? formatter.format(exp.endDate!.toDate()) : 'Actualmente'}',
                           location: exp.location ?? '',
@@ -279,11 +276,12 @@ Future<Uint8List> generateResume2(
 
                     pw.SizedBox(height: 20),
                     // Experiencias Personales
-                    if ((myPersonalExperiences ?? []).isNotEmpty) ...[
-                      _Category(
+                    if (myPersonalExperiences != null &&
+                        myPersonalExperiences.isNotEmpty) ...[
+                      _TimelineCategory(
                           title: StringConst.MY_PERSONAL_EXPERIENCES,
                           color: teal),
-                      for (var exp in (myPersonalExperiences ?? []))
+                      for (var exp in myPersonalExperiences)
                         _ExperienceBlock(
                           title: exp.activity ?? '',
                           subtitle: exp.organization ?? '',
@@ -295,9 +293,10 @@ Future<Uint8List> generateResume2(
 
                     pw.SizedBox(height: 20),
                     // Formación
-                    if ((myEducation ?? []).isNotEmpty) ...[
-                      _Category(title: StringConst.EDUCATION, color: teal),
-                      for (var edu in (myEducation ?? []))
+                    if (myEducation != null && myEducation.isNotEmpty) ...[
+                      _TimelineCategory(
+                          title: StringConst.EDUCATION, color: teal),
+                      for (var edu in myEducation)
                         _ExperienceBlock(
                           title: edu.nameFormation ?? '',
                           subtitle: edu.institution ?? '',
@@ -309,9 +308,11 @@ Future<Uint8List> generateResume2(
 
                     pw.SizedBox(height: 20),
                     // Cursos y Certificados
-                    if ((mySecondaryEducation ?? []).isNotEmpty) ...[
-                      _Category(title: 'CURSOS Y CERTIFICADOS', color: teal),
-                      for (var edu in (mySecondaryEducation ?? []))
+                    if (mySecondaryEducation != null &&
+                        mySecondaryEducation.isNotEmpty) ...[
+                      _TimelineCategory(
+                          title: 'CURSOS Y CERTIFICADOS', color: teal),
+                      for (var edu in mySecondaryEducation)
                         _ExperienceBlock(
                           title: edu.nameFormation ?? '',
                           subtitle: edu.institution ?? '',
@@ -333,9 +334,10 @@ Future<Uint8List> generateResume2(
 }
 
 Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
-  format = format.applyMargin(left: 0, top: 0, right: 0, bottom: 0);
-  final double dividerPos = format.width / 3;
+  final headerSvgSmall =
+      '<svg width="600" height="30"><path d="M0,0 L600,0 L600,30 L50,30 Q0,30 0,0 Z" fill="#004D5E" /></svg>';
 
+  format = format.applyMargin(left: 0, top: 0, right: 0, bottom: 0);
   return pw.PageTheme(
     pageFormat: format,
     margin: pw.EdgeInsets.zero,
@@ -349,41 +351,26 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
         ignoreMargins: true,
         child: pw.Stack(
           children: [
-            // Vertical Divider with 30px padding top/bottom
-            if (context.pageNumber == 1)
-              pw.Positioned(
-                top: headerHeightDivider + 7.5,
-                left: 30,
-                right: 30,
-                child: pw.Container(
-                  height: 0.75,
-                  color: teal,
-                ),
-              ),
+            // Header - Large on Page 1, Small on others
             pw.Positioned(
-              top: context.pageNumber == 1 ? headerHeightDivider : 30,
-              bottom: 30,
-              left: dividerPos,
+              top: 0,
+              left: 0,
+              right: 0,
+              child: context.pageNumber == 1
+                  ? pw.Container()
+                  : pw.SvgImage(svg: headerSvgSmall, fit: pw.BoxFit.fill),
+            ),
+            // Vertical Divider
+            pw.Positioned(
+              top: (context.pageNumber == 1 ? 280 : 30) + 40,
+              bottom: 40,
+              left: 190,
               child: _VerticalTimelineShape(teal),
             ),
-
-            // Horizontal Divider (Page 1) with 30px padding left/right
           ],
         ),
       );
     },
-  );
-}
-
-pw.Widget _buildDot() {
-  return pw.Container(
-    width: 16,
-    height: 16,
-    decoration: pw.BoxDecoration(
-      color: white,
-      shape: pw.BoxShape.circle,
-      border: pw.Border.all(color: teal, width: 0.75),
-    ),
   );
 }
 
@@ -398,6 +385,38 @@ class _Category extends pw.StatelessWidget {
       child: pw.Text(title.toUpperCase(),
           style: pw.TextStyle(
               fontWeight: pw.FontWeight.bold, color: color, fontSize: 11)),
+    );
+  }
+}
+
+class _TimelineCategory extends pw.StatelessWidget {
+  _TimelineCategory({required this.title, required this.color});
+  final String title;
+  final PdfColor color;
+  @override
+  pw.Widget build(pw.Context context) {
+    return pw.Stack(
+      alignment: pw.Alignment.centerLeft,
+      children: [
+        pw.Positioned(
+          left: -20.5,
+          child: pw.Container(
+            width: 12,
+            height: 12,
+            decoration: pw.BoxDecoration(
+              color: white,
+              shape: pw.BoxShape.circle,
+              border: pw.Border.all(color: greyLight, width: 1.5),
+            ),
+          ),
+        ),
+        pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 6, top: 10),
+          child: pw.Text(title.toUpperCase(),
+              style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold, color: color, fontSize: 12)),
+        ),
+      ],
     );
   }
 }
@@ -418,8 +437,8 @@ class _IconText extends pw.StatelessWidget {
           pw.Container(
             width: 14,
             height: 14,
-            decoration: const pw.BoxDecoration(
-                color: tealLight, shape: pw.BoxShape.circle),
+            decoration:
+                const pw.BoxDecoration(color: teal, shape: pw.BoxShape.circle),
             child: pw.Center(
                 child: pw.Icon(pw.IconData(iconData), size: 8, color: white)),
           ),
@@ -471,25 +490,22 @@ class _ReferenceBlock extends pw.StatelessWidget {
 
 class _CompetencyChip extends pw.StatelessWidget {
   _CompetencyChip({required this.title});
-
   final String title;
-
   @override
   pw.Widget build(pw.Context context) {
+    // #054D5E
     return pw.Container(
       padding: const pw.EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: pw.BoxDecoration(
-        color: white, // Same as sidebar background
-        border: pw.Border.all(color: darkTeal, width: 1),
-        borderRadius:
-            pw.BorderRadius.circular(12), // Reduced for single-line text
+        color: const PdfColor.fromInt(0xFF054D5E),
+        borderRadius: pw.BorderRadius.circular(12),
       ),
       child: pw.Text(
         title,
         textScaleFactor: 0.75,
         style: pw.Theme.of(context).defaultTextStyle.copyWith(
               fontWeight: pw.FontWeight.normal,
-              color: darkTeal,
+              color: white,
             ),
       ),
     );
@@ -555,122 +571,6 @@ class _ExperienceBlock extends pw.StatelessWidget {
               ),
             ),
         ],
-      ),
-    );
-  }
-}
-
-class _BlockSimpleList extends pw.StatelessWidget {
-  _BlockSimpleList({
-    this.title,
-    this.color,
-    this.dotsSpeaking,
-    this.dotsWriting,
-  });
-
-  final String? title;
-  final PdfColor? color;
-  late int? dotsSpeaking;
-  late int? dotsWriting;
-
-  @override
-  pw.Widget build(pw.Context context) {
-    return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: <pw.Widget>[
-          pw.Row(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: <pw.Widget>[
-                pw.Container(
-                  width: 3,
-                  height: 3,
-                  margin: const pw.EdgeInsets.only(top: 5.5, left: 2, right: 5),
-                  decoration: const pw.BoxDecoration(
-                    color: primary900,
-                    shape: pw.BoxShape.circle,
-                  ),
-                ),
-                title != null
-                    ? pw.Expanded(
-                        child: pw.Text(title!,
-                            textScaleFactor: 0.8,
-                            style: pw.Theme.of(context)
-                                .defaultTextStyle
-                                .copyWith(
-                                    fontWeight: pw.FontWeight.normal,
-                                    color: color)),
-                      )
-                    : pw.Container(),
-              ]),
-          dotsSpeaking != null && dotsWriting != null
-              ? pw.Container()
-              : pw.SizedBox(height: 8),
-          dotsSpeaking != null && dotsWriting != null
-              ? pw.Column(children: [
-                  pw.Row(
-                      crossAxisAlignment: pw.CrossAxisAlignment.center,
-                      children: [
-                        pw.SizedBox(width: 10),
-                        pw.Text('Oral:  ',
-                            textScaleFactor: 0.8,
-                            style: pw.Theme.of(context)
-                                .defaultTextStyle
-                                .copyWith(fontWeight: pw.FontWeight.normal)),
-                        _Dots(dotsNumber: dotsSpeaking),
-                        pw.SizedBox(width: 10),
-                        pw.Text('Escrito:  ',
-                            textScaleFactor: 0.8,
-                            style: pw.Theme.of(context)
-                                .defaultTextStyle
-                                .copyWith(fontWeight: pw.FontWeight.normal)),
-                        _Dots(dotsNumber: dotsWriting),
-                      ])
-                ])
-              : pw.Container()
-        ]);
-  }
-}
-
-class _Dots extends pw.StatelessWidget {
-  _Dots({
-    this.dotsNumber,
-  });
-
-  final int? dotsNumber;
-
-  @override
-  pw.Widget build(pw.Context context) {
-    return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.center,
-      mainAxisAlignment: pw.MainAxisAlignment.center,
-      children: [
-        buildDotRow(),
-        pw.SizedBox(height: 8),
-      ],
-    );
-  }
-
-  pw.Widget buildDotRow() {
-    List<pw.Widget> dots = [];
-    for (int i = 0; i < 3; i++) {
-      PdfColor color = i < (dotsNumber ?? 0) ? primary900 : greyLight;
-      dots.add(buildDot(color));
-    }
-    return pw.Row(
-      crossAxisAlignment: pw.CrossAxisAlignment.center,
-      mainAxisAlignment: pw.MainAxisAlignment.center,
-      children: dots,
-    );
-  }
-
-  pw.Widget buildDot(PdfColor color) {
-    return pw.Container(
-      width: 6,
-      height: 6,
-      margin: const pw.EdgeInsets.only(top: 10, left: 2, right: 2),
-      decoration: pw.BoxDecoration(
-        color: color,
-        shape: pw.BoxShape.circle,
       ),
     );
   }

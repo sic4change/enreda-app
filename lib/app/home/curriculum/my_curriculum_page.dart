@@ -373,85 +373,81 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
       child: SingleChildScrollView(
         controller: ScrollController(),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomTextMediumBold(text: StringConst.MY_CV),
             MainContainer(
               //height: MediaQuery.of(context).size.height,
-              padding: EdgeInsets.all(0),
+              padding: EdgeInsets.all(Sizes.mainPadding * 2),
               margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(
                 children: [
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: Container(
-                        width: Responsive.isDesktop(context)
-                            ? MediaQuery.of(context).size.width * 0.3
-                            : Responsive.isDesktopS(context)
-                                ? MediaQuery.of(context).size.width * 0.2
-                                : 200,
-                        //height: double.infinity,
-                        padding: EdgeInsets.only(
-                          left: Sizes.mainPadding * 2,
-                          top: Sizes.mainPadding * 2,
-                        ),
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [
-                            AppColors.primary400.withOpacity(0.15),
-                            AppColors.primary020.withOpacity(0.13)
-                          ],
-                        )),
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 50.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildMyProfilePhoto(user),
-                              SpaceH20(),
-                              _buildPersonalData(context, user),
-                              SpaceH20(),
-                              _buildAboutMe(context, user),
-                              SpaceH20(),
-                              _buildMyDataOfInterest(context, user),
-                              SpaceH20(),
-                              _buildMyLanguages(context, user),
-                              SpaceH20(),
-                              _buildMyReferences(context, user),
-                            ],
-                          ),
-                        )),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Container(
+                            width: Responsive.isDesktop(context)
+                                ? MediaQuery.of(context).size.width * 0.3
+                                : Responsive.isDesktopS(context)
+                                    ? MediaQuery.of(context).size.width * 0.2
+                                    : 200,
+                            //height: double.infinity,
+                            padding: EdgeInsets.only(
+                              left: Sizes.mainPadding * 2,
+                              top: Sizes.mainPadding * 2,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 50.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildMyProfilePhoto(user),
+                                  SpaceH20(),
+                                  _buildPersonalData(context, user),
+                                  SpaceH20(),
+                                  _buildAboutMe(context, user),
+                                  SpaceH20(),
+                                  _buildMyDataOfInterest(context, user),
+                                  SpaceH20(),
+                                  _buildMyLanguages(context, user),
+                                  SpaceH20(),
+                                  _buildMyReferences(context, user),
+                                ],
+                              ),
+                            )),
+                      ),
+                      SpaceW40(),
+                      Flexible(
+                          fit: FlexFit.loose,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              right: Sizes.mainPadding * 2,
+                              top: Sizes.mainPadding * 2,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildCVHeader(context, user, profilePic,
+                                    competenciesNames),
+                                SpaceH30(),
+                                _buildMyEducation(context, user),
+                                SpaceH30(),
+                                _buildMySecondaryEducation(context, user),
+                                SpaceH30(),
+                                _buildMyExperiences(context, user),
+                                SpaceH30(),
+                              ],
+                            ),
+                          ))
+                    ],
                   ),
-                  SpaceW40(),
-                  Flexible(
-                      fit: FlexFit.loose,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          right: Sizes.mainPadding * 2,
-                          top: Sizes.mainPadding * 2,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildCVHeader(
-                                context, user, profilePic, competenciesNames),
-                            SpaceH30(),
-                            _buildMyEducation(context, user),
-                            SpaceH30(),
-                            _buildMySecondaryEducation(context, user),
-                            SpaceH30(),
-                            _buildMyExperiences(context, user),
-                            SpaceH30(),
-                            _buildMyCompetencies(context, user),
-                            SpaceH30(),
-                            _buildFinalCheck(context, user),
-                            SpaceH30(),
-                          ],
-                        ),
-                      ))
+                  SpaceH30(),
+                  _buildMyCompetencies(context, user),
+                  SpaceH30(),
+                  _buildFinalCheck(context, user),
                 ],
               ),
             ),
@@ -1478,9 +1474,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                         child: ExperienceTile(
                                             experience: e, type: e.type),
                                       ),
-                                      Divider(
-                                        color: AppColors.greyBorder,
-                                      ),
                                     ],
                                   ))
                               .toList(),
@@ -1557,9 +1550,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                         child: ExperienceTile(
                                             experience: e, type: e.type),
                                       ),
-                                      Divider(
-                                        color: AppColors.greyBorder,
-                                      ),
                                     ],
                                   ))
                               .toList(),
@@ -1632,9 +1622,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                         width: double.infinity,
                                         child: ExperienceTile(
                                             experience: e, type: e.type),
-                                      ),
-                                      Divider(
-                                        color: AppColors.greyBorder,
                                       ),
                                     ],
                                   ))
@@ -1710,9 +1697,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                           experience: e,
                                           type: e.type,
                                         ),
-                                      ),
-                                      Divider(
-                                        color: AppColors.greyBorder,
                                       ),
                                     ],
                                   ))
@@ -1863,9 +1847,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                   ],
                                 ),
                               ),
-                              Divider(
-                                color: AppColors.greyBorder,
-                              ),
                             ],
                           ))
                       .toList(),
@@ -1940,9 +1921,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                 iconSize: 15.0,
                                 onValueChanged: null,
                               ),
-                              Divider(
-                                color: AppColors.greyBorder,
-                              ),
                             ],
                           ))
                       .toList(),
@@ -2011,9 +1989,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                             SpaceW12(),
                                           ],
                                         ),
-                                      ),
-                                      Divider(
-                                        color: AppColors.greyBorder,
                                       ),
                                     ],
                                   ))

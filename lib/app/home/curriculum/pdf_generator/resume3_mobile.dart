@@ -27,7 +27,7 @@ const PdfColor greyLight = PdfColor.fromInt(0xFFADADAD);
 const leftWidth = 200.0;
 const rightWidth = 350.0;
 
-Future<Uint8List> generateResume2(
+Future<Uint8List> generateResume3(
   PdfPageFormat format,
   CustomData data,
   UserEnreda? user,

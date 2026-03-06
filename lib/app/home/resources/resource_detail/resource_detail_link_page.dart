@@ -275,7 +275,7 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
                           iconSize: 30,
                           onPressed: () {
                             auth.currentUser == null
-                                ? showAlertNullUser(context)
+                                ? showAlertNullUser(context, resourceId: resource.resourceId)
                                 : resource.likes.contains(userId)
                                 ? removeUserToLike(
                                 context: context,
@@ -353,7 +353,7 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
                                   iconSize: 20,
                                   onPressed: () {
                                     auth.currentUser == null
-                                        ? showAlertNullUser(context)
+                                        ? showAlertNullUser(context, resourceId: resource.resourceId)
                                         : resource.likes.contains(userId)
                                         ? removeUserToLike(
                                         context: context,
@@ -448,7 +448,7 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
                           iconSize: 30,
                           onPressed: () {
                             auth.currentUser == null
-                                ? showAlertNullUser(context)
+                                ? showAlertNullUser(context, resourceId: resource.resourceId)
                                 : resource.likes.contains(userId)
                                 ? removeUserToLike(
                                 context: context,
@@ -599,7 +599,7 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
         TextButton(
           onPressed: () {
             if (auth.currentUser == null) {
-              showAlertNullUser(context);
+              showAlertNullUser(context, resourceId: resource.resourceId);
             } else if (resource.participants.contains(userId)) {
               removeUserToResource(context: context, userId: userId, resource: resource);
             } /*else if ((resource.link == null || resource.link!.isEmpty) &&

@@ -216,7 +216,7 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold> {
       onTap: () {
         setState(() {
           CupertinoScaffold.controller.index = 3;
-          WebHome.controller.selectIndex(2);
+          WebHome.controller.selectIndex(0);
         });
       },
       child: Column(

@@ -241,7 +241,7 @@ class _TrainingPillsListTileMobileState extends State<TrainingPillsListTileMobil
                           tooltip: 'Me gusta',
                           color: Constants.darkGray,
                           iconSize: 15,
-                          onPressed: () => showAlertNullUser(context),
+                          onPressed: () => showAlertNullUser(context, trainingPillId: widget.trainingPill.id),
                         )
                       : widget.trainingPill.likes.contains(auth.currentUser!.uid)
                           ? IconButton(

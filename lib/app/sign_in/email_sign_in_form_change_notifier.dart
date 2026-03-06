@@ -296,9 +296,17 @@ class _EmailSignInFormChangeNotifierState
     else {
       try {
         await model.submit();
-        //CupertinoScaffold.controller.index = 3;
-        GoRouter.of(context).go(StringConst.PATH_HOME);
-        //context.canPop() ? context.pop() : context.go(StringConst.PATH_HOME);
+        if (Constants.pendingResourceId != null) {
+          String rid = Constants.pendingResourceId!;
+          Constants.pendingResourceId = null;
+          GoRouter.of(context).go('${StringConst.PATH_RESOURCES}/$rid');
+        } else if (Constants.pendingTrainingPillId != null) {
+          String rid = Constants.pendingTrainingPillId!;
+          Constants.pendingTrainingPillId = null;
+          GoRouter.of(context).go('${StringConst.PATH_TRAINING_PILLS}/$rid');
+        } else {
+          GoRouter.of(context).go(StringConst.PATH_HOME);
+        }
       } on FirebaseAuthException catch (e) {
         showExceptionAlertDialog(
           context,

@@ -193,7 +193,7 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
                               tooltip: 'Me gusta',
                               color: Constants.white,
                               iconSize: 20,
-                              onPressed: () => showAlertNullUser(context),
+                              onPressed: () => showAlertNullUser(context, trainingPillId: trainingPill.id),
                             )
                                 : trainingPill.likes.contains(auth.currentUser!.uid)
                                 ? IconButton(

@@ -813,6 +813,14 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
       this.selectedCity = null;
       this.selectedCountry = country;
       countryName = country != null ? country.name : "";
+
+      if (countryName.toLowerCase() == 'senegal') {
+        this.phoneCode = '+221';
+      } else if (countryName.toLowerCase() == 'españa') {
+        this.phoneCode = '+34';
+      } else if (countryName.toLowerCase() == 'perú') {
+        this.phoneCode = '+51';
+      }
     });
     _country = country?.countryId;
   }

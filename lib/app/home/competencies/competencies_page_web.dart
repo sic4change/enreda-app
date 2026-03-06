@@ -1,4 +1,5 @@
 import 'package:enreda_app/app/home/competencies/competencies_subcategories_page_web.dart';
+import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
@@ -292,21 +293,8 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
     );
   }
 
-  _showAlertNullUser(BuildContext context) async {
-    final isSmallScreen = Responsive.isMobile(context);
-    final didRequestSignOut = await showAlertDialog(context,
-        title: StringConst.NOT_LOGIN,
-        content: StringConst.ASK_LOGIN,
-        cancelActionText: StringConst.CANCEL,
-        defaultActionText: StringConst.ENTER);
-    if (didRequestSignOut == true) {
-      if(!isSmallScreen) {
-        WebHome.selectedIndex.value = 0;
-      }
-      if(isSmallScreen) {
-        CupertinoScaffoldAnonymous.controller.index = 2;
-      }
-    }
+  _showAlertNullUser(BuildContext context) {
+    showAlertNullUser(context);
   }
 
   Widget _competenciesCategoriesWidget(BuildContext context, List<CompetencyCategory> competenciesCategories) {

@@ -79,6 +79,9 @@ class Constants {
   static double mainPadding = 20.0;
   static double sidebarWidth = 440.0;
   static double maxWidth = 1580.0;
+
+  static String? pendingResourceId;
+  static String? pendingTrainingPillId;
 }
 
 enum BackgroundHeight {

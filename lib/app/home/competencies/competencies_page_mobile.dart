@@ -1,4 +1,5 @@
 import 'package:enreda_app/app/home/competencies/competencies_subcategories_page_mobile.dart';
+import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/models/competencyCategory.dart';
@@ -332,21 +333,8 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
     );
   }
 
-  void _showAlertNullUser(BuildContext context) async {
-    final isSmallScreen = Responsive.isMobile(context);
-    final signIn = await showAlertDialog(context,
-        title: StringConst.NOT_LOGIN,
-        content: StringConst.ASK_LOGIN,
-        cancelActionText: StringConst.CANCEL,
-        defaultActionText: StringConst.ENTER);
-    if (signIn == true) {
-      if(!isSmallScreen) {
-        WebHome.selectedIndex.value = 0;
-      }
-      if(isSmallScreen) {
-        CupertinoScaffoldAnonymous.controller.index = 2;
-      }
-    }
+  void _showAlertNullUser(BuildContext context) {
+    showAlertNullUser(context);
   }
 
 }

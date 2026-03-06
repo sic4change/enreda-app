@@ -281,12 +281,15 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
                         labelText: StringConst.FORM_PHONE,
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         prefixIcon: CountryCodePicker(
+                          key: ValueKey(_phoneCode),
                           dialogSize: Size(350.0, MediaQuery.of(context).size.height * 0.6),
                           onChanged: _onCountryChange,
                           initialSelection: _phoneCode == '+34'
                               ? 'ES'
                               : _phoneCode == '+51'
                               ? 'PE'
+                              : _phoneCode == '+221'
+                              ? 'SN'
                               : 'ES',
                           showFlagDialog: true,
                         ),
@@ -634,6 +637,14 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
       selectedProvince = null;
       selectedCity = null;
       selectedCountry = country;
+      
+      if (country?.name.toLowerCase() == 'senegal') {
+        _phoneCode = '+221';
+      } else if (country?.name.toLowerCase() == 'españa') {
+        _phoneCode = '+34';
+      } else if (country?.name.toLowerCase() == 'perú') {
+        _phoneCode = '+51';
+      }
     });
     _country = country?.countryId;
   }

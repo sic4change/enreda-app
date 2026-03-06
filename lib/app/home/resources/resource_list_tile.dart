@@ -275,7 +275,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                 tooltip: 'Me gusta',
                                 color: Constants.darkGray,
                                 iconSize: 20,
-                                onPressed: () => showAlertNullUser(context),
+                                onPressed: () => showAlertNullUser(context, resourceId: widget.resource.resourceId),
                               )
                             : widget.resource.likes
                                     .contains(auth.currentUser!.uid)
@@ -685,16 +685,7 @@ class _ResourceListTileState extends State<ResourceListTile> {
   }
 
   _showAlertUserAnonimousLike() async {
-    final didRequestSignOut = await showAlertDialog(context,
-        title: '¿Te interesa este recurso?',
-        content:
-            'Solo los usuarios registrados pueden guardar como favoritos los recursos. ¿Desea entrar como usuario registrado?',
-        cancelActionText: 'Cancelar',
-        defaultActionText: 'Entrar');
-    if (didRequestSignOut == true) {
-      _signOut(context);
-      Navigator.of(context).pop();
-    }
+    showAlertNullUser(context, resourceId: widget.resource.resourceId);
   }
 
   Future<void> _signOut(BuildContext context) async {

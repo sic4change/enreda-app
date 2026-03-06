@@ -64,7 +64,13 @@ class _CupertinoScaffoldAnonymousState extends State<CupertinoScaffoldAnonymous>
         child: Row(
           children: [
             InkWell(
-              onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
+              onTap: () {
+                setState(() {
+                  CupertinoScaffoldAnonymous.controller.index = 2;
+                  WebHome.selectedIndex.value = 0;
+                  WebHome.controller.selectIndex(0);
+                });
+              },
               child: Image.asset(
                 ImagePath.LOGO,
                 height: 55,

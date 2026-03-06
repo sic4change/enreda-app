@@ -50,9 +50,16 @@ class CustomPhoneFormFieldTitle extends StatelessWidget {
               filled: true,
               fillColor: Colors.white,
               prefixIcon: CountryCodePicker(
+                key: ValueKey(phoneCode),
                 dialogSize: Size(350.0, MediaQuery.of(context).size.height * 0.6),
                 onChanged: onCountryChange,
-                initialSelection: 'ES',
+                initialSelection: phoneCode == '+34'
+                    ? 'ES'
+                    : phoneCode == '+51'
+                        ? 'PE'
+                        : phoneCode == '+221'
+                            ? 'SN'
+                            : 'ES',
                 showFlagDialog: true,
               ),
               focusedBorder: OutlineInputBorder(

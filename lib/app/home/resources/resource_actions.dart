@@ -77,21 +77,27 @@ Future<void> shareResource(Resource resource) async {
   );
 }
 
-void showAlertNullUser(BuildContext context) async {
+void showAlertNullUser(BuildContext context, {String? resourceId, String? trainingPillId}) async {
   final isSmallScreen = Responsive.isMobile(context);
   final signIn = await showAlertDialog(context,
       title: '¿Te interesa este recurso?',
       content:
-          'Solo los usuarios registrados pueden acceder a los recursos internos. ¿Deseas entrar como usuario registrado?',
+          'Solo los usuarios registrados pueden acceder a los recursos internos. ¿Deseas entrar como usuario registrado?\n\n'
+              'Si tienes dudas, puedes consultarlas a través de nuestro chat de soporte: ${StringConst.CHAT_ENREDA_URL}',
       cancelActionText: 'Cancelar',
       defaultActionText: 'Entrar');
   if (signIn == true) {
+    Constants.pendingResourceId = resourceId;
+    Constants.pendingTrainingPillId = trainingPillId;
+
     if(!isSmallScreen) {
       WebHome.selectedIndex.value = 0;
       GoRouter.of(context).go(StringConst.PATH_HOME);
     }
     if(isSmallScreen) {
       CupertinoScaffoldAnonymous.controller.index = 2;
+      WebHome.selectedIndex.value = 0;
+      WebHome.controller.selectIndex(0);
     }
   }
 }

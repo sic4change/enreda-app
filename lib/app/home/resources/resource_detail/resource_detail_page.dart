@@ -214,7 +214,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                           iconSize: 30,
                           onPressed: () {
                             auth.currentUser == null
-                                ? showAlertNullUser(context)
+                                ? showAlertNullUser(context, resourceId: resource.resourceId)
                                 : resource.likes.contains(userId)
                                 ? removeUserToLike(
                                   context: context,
@@ -387,7 +387,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                           iconSize: 30,
                           onPressed: () {
                             auth.currentUser == null
-                                ? showAlertNullUser(context)
+                                ? showAlertNullUser(context, resourceId: resource.resourceId)
                                 : resource.likes.contains(userId)
                                 ? removeUserToLike(
                                 context: context,
@@ -539,7 +539,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         TextButton(
           onPressed: () {
             if (auth.currentUser == null) {
-              showAlertNullUser(context);
+              showAlertNullUser(context, resourceId: resource.resourceId);
             } else if (resource.participants.contains(userId)) {
               removeUserToResource(context: context, userId: userId, resource: resource);
             } /*else if ((resource.link == null || resource.link!.isEmpty) &&
@@ -596,7 +596,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   text: StringConst.JOIN_JOB_OFFER,
                   onTap: () async {
                     if (auth.currentUser == null) {
-                      showAlertNullUser(context);
+                      showAlertNullUser(context, resourceId: resource.resourceId);
                     }
                     showDialog(
                         context: context,

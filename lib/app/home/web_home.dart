@@ -186,7 +186,12 @@ class _WebHomeState extends State<WebHome> {
                           ? EdgeInsets.only(right: 30)
                           : EdgeInsets.only(right: 50),
                       child: InkWell(
-                        onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
+                        onTap: () {
+                          setState(() {
+                            WebHome.selectedIndex.value = 0;
+                            WebHome.controller.selectIndex(0);
+                          });
+                        },
                         child: Image.asset(
                           ImagePath.LOGO,
                           height: 55,
@@ -404,7 +409,12 @@ class _WebHomeState extends State<WebHome> {
                           ? EdgeInsets.only(right: 30)
                           : EdgeInsets.only(right: 50),
                       child: InkWell(
-                        onTap: () => launchURL(StringConst.NEW_WEB_ENREDA_URL),
+                        onTap: () {
+                          setState(() {
+                            WebHome.selectedIndex.value = 0;
+                            WebHome.controller.selectIndex(0);
+                          });
+                        },
                         child: Image.asset(
                           ImagePath.LOGO,
                           height: 55,

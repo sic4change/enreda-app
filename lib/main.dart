@@ -111,7 +111,7 @@ class MyApp extends StatelessWidget {
           routeInformationParser: _router.routeInformationParser,
           routerDelegate: _router.routerDelegate,
           debugShowCheckedModeBanner: false,
-          title: 'enREDa',
+          title: 'Enreda',
           theme: AppTheme.lightThemeData,
           localizationsDelegates: [
             CountryLocalizations.delegate,

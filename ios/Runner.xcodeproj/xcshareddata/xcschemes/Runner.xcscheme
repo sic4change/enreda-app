@@ -82,7 +82,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
-      customArchiveName = "enREDa"
+      customArchiveName = "Enreda"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

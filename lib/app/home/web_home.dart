@@ -142,6 +142,22 @@ class _WebHomeState extends State<WebHome> {
                     });
                     return Container();
                   }
+
+                  // After successful login, redirect to pending resource/training pill if any
+                  if (Constants.pendingResourceId != null) {
+                    final rid = Constants.pendingResourceId!;
+                    Constants.pendingResourceId = null;
+                    Future.delayed(Duration.zero, () {
+                      GoRouter.of(context).go('${StringConst.PATH_RESOURCES}/$rid');
+                    });
+                  } else if (Constants.pendingTrainingPillId != null) {
+                    final tid = Constants.pendingTrainingPillId!;
+                    Constants.pendingTrainingPillId = null;
+                    Future.delayed(Duration.zero, () {
+                      GoRouter.of(context).go('${StringConst.PATH_TRAINING_PILLS}/$tid');
+                    });
+                  }
+
                   return _buildContent(context, _userEnreda);
                 }
                 else {

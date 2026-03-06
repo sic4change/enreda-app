@@ -42,6 +42,7 @@ class UserEnreda {
     this.assignedById,
     this.motivation,
     this.personalDocuments = const [],
+    this.newsletterSubscribed,
     required this.resources,
   });
 
@@ -158,6 +159,7 @@ class UserEnreda {
     final String? aboutMe = data['aboutMe'];
     final int resourcesAccessCount = data['resourcesAccessCount']?? 0;
     final bool? checkAgreeCV = data['checkAgreeCV'];
+    final bool? newsletterSubscribed = data['newsletterSubscribed'];
 
     Map<String, bool> gamificationFlags = {};
     if (data['gamificationFlags'] != null) {
@@ -227,6 +229,7 @@ class UserEnreda {
       motivation: motivation,
       personalDocuments: personalDocuments,
       assignedById: assignedById,
+      newsletterSubscribed: newsletterSubscribed,
       resources: resources,
     );
   }
@@ -266,6 +269,7 @@ class UserEnreda {
   final String? assignedById;
   final Motivation? motivation;
   final List<PersonalDocument> personalDocuments;
+  final bool? newsletterSubscribed;
   final List<String> resources;
 
 
@@ -300,6 +304,7 @@ class UserEnreda {
       'nationality': nationality,
       'assignedEntityId': assignedEntityId,
       'assignedById' : assignedById,
+      'newsletterSubscribed': newsletterSubscribed,
       'motivation': motivation?.toMap(),
       'personalDocuments': personalDocuments.map((e) => e.toMap()).toList(),
       'resources': resources,
@@ -345,6 +350,7 @@ class UserEnreda {
     String? assignedById,
     Motivation? motivation,
     List<PersonalDocument>? personalDocuments,
+    bool? newsletterSubscribed,
     List<String>? resources,
   }) {
     return UserEnreda(
@@ -382,6 +388,7 @@ class UserEnreda {
       assignedById: assignedById ?? this.assignedById,
       motivation: motivation ?? this.motivation,
       personalDocuments: personalDocuments ?? this.personalDocuments,
+      newsletterSubscribed: newsletterSubscribed ?? this.newsletterSubscribed,
       resources: resources ?? this.resources,
     );
   }

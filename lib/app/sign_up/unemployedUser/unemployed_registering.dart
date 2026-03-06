@@ -62,6 +62,7 @@ import '../../../common_widgets/custom_text.dart';
 import '../../../common_widgets/rounded_container.dart';
 import '../validating_form_controls/bubbled_container.dart';
 import '../validating_form_controls/checkbox_data_form.dart';
+import '../validating_form_controls/checkbox_newsletter_form.dart';
 
 const double contactBtnWidthLg = 200.0;
 const double contactBtnWidthSm = 120.0;
@@ -80,6 +81,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   final _formKeyInterests = GlobalKey<FormState>();
   final _checkFieldKey = GlobalKey<FormState>();
   final _checkFieldKeyDataProtectionPolicy = GlobalKey<FormState>();
+  final _checkFieldKeyNewsletter = GlobalKey<FormState>();
   bool isLoading = false;
 
   String? _email;
@@ -99,6 +101,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   int currentStep = 0;
   bool _isChecked = false;
   bool _isCheckedDataProtectionPolicy = false;
+  bool _isNewsletterChecked = false;
 
   List<String> countries = [];
   List<String> provinces = [];
@@ -305,6 +308,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
         nationality: selectedNationality,
         assignedEntityId: selectedSocialEntity?.socialEntityId ?? null,
         checkAgreeCV: _isCheckedDataProtectionPolicy,
+        newsletterSubscribed: _isNewsletterChecked,
         gamificationFlags: {
           UserEnreda.FLAG_SIGN_UP: true,
         },
@@ -776,6 +780,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
               children: [
                 checkboxForm(context, _checkFieldKey, _isChecked, functionSetState),
                 checkboxDataForm(context, _checkFieldKeyDataProtectionPolicy, _isCheckedDataProtectionPolicy, functionDataSetState),
+                checkboxNewsletterForm(context, _checkFieldKeyNewsletter, _isNewsletterChecked, functionNewsletterSetState),
               ],
             ),
           )
@@ -793,6 +798,12 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   void functionDataSetState(bool? val) {
     setState(() {
       _isCheckedDataProtectionPolicy = val!;
+    });
+  }
+
+  void functionNewsletterSetState(bool? val) {
+    setState(() {
+      _isNewsletterChecked = val!;
     });
   }
 

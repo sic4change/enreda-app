@@ -423,6 +423,80 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   Widget _buildDetailResource(BuildContext context, Resource resource) {
     TextTheme textTheme = Theme.of(context).textTheme;
+    final markers = [
+      StringConst.RESPONSIBILITIES.toUpperCase(),
+      StringConst.FUNCTIONS.toUpperCase(),
+    ];
+
+    List<Widget> descriptionWidgets = [];
+    String workingDescription = resource.description;
+
+    while (true) {
+      int earliestIdx = -1;
+      String? matchedMarker;
+
+      for (var marker in markers) {
+        int idx = workingDescription.indexOf(marker);
+        if (idx != -1 && (earliestIdx == -1 || idx < earliestIdx)) {
+          earliestIdx = idx;
+          matchedMarker = marker;
+        }
+      }
+
+      if (earliestIdx == -1) {
+        // No markers left, add the remaining text
+        if (workingDescription.trim().isNotEmpty) {
+          descriptionWidgets.add(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: Text(
+                workingDescription.trim(),
+                textAlign: TextAlign.left,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: AppColors.greyTxtAlt,
+                  height: 1.5,
+                ),
+              ),
+            ),
+          );
+        }
+        break;
+      } else {
+        // Add text before the marker
+        String before = workingDescription.substring(0, earliestIdx).trim();
+        if (before.isNotEmpty) {
+          descriptionWidgets.add(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: Text(
+                before,
+                textAlign: TextAlign.left,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: AppColors.greyTxtAlt,
+                  height: 1.5,
+                ),
+              ),
+            ),
+          );
+        }
+
+        // Add the marker title styled as a header
+        descriptionWidgets.add(
+          Text(
+            matchedMarker!,
+            style: textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColors.primary900,
+            ),
+          ),
+        );
+        descriptionWidgets.add(const SizedBox(height: 10,));
+
+        // Advance the working description
+        workingDescription = workingDescription.substring(earliestIdx + matchedMarker.length);
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       child: Column(
@@ -437,17 +511,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
             ),
           ),
           const SizedBox(height: 10,),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
-            child: Text(
-              resource.description,
-              textAlign: TextAlign.left,
-              style: textTheme.bodyMedium?.copyWith(
-                color: AppColors.greyTxtAlt,
-                height: 1.5,
-              ),
-            ),
-          ),
+          ...descriptionWidgets,
           _buildInformationResource(context, resource),
         ],
       ),

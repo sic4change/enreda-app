@@ -351,6 +351,7 @@ class StringConst {
   static const String FORM_DESCRIPTION = "Descripción del puesto";
   static const String FORM_SCHEDULE = "Horario";
   static const String AVAILABLE = "Disponibilidad";
+  static const String CHAT_ENREDA_URL = "https://wa.me/34623102371";
   static const String SUBJECT = "Participante Enreda";
   static const String BODY = "Hola! Quisiera más información";
   static const String NO_RESOURCES_SUBTITLE = "Descubre aquello que te hace diferente y ponlo en valor a la hora de buscar empleo";

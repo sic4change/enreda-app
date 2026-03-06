@@ -169,40 +169,60 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
 
   Widget _myCurriculumMini(BuildContext context, UserEnreda? user, String profilePic, List<String> competenciesNames){
     final textTheme = Theme.of(context).textTheme;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: Responsive.isDesktop(context) ? 400 : Responsive.isDesktopS(context) ? 400.0 : 400,
-          padding: EdgeInsets.only(
-            left: Sizes.mainPadding * 2,
-            top: Sizes.mainPadding * 2,
-            right: Sizes.mainPadding * 2,
-          ),
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  AppColors.primary400.withOpacity(0.15),
-                  AppColors.primary020.withOpacity(0.13)
-                ],
-              )
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    !kIsWeb ?
-                    ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(60)),
-                      child:
-                      Center(
+    return SizedBox(
+      width: 1020,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 400,
+            padding: EdgeInsets.only(
+              left: Sizes.mainPadding * 2,
+              top: Sizes.mainPadding * 2,
+              right: Sizes.mainPadding * 2,
+            ),
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    AppColors.primary400.withOpacity(0.15),
+                    AppColors.primary020.withOpacity(0.13)
+                  ],
+                )
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      !kIsWeb ?
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(60)),
+                        child:
+                        Center(
+                          child:
+                          profilePic == "" ?
+                          Container(
+                            color:  Colors.transparent,
+                            height: 120,
+                            width: 120,
+                            child: Image.asset(ImagePath.USER_DEFAULT),
+                          ):
+                          CachedNetworkImage(
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center,
+                              imageUrl: profilePic),
+                        ),
+                      ):
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(60)),
                         child:
                         profilePic == "" ?
                         Container(
@@ -211,76 +231,59 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                           width: 120,
                           child: Image.asset(ImagePath.USER_DEFAULT),
                         ):
-                        CachedNetworkImage(
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.cover,
-                            alignment: Alignment.center,
-                            imageUrl: profilePic),
-                      ),
-                    ):
-                    ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(60)),
-                      child:
-                      profilePic == "" ?
-                      Container(
-                        color:  Colors.transparent,
-                        height: 120,
-                        width: 120,
-                        child: Image.asset(ImagePath.USER_DEFAULT),
-                      ):
-                      PrecacheAvatarCard(
-                        imageUrl: profilePic,
-                        height: 120,
-                        width: 120,
-                      ),
-                    )
-                  ],
+                        PrecacheAvatarCard(
+                          imageUrl: profilePic,
+                          height: 120,
+                          width: 120,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              SpaceH20(),
-              _buildPersonalData(context),
-              SpaceH20(),
-              _buildAboutMe(context),
-              SpaceH20(),
-              _buildMyDataOfInterest(context),
-              SpaceH20(),
-              _buildMyLanguages(context),
-              SpaceH20(),
-              _buildMyReferences(context, user),
-            ],
+                SpaceH20(),
+                _buildPersonalData(context),
+                SpaceH20(),
+                _buildAboutMe(context),
+                SpaceH20(),
+                _buildMyDataOfInterest(context),
+                SpaceH20(),
+                _buildMyLanguages(context),
+                SpaceH20(),
+                _buildMyReferences(context, user),
+              ],
+            ),
           ),
-        ),
-        SpaceW20(),
-        Container(
-          width: 600,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SpaceH50(),
-              Text(
-                '${user?.firstName} ${user?.lastName}',
-                style: textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-                    color: AppColors.primary900),
-              ),
-              SpaceH30(),
-              _buildMyEducation(context, user),
-              SpaceH30(),
-              _buildMySecondaryEducation(context, user),
-              SpaceH30(),
-              _buildMyExperiences(context, user),
-              SpaceH30(),
-              _buildMyCompetencies(context, user),
-              SpaceH30(),
-              _buildFinalCheck(context, user),
-              SpaceH30(),
-            ],
-          ),
-        )
-      ],
+          SpaceW20(),
+          Container(
+            width: 600,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SpaceH50(),
+                Text(
+                  '${user?.firstName} ${user?.lastName}',
+                  style: textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
+                      color: AppColors.primary900),
+                ),
+                SpaceH30(),
+                _buildMyEducation(context, user),
+                SpaceH30(),
+                _buildMySecondaryEducation(context, user),
+                SpaceH30(),
+                _buildMyExperiences(context, user),
+                SpaceH30(),
+                _buildMyCompetencies(context, user),
+                SpaceH30(),
+                _buildFinalCheck(context, user),
+                SpaceH30(),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 

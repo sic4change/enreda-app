@@ -423,51 +423,45 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   Widget _buildDetailResource(BuildContext context, Resource resource) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    final markers = [
-      StringConst.RESPONSIBILITIES.toUpperCase(),
-      StringConst.FUNCTIONS.toUpperCase(),
-    ];
+
+    // Only match the exact bold markers added by the empresa app when creating job offers.
+    // Plain words like RESPONSABILIDADES or FUNCIONES in the actual content are left as normal text.
+    final markerRegex = RegExp(
+      r'\*\*(Responsabilidades del puesto|Funciones del puesto)\*\*',
+      caseSensitive: false,
+    );
 
     List<Widget> descriptionWidgets = [];
     String workingDescription = resource.description;
 
-    while (true) {
-      int earliestIdx = -1;
-      String? matchedMarker;
+    final matches = markerRegex.allMatches(workingDescription).toList();
 
-      for (var marker in markers) {
-        int idx = workingDescription.indexOf(marker);
-        if (idx != -1 && (earliestIdx == -1 || idx < earliestIdx)) {
-          earliestIdx = idx;
-          matchedMarker = marker;
-        }
-      }
-
-      if (earliestIdx == -1) {
-        // No markers left, add the remaining text
-        if (workingDescription.trim().isNotEmpty) {
-          descriptionWidgets.add(
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Text(
-                workingDescription.trim(),
-                textAlign: TextAlign.left,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: AppColors.greyTxtAlt,
-                  height: 1.5,
-                ),
-              ),
+    if (matches.isEmpty) {
+      // No bold markers — display the full description as plain text
+      descriptionWidgets.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 20.0),
+          child: Text(
+            resource.description,
+            textAlign: TextAlign.left,
+            style: textTheme.bodyMedium?.copyWith(
+              color: AppColors.greyTxtAlt,
+              height: 1.5,
             ),
-          );
-        }
-        break;
-      } else {
-        // Add text before the marker
-        String before = workingDescription.substring(0, earliestIdx).trim();
+          ),
+        ),
+      );
+    } else {
+      int lastMatchEnd = 0;
+      String? lastHeaderAdded;
+
+      for (var match in matches) {
+        // Add any text that appears before this marker as normal body text
+        String before = workingDescription.substring(lastMatchEnd, match.start).trim();
         if (before.isNotEmpty) {
           descriptionWidgets.add(
             Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
+              padding: const EdgeInsets.only(bottom: 12.0),
               child: Text(
                 before,
                 textAlign: TextAlign.left,
@@ -480,20 +474,42 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
           );
         }
 
-        // Add the marker title styled as a header
+        // Render the section header only once (avoid duplicate headers)
+        String headerTitle = _getMarkerTitle(match.group(1) ?? match.group(0)!);
+        if (headerTitle != lastHeaderAdded) {
+          descriptionWidgets.add(const SizedBox(height: 8));
+          descriptionWidgets.add(
+            Text(
+              headerTitle,
+              style: textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary900,
+              ),
+            ),
+          );
+          descriptionWidgets.add(const SizedBox(height: 10));
+          lastHeaderAdded = headerTitle;
+        }
+
+        lastMatchEnd = match.end;
+      }
+
+      // Add anything remaining after the last marker as normal body text
+      String remaining = workingDescription.substring(lastMatchEnd).trim();
+      if (remaining.isNotEmpty) {
         descriptionWidgets.add(
-          Text(
-            matchedMarker!,
-            style: textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColors.primary900,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20.0),
+            child: Text(
+              remaining,
+              textAlign: TextAlign.left,
+              style: textTheme.bodyMedium?.copyWith(
+                color: AppColors.greyTxtAlt,
+                height: 1.5,
+              ),
             ),
           ),
         );
-        descriptionWidgets.add(const SizedBox(height: 10,));
-
-        // Advance the working description
-        workingDescription = workingDescription.substring(earliestIdx + matchedMarker.length);
       }
     }
 
@@ -510,12 +526,19 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               color: AppColors.primary900,
             ),
           ),
-          const SizedBox(height: 10,),
+          const SizedBox(height: 10),
           ...descriptionWidgets,
           _buildInformationResource(context, resource),
         ],
       ),
     );
+  }
+
+  String _getMarkerTitle(String text) {
+    String lower = text.toLowerCase();
+    if (lower.contains('responsabilidad')) return StringConst.RESPONSIBILITIES.toUpperCase();
+    if (lower.contains('funcion') || lower.contains('función')) return StringConst.FUNCTIONS.toUpperCase();
+    return text.toUpperCase().replaceAll('*', '').trim();
   }
 
   Widget _buildInformationResource(BuildContext context, Resource resource) {

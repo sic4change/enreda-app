@@ -36,18 +36,17 @@ class MyApp extends StatelessWidget {
 
   final _router = GoRouter(
     initialLocation: StringConst.PATH_HOME,
-    urlPathStrategy: UrlPathStrategy.path,
     routes: [
       GoRoute(
         path: StringConst.PATH_HOME,
-        builder: (context, state) => MaterialPage<void>(
+        pageBuilder: (context, state) => MaterialPage<void>(
           key: state.pageKey,
           child: HomePage(),
         ),
       ),
       GoRoute(
         path: StringConst.PATH_LOGIN,
-        builder: (context, state) => MaterialPage<void>(
+        pageBuilder: (context, state) => MaterialPage<void>(
           key: state.pageKey,
           child: AccessPage(),
           //child: EmailSignInPage(),
@@ -55,42 +54,39 @@ class MyApp extends StatelessWidget {
       ),
       GoRoute(
         path: StringConst.PATH_ACCESS,
-        builder: (context, state) => MaterialPage<void>(
+        pageBuilder: (context, state) => MaterialPage<void>(
           key: state.pageKey,
           child: AccessPage(),
         ),
       ),
       GoRoute(
         path: '${StringConst.PATH_RESOURCES}/:rid',
-        builder: (context, state) => MaterialPage<void>(
+        pageBuilder: (context, state) => MaterialPage<void>(
           fullscreenDialog: false,
           // child: Responsive.isMobile(context) || Responsive.isTablet(context)
-          //     ? ResourceDetailPageMobile(resourceId: state.params['rid']!)
-          //     : ResourceDetailPageWeb(resourceId: state.params['rid']!),
-          child: ResourceDetailLinkPage(resourceId: state.params['rid']!)
+          //     ? ResourceDetailPageMobile(resourceId: state.pathParameters['rid']!)
+          //     : ResourceDetailPageWeb(resourceId: state.pathParameters['rid']!),
+          child: ResourceDetailLinkPage(resourceId: state.pathParameters['rid']!)
         ),
 
       ),
       GoRoute(
         path: '${StringConst.PATH_TRAINING_PILLS}/:rid',
-        builder: (context, state) => MaterialPage<void>(
+        pageBuilder: (context, state) => MaterialPage<void>(
           fullscreenDialog: false,
-          child: TrainingPillDetailPage(trainingPillId: state.params['rid']!),
+          child: TrainingPillDetailPage(trainingPillId: state.pathParameters['rid']!),
         ),
 
       ),
       GoRoute(
         path: '${StringConst.PATH_COMPETENCIES}/:rid',
-        builder: (context, state) => MaterialPage<void>(
+        pageBuilder: (context, state) => MaterialPage<void>(
           key: state.pageKey,
-          child: CertificateCompetencyForm(certificationRequestId: state.params['rid']!),
+          child: CertificateCompetencyForm(certificationRequestId: state.pathParameters['rid']!),
         ),
       ),
     ],
-    error: (context, state) => MaterialPage<void>(
-      key: state.pageKey,
-      child: ErrorPage(state.error),
-    ),
+    errorBuilder: (context, state) => ErrorPage(state.error),
   );
 
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;

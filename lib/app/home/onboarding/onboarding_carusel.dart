@@ -169,7 +169,7 @@ class _OnboardingCarouselState extends State<OnboardingCarousel> {
   }) {
     return DotsIndicator(
       dotsCount: pageLength,
-      position: currentIndex,
+      position: currentIndex.toDouble(),
       onTap: (index) {
         _moveToNextCarousel(index.toInt());
       },

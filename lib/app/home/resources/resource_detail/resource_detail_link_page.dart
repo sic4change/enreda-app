@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/contact.dart';
 import 'package:enreda_app/app/home/models/country.dart';
@@ -65,6 +66,7 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthBase>(context, listen: false);
     return Scaffold(
       //extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -72,14 +74,19 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
         elevation: 0.0,
         leading: showBackIconButton(context, Colors.white),
       ),
-      body: Stack(
-        children: <Widget>[
-          Opacity(opacity: 0.8, child: BackgroundWeb()),
-          Container(
-              margin: Responsive.isMobile(context) ? EdgeInsets.zero
-                  : const EdgeInsets.symmetric(vertical: 30.0),
-              child: _buildContent()),
-        ],
+      body: StreamBuilder<User?>(
+        stream: auth.authStateChanges(),
+        builder: (context, snapshot) {
+          return Stack(
+            children: <Widget>[
+              Opacity(opacity: 0.8, child: BackgroundWeb()),
+              Container(
+                  margin: Responsive.isMobile(context) ? EdgeInsets.zero
+                      : const EdgeInsets.symmetric(vertical: 30.0),
+                  child: _buildContent()),
+            ],
+          );
+        }
       ),
     );
   }

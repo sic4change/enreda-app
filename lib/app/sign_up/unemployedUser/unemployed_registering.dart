@@ -55,6 +55,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../../../services/database.dart';
 import '../../../../../../utils/responsive.dart';
 import '../../../../../../values/values.dart';
@@ -323,16 +324,25 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           title: StringConst.FORM_SUCCESS,
           content: StringConst.FORM_SUCCESS_MAIL,
           defaultActionText: StringConst.FORM_ACCEPT,
-        ).then((value) => {
-          Navigator.of(this.context).push(
-            MaterialPageRoute<void>(
-              builder: ((context) {
-                return HomePage();
-              }),
-            ),
-          )
-        },
-        );
+        ).then((value) {
+          if (Constants.pendingResourceId != null) {
+            String rid = Constants.pendingResourceId!;
+            Constants.pendingResourceId = null;
+            GoRouter.of(context).go('${StringConst.PATH_RESOURCES}/$rid');
+          } else if (Constants.pendingTrainingPillId != null) {
+            String rid = Constants.pendingTrainingPillId!;
+            Constants.pendingTrainingPillId = null;
+            GoRouter.of(context).go('${StringConst.PATH_TRAINING_PILLS}/$rid');
+          } else {
+            Navigator.of(this.context).push(
+              MaterialPageRoute<void>(
+                builder: ((context) {
+                  return HomePage();
+                }),
+              ),
+            );
+          }
+        });
       } on FirebaseException catch (e) {
         showExceptionAlertDialog(context,
             title: StringConst.FORM_ERROR, exception: e).then((value) => Navigator.pop(context));

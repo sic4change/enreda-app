@@ -82,6 +82,8 @@ class Constants {
 
   static String? pendingResourceId;
   static String? pendingTrainingPillId;
+  static String? initialDeepLinkResourceId;
+  static String? initialDeepLinkTrainingPillId;
 }
 
 enum BackgroundHeight {

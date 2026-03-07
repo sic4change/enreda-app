@@ -127,7 +127,27 @@ class _WebHomeState extends State<WebHome> {
     return StreamBuilder<User?>(
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
+          // If a deep-link resource was detected at startup, redirect immediately.
+          if (Constants.initialDeepLinkResourceId != null) {
+            final rid = Constants.initialDeepLinkResourceId!;
+            Constants.initialDeepLinkResourceId = null;
+            Future.delayed(Duration.zero, () {
+              GoRouter.of(context).go('${StringConst.PATH_RESOURCES}/$rid');
+            });
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (Constants.initialDeepLinkTrainingPillId != null) {
+            final tid = Constants.initialDeepLinkTrainingPillId!;
+            Constants.initialDeepLinkTrainingPillId = null;
+            Future.delayed(Duration.zero, () {
+              GoRouter.of(context).go('${StringConst.PATH_TRAINING_PILLS}/$tid');
+            });
+            return const Center(child: CircularProgressIndicator());
+          }
+
           if (!snapshot.hasData) return _buildContentAnonymous(context);
+          // Treat anonymous Firebase users (e.g. pre-authed for deep-link reads) as guests.
+          if (snapshot.hasData && (snapshot.data?.isAnonymous ?? false)) return _buildContentAnonymous(context);
           if (snapshot.hasData) {
             return StreamBuilder<UserEnreda>(
               stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),

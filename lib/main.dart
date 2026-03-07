@@ -6,9 +6,11 @@ import 'package:enreda_app/app_theme.dart';
 import 'package:enreda_app/firebase_options.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -26,10 +28,37 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // Pre-process deep links: if the browser URL already contains a resource or
+  // training-pill path, store the ID so WebHome can redirect after Firebase
+  // initializes. This is needed because GoRouter always starts at initialLocation
+  // on web before the URL history is resolved.
+  if (kIsWeb) {
+    _processInitialDeepLink();
+  }
+
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   runApp(MyApp());
+}
+
+/// Reads the browser's initial URL and extracts any deep-link ID into
+/// Constants so WebHome / email_sign_in can redirect the user after auth.
+void _processInitialDeepLink() {
+  try {
+    final uri = Uri.base;
+    final segments = uri.pathSegments;
+    // Matches /resources/<id>  →  e.g. ['resources', 'mLRm36lvC6NiDLXNMsJh']
+    if (segments.length >= 2 && segments[0] == 'resources') {
+      Constants.initialDeepLinkResourceId = segments[1];
+      debugPrint('>>> Deep link detected — initialDeepLinkResourceId: ${segments[1]}');
+    } else if (segments.length >= 2 && segments[0] == 'training-pills') {
+      Constants.initialDeepLinkTrainingPillId = segments[1];
+      debugPrint('>>> Deep link detected — initialDeepLinkTrainingPillId: ${segments[1]}');
+    }
+  } catch (e) {
+    debugPrint('>>> Deep link pre-processing failed: $e');
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -63,9 +92,6 @@ class MyApp extends StatelessWidget {
         path: '${StringConst.PATH_RESOURCES}/:rid',
         pageBuilder: (context, state) => MaterialPage<void>(
           fullscreenDialog: false,
-          // child: Responsive.isMobile(context) || Responsive.isTablet(context)
-          //     ? ResourceDetailPageMobile(resourceId: state.pathParameters['rid']!)
-          //     : ResourceDetailPageWeb(resourceId: state.pathParameters['rid']!),
           child: ResourceDetailLinkPage(resourceId: state.pathParameters['rid']!)
         ),
 
@@ -103,9 +129,7 @@ class MyApp extends StatelessWidget {
       ],
       child: Layout(
         child: MaterialApp.router(
-          //routeInformationProvider: _router.routeInformationProvider,
-          routeInformationParser: _router.routeInformationParser,
-          routerDelegate: _router.routerDelegate,
+          routerConfig: _router,
           debugShowCheckedModeBanner: false,
           title: 'Enreda',
           theme: AppTheme.lightThemeData,

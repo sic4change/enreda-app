@@ -55,13 +55,37 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
   String? codeDialog;
   String? valueText;
 
+  bool _authEnsured = false;
+
   @override
   void initState() {
     super.initState();
     _email = "";
     _name = "";
     _text = "";
-    _countUserAccess();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_authEnsured) {
+      _authEnsured = true;
+      _countUserAccess();
+      _ensureAuthenticated();
+    }
+  }
+
+  /// Signs in anonymously so Firestore security rules allow reading the resource
+  /// document even when the user has no real account yet.
+  Future<void> _ensureAuthenticated() async {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    if (auth.currentUser == null) {
+      try {
+        await auth.signInAnonymously();
+      } catch (e) {
+        debugPrint('Anonymous sign-in failed: $e');
+      }
+    }
   }
 
   @override
@@ -598,21 +622,21 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
 
   Widget _buildButton(BuildContext context, Resource resource) {
     final auth = Provider.of<AuthBase>(context);
-    final userId = auth.currentUser?.uid ?? '';
+    final currentUser = auth.currentUser;
+    // Treat anonymous users (not truly signed in) the same as null users.
+    final bool isGuest = currentUser == null || currentUser.isAnonymous;
+    final userId = currentUser?.uid ?? '';
     final textTheme = Theme.of(context).textTheme;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TextButton(
           onPressed: () {
-            if (auth.currentUser == null) {
+            if (isGuest) {
               showAlertNullUser(context, resourceId: resource.resourceId);
             } else if (resource.participants.contains(userId)) {
               removeUserToResource(context: context, userId: userId, resource: resource);
-            } /*else if ((resource.link == null || resource.link!.isEmpty) &&
-                (resource.contactEmail == null || resource.contactEmail!.isEmpty) &&
-                (resource.contactPhone == null || resource.contactPhone!.isEmpty))*/
-            else if (resource.canSignUp!)
+            } else if (resource.canSignUp!)
             {
               addUserToResource(context: context, userId: userId, resource: resource);
               setGamificationFlag(context: context, flagId: UserEnreda.FLAG_JOIN_RESOURCE);
@@ -625,18 +649,18 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
             child: Text(
-              resource.participants.contains(userId)
+              !isGuest && resource.participants.contains(userId)
                   ? StringConst.QUIT_RESOURCE
                   : StringConst.JOIN_RESOURCE,
               style: textTheme.bodyMedium?.copyWith(
                 fontSize: 16,
-                color: resource.participants.contains(userId) ? Constants.darkGray : Constants.white,
+                color: !isGuest && resource.participants.contains(userId) ? Constants.darkGray : Constants.white,
               ),
             ),
           ),
           style: ButtonStyle(
               backgroundColor:
-              MaterialStateProperty.all(resource.participants.contains(userId)
+              MaterialStateProperty.all(!isGuest && resource.participants.contains(userId)
                   ? AppColors.grey70 : Constants.turquoise),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(

@@ -452,7 +452,7 @@ class StringConst {
   static const String FORM_SUCCESS = "¡Registro exitoso!";
   static const String FORM_SUCCESS_MAIL = "Por favor revisa tu correo electrónico.";
   static const String FORM_ACCEPT = "Aceptar";
-  static const String FORM_NEWSLETTER = "Acepto suscribirme a la newsletter con fines de promoción";
+  static const String FORM_NEWSLETTER = "Acepto recibir información y comunicaciones por parte de SIC4Change";
   static const String FORM_ERROR= "Error al crea la cuenta";
   static const String FORM_SELECT= "Seleccionar";
   static const String FORM_SELECT_AT_LEAST_ONE = 'Debes seleccionar al menos un interés';

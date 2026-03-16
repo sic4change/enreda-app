@@ -23,7 +23,7 @@ const PdfColor white = PdfColor.fromInt(0xFFFFFFFF);
 const leftWidth = 212.0;
 const rightWidth = 383.0; // 595 - 212 = 383
 const double headerHeight = 250.0;
-const double headerHeightDivider = 260.0;
+const double headerHeightDivider = 255.0;
 const double dividerLeftPos = 212.0; // Updated to approx width/2.8 for A4
 
 Future<Uint8List> generateResume2(
@@ -101,7 +101,7 @@ Future<Uint8List> generateResume2(
         // Header Content for Page 1
         pw.Container(
           height: headerHeight,
-          padding: const pw.EdgeInsets.only(top: 50, left: 30, right: 30),
+          padding: const pw.EdgeInsets.only(top: 20, left: 30, right: 30),
           child: pw.Row(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
@@ -126,31 +126,33 @@ Future<Uint8List> generateResume2(
                         fontWeight: pw.FontWeight.normal,
                       ),
                     ),
-                    pw.SizedBox(height: 20),
-                    pw.Text(
-                      StringConst.ABOUT_ME.toUpperCase(),
-                      style: pw.TextStyle(
-                        fontSize: 14,
-                        color: teal,
-                        fontWeight: pw.FontWeight.bold,
+                    if (aboutMe != null && aboutMe.trim().isNotEmpty) ...[
+                      pw.SizedBox(height: 20),
+                      pw.Text(
+                        StringConst.ABOUT_ME.toUpperCase(),
+                        style: pw.TextStyle(
+                          fontSize: 14,
+                          color: teal,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    pw.SizedBox(height: 5),
-                    pw.Text(
-                      aboutMe ?? '',
-                      maxLines: 4,
-                      style: const pw.TextStyle(
-                        fontSize: 9,
-                        color: greyBody,
+                      pw.SizedBox(height: 5),
+                      pw.Text(
+                        aboutMe,
+                        maxLines: 4,
+                        style: const pw.TextStyle(
+                          fontSize: 9,
+                          color: greyBody,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
               // Right: Photo
               if (myPhoto)
                 pw.Padding(
-                  padding: const pw.EdgeInsets.only(left: 20),
+                  padding: const pw.EdgeInsets.only(left: 5),
                   child: pw.Container(
                       width: 152,
                       height: 152,
@@ -216,13 +218,11 @@ Future<Uint8List> generateResume2(
                     // Competencias
                     if (competenciesNames.isNotEmpty) ...[
                       _Category(title: StringConst.COMPETENCIES, color: teal),
-                      pw.Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: competenciesNames
-                            .map((name) => _CompetencyChip(title: name))
-                            .toList(),
-                      ),
+                      for (var name in competenciesNames)
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.only(bottom: 6),
+                          child: _CompetencyChip(title: name),
+                        ),
                     ],
 
                     pw.SizedBox(height: 20),
@@ -235,18 +235,20 @@ Future<Uint8List> generateResume2(
                     ],
 
                     pw.SizedBox(height: 20),
-                    // Idiomas
-                    languagesNames != null && languagesNames.isNotEmpty
-                        ? _Category(
-                            title: StringConst.LANGUAGES, color: primary900)
-                        : pw.Container(),
-                    for (var data in languagesNames)
-                      _BlockSimpleList(
-                        title: data.name,
-                        color: grey,
-                        dotsSpeaking: data.speakingLevel,
-                        dotsWriting: data.writingLevel,
-                      ),
+                    if (languagesNames != null &&
+                        languagesNames.isNotEmpty) ...[
+                      _Category(
+                          title: StringConst.LANGUAGES, color: primary900),
+                      for (var lang in languagesNames)
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.only(bottom: 2),
+                          child: pw.Text(
+                            '${lang.name.toUpperCase()} | ${lang.speakingLevel == 1 ? 'PRINCIPIANTE' : lang.speakingLevel == 2 ? 'MEDIO' : 'AVANZADO'}',
+                            style: const pw.TextStyle(
+                                fontSize: 8, color: greyBody),
+                          ),
+                        ),
+                    ],
                   ],
                 ),
               ),
@@ -269,7 +271,7 @@ Future<Uint8List> generateResume2(
                         _ExperienceBlock(
                           title: exp.activity ?? '',
                           subtitle:
-                              '${exp.position == null || exp.position!.isEmpty ? exp.activity ?? "" : exp.position} - ${exp.organization ?? ""}',
+                              '${exp.position ?? ""} ${(exp.position ?? "").isNotEmpty && (exp.organization ?? "").isNotEmpty ? "- " : ""}${exp.organization ?? ""}',
                           date:
                               '${exp.startDate != null ? formatter.format(exp.startDate!.toDate()) : '-'} / ${exp.endDate != null ? formatter.format(exp.endDate!.toDate()) : 'Actualmente'}',
                           location: exp.location ?? '',
@@ -542,135 +544,29 @@ class _ExperienceBlock extends pw.StatelessWidget {
                   color: greyBody)),
           pw.Text(subtitle,
               style: const pw.TextStyle(fontSize: 9, color: greyBody)),
-          if (activities != null)
+          if (activities != null && activities!.trim().isNotEmpty)
             pw.Padding(
               padding: const pw.EdgeInsets.only(top: 4),
-              child: pw.Text(
-                activities!
-                    .split(' / ')
-                    .where((element) => element.trim().isNotEmpty)
-                    .map((a) => '• $a')
-                    .join('\n'),
-                style: const pw.TextStyle(fontSize: 8, color: greyBody),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text('Actividades realizadas:',
+                      style: pw.TextStyle(
+                          fontSize: 8,
+                          fontWeight: pw.FontWeight.bold,
+                          color: greyBody)),
+                  pw.Text(
+                    activities!
+                        .split(' / ')
+                        .where((element) => element.trim().isNotEmpty)
+                        .map((a) => '• $a')
+                        .join('\n'),
+                    style: const pw.TextStyle(fontSize: 8, color: greyBody),
+                  ),
+                ],
               ),
             ),
         ],
-      ),
-    );
-  }
-}
-
-class _BlockSimpleList extends pw.StatelessWidget {
-  _BlockSimpleList({
-    this.title,
-    this.color,
-    this.dotsSpeaking,
-    this.dotsWriting,
-  });
-
-  final String? title;
-  final PdfColor? color;
-  late int? dotsSpeaking;
-  late int? dotsWriting;
-
-  @override
-  pw.Widget build(pw.Context context) {
-    return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: <pw.Widget>[
-          pw.Row(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: <pw.Widget>[
-                pw.Container(
-                  width: 3,
-                  height: 3,
-                  margin: const pw.EdgeInsets.only(top: 5.5, left: 2, right: 5),
-                  decoration: const pw.BoxDecoration(
-                    color: primary900,
-                    shape: pw.BoxShape.circle,
-                  ),
-                ),
-                title != null
-                    ? pw.Expanded(
-                        child: pw.Text(title!,
-                            textScaleFactor: 0.8,
-                            style: pw.Theme.of(context)
-                                .defaultTextStyle
-                                .copyWith(
-                                    fontWeight: pw.FontWeight.normal,
-                                    color: color)),
-                      )
-                    : pw.Container(),
-              ]),
-          dotsSpeaking != null && dotsWriting != null
-              ? pw.Container()
-              : pw.SizedBox(height: 8),
-          dotsSpeaking != null && dotsWriting != null
-              ? pw.Column(children: [
-                  pw.Row(
-                      crossAxisAlignment: pw.CrossAxisAlignment.center,
-                      children: [
-                        pw.SizedBox(width: 10),
-                        pw.Text('Oral:  ',
-                            textScaleFactor: 0.8,
-                            style: pw.Theme.of(context)
-                                .defaultTextStyle
-                                .copyWith(fontWeight: pw.FontWeight.normal)),
-                        _Dots(dotsNumber: dotsSpeaking),
-                        pw.SizedBox(width: 10),
-                        pw.Text('Escrito:  ',
-                            textScaleFactor: 0.8,
-                            style: pw.Theme.of(context)
-                                .defaultTextStyle
-                                .copyWith(fontWeight: pw.FontWeight.normal)),
-                        _Dots(dotsNumber: dotsWriting),
-                      ])
-                ])
-              : pw.Container()
-        ]);
-  }
-}
-
-class _Dots extends pw.StatelessWidget {
-  _Dots({
-    this.dotsNumber,
-  });
-
-  final int? dotsNumber;
-
-  @override
-  pw.Widget build(pw.Context context) {
-    return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.center,
-      mainAxisAlignment: pw.MainAxisAlignment.center,
-      children: [
-        buildDotRow(),
-        pw.SizedBox(height: 8),
-      ],
-    );
-  }
-
-  pw.Widget buildDotRow() {
-    List<pw.Widget> dots = [];
-    for (int i = 0; i < 3; i++) {
-      PdfColor color = i < (dotsNumber ?? 0) ? primary900 : greyLight;
-      dots.add(buildDot(color));
-    }
-    return pw.Row(
-      crossAxisAlignment: pw.CrossAxisAlignment.center,
-      mainAxisAlignment: pw.MainAxisAlignment.center,
-      children: dots,
-    );
-  }
-
-  pw.Widget buildDot(PdfColor color) {
-    return pw.Container(
-      width: 6,
-      height: 6,
-      margin: const pw.EdgeInsets.only(top: 10, left: 2, right: 2),
-      decoration: pw.BoxDecoration(
-        color: color,
-        shape: pw.BoxShape.circle,
       ),
     );
   }

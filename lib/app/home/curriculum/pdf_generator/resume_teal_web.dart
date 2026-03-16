@@ -78,7 +78,7 @@ Future<Uint8List> generateResumeTeal(
   final DateFormat formatter = DateFormat('yyyy');
 
   final headerSvg =
-      '<svg width="600" height="280"><path d="M0,0 L600,0 L600,280 L200,280 Q0,280 0,180 Z" fill="#004D5E" /></svg>';
+      '<svg width="600" height="280"><path d="M0,0 L600,0 L600,280 L200,280 Q0,280 0,80 Z" fill="#004D5E" /></svg>';
 
   doc.addPage(
     pw.MultiPage(
@@ -110,7 +110,7 @@ Future<Uint8List> generateResumeTeal(
               if (myPhoto)
                 pw.Positioned(
                   left: 60,
-                  top: 60,
+                  top: 20,
                   child: pw.Container(
                     width: 140,
                     height: 140,
@@ -126,7 +126,7 @@ Future<Uint8List> generateResumeTeal(
               // Name and About Me
               pw.Positioned(
                 left: 230,
-                top: 70,
+                top: 30,
                 right: 40,
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -147,24 +147,26 @@ Future<Uint8List> generateResumeTeal(
                         fontWeight: pw.FontWeight.normal,
                       ),
                     ),
-                    pw.SizedBox(height: 20),
-                    pw.Text(
-                      StringConst.ABOUT_ME.toUpperCase(),
-                      style: pw.TextStyle(
-                        fontSize: 14,
-                        color: white,
-                        fontWeight: pw.FontWeight.bold,
+                    if (aboutMe != null && aboutMe.trim().isNotEmpty) ...[
+                      pw.SizedBox(height: 20),
+                      pw.Text(
+                        StringConst.ABOUT_ME.toUpperCase(),
+                        style: pw.TextStyle(
+                          fontSize: 14,
+                          color: white,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    pw.SizedBox(height: 5),
-                    pw.Text(
-                      aboutMe ?? '',
-                      maxLines: 4,
-                      style: const pw.TextStyle(
-                        fontSize: 9,
-                        color: white,
+                      pw.SizedBox(height: 5),
+                      pw.Text(
+                        aboutMe,
+                        maxLines: 4,
+                        style: const pw.TextStyle(
+                          fontSize: 9,
+                          color: white,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
@@ -211,13 +213,11 @@ Future<Uint8List> generateResumeTeal(
                     if (competenciesNames != null &&
                         competenciesNames.isNotEmpty) ...[
                       _Category(title: StringConst.COMPETENCIES, color: teal),
-                      pw.Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: competenciesNames
-                            .map((name) => _CompetencyChip(title: name))
-                            .toList(),
-                      ),
+                      for (var name in competenciesNames)
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.only(bottom: 6),
+                          child: _CompetencyChip(title: name),
+                        ),
                     ],
 
                     pw.SizedBox(height: 20),
@@ -266,7 +266,8 @@ Future<Uint8List> generateResumeTeal(
                       for (var exp in myExperiences)
                         _ExperienceBlock(
                           title: exp.activity ?? '',
-                          subtitle: '${exp.position} - ${exp.organization}',
+                          subtitle:
+                              '${exp.position ?? ""} ${(exp.position ?? "").isNotEmpty && (exp.organization ?? "").isNotEmpty ? "- " : ""}${exp.organization ?? ""}',
                           date:
                               '${exp.startDate != null ? formatter.format(exp.startDate!.toDate()) : '-'} / ${exp.endDate != null ? formatter.format(exp.endDate!.toDate()) : 'Actualmente'}',
                           location: exp.location ?? '',
@@ -558,16 +559,30 @@ class _ExperienceBlock extends pw.StatelessWidget {
                   color: greyBody)),
           pw.Text(subtitle,
               style: const pw.TextStyle(fontSize: 9, color: greyBody)),
-          if (activities != null)
+          if (activities != null &&
+              activities!.trim().isNotEmpty &&
+              activities!.toLowerCase() != "null")
             pw.Padding(
               padding: const pw.EdgeInsets.only(top: 4),
-              child: pw.Text(
-                activities!
-                    .split(' / ')
-                    .where((element) => element.trim().isNotEmpty)
-                    .map((a) => '• $a')
-                    .join('\n'),
-                style: const pw.TextStyle(fontSize: 8, color: greyBody),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text('Actividades realizadas:',
+                      style: pw.TextStyle(
+                          fontSize: 8,
+                          fontWeight: pw.FontWeight.bold,
+                          color: greyBody)),
+                  pw.Text(
+                    activities!
+                        .split(' / ')
+                        .where((element) =>
+                            element.trim().isNotEmpty &&
+                            element.toLowerCase() != "null")
+                        .map((a) => '• $a')
+                        .join('\n'),
+                    style: const pw.TextStyle(fontSize: 8, color: greyBody),
+                  ),
+                ],
               ),
             ),
         ],

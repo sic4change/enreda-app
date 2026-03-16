@@ -85,7 +85,6 @@ Future<Uint8List> generateResumePurple(
   final pageTheme = await _myPageTheme(format1, myPhoto, profileImageWeb);
   final DateFormat formatter = DateFormat('yyyy');
   List<String>? dataOfInterest = myDataOfInterest;
-  List<Language>? languages = languagesNames;
 
   doc.addPage(
     pw.MultiPage(
@@ -200,20 +199,17 @@ Future<Uint8List> generateResumePurple(
                     pw.SizedBox(height: 15), // Reduced spacing
                     // Removed AboutMe from here
 
-                    competenciesNames != null && competenciesNames.isNotEmpty
-                        ? _Category(
-                            title: StringConst.COMPETENCIES, color: primary900)
-                        : pw.Container(),
-                    pw.SizedBox(height: 8),
-                    competenciesNames != null && competenciesNames.isNotEmpty
-                        ? pw.Wrap(
-                            spacing: 6,
-                            runSpacing: 6,
-                            children: competenciesNames
-                                .map((name) => _CompetencyChip(title: name))
-                                .toList(),
-                          )
-                        : pw.Container(),
+                    if (competenciesNames != null &&
+                        competenciesNames.isNotEmpty) ...[
+                      _Category(
+                          title: StringConst.COMPETENCIES, color: primary900),
+                      pw.SizedBox(height: 8),
+                      for (var name in competenciesNames)
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.only(bottom: 6),
+                          child: _CompetencyChip(title: name),
+                        ),
+                    ],
 
                     pw.SizedBox(height: 10),
                     myDataOfInterest != null && myDataOfInterest.isNotEmpty
@@ -227,17 +223,19 @@ Future<Uint8List> generateResumePurple(
                         color: grey,
                       ),
                     pw.SizedBox(height: 15),
-                    languagesNames != null && languagesNames.isNotEmpty
-                        ? _Category(
-                            title: StringConst.LANGUAGES, color: primary900)
-                        : pw.Container(),
-                    for (var data in languages!)
-                      _BlockSimpleList(
-                        title: data.name,
-                        color: grey,
-                        dotsSpeaking: data.speakingLevel,
-                        dotsWriting: data.writingLevel,
-                      ),
+                    if (languagesNames != null &&
+                        languagesNames.isNotEmpty) ...[
+                      _Category(
+                          title: StringConst.LANGUAGES, color: primary900),
+                      for (var lang in languagesNames)
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.only(bottom: 2),
+                          child: pw.Text(
+                            '${lang.name.toUpperCase()} | ${lang.speakingLevel == 1 ? 'PRINCIPIANTE' : lang.speakingLevel == 2 ? 'MEDIO' : 'AVANZADO'}',
+                            style: const pw.TextStyle(fontSize: 8, color: grey),
+                          ),
+                        ),
+                    ],
                   ],
                 ),
               ),
@@ -739,14 +737,10 @@ class _BlockSimpleList extends pw.StatelessWidget {
   _BlockSimpleList({
     this.title,
     this.color,
-    this.dotsSpeaking,
-    this.dotsWriting,
   });
 
   final String? title;
   final PdfColor? color;
-  late int? dotsSpeaking;
-  late int? dotsWriting;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -777,31 +771,7 @@ class _BlockSimpleList extends pw.StatelessWidget {
                       )
                     : pw.Container(),
               ]),
-          dotsSpeaking != null && dotsWriting != null
-              ? pw.Container()
-              : pw.SizedBox(height: 8),
-          dotsSpeaking != null && dotsWriting != null
-              ? pw.Column(children: [
-                  pw.Row(
-                      crossAxisAlignment: pw.CrossAxisAlignment.center,
-                      children: [
-                        pw.SizedBox(width: 10),
-                        pw.Text('Oral:  ',
-                            textScaleFactor: 0.8,
-                            style: pw.Theme.of(context)
-                                .defaultTextStyle
-                                .copyWith(fontWeight: pw.FontWeight.normal)),
-                        _Dots(dotsNumber: dotsSpeaking),
-                        pw.SizedBox(width: 10),
-                        pw.Text('Escrito:  ',
-                            textScaleFactor: 0.8,
-                            style: pw.Theme.of(context)
-                                .defaultTextStyle
-                                .copyWith(fontWeight: pw.FontWeight.normal)),
-                        _Dots(dotsNumber: dotsWriting),
-                      ])
-                ])
-              : pw.Container()
+          pw.SizedBox(height: 8),
         ]);
   }
 }
@@ -831,51 +801,6 @@ class _CustomChipList extends pw.StatelessWidget {
                   .defaultTextStyle
                   .copyWith(fontWeight: pw.FontWeight.normal, color: white))
           : pw.Container(),
-    );
-  }
-}
-
-class _Dots extends pw.StatelessWidget {
-  _Dots({
-    this.dotsNumber,
-  });
-
-  final int? dotsNumber;
-
-  @override
-  pw.Widget build(pw.Context context) {
-    return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.center,
-      mainAxisAlignment: pw.MainAxisAlignment.center,
-      children: [
-        buildDotRow(),
-        pw.SizedBox(height: 8),
-      ],
-    );
-  }
-
-  pw.Widget buildDotRow() {
-    List<pw.Widget> dots = [];
-    for (int i = 0; i < 3; i++) {
-      PdfColor color = i < (dotsNumber ?? 0) ? primary900 : greyLight;
-      dots.add(buildDot(color));
-    }
-    return pw.Row(
-      crossAxisAlignment: pw.CrossAxisAlignment.center,
-      mainAxisAlignment: pw.MainAxisAlignment.center,
-      children: dots,
-    );
-  }
-
-  pw.Widget buildDot(PdfColor color) {
-    return pw.Container(
-      width: 6,
-      height: 6,
-      margin: const pw.EdgeInsets.only(top: 10, left: 2, right: 2),
-      decoration: pw.BoxDecoration(
-        color: color,
-        shape: pw.BoxShape.circle,
-      ),
     );
   }
 }

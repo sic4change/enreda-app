@@ -141,6 +141,7 @@ class MyAppState extends State<MyCvMultiplePages> {
 
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 71,
         backgroundColor: tealColor,
         foregroundColor: Colors.white,
         automaticallyImplyLeading: false, // Hide default back button
@@ -208,7 +209,10 @@ class MyAppState extends State<MyCvMultiplePages> {
               onTap: () async {
                 final bytes = await _generatePdf(PdfPageFormat.a4);
                 await Printing.sharePdf(
-                    bytes: bytes, filename: 'mi_curriculum.pdf');
+                    bytes: bytes,
+                    filename:
+                        '${widget.user?.firstName ?? ""} ${widget.user?.lastName ?? ""} CV.pdf'
+                            .trim());
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),

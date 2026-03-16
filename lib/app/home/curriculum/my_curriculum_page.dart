@@ -28,6 +28,7 @@ import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
+import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
@@ -398,6 +399,16 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                               left: Sizes.mainPadding * 2,
                               top: Sizes.mainPadding * 2,
                             ),
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                AppColors.white,
+                                AppColors.primary020.withOpacity(0.13),
+                                AppColors.primary400.withOpacity(0.15),
+                              ],
+                            )),
                             child: Padding(
                               padding: EdgeInsets.only(right: 50.0),
                               child: Column(
@@ -600,23 +611,17 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              width: Responsive.isDesktopS(context) ? 200.0 : 300.0,
-              child: Text(
-                '${user?.firstName} ${user?.lastName}',
-                style: textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: Responsive.isDesktopS(context) ? 30.0 : 40.0,
-                    color: AppColors.primary900),
-              ),
-            ),
-            Spacer(),
-            _buildDownloadCV(),
-            SpaceW8(),
-          ],
+        _buildDownloadCV(),
+        SpaceH20(),
+        Container(
+          width: Responsive.isDesktopS(context) ? 200.0 : 300.0,
+          child: Text(
+            '${user?.firstName} ${user?.lastName}',
+            style: textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: Responsive.isDesktopS(context) ? 30.0 : 40.0,
+                color: AppColors.primary900),
+          ),
         ),
         SpaceH20(),
         Container(
@@ -631,8 +636,12 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   }
 
   Widget _buildDownloadCV() {
-    return InkWell(
-      onTap: () async {
+    return EnredaButton(
+      borderRadius: BorderRadiusGeometry.all(Radius.circular(25)),
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 50, vertical: 10),
+      buttonTitle: "Previsualizar y descargar",
+      width: 100,
+      onPressed: () async {
         final checkAgreeDownload = user?.checkAgreeCV ?? false;
         if (!checkAgreeDownload) {
           showAlertDialog(context,
@@ -688,12 +697,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   )),
         );*/
       },
-      child: Image.asset(
-        ImagePath.DOWNLOAD,
-        height: Responsive.isTablet(context) || Responsive.isMobile(context)
-            ? Sizes.ICON_SIZE_40
-            : Sizes.ICON_SIZE_50,
-      ),
     );
   }
 

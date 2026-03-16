@@ -189,7 +189,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
         controller: ScrollController(),
         child: MainContainer(
           //height: MediaQuery.of(context).size.height,
-          padding: EdgeInsets.all(0),
+          padding: EdgeInsets.all(20),
           margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,

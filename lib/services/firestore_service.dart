@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:enreda_app/services/firestore_monitor.dart';
 
 class FirestoreService {
   FirestoreService._();
@@ -8,23 +9,27 @@ class FirestoreService {
   Future<void> addData(
       {required String path, required Map<String, dynamic> data}) async {
     final reference = FirebaseFirestore.instance.collection(path);
+    FirestoreMonitor.logWrite(path);
     await reference.add(data);
   }
 
   Future<String> addDataFile(
       {required String path, Map<String, dynamic>? data}) async {
     final CollectionReference<Map<String, dynamic>?> reference = FirebaseFirestore.instance.collection(path);
+    FirestoreMonitor.logWrite(path);
     return await reference.add(data).then((value) => value.id);
   }
 
   Future<void> updateData(
       {required String path, required Map<String, dynamic> data}) async {
     final reference = FirebaseFirestore.instance.doc(path);
+    FirestoreMonitor.logWrite(path);
     await reference.set(data, SetOptions(merge: true));
   }
 
   Future<void> deleteData({required String path}) async {
     final reference = FirebaseFirestore.instance.doc(path);
+    FirestoreMonitor.logDelete(path);
     await reference.delete();
   }
 
@@ -38,6 +43,7 @@ class FirestoreService {
     Query filteredQuery = queryBuilder(instancedQuery);
     final snapshots = filteredQuery.snapshots();
     return snapshots.map((snapshot) {
+      FirestoreMonitor.logRead(path, count: snapshot.docs.length);
 
       final result = snapshot.docs
           .map((snapshot) => builder(snapshot.data() as Map<String, dynamic>, snapshot.id))
@@ -60,6 +66,7 @@ class FirestoreService {
     }
     final snapshots = query.limit(1).snapshots();
     return snapshots.map((snapshot) {
+      FirestoreMonitor.logRead(path, count: snapshot.docs.length);
       final result = snapshot.docs
           .map((snapshot) => builder(snapshot.data() as Map<String, dynamic>, snapshot.id))
           .where((value) => value != null)
@@ -81,6 +88,7 @@ class FirestoreService {
     }
     final snapshots = query.snapshots();
     return snapshots.map((snapshot) {
+      FirestoreMonitor.logRead(path, count: snapshot.docs.length);
       final map = snapshot.docs
           .map((snapshot) => builder(snapshot.data(), snapshot.id));
       final List<T> result = [];
@@ -102,6 +110,13 @@ class FirestoreService {
   }) {
     final reference = FirebaseFirestore.instance.doc(path);
     final snapshots = reference.snapshots();
-    return snapshots.map((snapshot) => builder(snapshot.data()!, snapshot.id));
+    return snapshots.map((snapshot) {
+      if (snapshot.exists) {
+        FirestoreMonitor.logRead(path, count: 1);
+        return builder(snapshot.data()!, snapshot.id);
+      } else {
+        throw Exception('Document $path does not exist');
+      }
+    });
   }
 }

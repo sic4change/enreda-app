@@ -167,12 +167,12 @@ Future<void> setGamificationFlag({
     final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
     if (!user.gamificationFlags.containsKey(flagId) ||
         !user.gamificationFlags[flagId]!) {
-      user.gamificationFlags[flagId] = true;
-      print(user.gamificationFlags[flagId]);
-      await database.setUserEnreda(user);
+      await database.updateUserEnredaField(auth.currentUser!.uid, {
+        'gamificationFlags': {flagId: true},
+      });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(StringConst.GAMIFICATION_PHASE_COMPLETED),
       ));
-  }
+    }
   }
 }

@@ -103,7 +103,7 @@ class Company {
     final String? cifGroup = data['cifGroup'] ?? '';
     final String? groupCompany = data['groupCompany'] ?? '';
     final String? mission = data['mission'] ?? '';
-    final String? companyId = data['companyId'];
+    final String? companyId = data['companyId'] ?? documentId;
     final String email = data['email']??"";
 
     String photo;

@@ -3,7 +3,7 @@ class City {
 
   factory City.fromMap(Map<String, dynamic> data, String documentId) {
     final String name = data['name'];
-    final String? cityId = data['cityId'];
+    final String? cityId = data['cityId'] ?? documentId;
     final String? countryId = data['countryId'];
     final String provinceId = data['provinceId'];
 

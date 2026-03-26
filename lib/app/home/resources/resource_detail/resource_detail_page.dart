@@ -1153,8 +1153,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     final database = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context, listen: false);
     if (auth.currentUser != null) {
-      final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-      database.setUserEnreda(user.copyWith(resourcesAccessCount: user.resourcesAccessCount! + 1));
+      await database.updateUserEnredaField(
+        auth.currentUser!.uid,
+        {'resourcesAccessCount': FieldValue.increment(1)},
+      );
     }
   }
 

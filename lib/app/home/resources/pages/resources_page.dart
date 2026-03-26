@@ -10,7 +10,10 @@ import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/resourceCategory.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/resources/models/resource_metadata.dart';
 import 'package:enreda_app/app/home/resources/filter_text_field_row.dart';
+import 'dart:async';
+import 'package:async/async.dart' show StreamGroup;
 import 'package:enreda_app/app/home/resources/list_item_builder_grid.dart';
 import 'package:enreda_app/app/home/resources/pages/list_item_builder_vertical.dart';
 import 'package:enreda_app/app/home/resources/resource_detail/resource_detail_page.dart';
@@ -61,6 +64,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
   FilterTrainingPill filterTrainingPill = FilterTrainingPill("", "");
   bool isAlertBoxOpened = false;
   List<ResourceCategory> resourceCategoriesList = [];
+  ResourceMetadata _metadata = ResourceMetadata();
+  List<StreamSubscription> _metadataSubscriptions = [];
+
   String _categoryName = 'Empleo';
   String _categoryFormationId = '';
   String _backgroundImageUrl(String categoryId) {
@@ -105,8 +111,36 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
   getResourceCategories() {
     final database = Provider.of<Database>(context, listen: false);
-    database.getCategoriesResources().listen((categoriesList) {
+    _metadataSubscriptions.add(database.getCategoriesResources().listen((categoriesList) {
       setStateIfMounted(() => resourceCategoriesList = categoriesList);
+    }));
+  }
+
+  void _getMetadata() async {
+    final database = Provider.of<Database>(context, listen: false);
+
+    final results = await Future.wait([
+      database.countriesStream().first,
+      database.provincesStream().first,
+      database.citiesStream().first,
+      database.organizationsStream().first,
+      database.socialEntitiesStream().first,
+      database.companiesStream().first,
+    ]);
+
+    final allOrganizers = [
+      ...results[3] as List<dynamic>,
+      ...results[4] as List<dynamic>,
+      ...results[5] as List<dynamic>,
+    ];
+
+    setStateIfMounted(() {
+      _metadata = ResourceMetadata.fromLists(
+        countries: results[0] as List<Country>,
+        provinces: results[1] as List<Province>,
+        cities: results[2] as List<City>,
+        organizers: allOrganizers,
+      );
     });
   }
 
@@ -168,6 +202,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
     _loadScrollPosition();
     getMessage();
     getResourceCategories();
+    _getMetadata();
     _loadPillControllers();
   }
 
@@ -177,6 +212,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
     _searchTextController.dispose();
     _scrollController.dispose();
     _controllers.values.forEach((c) => c.close());
+    _metadataSubscriptions.forEach((s) => s.cancel());
     super.dispose();
   }
 
@@ -749,86 +785,35 @@ class _ResourcesPageState extends State<ResourcesPage> {
         child: StreamBuilder<List<Resource>>(
             stream: database.filteredResourcesCategoryStream(filterResource),
             builder: (context, snapshot) {
-              return StreamBuilder<List<Resource>>(
-                  stream: database.filteredResourcesCategoryStream(filterResource),
-                  builder: (context, snapshot) {
-                    return ListItemBuilderGrid<Resource>(
-                      scrollController: _scrollController,
-                      snapshot: snapshot,
-                      itemBuilder: (context, resource) {
-                        return StreamBuilder(
-                          stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
-                          resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
-                              : resource.organizerType == 'Empresa' ? database.companyStream(resource.organizer) :
-                          database.mentorStream(resource.organizer),
-                          builder: (context, snapshotOrganizer) {
-                            if (snapshotOrganizer.hasData) {
-                              if (snapshotOrganizer.data is Organization) {
-                                final organization = snapshotOrganizer.data as Organization;
-                                resource.organizerName = organization.name;
-                                resource.organizerImage = organization.photo;
-                              } else if (snapshotOrganizer.data is SocialEntity) {
-                                final organization = snapshotOrganizer.data as SocialEntity;
-                                resource.organizerName = organization.name;
-                                resource.organizerImage = organization.photo;
-                              } else if (snapshotOrganizer.data is Company) {
-                                final organization = snapshotOrganizer.data as Company;
-                                resource.organizerName = organization.name;
-                                resource.organizerImage = organization.photo;
-                              } else {
-                                final mentor = snapshotOrganizer.data as UserEnreda;
-                                resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
-                                resource.organizerImage = mentor.photo;
-                              }
-                              resource.setResourceTypeName();
-                              resource.setResourceCategoryName();
-                            }
-                            return StreamBuilder<Country>(
-                                stream: database.countryStream(resource.country),
-                                builder: (context, snapshot) {
-                                  final country = snapshot.data;
-                                  resource.countryName =
-                                  country == null ? '' : country.name;
-                                  return StreamBuilder<Province>(
-                                    stream: database
-                                        .provinceStream(resource.province),
-                                    builder: (context, snapshot) {
-                                      final province = snapshot.data;
-                                      resource.provinceName = province == null
-                                          ? ''
-                                          : province.name;
-                                      return StreamBuilder<City>(
-                                          stream: database
-                                              .cityStream(resource.city),
-                                          builder: (context, snapshot) {
-                                            final city = snapshot.data;
-                                            resource.cityName =
-                                            city == null ? '' : city.name;
-                                            return Container(
-                                              key: Key(
-                                                  'resource-${resource.resourceId}'),
-                                              child: ResourceListTile(
-                                                resource: resource,
-                                                onTap: () {
-                                                  _saveScrollPosition();
-                                                  setState(() {
-                                                    globals.currentResource = resource;
-                                                    ResourcesPage.selectedIndex.value = 3;
-                                                  });
-                                                },
-                                              ),
-                                            );
-                                          });
-                                    },
-                                  );
-                                });
-                          },
-                        );
+              return ListItemBuilderGrid<Resource>(
+                scrollController: _scrollController,
+                snapshot: snapshot,
+                itemBuilder: (context, resource) {
+                  resource.organizerName = _metadata.organizerNames[resource.organizer] ?? '';
+                  resource.organizerImage = _metadata.organizerImages[resource.organizer];
+                  resource.countryName = _metadata.countryNames[resource.country] ?? '';
+                  resource.provinceName = _metadata.provinceNames[resource.province] ?? '';
+                  resource.cityName = _metadata.cityNames[resource.city] ?? '';
+                  resource.setResourceTypeName();
+                  resource.setResourceCategoryName();
+
+                  return Container(
+                    key: Key('resource-${resource.resourceId}'),
+                    child: ResourceListTile(
+                      resource: resource,
+                      onTap: () {
+                        _saveScrollPosition();
+                        setState(() {
+                          globals.currentResource = resource;
+                          ResourcesPage.selectedIndex.value = 3;
+                        });
                       },
-                      emptyTitle: 'Sin recursos',
-                      emptyMessage: 'Aún no tenemos recursos que mostrarte',
-                    );
-                  });
+                    ),
+                  );
+                },
+                emptyTitle: 'Sin recursos',
+                emptyMessage: 'Aún no tenemos recursos que mostrarte',
+              );
             }),
       );
     }
@@ -866,73 +851,26 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       scrollController: _scrollController,
                       snapshot: snapshot,
                       itemBuilder: (context, resource) {
-                        return StreamBuilder(
-                          stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
-                          resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
-                              : resource.organizerType == 'Empresa' ? database.companyStream(resource.organizer) :
-                          database.mentorStream(resource.organizer),
-                          builder: (context, snapshotOrganizer) {
-                            if (snapshotOrganizer.hasData) {
-                              if (snapshotOrganizer.data is Organization) {
-                                final organization = snapshotOrganizer.data as Organization;
-                                resource.organizerName = organization.name;
-                                resource.organizerImage = organization.photo;
-                              } else if (snapshotOrganizer.data is SocialEntity) {
-                                final organization = snapshotOrganizer.data as SocialEntity;
-                                resource.organizerName = organization.name;
-                                resource.organizerImage = organization.photo;
-                              } else if (snapshotOrganizer.data is Company) {
-                                final organization = snapshotOrganizer.data as Company;
-                                resource.organizerName = organization.name;
-                                resource.organizerImage = organization.photo;
-                              } else {
-                                final mentor = snapshotOrganizer.data as UserEnreda;
-                                resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
-                                resource.organizerImage = mentor.photo;
-                              }
-                              resource.setResourceTypeName();
-                              resource.setResourceCategoryName();
-                            }
-                            return StreamBuilder<Country>(
-                              stream: database.countryStream(resource.country),
-                              builder: (context, snapshot) {
-                                final country = snapshot.data;
-                                resource.countryName =
-                                    country == null ? '' : country.name;
-                                return StreamBuilder<Province>(
-                                  stream: database
-                                      .provinceStream(resource.province),
-                                  builder: (context, snapshot) {
-                                    final province = snapshot.data;
-                                    resource.provinceName = province == null
-                                        ? ''
-                                        : province.name;
-                                    return StreamBuilder<City>(
-                                        stream: database
-                                            .cityStream(resource.city),
-                                        builder: (context, snapshot) {
-                                          final city = snapshot.data;
-                                          resource.cityName =
-                                              city == null ? '' : city.name;
-                                          return Container(
-                                            key: Key(
-                                                'resource-${resource.resourceId}'),
-                                            child: ResourceListTile(
-                                              resource: resource,
-                                              onTap: () {
-                                                _saveScrollPosition();
-                                                setState(() {
-                                                  globals.currentResource = resource;
-                                                  ResourcesPage.selectedIndex.value = 3;
-                                                });
-                                              },
-                                            ),
-                                          );
-                                        });
-                                  },
-                                );
+                        resource.organizerName = _metadata.organizerNames[resource.organizer] ?? '';
+                        resource.organizerImage = _metadata.organizerImages[resource.organizer];
+                        resource.countryName = _metadata.countryNames[resource.country] ?? '';
+                        resource.provinceName = _metadata.provinceNames[resource.province] ?? '';
+                        resource.cityName = _metadata.cityNames[resource.city] ?? '';
+                        resource.setResourceTypeName();
+                        resource.setResourceCategoryName();
+
+                        return Container(
+                          key: Key('resource-${resource.resourceId}'),
+                          child: ResourceListTile(
+                            resource: resource,
+                            onTap: () {
+                              _saveScrollPosition();
+                              setState(() {
+                                globals.currentResource = resource;
+                                ResourcesPage.selectedIndex.value = 3;
                               });
-                          },
+                            },
+                          ),
                         );
                       },
                       emptyTitle: 'Sin recursos',

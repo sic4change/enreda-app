@@ -70,6 +70,7 @@ abstract class Database {
   Stream<SocialEntity> socialEntityStream(String socialEntityId);
   Stream<UserEnreda> mentorStream(String mentorId);
   Stream<Company> companyStream(String companyId);
+  Stream<List<Company>> companiesStream();
   Stream<List<Country>> countriesStream();
   Stream<List<Country>> countryFormatedStream();
   Stream<Country> countryStream(String? countryId);
@@ -127,6 +128,7 @@ abstract class Database {
   Stream<List<JobOfferApplication>> applicantStreamByJobOffer(String? jobOfferId, String? userId);
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
+  Future<void> updateUserEnredaField(String userId, Map<String, dynamic> data);
   Future<void> addUserEnreda(UserEnreda userEnreda);
   Future<void> deleteUser(UserEnreda userEnreda);
   Future<void> uploadUserAvatar(String userId, Uint8List data);
@@ -412,6 +414,14 @@ class FirestoreDatabase implements Database {
         builder: (data, documentId) => Company.fromMap(data, documentId),
       );
 
+  @override
+  Stream<List<Company>> companiesStream() => _service.collectionStream(
+        path: APIPath.companies(),
+        queryBuilder: (query) => query.where('trust', isEqualTo: true),
+        builder: (data, documentId) => Company.fromMap(data, documentId),
+        sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
+      );
+
   Stream<UserEnreda> mentorStream(String mentorId) =>
       _service.documentStream<UserEnreda>(
         path: APIPath.user(mentorId),
@@ -561,6 +571,12 @@ class FirestoreDatabase implements Database {
   Future<void> setUserEnreda(UserEnreda userEnreda) {
     return _service.updateData(
         path: APIPath.user(userEnreda.userId!), data: userEnreda.toMap());
+  }
+
+  @override
+  Future<void> updateUserEnredaField(String userId, Map<String, dynamic> data) {
+    return _service.updateData(
+        path: APIPath.user(userId), data: data);
   }
 
   @override

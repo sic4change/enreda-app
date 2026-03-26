@@ -44,7 +44,7 @@ class Organization {
     );
 
     final String name = data['name'];
-    final String? organizationId = data['organizationId'];
+    final String? organizationId = data['organizationId'] ?? documentId;
     final String? email = data['email'];
     final String? phone = data['phone'];
 

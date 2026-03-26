@@ -53,7 +53,7 @@ class SocialEntity {
     );
 
     final String name = data['name'];
-    final String? socialEntityId = data['socialEntityId'];
+    final String? socialEntityId = data['socialEntityId'] ?? documentId;
     final String email = data['email']??"";
 
     final String contactPhone = data['contactPhone']??"";

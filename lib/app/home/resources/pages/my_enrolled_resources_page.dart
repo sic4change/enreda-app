@@ -17,6 +17,9 @@ import 'package:provider/provider.dart';
 import '../../../../values/values.dart';
 import '../../models/resource.dart';
 import 'package:enreda_app/app/home/resources/global.dart' as globals;
+import 'package:enreda_app/app/home/resources/models/resource_metadata.dart';
+import 'package:async/async.dart' show StreamGroup;
+import 'dart:async';
 
 
 class MyEnrolledResourcesPage extends StatefulWidget {
@@ -27,6 +30,50 @@ class MyEnrolledResourcesPage extends StatefulWidget {
 }
 
 class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
+  ResourceMetadata _metadata = ResourceMetadata();
+  List<StreamSubscription> _metadataSubscriptions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getMetadata();
+  }
+
+  @override
+  void dispose() {
+    _metadataSubscriptions.forEach((s) => s.cancel());
+    super.dispose();
+  }
+
+  void _getMetadata() async {
+    final database = Provider.of<Database>(context, listen: false);
+
+    final results = await Future.wait([
+      database.countriesStream().first,
+      database.provincesStream().first,
+      database.citiesStream().first,
+      database.organizationsStream().first,
+      database.socialEntitiesStream().first,
+      database.companiesStream().first,
+    ]);
+
+    final allOrganizers = [
+      ...results[3] as List<dynamic>,
+      ...results[4] as List<dynamic>,
+      ...results[5] as List<dynamic>,
+    ];
+
+    if (mounted) {
+      setState(() {
+        _metadata = ResourceMetadata.fromLists(
+          countries: results[0] as List<Country>,
+          provinces: results[1] as List<Province>,
+          cities: results[2] as List<City>,
+          organizers: allOrganizers,
+        );
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
@@ -41,73 +88,23 @@ class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
               snapshot: snapshot,
               fitSmallerLayout: false,
               itemBuilder: (context, resource) {
-                return StreamBuilder(
-                  stream: resource.organizerType == 'Organización' ? database.organizationStream(resource.organizer) :
-                  resource.organizerType == 'Entidad Social' ? database.socialEntityStream(resource.organizer)
-                      : resource.organizerType == 'Empresa' ? database.companyStream(resource.organizer) :
-                  database.mentorStream(resource.organizer),
-                  builder: (context, snapshotOrganizer) {
-                    if (snapshotOrganizer.hasData) {
-                      if (snapshotOrganizer.data is Organization) {
-                        final organization = snapshotOrganizer.data as Organization;
-                        resource.organizerName = organization.name;
-                        resource.organizerImage = organization.photo;
-                      } else if (snapshotOrganizer.data is SocialEntity) {
-                        final organization = snapshotOrganizer.data as SocialEntity;
-                        resource.organizerName = organization.name;
-                        resource.organizerImage = organization.photo;
-                      } else if (snapshotOrganizer.data is Company) {
-                        final organization = snapshotOrganizer.data as Company;
-                        resource.organizerName = organization.name;
-                        resource.organizerImage = organization.photo;
-                      } else {
-                        final mentor = snapshotOrganizer.data as UserEnreda;
-                        resource.organizerName = '${mentor.firstName} ${mentor.lastName} ';
-                        resource.organizerImage = mentor.photo;
-                      }
-                      resource.setResourceTypeName();
-                      resource.setResourceCategoryName();
-                    }
-                    resource.setResourceTypeName();
-                    resource.setResourceCategoryName();
-                    return StreamBuilder<Country>(
-                        stream: database.countryStream(resource.country),
-                        builder: (context, snapshot) {
-                          final country = snapshot.data;
-                          resource.countryName =
-                          country == null ? '' : country.name;
-                          return StreamBuilder<Province>(
-                            stream: database
-                                .provinceStream(resource.province),
-                            builder: (context, snapshot) {
-                              final province = snapshot.data;
-                              resource.provinceName =
-                              province == null ? '' : province.name;
-                              return StreamBuilder<City>(
-                                  stream:
-                                  database.cityStream(resource.city),
-                                  builder: (context, snapshot) {
-                                    final city = snapshot.data;
-                                    resource.cityName =
-                                    city == null ? '' : city.name;
-                                    return Container(
-                                      key: Key('resource-${resource.resourceId}'),
-                                      child: ResourceListTile(
-                                        resource: resource,
-                                        onTap: () =>
-                                            setState(() {
-                                              globals.currentResource = resource;
-                                              MyResourcesPage.selectedIndex.value = 3;
-                                            }),
-                                        // onTap: () => context.go(
-                                        //     '${StringConst.PATH_RESOURCES}/${resource.resourceId}'),
-                                      ),
-                                    );
-                                  });
-                            },
-                          );
-                        });
-                  },
+                resource.organizerName = _metadata.organizerNames[resource.organizer] ?? '';
+                resource.organizerImage = _metadata.organizerImages[resource.organizer];
+                resource.countryName = _metadata.countryNames[resource.country] ?? '';
+                resource.provinceName = _metadata.provinceNames[resource.province] ?? '';
+                resource.cityName = _metadata.cityNames[resource.city] ?? '';
+                resource.setResourceTypeName();
+                resource.setResourceCategoryName();
+
+                return Container(
+                  key: Key('resource-${resource.resourceId}'),
+                  child: ResourceListTile(
+                    resource: resource,
+                    onTap: () => setState(() {
+                      globals.currentResource = resource;
+                      MyResourcesPage.selectedIndex.value = 3;
+                    }),
+                  ),
                 );
               },
               emptyTitle: 'Sin recursos',

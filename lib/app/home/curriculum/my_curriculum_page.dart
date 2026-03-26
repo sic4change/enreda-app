@@ -28,6 +28,7 @@ import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
@@ -102,68 +103,79 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    final database = Provider.of<Database>(context, listen: false);
+    LocationCache.instance.warmUpAll(database);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
+    final email = auth.currentUser?.email ?? '';
+
     return StreamBuilder<List<UserEnreda>>(
-        stream: database.userStream(auth.currentUser?.email ?? ''),
-        builder: (context, snapshot) {
-          if (snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.active) {
-            user = snapshot.data!.isNotEmpty ? snapshot.data!.first : null;
-            var profilePic = user?.profilePic?.src ?? "";
-            return StreamBuilder<List<Competency>>(
-                stream: database.competenciesStream(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) return Container();
-                  if (snapshot.hasError)
-                    return Center(child: Text('Ocurrió un error'));
-                  List<Competency> competencies = snapshot.data!;
-                  final competenciesIds = user!.competencies.keys.toList();
-                  competencies = competencies
-                      .where((competency) => competenciesIds.any((id) => competency.id == id))
-                      .toList();
-                  competencies.forEach((competency) {
-                    final status =
-                        user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
-                    if (competency.name !="" && status != StringConst.BADGE_EMPTY && status != StringConst.BADGE_IDENTIFIED ) {
-                      final index1 = competenciesNames.indexWhere((element) => element == competency.name);
-                      if (index1 == -1) competenciesNames.add(competency.name);
-                    }
-                  });
-
-                  final myAboutMe = user?.aboutMe ?? "";
-                  myCustomAboutMe = myAboutMe;
-
-                  final myEmail = user?.email ?? "";
-                  myCustomEmail = myEmail;
-
-                  final myPhone = user?.phone ?? "";
-                  myCustomPhone = myPhone;
-
-                  myCustomCompetencies = competenciesNames.map((element) => element).toList();
-                  mySelectedCompetencies = List.generate(myCustomCompetencies.length, (i) => i);
-
-                  final myDataOfInterest = user?.dataOfInterest ?? [];
-                  myCustomDataOfInterest = myDataOfInterest.map((element) => element).toList();
-                  mySelectedDataOfInterest = List.generate(myCustomDataOfInterest.length, (i) => i);
-
-                  final myLanguages = user?.languagesLevels ?? [];
-                  myCustomLanguages = myLanguages.map((element) => element).toList();
-                  mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
-
-                  _photo = profilePic;
-                  if (widget.mini)
-                    return _myCurriculumMini(context, user, profilePic, competenciesNames );
-                  else {
-                    return Responsive.isDesktop(context)
-                        ? _myCurriculumWeb(context, user, profilePic, competenciesNames )
-                        : _myCurriculumMobile(context, user, profilePic, competenciesNames);
-                  }
-                });
-          } else {
+        stream: database.userStream(email),
+        builder: (context, userSnapshot) {
+          if (!userSnapshot.hasData || userSnapshot.connectionState != ConnectionState.active) {
             return Center(child: CircularProgressIndicator());
           }
+          user = userSnapshot.data!.isNotEmpty ? userSnapshot.data!.first : null;
+          final profilePic = user?.profilePic?.src ?? "";
+          
+          return StreamBuilder<List<Experience>>(
+            stream: database.myExperiencesStream(user?.userId ?? ''),
+            builder: (context, expSnapshot) {
+              if (!expSnapshot.hasData) return Center(child: CircularProgressIndicator());
+              myExperiences = expSnapshot.data;
+
+              // Use LocationCache for competencies instead of a new stream listener.
+              List<Competency> competencies = LocationCache.instance.competencies;
+              final competenciesIds = user!.competencies.keys.toList();
+              
+              competencies = competencies
+                  .where((competency) => competenciesIds.any((id) => competency.id == id))
+                  .toList();
+              
+              competenciesNames.clear(); // Clear to avoid duplicates on rebuild
+              competencies.forEach((competency) {
+                final status = user?.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
+                if (competency.name != "" && status != StringConst.BADGE_EMPTY && status != StringConst.BADGE_IDENTIFIED ) {
+                  if (!competenciesNames.contains(competency.name)) {
+                    competenciesNames.add(competency.name);
+                  }
+                }
+              });
+
+              final myAboutMe = user?.aboutMe ?? "";
+              myCustomAboutMe = myAboutMe;
+              final myEmail = user?.email ?? "";
+              myCustomEmail = myEmail;
+              final myPhone = user?.phone ?? "";
+              myCustomPhone = myPhone;
+
+              myCustomCompetencies = competenciesNames.toList();
+              mySelectedCompetencies = List.generate(myCustomCompetencies.length, (i) => i);
+
+              final myDataOfInterest = user?.dataOfInterest ?? [];
+              myCustomDataOfInterest = myDataOfInterest.toList();
+              mySelectedDataOfInterest = List.generate(myCustomDataOfInterest.length, (i) => i);
+
+              final myLanguages = user?.languagesLevels ?? [];
+              myCustomLanguages = myLanguages.toList();
+              mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
+
+              _photo = profilePic;
+              if (widget.mini) {
+                return _myCurriculumMini(context, user, profilePic, competenciesNames );
+              } else {
+                return Responsive.isDesktop(context)
+                    ? _myCurriculumWeb(context, user, profilePic, competenciesNames )
+                    : _myCurriculumMobile(context, user, profilePic, competenciesNames);
+              }
+            },
+          );
         });
   }
 
@@ -863,34 +875,32 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               myMaxEducation = educations.firstWhere((e) => e.educationId == user!.educationId, orElse: () => Education(label: "", value: "", order: 0));
               return CustomTextBody(text: myMaxEducation?.label??"");
             } else {
-              return StreamBuilder(
-                  stream: database.myExperiencesStream(user?.userId ?? ''),
-                  builder: (context, snapshotExperiences) {
-                    if (snapshotEducations.hasData && snapshotExperiences.hasData) {
-                      final myEducationalExperiencies = snapshotExperiences.data!
-                          .where((experience) => experience.type == 'Formativa')
-                          .toList();
-                      if (myEducationalExperiencies.isNotEmpty) {
-                        final areEduactions = myEducationalExperiencies.any((exp) => exp.education != null && exp.education!.isNotEmpty);
-                        if (areEduactions) {
-                          final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
-                          myEducations.sort((a, b) => a.order.compareTo(b.order));
-                          if(myEducations.isNotEmpty){
-                            myMaxEducation = myEducations.first;
-                          } else {
-                            myMaxEducation = Education(label: "", value: "", order: 0);
-                          }
-                        } else {
-                          myMaxEducation = Education(label: "", value: "", order: 0);
-                        }
-                        return CustomTextBody(text: myMaxEducation?.label??"");
+              return () {
+                final String? userId = user?.userId;
+                if (snapshotEducations.hasData && myExperiences != null) {
+                  final myEducationalExperiencies = (myExperiences ?? [])
+                      .where((experience) => experience.type == 'Formativa')
+                      .toList();
+                  if (myEducationalExperiencies.isNotEmpty) {
+                    final areEduactions = myEducationalExperiencies.any((exp) => exp.education != null && exp.education!.isNotEmpty);
+                    if (areEduactions) {
+                      final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
+                      myEducations.sort((a, b) => a.order.compareTo(b.order));
+                      if(myEducations.isNotEmpty){
+                        myMaxEducation = myEducations.first;
                       } else {
-                        return Container();
+                        myMaxEducation = Education(label: "", value: "", order: 0);
                       }
                     } else {
-                      return Container();
+                      myMaxEducation = Education(label: "", value: "", order: 0);
                     }
-                  });
+                    return CustomTextBody(text: myMaxEducation?.label??"");
+                  } else {
+                    return Container();
+                  }
+                }
+                return Container();
+              }();
             }
           } else {
             return Container();
@@ -1319,45 +1329,38 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ],
         ),
         SpaceH4(),
-        StreamBuilder<List<Experience>>(
-            stream: database.myExperiencesStream(user?.userId ?? ''),
-            builder: (context, snapshot) {
-              if (snapshot.hasData &&
-                  snapshot.connectionState == ConnectionState.active) {
-                myEducation = snapshot.data!
-                    .where((experience) => experience.type == 'Formativa')
-                    .toList();
-                myCustomEducation = myEducation!.map((element) => element).toList();
-                mySelectedEducation = List.generate(myCustomEducation.length, (i) => i);
-                return Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30.0),
-                    color: Colors.white,
-                  ),
-                  child: myEducation!.isNotEmpty
-                      ? Wrap(
-                          children: myEducation!
-                              .map((e) => Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SpaceH12(),
-                                      Container(
-                                        width: double.infinity,
-                                        child: ExperienceTile(experience: e, type: e.type),
-                                      ),
-                                      Divider(color: AppColors.greyBorder,),
-                                    ],
-                                  ))
-                              .toList(),
-                        )
-                      : CustomTextBody(text: StringConst.NO_EDUCATION),
-                );
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }),
+        () {
+          myEducation = (myExperiences ?? [])
+              .where((experience) => experience.type == 'Formativa')
+              .toList();
+          myCustomEducation = myEducation!.toList();
+          mySelectedEducation = List.generate(myCustomEducation.length, (i) => i);
+          return Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.0),
+              color: Colors.white,
+            ),
+            child: myEducation!.isNotEmpty
+                ? Wrap(
+                    children: myEducation!
+                        .map((e) => Column(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                              children: [
+                                SpaceH12(),
+                                Container(
+                                  width: double.infinity,
+                                  child: ExperienceTile(experience: e, type: e.type),
+                                ),
+                                Divider(color: AppColors.greyBorder,),
+                              ],
+                            ))
+                        .toList(),
+                  )
+                : CustomTextBody(text: StringConst.NO_EDUCATION),
+          );
+        }(),
       ],
     );
   }
@@ -1387,45 +1390,38 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ],
         ),
         SpaceH4(),
-        StreamBuilder<List<Experience>>(
-            stream: database.myExperiencesStream(user?.userId ?? ''),
-            builder: (context, snapshot) {
-              if (snapshot.hasData &&
-                  snapshot.connectionState == ConnectionState.active) {
-                mySecondaryEducation = snapshot.data!
-                    .where((experience) => experience.type == 'Complementaria')
-                    .toList();
-                mySecondaryCustomEducation = mySecondaryEducation!.map((element) => element).toList();
-                mySecondarySelectedEducation = List.generate(mySecondaryCustomEducation.length, (i) => i);
-                return Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30.0),
-                    color: Colors.white,
-                  ),
-                  child: mySecondaryEducation!.isNotEmpty
-                      ? Wrap(
+        () {
+          mySecondaryEducation = (myExperiences ?? [])
+              .where((experience) => experience.type == 'Complementaria')
+              .toList();
+          mySecondaryCustomEducation = mySecondaryEducation!.toList();
+          mySecondarySelectedEducation = List.generate(mySecondaryCustomEducation.length, (i) => i);
+          return Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.0),
+              color: Colors.white,
+            ),
+            child: mySecondaryEducation!.isNotEmpty
+                ? Wrap(
                     children: mySecondaryEducation!
                         .map((e) => Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
-                      children: [
-                        SpaceH12(),
-                        Container(
-                          width: double.infinity,
-                          child: ExperienceTile(experience: e, type: e.type),
-                        ),
-                        Divider(color: AppColors.greyBorder,),
-                      ],
-                    ))
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                              children: [
+                                SpaceH12(),
+                                Container(
+                                  width: double.infinity,
+                                  child: ExperienceTile(experience: e, type: e.type),
+                                ),
+                                Divider(color: AppColors.greyBorder,),
+                              ],
+                            ))
                         .toList(),
                   )
-                      : CustomTextBody(text: StringConst.NO_EDUCATION),
-                );
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }),
+                : CustomTextBody(text: StringConst.NO_EDUCATION),
+          );
+        }(),
       ],
     );
   }
@@ -1455,45 +1451,38 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ],
         ),
         SpaceH4(),
-        StreamBuilder<List<Experience>>(
-            stream: database.myExperiencesStream(user?.userId ?? ''),
-            builder: (context, snapshot) {
-              if (snapshot.hasData &&
-                  snapshot.connectionState == ConnectionState.active) {
-                myExperiences = snapshot.data!
-                    .where((experience) => experience.type == 'Profesional')
-                    .toList();
-                myCustomExperiences = myExperiences!.map((element) => element).toList();
-                mySelectedExperiences = List.generate(myCustomExperiences.length, (i) => i);
-                return Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30.0),
-                    color: Colors.white,
-                  ),
-                  child: myExperiences!.isNotEmpty
-                      ? Wrap(
-                    children: myExperiences!
+        () {
+          final myProfExperiences = (myExperiences ?? [])
+              .where((experience) => experience.type == 'Profesional')
+              .toList();
+          myCustomExperiences = myProfExperiences.toList();
+          mySelectedExperiences = List.generate(myCustomExperiences.length, (i) => i);
+          return Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.0),
+              color: Colors.white,
+            ),
+            child: myProfExperiences.isNotEmpty
+                ? Wrap(
+                    children: myProfExperiences
                         .map((e) => Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
-                      children: [
-                        SpaceH4(),
-                        Container(
-                          width: double.infinity,
-                          child: ExperienceTile(experience: e, type: e.type),
-                        ),
-                        Divider(color: AppColors.greyBorder,),
-                      ],
-                    ))
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                              children: [
+                                SpaceH4(),
+                                Container(
+                                  width: double.infinity,
+                                  child: ExperienceTile(experience: e, type: e.type),
+                                ),
+                                Divider(color: AppColors.greyBorder,),
+                              ],
+                            ))
                         .toList(),
                   )
-                      : CustomTextBody(text: StringConst.NO_EXPERIENCE),
-                );
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }),
+                : CustomTextBody(text: StringConst.NO_EXPERIENCE),
+          );
+        }(),
       ],
     );
   }
@@ -1524,45 +1513,38 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ],
         ),
         SpaceH4(),
-        StreamBuilder<List<Experience>>(
-            stream: database.myExperiencesStream(user?.userId ?? ''),
-            builder: (context, snapshot) {
-              if (snapshot.hasData &&
-                  snapshot.connectionState == ConnectionState.active) {
-                myPersonalExperiences = snapshot.data!
-                    .where((experience) => experience.type == 'Personal')
-                    .toList();
-                myPersonalCustomExperiences = myPersonalExperiences!.map((element) => element).toList();
-                myPersonalSelectedExperiences = List.generate(myPersonalCustomExperiences.length, (i) => i);
-                return Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30.0),
-                    color: Colors.white,
-                  ),
-                  child: myPersonalExperiences!.isNotEmpty
-                      ? Wrap(
+        () {
+          myPersonalExperiences = (myExperiences ?? [])
+              .where((experience) => experience.type == 'Personal')
+              .toList();
+          myPersonalCustomExperiences = myPersonalExperiences!.toList();
+          myPersonalSelectedExperiences = List.generate(myPersonalCustomExperiences.length, (i) => i);
+          return Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.0),
+              color: Colors.white,
+            ),
+            child: myPersonalExperiences!.isNotEmpty
+                ? Wrap(
                     children: myPersonalExperiences!
                         .map((e) => Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
-                      children: [
-                        SpaceH12(),
-                        Container(
-                          width: double.infinity,
-                          child: ExperienceTile(experience: e, type: e.type,),
-                        ),
-                        Divider(color: AppColors.greyBorder,),
-                      ],
-                    ))
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                              children: [
+                                SpaceH4(),
+                                Container(
+                                  width: double.infinity,
+                                  child: ExperienceTile(experience: e, type: e.type),
+                                ),
+                                Divider(color: AppColors.greyBorder,),
+                              ],
+                            ))
                         .toList(),
                   )
-                      : CustomTextBody(text: StringConst.NO_EXPERIENCE),
-                );
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }),
+                : CustomTextBody(text: StringConst.NO_EXPERIENCE),
+          );
+        }(),
       ],
     );
   }

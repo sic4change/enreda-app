@@ -15,6 +15,7 @@ import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
@@ -52,6 +53,13 @@ class _GamificationState extends State<GamificationPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    final database = Provider.of<Database>(context, listen: false);
+    LocationCache.instance.warmUpAll(database);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
@@ -78,33 +86,20 @@ class _GamificationState extends State<GamificationPage> {
               _gamificationFlags.forEach((key, value) {
                 if(value == true){
                   _points++;
-                  print(_points);
                 }
               });
-              print(_gamificationFlags);
-              print('Puntos finales: $_points');
-              return StreamBuilder(
-                stream: database.gamificationFlagsStream(),
-                builder: (context, snapshot){
-                  if(!snapshot.hasData) return Container();
-                  if(snapshot.hasData){
-                    _gamificationValues = snapshot.data!;
-                    _gamificationValues.forEach((element) {print(element.description);});
+              
+              // Use LocationCache instead of a new stream listener
+              _gamificationValues = LocationCache.instance.gamificationFlags;
 
-                    if (_gamificationFlags.length == _gamificationValues.length
-                        && !_gamificationFlags.containsValue(false)){
-                      _allTasksDone = true;
-                    }
+              if (_gamificationFlags.length == _gamificationValues.length
+                  && !_gamificationFlags.containsValue(false)){
+                _allTasksDone = true;
+              }
 
-                    return Responsive.isMobile(context) || Responsive.isTablet(context)
-                        ? _gamificationMobile()
-                        : _gamificationWeb();
-                  }
-                  else{
-                    return Container();
-                  }
-                }
-              );
+              return Responsive.isMobile(context) || Responsive.isTablet(context)
+                  ? _gamificationMobile()
+                  : _gamificationWeb();
             }
             else{
               return Container();

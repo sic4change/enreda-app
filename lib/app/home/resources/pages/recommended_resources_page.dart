@@ -16,6 +16,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:enreda_app/app/home/resources/models/resource_metadata.dart';
 import 'package:async/async.dart' show StreamGroup;
+import 'package:enreda_app/services/location_cache.dart';
 import 'dart:async';
 
 class RecommendedResourcesPage extends StatefulWidget {
@@ -41,29 +42,14 @@ class _RecommendedResourcesPageState extends State<RecommendedResourcesPage> {
 
   void _getMetadata() async {
     final database = Provider.of<Database>(context, listen: false);
-
-    final results = await Future.wait([
-      database.countriesStream().first,
-      database.provincesStream().first,
-      database.citiesStream().first,
-      database.organizationsStream().first,
-      database.socialEntitiesStream().first,
-      database.companiesStream().first,
-    ]);
-
-    final allOrganizers = [
-      ...results[3] as List<dynamic>,
-      ...results[4] as List<dynamic>,
-      ...results[5] as List<dynamic>,
-    ];
-
+    await LocationCache.instance.warmUpAll(database);
     if (mounted) {
       setState(() {
         _metadata = ResourceMetadata.fromLists(
-          countries: results[0] as List<Country>,
-          provinces: results[1] as List<Province>,
-          cities: results[2] as List<City>,
-          organizers: allOrganizers,
+          countries: LocationCache.instance.countries,
+          provinces: LocationCache.instance.provinces,
+          cities: LocationCache.instance.allCities,
+          organizers: LocationCache.instance.organizers,
         );
       });
     }

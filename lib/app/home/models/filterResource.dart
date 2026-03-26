@@ -1,12 +1,10 @@
 class FilterResource {
   String searchText;
   String resourceCategoryId;
-  //List<String> resourceTypes;
-  //List<String> resourceCategories;
+  int limit; // Added for infinite scroll pagination support
 
   FilterResource(
       this.searchText,
-      this.resourceCategoryId);
-      //this.resourceTypes,
-      //this.resourceCategories);
+      this.resourceCategoryId,
+      {this.limit = 50});
 }

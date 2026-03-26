@@ -185,7 +185,8 @@ class FirestoreDatabase implements Database {
       path: APIPath.resources(),
       queryBuilder: (query) => query
           .where('status', isEqualTo: 'Disponible')
-          .where('trust', isEqualTo: true),
+          .where('trust', isEqualTo: true)
+          .limit(50), // Guardrail to prevent 9,000+ reads
       builder: (data, documentId) => Resource.fromMap(data, documentId),
       sort: (lhs, rhs) => lhs.maximumDate.compareTo(rhs.maximumDate),
     );
@@ -244,39 +245,38 @@ class FirestoreDatabase implements Database {
 
   @override
   Stream<List<Resource>> filteredResourcesCategoryStream(FilterResource filter) {
-    return _service.filteredCollectionStream(
+    // Push category filter to Firestore server-side to avoid reading all resources.
+    // .limit() ensures we never read more than requested even without a category filter.
+    return _service.filteredCollectionStream<Resource>(
       path: APIPath.resources(),
       queryBuilder: (query) {
-        //query = query.where('status', isEqualTo: 'Disponible').where('trust', isEqualTo: true);
-        query = query.where('status', isEqualTo: 'Disponible');
+        query = query
+            .where('status', isEqualTo: 'Disponible')
+            .limit(filter.limit);
+        // Apply category filter server-side when a specific category is selected.
+        if (filter.resourceCategoryId.isNotEmpty) {
+          query = FirebaseFirestore.instance
+              .collection(APIPath.resources())
+              .where('status', isEqualTo: 'Disponible')
+              .where('resourceCategory', isEqualTo: filter.resourceCategoryId)
+              .limit(filter.limit);
+        }
         return query;
       },
       builder: (data, documentId) {
+        // Only apply client-side text search when the user has typed something.
+        if (filter.searchText.isEmpty) {
+          return Resource.fromMap(data, documentId);
+        }
         final searchTextResource = removeDiacritics((data['searchText'] ?? '').toLowerCase());
         final searchListResource = searchTextResource.split(';');
         final searchTextFilter = removeDiacritics(filter.searchText.toLowerCase());
         final searchListFilter = searchTextFilter.split(' ');
-        // The following code checks if a resource is selected by applying filters
-        bool resourceSelected = true; // Initialize resourceSelected to true
-
-        // If search text exists in filter, filter through the search list
-        if (filter.searchText != '') {
-          searchListFilter.forEach((filterElement) {
-            // For each element in searchListFilter, check against each element in searchListResource
-            if (!searchListResource.any(
-                    (resourceElement) => resourceElement.contains(filterElement))) {
-              resourceSelected = false; // Set resourceSelected false if a match isn't found
-            }
-          });
-        }
-
-        if (!filter.resourceCategoryId.contains(data['resourceCategory'])) {
-          resourceSelected = false;
-        }
-
+        bool resourceSelected = searchListFilter.every((filterElement) =>
+            searchListResource.any((resourceElement) => resourceElement.contains(filterElement)));
         return resourceSelected ? Resource.fromMap(data, documentId) : null;
       },
-      sort: (rhs, lhs) => lhs.createdate.compareTo(rhs.createdate),
+      sort: (rhs, lhs) => lhs.createdate.compareTo(rhs.createdate), // Sort client-side
     );
   }
 
@@ -301,26 +301,20 @@ class FirestoreDatabase implements Database {
 
   @override
   Stream<List<Resource>> recommendedResourcesStream(UserEnreda? user) {
-    return _service.filteredCollectionStream(
+    // Use arrayContainsAny to push interest filtering server-side.
+    // Firestore supports up to 10 values in arrayContainsAny.
+    if (user == null || user.interests.isEmpty) {
+      return Stream.value([]);
+    }
+    final interestSlice = user.interests.take(10).toList();
+    return _service.collectionStream<Resource>(
       path: APIPath.resources(),
-      queryBuilder: (query) {
-        query = query
-            .where('status', isEqualTo: 'Disponible')
-            .where('trust', isEqualTo: true);
-        return query;
-      },
-      builder: (data, documentId) {
-        var interests = data['interests'];
-
-        if (interests != null && user != null) {
-          for (var interest in interests) {
-            if (user.interests.contains(interest))
-              return Resource.fromMap(data, documentId);
-          }
-        }
-
-        return null;
-      },
+      queryBuilder: (query) => query
+          .where('status', isEqualTo: 'Disponible')
+          .where('trust', isEqualTo: true)
+          .where('interests', arrayContainsAny: interestSlice)
+          .limit(50), // Guardrail to prevent 9,000+ reads
+      builder: (data, documentId) => Resource.fromMap(data, documentId),
       sort: (lhs, rhs) => lhs.createdate.compareTo(rhs.createdate),
     );
   }

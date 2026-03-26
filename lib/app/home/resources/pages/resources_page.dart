@@ -13,6 +13,7 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/models/resource_metadata.dart';
 import 'package:enreda_app/app/home/resources/filter_text_field_row.dart';
 import 'dart:async';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:async/async.dart' show StreamGroup;
 import 'package:enreda_app/app/home/resources/list_item_builder_grid.dart';
 import 'package:enreda_app/app/home/resources/pages/list_item_builder_vertical.dart';
@@ -67,6 +68,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   ResourceMetadata _metadata = ResourceMetadata();
   List<StreamSubscription> _metadataSubscriptions = [];
 
+  bool _isLoadingMore = false;
   String _categoryName = 'Empleo';
   String _categoryFormationId = '';
   String _backgroundImageUrl(String categoryId) {
@@ -109,37 +111,24 @@ class _ResourcesPageState extends State<ResourcesPage> {
     }
   }
 
-  getResourceCategories() {
-    final database = Provider.of<Database>(context, listen: false);
-    _metadataSubscriptions.add(database.getCategoriesResources().listen((categoriesList) {
-      setStateIfMounted(() => resourceCategoriesList = categoriesList);
-    }));
+  void getResourceCategories() {
+    setStateIfMounted(() => resourceCategoriesList = LocationCache.instance.resourceCategories);
   }
 
   void _getMetadata() async {
     final database = Provider.of<Database>(context, listen: false);
 
-    final results = await Future.wait([
-      database.countriesStream().first,
-      database.provincesStream().first,
-      database.citiesStream().first,
-      database.organizationsStream().first,
-      database.socialEntitiesStream().first,
-      database.companiesStream().first,
-    ]);
-
-    final allOrganizers = [
-      ...results[3] as List<dynamic>,
-      ...results[4] as List<dynamic>,
-      ...results[5] as List<dynamic>,
-    ];
+    // warmUpAll caches countries, provinces, cities AND organizers.
+    // Subsequent page mounts are a no-op — all data served from memory.
+    await LocationCache.instance.warmUpAll(database);
 
     setStateIfMounted(() {
+      resourceCategoriesList = LocationCache.instance.resourceCategories;
       _metadata = ResourceMetadata.fromLists(
-        countries: results[0] as List<Country>,
-        provinces: results[1] as List<Province>,
-        cities: results[2] as List<City>,
-        organizers: allOrganizers,
+        countries: LocationCache.instance.countries,
+        provinces: LocationCache.instance.provinces,
+        cities: LocationCache.instance.allCities,
+        organizers: LocationCache.instance.organizers,
       );
     });
   }
@@ -204,6 +193,23 @@ class _ResourcesPageState extends State<ResourcesPage> {
     getResourceCategories();
     _getMetadata();
     _loadPillControllers();
+
+    // Infinite scroll listener for resources
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
+        if (!_isLoadingMore) {
+          _isLoadingMore = true;
+          setStateIfMounted(() {
+            filterResource.limit += 50;
+            print("[FIRESTORE MONITOR] Paginating: Loading more resources. New limit: ${filterResource.limit}");
+          });
+          // Small delay to prevent rapid double-triggering while stream updates
+          Future.delayed(Duration(seconds: 2), () {
+            _isLoadingMore = false;
+          });
+        }
+      }
+    });
   }
 
 
@@ -631,6 +637,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
           onTap: () {
             setStateIfMounted(() {
               filterResource.resourceCategoryId = (resourceCategories[index].id);
+              filterResource.limit = 50; // Reset limit for new category
               ResourcesPage.selectedIndex.value = 1;
               _categoryName = resourceCategories[index].name;
               _categoryFormationId = resourceCategories[index].id;
@@ -941,18 +948,23 @@ class _ResourcesPageState extends State<ResourcesPage> {
     setStateIfMounted(() {
       _searchTextController.clear();
       filterResource.searchText = '';
+      filterResource.limit = 50; // Reset limit on clear
       filterTrainingPill.searchText = '';
     });
   }
 
   void _clearScrollPosition() {
-    _scrollController = ScrollController(initialScrollOffset: 0);
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(0);
+    }
   }
 
   void _loadScrollPosition() async {
     final prefs = await SharedPreferences.getInstance();
     double scrollPosition = prefs.getDouble('scrollPosition') ?? 0;
-    _scrollController = ScrollController(initialScrollOffset: scrollPosition);
+    if (scrollPosition > 0 && _scrollController.hasClients) {
+      _scrollController.jumpTo(scrollPosition);
+    }
   }
 
   void _saveScrollPosition() async {

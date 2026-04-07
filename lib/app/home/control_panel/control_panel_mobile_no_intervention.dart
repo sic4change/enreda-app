@@ -7,7 +7,7 @@ import 'package:enreda_app/common_widgets/card_button_contact.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
-import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
@@ -15,6 +15,7 @@ import 'package:enreda_app/values/values.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:enreda_app/services/database.dart';
 
 class ControlPanelMobileNoInterventionPage extends StatefulWidget {
   const ControlPanelMobileNoInterventionPage({super.key, required this.user});
@@ -299,17 +300,15 @@ class _ControlPanelMobileNoInterventionPageState extends State<ControlPanelMobil
                               border: Border.all(color: AppColors.primary900.withOpacity(0.3), width: 1),
                               borderRadius: BorderRadius.circular(5.0),
                             ),
-                            child: StreamBuilder<List<Competency>>(
-                                stream: database.competenciesStream(),
-                                builder: (context, competenciesStream) {
+                            child: Builder(builder: (context) {
+                                  final allCompetencies = LocationCache.instance.competencies;
                                   double competenciesProgress = 0;
                                   Map<String, String> certifiedCompetencies = {};
-                                  if (competenciesStream.hasData) {
+                                  if (allCompetencies.isNotEmpty) {
                                     certifiedCompetencies = Map.from(widget.user!.competencies);
                                     certifiedCompetencies.removeWhere((key, value) => value != "certified");
-                                    competenciesProgress = (certifiedCompetencies.length / competenciesStream.data!.length) * 100;
+                                    competenciesProgress = (certifiedCompetencies.length / allCompetencies.length) * 100;
                                   }
-
                                   return GamificationItem(
                                     imagePath: ImagePath.GAMIFICATION_COMPETENCIES_ICON,
                                     progress: competenciesProgress,

@@ -1,22 +1,17 @@
 import 'package:enreda_app/app/home/models/gender.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../../../../services/database.dart';
 import '../../../utils/adaptive.dart';
 import '../../../values/values.dart';
 
 Widget streamBuilder_Dropdown_Genders(BuildContext context, Gender? selectedGender,  functionToWriteBackThings, String? genderName ) {
-  final database = Provider.of<Database>(context, listen: false);
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
-  return StreamBuilder<List<Gender>>(
-      stream: database.genderStream(),
-      builder: (context, snapshotGenders){
-
-        List<DropdownMenuItem<Gender>> genderItems = [];
-        if (snapshotGenders.hasData) {
-          genderItems = snapshotGenders.data!.map((Gender gender) {
+  return Builder(
+      builder: (context){
+        final genders = LocationCache.instance.genders;
+        List<DropdownMenuItem<Gender>> genderItems = genders.map((Gender gender) {
             if (selectedGender == null && gender.name == genderName) {
               selectedGender = gender;
             }
@@ -26,7 +21,6 @@ Widget streamBuilder_Dropdown_Genders(BuildContext context, Gender? selectedGend
             );
           })
               .toList();
-        }
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,

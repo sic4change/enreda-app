@@ -11,6 +11,7 @@ import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
@@ -42,58 +43,55 @@ class _CompetenciesPageWebState extends State<CompetenciesPageWeb> {
       child: StreamBuilder<User?>(
           stream: Provider.of<AuthBase>(context).authStateChanges(),
           builder: (context, snapshot) {
-            return StreamBuilder<List<CompetencyCategory>>(
-                stream: database.competenciesCategoriesStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData && !showingSubCategoriesPage)
-                    bodyWidget = _competenciesCategoriesWidget(context, snapshot.data!);
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildCompetenciesInfo(context),
-                      SpaceW30(),
-                      Expanded(
-                        flex: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: MainContainer(
-                              child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 30),
-                                        child: Container(
-                                          height: 34,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              CustomTextMediumBold(text: StringConst.COMPETENCIES),
-                                              SpaceW8(),
-                                              Container(
-                                                width: 34,
-                                                child: PillTooltip(
-                                                  title: StringConst.PILL_COMPETENCIES,
-                                                  pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
-                                                ),
-                                              )
-                                            ],
+            final categories = LocationCache.instance.competencyCategories;
+            if (categories.isNotEmpty && !showingSubCategoriesPage)
+              bodyWidget = _competenciesCategoriesWidget(context, categories);
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildCompetenciesInfo(context),
+                SpaceW30(),
+                Expanded(
+                  flex: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: MainContainer(
+                        child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 30),
+                                  child: Container(
+                                    height: 34,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        CustomTextMediumBold(text: StringConst.COMPETENCIES),
+                                        SpaceW8(),
+                                        Container(
+                                          width: 34,
+                                          child: PillTooltip(
+                                            title: StringConst.PILL_COMPETENCIES,
+                                            pillId: TrainingPill.WHAT_ARE_COMPETENCIES_ID,
                                           ),
-                                        ),
-                                      ),
-                                      if (snapshot.hasData)
-                                        bodyWidget,
-                                      if (!snapshot.hasData)
-                                        Center(child: CircularProgressIndicator(),),
-                                    ],
-                                  )
-                              )
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                });
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                if (categories.isNotEmpty)
+                                  bodyWidget,
+                                if (categories.isEmpty)
+                                  Center(child: CircularProgressIndicator(),),
+                              ],
+                            )
+                        )
+                    ),
+                  ),
+                ),
+              ],
+            );
           }),
     );
   }

@@ -632,6 +632,8 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
         await database.chatQuestionsStream(auth.currentUser!.uid).first;
 
     var timestamp = Timestamp.now();
+    List<ChatQuestion> updates = [];
+
     questions.forEach((question) {
       bool showQuestion = false;
       if (question.order == 1 || question.order == 2 /*|| question.order == 3*/)
@@ -646,15 +648,19 @@ class _AssistantPageWebState extends State<AssistantPageWeb> {
               userResponse: null,
               show: showQuestion));
       if (chatQuestion.id == null) {
-        database.addChatQuestion(chatQuestion);
+        updates.add(chatQuestion);
       } else {
-        database.updateChatQuestion(
+        updates.add(
             chatQuestion.copyWith(userResponse: null, show: showQuestion));
       }
       //TODO: Create the next Timestamp later to make sure that we create every question with a difference of time but it doesn't feel optimum
       timestamp = Timestamp.fromMillisecondsSinceEpoch(
           timestamp.millisecondsSinceEpoch + 1000);
     });
+
+    if (updates.isNotEmpty) {
+      await database.updateChatQuestionsBatch(updates);
+    }
   }
 
   void _editLastResponse() async {

@@ -4,6 +4,7 @@ import 'package:enreda_app/app/home/models/specificinterest.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,74 +22,76 @@ class _PersonalDataPageState extends State<PersonalDataPage> {
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context, listen: false);
-    List<String> userInterestsIds = [];
-    Set<Interest> userInterests = Set.from([]);
-    Set<Interest> interests = {};
-    List<String> interestsSelectedName = [];
-    Set<SpecificInterest> specificInterests = {};
 
     return StreamBuilder<UserEnreda>(
-        stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return StreamBuilder<UserEnreda>(
-                stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
-                  if (snapshot.hasData) {
-                    UserEnreda user = snapshot.data!;
-                    userInterestsIds = user.interests;
-                    if (userInterestsIds.isNotEmpty) {
-                      return StreamBuilder<List<Interest>>(
-                          stream: database.interestStream(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
-                            if (snapshot.hasData) {
-                              interests = snapshot.data!.toSet();
-                              return StreamBuilder<List<Interest>>(
-                                  stream: database.interestsByUserStream(userInterestsIds),
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
-                                    if (snapshot.hasData) {
-                                      userInterests = snapshot.data!.toSet();
-                                      for (Interest interest in userInterests) {
-                                        interestsSelectedName.add(interest.name);
-                                      }
-                                      return StreamBuilder<List<SpecificInterest>>(
-                                          stream: database.specificInterestsStream(),
-                                          builder: (context, snapshot) {
-                                            if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
-                                            if (snapshot.hasData) {
-                                              specificInterests = snapshot.data!.toSet();
-                                              return PersonalDataForm(
-                                                user: user,
-                                                interestsSet: interests,
-                                                userInterestsSelectedName: interestsSelectedName,
-                                                specificInterestsSet: specificInterests,
-                                              );
-                                            }
-                                            return Container();
-                                          }
-                                      );
-                                    }
-                                    return Container();
-                                  });
-                            }
-                            return Container();
-                          });
-                    }
-                    return PersonalDataForm(
-                      user: user,
-                      interestsSet: interests,
-                      userInterestsSelectedName: interestsSelectedName,
-                      specificInterestsSet: specificInterests,
-                    );
-                  }
-                  return Container();
-                });
-          }
-          return Container();
-        });
+      stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
 
+        final UserEnreda user = snapshot.data!;
+        final userInterestsIds = user.interests;
+
+        // Load interests from cache if available; fall back to individual fetches
+        final cachedInterests = LocationCache.instance.interests;
+        final cachedSpecificInterests = LocationCache.instance.specificInterests;
+
+        if (userInterestsIds.isEmpty) {
+          // No interests to resolve — render immediately
+          return PersonalDataForm(
+            user: user,
+            interestsSet: cachedInterests.toSet(),
+            userInterestsSelectedName: [],
+            specificInterestsSet: cachedSpecificInterests.toSet(),
+          );
+        }
+
+        if (cachedInterests.isNotEmpty && cachedSpecificInterests.isNotEmpty) {
+          // Both in cache — zero extra reads
+          final userInterests = cachedInterests
+              .where((i) => userInterestsIds.contains(i.interestId))
+              .toSet();
+          final selectedNames = userInterests.map((i) => i.name).toList();
+          return PersonalDataForm(
+            user: user,
+            interestsSet: cachedInterests.toSet(),
+            userInterestsSelectedName: selectedNames,
+            specificInterestsSet: cachedSpecificInterests.toSet(),
+          );
+        }
+
+        // Cache miss: fetch once and render
+        return FutureBuilder<List<List<dynamic>>>(
+          future: Future.wait([
+            database.interestStream().first,
+            database.specificInterestsStream().first,
+          ]),
+          builder: (context, futureSnapshot) {
+            if (!futureSnapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
+            final List<Interest> allInterests =
+                (futureSnapshot.data![0] as List<Interest>);
+            final List<SpecificInterest> allSpecificInterests =
+                (futureSnapshot.data![1] as List<SpecificInterest>);
+
+            // Populate cache for future use
+            LocationCache.instance.setInterests(allInterests);
+            LocationCache.instance.setSpecificInterests(allSpecificInterests);
+
+            final userInterests = allInterests
+                .where((i) => userInterestsIds.contains(i.interestId))
+                .toSet();
+            final selectedNames = userInterests.map((i) => i.name).toList();
+
+            return PersonalDataForm(
+              user: user,
+              interestsSet: allInterests.toSet(),
+              userInterestsSelectedName: selectedNames,
+              specificInterestsSet: allSpecificInterests.toSet(),
+            );
+          },
+        );
+      },
+    );
   }
 }

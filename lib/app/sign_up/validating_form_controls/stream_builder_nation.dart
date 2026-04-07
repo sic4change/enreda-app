@@ -1,21 +1,16 @@
-import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 Widget streamBuilderForNation(BuildContext context, String? selectedNation, functionToWriteBackThings, String title, String? nationalityName) {
-  final database = Provider.of<Database>(context, listen: false);
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
-  return StreamBuilder<List<String>>(
-      stream: database.nationsSpanishStream(),
-      builder: (context, snapshotCountries){
-
-        List<DropdownMenuItem<String>> nationItems = [];
-        if (snapshotCountries.hasData) {
-          nationItems = snapshotCountries.data!.map((String nation) {
+  return Builder(
+      builder: (context){
+        final nations = LocationCache.instance.nations;
+        List<DropdownMenuItem<String>> nationItems = nations.map((String nation) {
             if (selectedNation == null && nation == nationalityName) {
               selectedNation = nation;
             }
@@ -25,7 +20,6 @@ Widget streamBuilderForNation(BuildContext context, String? selectedNation, func
             );
           })
               .toList();
-        }
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,

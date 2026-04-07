@@ -18,8 +18,10 @@ import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:enreda_app/services/database.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
@@ -59,7 +61,10 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
   @override
   void initState() {
     super.initState();
-    _resetQuestions();
+    final database = Provider.of<Database>(context, listen: false);
+    LocationCache.instance.warmUpAll(database).then((_) {
+      _resetQuestions();
+    });
     dateResponse = DateTime.now();
     setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CHAT);
     setGamificationFlag(context: context, flagId: UserEnreda.FLAG_PILL_COMPETENCIES);
@@ -167,26 +172,27 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
           return ListItemBuilder<ChatQuestion>(
               snapshot: snapshot,
               itemBuilder: (context, chatQuestion) {
-                return StreamBuilder<Question>(
-                    stream: database.questionStream(chatQuestion.questionId),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data != null) {
-                        final question = snapshot.data!;
-                        if (chatQuestion.show) {
-                          return MessageTile(
-                            question: question,
-                            chatQuestion: chatQuestion,
-                            currentChoicesNotifier: currentChoicesNotifier,
-                            sourceAutoCompleteNotifier: sourceAutoCompleteNotifier,
-                            onNext: () => _showNextChatQuestion(question, [], database),
-                          );
-                        } else {
-                          return Container();
-                        }
-                      } else {
-                        return Container();
-                      }
-                    });
+                // Synchronous lookup from LocationCache
+                final question = LocationCache.instance.questions.firstWhere(
+                  (q) => q.id == chatQuestion.questionId,
+                  orElse: () => Question(id: '', order: 0, text: '', type: '', tag: ''),
+                );
+
+                if (question.id.isEmpty) {
+                  return Container();
+                }
+
+                if (chatQuestion.show) {
+                  return MessageTile(
+                    question: question,
+                    chatQuestion: chatQuestion,
+                    currentChoicesNotifier: currentChoicesNotifier,
+                    sourceAutoCompleteNotifier: sourceAutoCompleteNotifier,
+                    onNext: () => _showNextChatQuestion(question, [], database),
+                  );
+                } else {
+                  return Container();
+                }
               });
         } else {
           return Center(child: CircularProgressIndicator());
@@ -515,6 +521,8 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
         await database.chatQuestionsStream(auth.currentUser!.uid).first;
 
     var timestamp = Timestamp.now();
+    List<ChatQuestion> updates = [];
+
     questions.forEach((question) {
       bool showQuestion = false;
       if (question.order == 1 || question.order == 2 || question.order == 3)
@@ -529,15 +537,19 @@ class _AssistantPageMobileState extends State<AssistantPageMobile> {
               userResponse: null,
               show: showQuestion));
       if (chatQuestion.id == null) {
-        database.addChatQuestion(chatQuestion);
+        updates.add(chatQuestion);
       } else {
-        database.updateChatQuestion(
+        updates.add(
             chatQuestion.copyWith(userResponse: null, show: showQuestion));
       }
       //TODO: Create the next Timestamp later to make sure that we create every question with a difference of time but it doesn't feel optimum
       timestamp = Timestamp.fromMillisecondsSinceEpoch(
           timestamp.millisecondsSinceEpoch + 1000);
     });
+
+    if (updates.isNotEmpty) {
+      await database.updateChatQuestionsBatch(updates);
+    }
   }
 
   void _editLastResponse() async {

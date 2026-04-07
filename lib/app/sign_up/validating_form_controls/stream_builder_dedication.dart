@@ -1,29 +1,23 @@
 import 'package:enreda_app/app/home/models/dedication.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../../../../services/database.dart';
 import '../../../utils/adaptive.dart';
 import '../../../values/strings.dart';
 import '../../../values/values.dart';
 
 Widget streamBuilderDropdownDedication (BuildContext context, Dedication? selectedDedication,  functionToWriteBackThings ) {
-  final database = Provider.of<Database>(context, listen: false);
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
-  return StreamBuilder<List<Dedication>>(
-      stream: database.dedicationStream(),
-      builder: (context, snapshotDedications){
-
-        List<DropdownMenuItem<Dedication>> dedicationItems = [];
-        if (snapshotDedications.hasData) {
-          dedicationItems = snapshotDedications.data!.map((Dedication dedication) =>
+  return Builder(
+      builder: (context){
+        final dedications = LocationCache.instance.dedications;
+        List<DropdownMenuItem<Dedication>> dedicationItems = dedications.map((Dedication dedication) =>
               DropdownMenuItem<Dedication>(
                 value: dedication,
                 child: Text(dedication.label),
               ))
               .toList();
-        }
 
         return DropdownButtonFormField<Dedication>(
           isDense: true,

@@ -1,23 +1,17 @@
 import 'package:enreda_app/app/home/models/scope.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../../../../services/database.dart';
 
 Widget streamBuilderForScope (BuildContext context, Scope? selectedScope,  functionToWriteBackThings ) {
-  final database = Provider.of<Database>(context, listen: false);
-  return StreamBuilder<List<Scope>>(
-      stream: database.scopeStream(),
-      builder: (context, snapshotScopes){
-
-        List<DropdownMenuItem<Scope>> scopeItems = [];
-        if (snapshotScopes.hasData) {
-          scopeItems = snapshotScopes.data!.map((Scope scope) => DropdownMenuItem<Scope>(
+  return Builder(
+      builder: (context){
+        final scopes = LocationCache.instance.scopes;
+        List<DropdownMenuItem<Scope>> scopeItems = scopes.map((Scope scope) => DropdownMenuItem<Scope>(
             value: scope,
             child: Text(scope.label),
           ))
               .toList();
-        }
 
         return DropdownButtonFormField<Scope>(
           hint: Text(StringConst.FORM_SCOPE),

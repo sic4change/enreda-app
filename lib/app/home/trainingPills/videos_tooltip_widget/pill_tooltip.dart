@@ -3,6 +3,7 @@ import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/on_hover_effect.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
@@ -10,14 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PillTooltip extends StatefulWidget {
-
   const PillTooltip({
     Key? key,
     required this.title,
     required this.pillId,
-    
   }) : super(key: key);
-  
+
   final String title, pillId;
 
   @override
@@ -26,7 +25,6 @@ class PillTooltip extends StatefulWidget {
 
 class _PillTooltipState extends State<PillTooltip> {
   late OverlayEntry _overlayEntry;
-
   GlobalKey key = GlobalKey();
 
   @override
@@ -41,10 +39,9 @@ class _PillTooltipState extends State<PillTooltip> {
       if (x + 300 > MediaQuery.of(context).size.width) x -= 260;
       if (y + 300 > MediaQuery.of(context).size.height) y -= 180;
 
-      // Remove the Stack and GestureDetector if we don't want to ignore the first click of the user outside the overlay entry (and remove the overlay in the dispose())
       return Stack(
         children: [
-          GestureDetector(onTap: () => _overlayEntry.remove(),),
+          GestureDetector(onTap: () => _overlayEntry.remove()),
           Positioned(
             top: Responsive.isMobile(context) ? 100
                 : Responsive.isTablet(context) || Responsive.isDesktopS(context) ? 200
@@ -64,7 +61,8 @@ class _PillTooltipState extends State<PillTooltip> {
                       color: AppColors.primary900,
                       borderRadius: BorderRadius.circular(20.0),
                     ),
-                    width: Responsive.isMobile(context) ? 300 : Responsive.isDesktopS(context) ? 500 : 700,
+                    width: Responsive.isMobile(context) ? 300
+                        : Responsive.isDesktopS(context) ? 500 : 700,
                     child: Column(
                       children: [
                         Padding(
@@ -83,10 +81,9 @@ class _PillTooltipState extends State<PillTooltip> {
                     right: 10,
                     child: IconButton(
                       hoverColor: Colors.transparent,
-                        onPressed: () {
-                          _overlayEntry.remove();
-                        },
-                        icon: Icon(Icons.close), iconSize: 20,
+                      onPressed: () => _overlayEntry.remove(),
+                      icon: Icon(Icons.close),
+                      iconSize: 20,
                     ),
                   ),
                 ],
@@ -100,31 +97,30 @@ class _PillTooltipState extends State<PillTooltip> {
 
   @override
   void dispose() {
-    /*if (_overlayEntry.mounted) {
-      _overlayEntry.remove();
-    }*/
     _overlayEntry.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return OnHoverEffect( builder: (isHovered){
-      final double iconSize = isHovered ? 34 : 24 ;
+    return OnHoverEffect(builder: (isHovered) {
+      final double iconSize = isHovered ? 34 : 24;
       return InkWell(
         key: key,
         onTap: () {
           if (Responsive.isMobile(context)) {
-            showDialog(context: context, useRootNavigator: false, builder: (dialogContext) =>
-                Dialog(
-                  backgroundColor: Colors.transparent,
-                  clipBehavior: Clip.hardEdge,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildTrainingTooltipVideo(dialogContext),
-                    ],
-                  ),));
+            showDialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (dialogContext) => Dialog(
+                backgroundColor: Colors.transparent,
+                clipBehavior: Clip.hardEdge,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [_buildTrainingTooltipVideo(dialogContext)],
+                ),
+              ),
+            );
           } else {
             if (_overlayEntry.mounted) {
               _overlayEntry.remove();
@@ -133,29 +129,40 @@ class _PillTooltipState extends State<PillTooltip> {
             }
           }
         },
-        child: Image.asset(ImagePath.ICON_INFO_2, height: iconSize, width: iconSize,) ,// Icon(Icons.info_outline, size: 24, color: AppColors.primaryColor,),
+        child: Image.asset(ImagePath.ICON_INFO_2, height: iconSize, width: iconSize),
       );
     });
   }
 
+  /// Renders the training pill video.
+  /// Reads from [LocationCache] first — zero Firestore reads for cached pills.
+  /// Falls back to a one-shot future fetch (no persistent listener) when cold.
   Widget _buildTrainingTooltipVideo(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-    return StreamBuilder<TrainingPill>(
-        stream: database.trainingPillStreamById(widget.pillId),
-        builder: (context, snapshot) {
-          if(snapshot.hasData) {
-            TrainingPill trainingPill = snapshot.data!;
-            trainingPill.setTrainingPillCategoryName();
-            return Container(
-              key: Key('trainingPill-${trainingPill.id}'),
-              child: TrainingTooltipVideo(
-                trainingPill: trainingPill,
-              ),
-            );
-          } else
-          return Container();
-        });
+
+    final cached = LocationCache.instance.trainingPillById(widget.pillId);
+    if (cached != null) {
+      cached.setTrainingPillCategoryName();
+      return Container(
+        key: Key('trainingPill-${cached.id}'),
+        child: TrainingTooltipVideo(trainingPill: cached),
+      );
+    }
+
+    // Cache miss: one-shot fetch — does NOT leave a persistent listener
+    return FutureBuilder<TrainingPill>(
+      future: database.trainingPillStreamById(widget.pillId).first,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final trainingPill = snapshot.data!;
+          trainingPill.setTrainingPillCategoryName();
+          return Container(
+            key: Key('trainingPill-${trainingPill.id}'),
+            child: TrainingTooltipVideo(trainingPill: trainingPill),
+          );
+        }
+        return Container();
+      },
+    );
   }
-
 }
-

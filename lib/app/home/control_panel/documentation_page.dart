@@ -9,6 +9,7 @@ import 'package:enreda_app/utils/my_scroll_behaviour.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -45,23 +46,21 @@ class _ParticipantDocumentationListState extends State<ParticipantDocumentationL
             if(snapshot.hasData){
               _userDocuments = snapshot.data!.personalDocuments;
             }
-            return StreamBuilder<List<PersonalDocumentType>>(
-                stream: database.personalDocumentTypeStream(),
-                builder: (context, snapshot) {
-                  if(snapshot.hasData){
-                    snapshot.data!.forEach((element) {
-                      bool containsDocument = false;
-                      _userDocuments.forEach((item) {
-                        if(item.name == element.title){
-                          containsDocument = true;
-                        }
-                      });
-                    });
-                    _userDocuments.sort((a, b) {
-                      return a.order.compareTo(b.order);
-                    },);
-                    documentsCount = _userDocuments.length;
-                  }
+            
+            final types = LocationCache.instance.personalDocumentTypes;
+            types.forEach((element) {
+              bool containsDocument = false;
+              _userDocuments.forEach((item) {
+                if(item.name == element.title){
+                  containsDocument = true;
+                }
+              });
+            });
+            _userDocuments.sort((a, b) {
+              return a.order.compareTo(b.order);
+            },);
+            documentsCount = _userDocuments.length;
+
                   return _userDocuments.isEmpty ? Padding(
                     padding: const EdgeInsets.only(bottom: 20.0),
                     child: Container(
@@ -149,8 +148,6 @@ class _ParticipantDocumentationListState extends State<ParticipantDocumentationL
                       ],
                     ),
                   );
-                }
-            );
           }
       ),
     );

@@ -70,53 +70,24 @@ class _WebHomeState extends State<WebHome> {
     super.initState();
   }
 
-  Widget _buildMyUserName(BuildContext context) {
-    final auth = Provider.of<AuthBase>(context, listen: false);
-    final database = Provider.of<Database>(context, listen: false);
+  Widget _buildMyUserName(BuildContext context, UserEnreda user) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    return StreamBuilder<User?>(
-        stream: Provider.of<AuthBase>(context).authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return StreamBuilder<UserEnreda>(
-              stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  _userEnreda = snapshot.data!;
-                  _userName = '${_userEnreda.firstName} ${_userEnreda.lastName}';
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(_userName,
-                            style: textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.primary900,
-                              fontSize: 16.0,)
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return Center(child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: SizedBox(
-                      child: CircularProgressIndicator(),
-                      height: 20.0,
-                      width: 20.0,
-                    ),
-                  ),);
-                }
-              },
-            );
-          } else if (!snapshot.hasData) {
-            return Container();
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        });
+    final userName = '${user.firstName} ${user.lastName}';
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Text(userName,
+              style: textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w900,
+                color: AppColors.primary900,
+                fontSize: 16.0,)
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -324,7 +295,7 @@ class _WebHomeState extends State<WebHome> {
                         WebHome.controller.selectIndex(0);
                       });
                     },
-                    child: _buildMyUserName(context)
+                    child: _buildMyUserName(context, user)
                 ) : Container(),
                 if (!auth.isNullUser)
                   SizedBox(width: 20),

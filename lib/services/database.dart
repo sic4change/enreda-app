@@ -60,6 +60,7 @@ abstract class Database {
   Stream<List<Resource>> myResourcesStream(String userId);
   Stream<List<Resource>> likeResourcesStream(String userId);
   Stream<List<Resource>> recommendedResourcesStream(UserEnreda? user);
+  Stream<List<Resource>> resourcesStreamByIds(List<String> ids);
   Stream<List<Interest>> interestsByUserStream(List<String?> interestsIdList);
   Stream<List<Interest>> resourcesInterestsStream(List<String?> interestsIdList);
   Stream<List<Competency>> resourcesCompetenciesStream(List<String?> competenciesIdList);
@@ -142,6 +143,7 @@ abstract class Database {
   Future<void> addOrganization(Organization organization);
   Future<void> addChatQuestion(ChatQuestion chatQuestion);
   Future<void> updateChatQuestion(ChatQuestion chatQuestion);
+  Future<void> updateChatQuestionsBatch(List<ChatQuestion> chatQuestions);
   Future<void> addExperience(Experience experience);
   Future<void> updateExperience(Experience experience);
   Future<void> deleteExperience(Experience experience);
@@ -189,6 +191,19 @@ class FirestoreDatabase implements Database {
           .limit(50), // Guardrail to prevent 9,000+ reads
       builder: (data, documentId) => Resource.fromMap(data, documentId),
       sort: (lhs, rhs) => lhs.maximumDate.compareTo(rhs.maximumDate),
+    );
+  }
+
+  @override
+  Stream<List<Resource>> resourcesStreamByIds(List<String> ids) {
+    if (ids.isEmpty) return Stream.value([]);
+    // Firestore whereIn limit is 30 for newer SDKs.
+    final limitedIds = ids.take(30).toList();
+    return _service.collectionStream(
+      path: APIPath.resources(),
+      queryBuilder: (query) => query.where(FieldPath.documentId, whereIn: limitedIds),
+      builder: (data, documentId) => Resource.fromMap(data, documentId),
+      sort: (lhs, rhs) => lhs.title.compareTo(rhs.title),
     );
   }
 
@@ -922,6 +937,26 @@ class FirestoreDatabase implements Database {
       _service.updateData(
           path: APIPath.chatQuestion(chatQuestion.id!),
           data: chatQuestion.toMap());
+
+  @override
+  Future<void> updateChatQuestionsBatch(List<ChatQuestion> chatQuestions) async {
+    final batch = FirebaseFirestore.instance.batch();
+    for (var question in chatQuestions) {
+      // If question doesn't have an ID, we generate one since addData normally does.
+      final docRef = question.id == null || question.id!.isEmpty 
+          ? FirebaseFirestore.instance.collection(APIPath.chatQuestions()).doc() 
+          : FirebaseFirestore.instance.collection(APIPath.chatQuestions()).doc(question.id);
+      
+      // Update the question ID in the map if it was newly generated
+      final mapData = question.toMap();
+      if (question.id == null || question.id!.isEmpty) {
+         mapData['id'] = docRef.id;
+      }
+      
+      batch.set(docRef, mapData, SetOptions(merge: true));
+    }
+    await batch.commit();
+  }
 
   @override
   Stream<List<Question>> questionsStream() => _service.collectionStream(

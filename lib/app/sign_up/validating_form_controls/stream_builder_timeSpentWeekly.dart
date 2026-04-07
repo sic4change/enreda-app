@@ -1,28 +1,22 @@
 import 'package:enreda_app/app/home/models/timeSpentWeekly.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../../../../services/database.dart';
 import '../../../utils/adaptive.dart';
 import '../../../values/values.dart';
 
 Widget streamBuilderDropdownTimeSpentWeekly (BuildContext context, TimeSpentWeekly? selectedTimeSpentWeekly,  functionToWriteBackThings ) {
-  final database = Provider.of<Database>(context, listen: false);
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
-  return StreamBuilder<List<TimeSpentWeekly>>(
-      stream: database.timeSpentWeeklyStream(),
-      builder: (context, snapshotTimeSpentWeeklyStream){
-
-        List<DropdownMenuItem<TimeSpentWeekly>> timeSpentWeeklyItems = [];
-        if (snapshotTimeSpentWeeklyStream.hasData) {
-          timeSpentWeeklyItems = snapshotTimeSpentWeeklyStream.data!.map((TimeSpentWeekly timeSpentWeekly) =>
+  return Builder(
+      builder: (context){
+        final timeSpentWeeklies = LocationCache.instance.timeSpentWeeklies;
+        List<DropdownMenuItem<TimeSpentWeekly>> timeSpentWeeklyItems = timeSpentWeeklies.map((TimeSpentWeekly timeSpentWeekly) =>
               DropdownMenuItem<TimeSpentWeekly>(
                 value: timeSpentWeekly,
                 child: Text(timeSpentWeekly.label),
               ))
               .toList();
-        }
 
         return DropdownButtonFormField<TimeSpentWeekly>(
           hint: Text(StringConst.FORM_TIME_SPENT_WEEKLY, maxLines: 2, overflow: TextOverflow.ellipsis),

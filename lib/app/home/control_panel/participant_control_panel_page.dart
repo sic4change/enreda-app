@@ -13,6 +13,7 @@ import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/utils/my_scroll_behaviour.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
@@ -156,17 +157,15 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                                   progressText: "${_getUserPillsConsumed()}",
                                   title: "PÍLDORAS CONSUMIDAS",
                                 ),
-                                StreamBuilder<List<Competency>>(
-                                    stream: database.competenciesStream(),
-                                    builder: (context, competenciesStream) {
+                                Builder(builder: (context) {
+                                      final allCompetencies = LocationCache.instance.competencies;
                                       double competenciesProgress = 0;
                                       Map<String, String> certifiedCompetencies = {};
-                                      if (competenciesStream.hasData) {
+                                      if (allCompetencies.isNotEmpty) {
                                         certifiedCompetencies = Map.from(widget.participantUser.competencies);
                                         certifiedCompetencies.removeWhere((key, value) => value != "certified");
-                                        competenciesProgress = (certifiedCompetencies.length / competenciesStream.data!.length) * 100;
+                                        competenciesProgress = (certifiedCompetencies.length / allCompetencies.length) * 100;
                                       }
-
                                       return GamificationItem(
                                         imagePath: ImagePath.GAMIFICATION_COMPETENCIES_ICON,
                                         progress: competenciesProgress,
@@ -284,90 +283,85 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
           children: [
             CustomTextBoldTitle(title: StringConst.MY_COMPETENCIES),
             SpaceH8(),
-            StreamBuilder<List<Competency>>(
-                stream: database.competenciesStream(),
-                builder: (context, snapshotCompetencies) {
-                  if (snapshotCompetencies.hasData) {
-                    final controller = ScrollController();
-                    var scrollJump = Responsive.isDesktopS(context) ? 350 : 410;
-                    List<Competency> myCompetencies = snapshotCompetencies.data!;
-                    final competenciesIds = widget.participantUser.competencies.keys.toList();
-                    myCompetencies = myCompetencies
-                        .where((competency) => competenciesIds.any((id) => competency.id == id))
-                        .toList();
-                    return myCompetencies.isEmpty ? Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0),
-                      child: Center(child: CustomTextSubTitle(title: StringConst.NO_COMPETENCIES,)),
-                    ) : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: Responsive.isDesktop(context) ? 210.0 : Responsive.isDesktopS(context) ? 200 : 150.0,
-                          child: ScrollConfiguration(
-                            behavior: MyCustomScrollBehavior(),
-                            child: ListView(
-                              controller: controller,
-                              scrollDirection: Axis.horizontal,
-                              children: myCompetencies.map((competency) {
-                                final status = widget.participantUser.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
-                                return Column(
-                                  children: [
-                                    Container(
-                                      height: Responsive.isDesktop(context) ? 210.0 : Responsive.isDesktopS(context) ? 200 : 150.0,
-                                      child: CompetencyTile(
-                                        competency: competency,
-                                        status: status,
-                                        height: 40,
-                                        medium: true,
-                                      ),
+            Builder(
+                builder: (context) {
+                  final controller = ScrollController();
+                  var scrollJump = Responsive.isDesktopS(context) ? 350 : 410;
+                  final allCompetencies = LocationCache.instance.competencies;
+                  final competenciesIds = widget.participantUser.competencies.keys.toList();
+                  List<Competency> myCompetencies = allCompetencies
+                      .where((competency) => competenciesIds.any((id) => competency.id == id))
+                      .toList();
+                  return myCompetencies.isEmpty ? Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: Center(child: CustomTextSubTitle(title: StringConst.NO_COMPETENCIES,)),
+                  ) : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: Responsive.isDesktop(context) ? 210.0 : Responsive.isDesktopS(context) ? 200 : 150.0,
+                        child: ScrollConfiguration(
+                          behavior: MyCustomScrollBehavior(),
+                          child: ListView(
+                            controller: controller,
+                            scrollDirection: Axis.horizontal,
+                            children: myCompetencies.map((competency) {
+                              final status = widget.participantUser.competencies[competency.id] ?? StringConst.BADGE_EMPTY;
+                              return Column(
+                                children: [
+                                  Container(
+                                    height: Responsive.isDesktop(context) ? 210.0 : Responsive.isDesktopS(context) ? 200 : 150.0,
+                                    child: CompetencyTile(
+                                      competency: competency,
+                                      status: status,
+                                      height: 40,
+                                      medium: true,
                                     ),
-                                  ],
-                                );
-                              }).toList(),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                if (controller.position.pixels >=
+                                    controller.position.minScrollExtent)
+                                  controller.animateTo(
+                                      controller.position.pixels - scrollJump,
+                                      duration: Duration(milliseconds: 500),
+                                      curve: Curves.ease);
+                              },
+                              child: Image.asset(
+                                ImagePath.ARROW_BACK_ALT,
+                                width: 30.0,
+                              ),
                             ),
-                          ),
-                        ),
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  if (controller.position.pixels >=
-                                      controller.position.minScrollExtent)
-                                    controller.animateTo(
-                                        controller.position.pixels - scrollJump,
-                                        duration: Duration(milliseconds: 500),
-                                        curve: Curves.ease);
-                                },
-                                child: Image.asset(
-                                  ImagePath.ARROW_BACK_ALT,
-                                  width: 30.0,
-                                ),
+                            SpaceW12(),
+                            InkWell(
+                              onTap: () {
+                                if (controller.position.pixels <=
+                                    controller.position.maxScrollExtent)
+                                  controller.animateTo(
+                                      controller.position.pixels + scrollJump,
+                                      duration: Duration(milliseconds: 500),
+                                      curve: Curves.ease);
+                              },
+                              child: Image.asset(
+                                ImagePath.ARROW_FORWARD_ALT,
+                                width: 30.0,
                               ),
-                              SpaceW12(),
-                              InkWell(
-                                onTap: () {
-                                  if (controller.position.pixels <=
-                                      controller.position.maxScrollExtent)
-                                    controller.animateTo(
-                                        controller.position.pixels + scrollJump,
-                                        duration: Duration(milliseconds: 500),
-                                        curve: Curves.ease);
-                                },
-                                child: Image.asset(
-                                  ImagePath.ARROW_FORWARD_ALT,
-                                  width: 30.0,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    );
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
+                      ),
+                    ],
+                  );
                 }),
           ],),
       ),
@@ -442,13 +436,11 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
         CustomTextBoldTitle(title: StringConst.RESOURCES_JOINED),
         SpaceH20(),
         StreamBuilder<List<Resource>>(
-            stream: database.resourcesStream(),
+            stream: database.resourcesStreamByIds(widget.participantUser.resources),
             builder: (context, snapshot) {
               List<Resource> myResources = [];
               if (snapshot.hasData) {
-                myResources = snapshot.data!.where((resource) =>
-                    widget.participantUser.resources.any((id) => resource.resourceId == id))
-                    .toList();
+                myResources = snapshot.data!;
               }
 
               return myResources.isEmpty? Text(

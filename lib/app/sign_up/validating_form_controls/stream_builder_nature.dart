@@ -1,24 +1,18 @@
 import 'package:enreda_app/app/home/models/nature.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../../../../services/database.dart';
 
 Widget streamBuilderDropdownNature (BuildContext context, Nature? selectedNature,  functionToWriteBackThings ) {
-  final database = Provider.of<Database>(context, listen: false);
-  return StreamBuilder<List<Nature>>(
-      stream: database.natureStream(),
-      builder: (context, snapshotNatures){
-
-        List<DropdownMenuItem<Nature>> natureItems = [];
-        if (snapshotNatures.hasData) {
-          natureItems = snapshotNatures.data!.map((Nature nature) =>
+  return Builder(
+      builder: (context){
+        final natures = LocationCache.instance.natures;
+        List<DropdownMenuItem<Nature>> natureItems = natures.map((Nature nature) =>
               DropdownMenuItem<Nature>(
                 value: nature,
                 child: Text(nature.label),
               ))
               .toList();
-        }
 
         return DropdownButtonFormField<Nature>(
           hint: Text(StringConst.FORM_NATURE),

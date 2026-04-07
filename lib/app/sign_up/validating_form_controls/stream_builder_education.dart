@@ -1,22 +1,17 @@
 import 'package:enreda_app/app/home/models/education.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../../../../services/database.dart';
 import '../../../utils/adaptive.dart';
 import '../../../values/values.dart';
 
 Widget streamBuilderDropdownEducation(BuildContext context, Education? selectedEducation,  functionToWriteBackThings, genericType, String title) {
-  final database = Provider.of<Database>(context, listen: false);
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
-  return StreamBuilder<List<Education>>(
-      stream: database.educationStream(),
-      builder: (context, snapshotEducation){
-
-        List<DropdownMenuItem<Education>> educationItems = [];
-        if (snapshotEducation.hasData) {
-          educationItems = snapshotEducation.data!.map((Education education) {
+  return Builder(
+      builder: (context){
+        final educations = LocationCache.instance.educations;
+        List<DropdownMenuItem<Education>> educationItems = educations.map((Education education) {
             if (selectedEducation == null && education.educationId == genericType?.educationId) {
               selectedEducation = education;
             }
@@ -26,7 +21,7 @@ Widget streamBuilderDropdownEducation(BuildContext context, Education? selectedE
             );
           })
               .toList();
-        }
+
         return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

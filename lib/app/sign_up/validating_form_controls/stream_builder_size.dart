@@ -1,24 +1,18 @@
 import 'package:enreda_app/app/home/models/size.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../../../../services/database.dart';
 
 Widget streamBuilderForSizeOrg (BuildContext context, SizeOrg? selectedSizeOrg,  functionToWriteBackThings ) {
-  final database = Provider.of<Database>(context, listen: false);
-  return StreamBuilder<List<SizeOrg>>(
-      stream: database.sizeStream(),
-      builder: (context, snapshotSizes){
-
-        List<DropdownMenuItem<SizeOrg>> sizeOrgItems = [];
-        if(snapshotSizes.hasData) {
-          sizeOrgItems = snapshotSizes.data!.map((SizeOrg sizeOrg) =>
+  return Builder(
+      builder: (context){
+        final sizeOrgs = LocationCache.instance.sizeOrgs;
+        List<DropdownMenuItem<SizeOrg>> sizeOrgItems = sizeOrgs.map((SizeOrg sizeOrg) =>
               DropdownMenuItem<SizeOrg>(
                 value: sizeOrg,
                 child: Text(sizeOrg.label),
               ))
               .toList();
-        }
 
         return DropdownButtonFormField<SizeOrg>(
           hint: Text(StringConst.FORM_SIZE),

@@ -11,6 +11,7 @@ import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
@@ -43,27 +44,25 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
       child: StreamBuilder<User?>(
           stream: Provider.of<AuthBase>(context).authStateChanges(),
           builder: (context, snapshot) {
-            return StreamBuilder<List<CompetencyCategory>>(
-                stream: database.competenciesCategoriesStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData && !showingSubCategoriesPage)
-                    bodyWidget = _buildCompetenciesCategories(context, snapshot);
-                  return SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildHeader(context),
-                        SpaceH20(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                          child: snapshot.hasData? bodyWidget :
-                          Center(child: CircularProgressIndicator(),),
-                        ),
-                      ],
-                    ),
-                  );
-                });
+            final categories = LocationCache.instance.competencyCategories;
+            if (categories.isNotEmpty && !showingSubCategoriesPage) {
+              bodyWidget = _buildCompetenciesCategories(context, categories);
+            }
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeader(context),
+                  SpaceH20(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    child: categories.isNotEmpty ? bodyWidget :
+                    Center(child: CircularProgressIndicator(),),
+                  ),
+                ],
+              ),
+            );
           }),
     );
   }
@@ -256,7 +255,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
     );
   }
 
-  Widget _buildCompetenciesCategories(BuildContext context, AsyncSnapshot<List<CompetencyCategory>> snapshot) {
+  Widget _buildCompetenciesCategories(BuildContext context, List<CompetencyCategory> categories) {
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(
@@ -264,7 +263,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
       child: Wrap(
         runSpacing: 20.0,
         spacing: 20.0,
-        children: snapshot.data!.map((c) =>
+        children: categories.map((c) =>
             InkWell(
               onTap: () => setState(() {
                 showingSubCategoriesPage = true;
@@ -272,7 +271,7 @@ class _CompetenciesPageMobileState extends State<CompetenciesPageMobile> {
                   showChatNotifier: widget.showChatNotifier,
                   competencyCategory: c,
                   onBackPressed: () => setState(() {
-                    bodyWidget = _buildCompetenciesCategories(context, snapshot);
+                    bodyWidget = _buildCompetenciesCategories(context, categories);
                   }),
                 );
               }),

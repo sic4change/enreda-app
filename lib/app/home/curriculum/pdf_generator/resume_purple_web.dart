@@ -194,7 +194,11 @@ Future<Uint8List> generateResumePurple(
                         name: '${reference.certifierName}',
                         position: '${reference.certifierPosition}',
                         company: '${reference.certifierCompany}',
-                        contact: '${reference.phone} / ${reference.email}',
+                        contact: [reference.phone, reference.email]
+                            .whereType<String>()
+                            .where(
+                                (s) => s.trim().isNotEmpty && s.trim() != '+34')
+                            .join(' / '),
                       ),
                     pw.SizedBox(height: 15), // Reduced spacing
                     // Removed AboutMe from here

@@ -1894,7 +1894,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                                   Expanded(
                                     child: Text(
                                       l.name,
-                                      style: textTheme.bodySmall?.copyWith(),
+                                      style: textTheme.bodySmall?.copyWith(
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                   EditButton(

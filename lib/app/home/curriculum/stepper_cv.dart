@@ -79,76 +79,75 @@ class StepperHeader extends StatelessWidget {
   final ValueChanged<int> onTap;
 
   @override
-Widget build(BuildContext context) {
-  return LayoutBuilder(
-    builder: (_, c) {
-      return Row(
-        children: [
-          for (int i = 0; i < steps.length; i++) ...[
-            InkWell(
-              onTap: i <= current ? () => onTap(i) : null, // sólo hacia atrás
-              borderRadius: BorderRadius.circular(24),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    width: 28,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      // Relleno para hechos o actual; vacío para futuros
-                      color: (i < current || i == current)
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.transparent,
-                      border: Border.all(
-                        width: 2,
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (_, c) {
+        return Row(
+          children: [
+            for (int i = 0; i < steps.length; i++) ...[
+              InkWell(
+                onTap: i <= current ? () => onTap(i) : null, // sólo hacia atrás
+                borderRadius: BorderRadius.circular(24),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        // Relleno para hechos o actual; vacío para futuros
                         color: (i < current || i == current)
                             ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.35),
+                            : Colors.transparent,
+                        border: Border.all(
+                          width: 2,
+                          color: (i < current || i == current)
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.35),
+                        ),
                       ),
-                    ),
-                    // Puntito blanco SOLO en el paso actual (como en la captura)
-                    child: i == current
-                        ? Center(
-                            child: Container(
-                              width: 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
+                      // Puntito blanco SOLO en el paso actual (como en la captura)
+                      child: i == current
+                          ? Center(
+                              child: Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                          )
-                        : null,
-                  ),
-                ],
-              ),
-            ),
-            if (i != steps.length - 1)
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 12),
-                  height: 2,
-                  // Línea activa en primario; inactiva con primario suave (no gris)
-                  color: i < current
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.35),
+                            )
+                          : null,
+                    ),
+                  ],
                 ),
               ),
+              if (i != steps.length - 1)
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 12),
+                    height: 2,
+                    // Línea activa en primario; inactiva con primario suave (no gris)
+                    color: i < current
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.35),
+                  ),
+                ),
+            ],
           ],
-        ],
-      );
-    },
-  );
-}
-
+        );
+      },
+    );
+  }
 }
 
 typedef BeforeNextHandler = Future<bool> Function();
@@ -169,17 +168,18 @@ class _CvWizardState extends State<CvWizard> {
   // Un Form por paso
   final formKeys = List.generate(steps.length, (_) => GlobalKey<FormState>());
   int index = 0;
-  
+
   // Preservar el estado del PageView
   final _pageStorageKey = const PageStorageKey<String>('cv_wizard_page');
 
   @override
   void initState() {
     super.initState();
-    
+
     // Restaurar la posición guardada del PageView
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final savedIndex = PageStorage.of(context).readState(context, identifier: _pageStorageKey) as int?;
+      final savedIndex = PageStorage.of(context)
+          .readState(context, identifier: _pageStorageKey) as int?;
       if (savedIndex != null && savedIndex != index) {
         _goTo(savedIndex);
       }
@@ -188,7 +188,7 @@ class _CvWizardState extends State<CvWizard> {
 
   void _goTo(int i) {
     setState(() => index = i);
-    
+
     // Guardar la posición actual en PageStorage
     PageStorage.of(context).writeState(context, i, identifier: _pageStorageKey);
   }
@@ -198,32 +198,33 @@ class _CvWizardState extends State<CvWizard> {
     // validaciones cruzadas del paso (ej.: fechas)
     if (ok && steps[index].id == 'fechas' && !data.fechasOk) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('La fecha fin debe ser posterior al inicio.')),
+        const SnackBar(
+            content: Text('La fecha fin debe ser posterior al inicio.')),
       );
       return false;
     }
     return ok;
   }
 
-Future<void> _next() async {
-  final stepId = steps[index].id;
+  Future<void> _next() async {
+    final stepId = steps[index].id;
 
-  // Si el paso actual registró un handler (p. ej. StepFormation), úsalo
-  if (_beforeNextByStepId.containsKey(stepId)) {
-    final ok = await _beforeNextByStepId[stepId]!();
-    if (!ok) return;
-    if(!mounted) return;
-  } else {
-    // Si no hay handler, usa tu validación genérica
-    //if (!_validateCurrent()) return;
-  }
+    // Si el paso actual registró un handler (p. ej. StepFormation), úsalo
+    if (_beforeNextByStepId.containsKey(stepId)) {
+      final ok = await _beforeNextByStepId[stepId]!();
+      if (!ok) return;
+      if (!mounted) return;
+    } else {
+      // Si no hay handler, usa tu validación genérica
+      //if (!_validateCurrent()) return;
+    }
 
-  if (index < steps.length - 1) {
-    _goTo(index + 1);
-  } else {
-    _submit();
+    if (index < steps.length - 1) {
+      _goTo(index + 1);
+    } else {
+      _submit();
+    }
   }
-}
 
   void _submit() {
     // TODO: persiste a tu backend / Firestore
@@ -254,11 +255,12 @@ Future<void> _next() async {
   @override
   Widget build(BuildContext context) {
     return RoundedContainer(
-      margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
-        const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-      contentPadding: Responsive.isMobile(context) ?
-        EdgeInsets.all(Sizes.mainPadding) :
-        EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
+      margin: Responsive.isMobile(context)
+          ? const EdgeInsets.all(0)
+          : const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+      contentPadding: Responsive.isMobile(context)
+          ? EdgeInsets.all(Sizes.mainPadding)
+          : EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
       child: FocusTraversalGroup(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -272,33 +274,92 @@ Future<void> _next() async {
                 index: index,
                 children: [
                   _StepWelcome(key: formKeys[0], data: data),
-                  _StepFormation(key: formKeys[1], isMainEducation: true, onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, title: 'Formación', question: '¿Quieres añadir alguna formación?', user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['formacion'] = fn,),
-                  _StepFormation(key: formKeys[2], isMainEducation: false, onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, title: 'Formación complementaria', question: '¿Quieres añadir alguna formación complementaria?', user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['formacion_complementaria'] = fn,),
-                  _StepExperience(key: formKeys[3], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['experiencia'] = fn,),
-                  _StepExperience(key: formKeys[4], onSelectNoAndContinue: () => _goTo(index + 1), onSaveSiValido: (data) {}, title: 'Experiencia personal', question: 'Ahora vamos con las experiencias personales', user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['experiencia_personal'] = fn,),
-                  _StepAboutMe(formKey: formKeys[5], data: data, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['about_me'] = fn,),
-                  _StepInterests(key: formKeys[6], data: data, user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['interests'] = fn,),
-                  _StepLanguages(key: formKeys[7], user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['languages'] = fn,),
-                  _StepEnd(key: formKeys[8], user: widget.user, registerBeforeNext: (fn) => _beforeNextByStepId['end'] = fn,),
+                  _StepFormation(
+                    key: formKeys[1],
+                    isMainEducation: true,
+                    onSelectNoAndContinue: () => _goTo(index + 1),
+                    onSaveSiValido: (data) {},
+                    title: 'Formación',
+                    question: '¿Quieres añadir alguna formación?',
+                    user: widget.user,
+                    registerBeforeNext: (fn) =>
+                        _beforeNextByStepId['formacion'] = fn,
+                  ),
+                  _StepFormation(
+                    key: formKeys[2],
+                    isMainEducation: false,
+                    onSelectNoAndContinue: () => _goTo(index + 1),
+                    onSaveSiValido: (data) {},
+                    title: 'Formación complementaria',
+                    question:
+                        '¿Quieres añadir alguna formación complementaria?',
+                    user: widget.user,
+                    registerBeforeNext: (fn) =>
+                        _beforeNextByStepId['formacion_complementaria'] = fn,
+                  ),
+                  _StepExperience(
+                    key: formKeys[3],
+                    onSelectNoAndContinue: () => _goTo(index + 1),
+                    onSaveSiValido: (data) {},
+                    user: widget.user,
+                    registerBeforeNext: (fn) =>
+                        _beforeNextByStepId['experiencia'] = fn,
+                  ),
+                  _StepExperience(
+                    key: formKeys[4],
+                    onSelectNoAndContinue: () => _goTo(index + 1),
+                    onSaveSiValido: (data) {},
+                    title: 'Experiencia personal',
+                    question: 'Ahora vamos con las experiencias personales',
+                    user: widget.user,
+                    registerBeforeNext: (fn) =>
+                        _beforeNextByStepId['experiencia_personal'] = fn,
+                  ),
+                  _StepAboutMe(
+                    formKey: formKeys[5],
+                    data: data,
+                    user: widget.user,
+                    registerBeforeNext: (fn) =>
+                        _beforeNextByStepId['about_me'] = fn,
+                  ),
+                  _StepInterests(
+                    key: formKeys[6],
+                    data: data,
+                    user: widget.user,
+                    registerBeforeNext: (fn) =>
+                        _beforeNextByStepId['interests'] = fn,
+                  ),
+                  _StepLanguages(
+                    key: formKeys[7],
+                    user: widget.user,
+                    registerBeforeNext: (fn) =>
+                        _beforeNextByStepId['languages'] = fn,
+                  ),
+                  _StepEnd(
+                    key: formKeys[8],
+                    user: widget.user,
+                    registerBeforeNext: (fn) => _beforeNextByStepId['end'] = fn,
+                  ),
                   // añade más aquí...
                 ],
               ),
             ),
             const SizedBox(height: 8),
-            index == 0 ? 
-            Container(
-              height: 50,
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AppColors.blue050),
-                ),
-                onPressed: index == 0 ? () => _goTo(index + 1) : null,
-                child: const Text('Saltar vídeo y empezar CV', style: TextStyle(color: AppColors.blue050),),
-              ),
-            ) 
-            : 
-            _buildAcciones(context, index, _goTo, _saveDraft, _next), 
-            
+            index == 0
+                ? Container(
+                    height: 50,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.blue050),
+                      ),
+                      onPressed: index == 0 ? () => _goTo(index + 1) : null,
+                      child: const Text(
+                        'Saltar vídeo y empezar CV',
+                        style: TextStyle(color: AppColors.blue050),
+                      ),
+                    ),
+                  )
+                : _buildAcciones(context, index, _goTo, _saveDraft, _next),
           ],
         ),
       ),
@@ -309,7 +370,8 @@ Future<void> _next() async {
 // Define un breakpoint a tu gusto
 const double _mobileBreakpoint = 600;
 
-Widget _buildAcciones(BuildContext context, int index, void Function(int) _goTo, void Function() _saveDraft, void Function() _next) {
+Widget _buildAcciones(BuildContext context, int index, void Function(int) _goTo,
+    void Function() _saveDraft, void Function() _next) {
   return LayoutBuilder(
     builder: (context, constraints) {
       final isMobile = constraints.maxWidth < _mobileBreakpoint;
@@ -322,7 +384,8 @@ Widget _buildAcciones(BuildContext context, int index, void Function(int) _goTo,
             side: const BorderSide(color: AppColors.blue050),
           ),
           onPressed: index > 0 ? () => _goTo(index - 1) : null,
-          child: const Text('Volver', style: TextStyle(color: AppColors.blue050)),
+          child:
+              const Text('Volver', style: TextStyle(color: AppColors.blue050)),
         ),
       );
 
@@ -334,7 +397,8 @@ Widget _buildAcciones(BuildContext context, int index, void Function(int) _goTo,
             side: const BorderSide(color: AppColors.blue050),
           ),
           onPressed: _saveDraft,
-          child: const Text('Guardar en borrador', style: TextStyle(color: AppColors.blue050)),
+          child: const Text('Guardar en borrador',
+              style: TextStyle(color: AppColors.blue050)),
         ),
       );
 
@@ -377,7 +441,6 @@ Widget _buildAcciones(BuildContext context, int index, void Function(int) _goTo,
   );
 }
 
-
 /// === PASO 1: Tipo de experiencia ===
 class _StepWelcome extends StatefulWidget {
   const _StepWelcome({super.key, required this.data});
@@ -387,9 +450,10 @@ class _StepWelcome extends StatefulWidget {
   State<_StepWelcome> createState() => _StepWelcomeState();
 }
 
-class _StepWelcomeState extends State<_StepWelcome> with AutomaticKeepAliveClientMixin {
+class _StepWelcomeState extends State<_StepWelcome>
+    with AutomaticKeepAliveClientMixin {
   late YoutubePlayerController _controller;
-  
+
   @override
   bool get wantKeepAlive => true;
 
@@ -404,42 +468,47 @@ class _StepWelcomeState extends State<_StepWelcome> with AutomaticKeepAliveClien
         CustomTextMediumCenter(text: StringConst.STEPPER_CV_TEXT_1),
         const SizedBox(height: 20),
         StreamBuilder<TrainingPill>(
-          stream: database.trainingPillStreamById(TrainingPill.HOW_TO_DO_CV_ID),
-          builder: (context, snapshot) {
-            if(snapshot.hasData) {
-              TrainingPill trainingPill = snapshot.data!;
-              trainingPill.setTrainingPillCategoryName();
-              final videoId = YoutubePlayerController.convertUrlToId(trainingPill.urlVideo) ?? '';
-              _controller = YoutubePlayerController.fromVideoId(
-              videoId: videoId,
-              autoPlay: false,
-              params: const YoutubePlayerParams(
-                showFullscreenButton: true,
-              ),
-            );
-              return Container(
-                width: MediaQuery.of(context).size.width > 600 ? MediaQuery.of(context).size.width/3.5 : MediaQuery.of(context).size.width,
-                key: Key('trainingPill-${trainingPill.id}'),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: AppColors.primary020,
-                    width: 1.0,
+            stream:
+                database.trainingPillStreamById(TrainingPill.HOW_TO_DO_CV_ID),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                TrainingPill trainingPill = snapshot.data!;
+                trainingPill.setTrainingPillCategoryName();
+                final videoId = YoutubePlayerController.convertUrlToId(
+                        trainingPill.urlVideo) ??
+                    '';
+                _controller = YoutubePlayerController.fromVideoId(
+                  videoId: videoId,
+                  autoPlay: false,
+                  params: const YoutubePlayerParams(
+                    showFullscreenButton: true,
                   ),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: YoutubePlayer(
-                      controller: _controller,
+                );
+                return Container(
+                  width: MediaQuery.of(context).size.width > 600
+                      ? MediaQuery.of(context).size.width / 3.5
+                      : MediaQuery.of(context).size.width,
+                  key: Key('trainingPill-${trainingPill.id}'),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: AppColors.primary020,
+                      width: 1.0,
                     ),
                   ),
-                ),
-              );
-            } else
-            return Container();
-          }),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: YoutubePlayer(
+                        controller: _controller,
+                      ),
+                    ),
+                  ),
+                );
+              } else
+                return Container();
+            }),
       ],
     );
   }
@@ -459,7 +528,6 @@ class FormacionData {
     this.inicio,
     this.fin,
   });
-  
 }
 
 class _EduItem {
@@ -468,7 +536,6 @@ class _EduItem {
   final bool isDraft;
   _EduItem({required this.id, required this.exp, required this.isDraft});
 }
-
 
 /// === PASO 1: Tipo de experiencia ===
 class _StepFormation extends StatefulWidget {
@@ -483,9 +550,9 @@ class _StepFormation extends StatefulWidget {
     this.isMainEducation = true,
   });
 
-  final VoidCallback onSelectNoAndContinue;                // Avanzar si pulsa "No"
-  final ValueChanged<FormacionData> onSaveSiValido;        // Callback tras guardar OK
-  final UserEnreda user;                                   // <- nuevo (como en StepFormation)
+  final VoidCallback onSelectNoAndContinue; // Avanzar si pulsa "No"
+  final ValueChanged<FormacionData> onSaveSiValido; // Callback tras guardar OK
+  final UserEnreda user; // <- nuevo (como en StepFormation)
   final void Function(Future<bool> Function()) registerBeforeNext; // <- nuevo
   final String title;
   final String question;
@@ -494,7 +561,6 @@ class _StepFormation extends StatefulWidget {
   @override
   State<_StepFormation> createState() => _StepFormationState();
 }
-
 
 class _StepFormationState extends State<_StepFormation>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
@@ -522,13 +588,14 @@ class _StepFormationState extends State<_StepFormation>
       _formKeysById.putIfAbsent(id, () => GlobalKey<FormState>());
 
   GlobalKey<StepperFormationFormState> _stepperKeyFor(String id) =>
-      _stepperKeysById.putIfAbsent(id, () => GlobalKey<StepperFormationFormState>());
+      _stepperKeysById.putIfAbsent(
+          id, () => GlobalKey<StepperFormationFormState>());
 
   void _addDraft() {
     final id = '_new_${_newCounter++}';
     setState(() {
-      _draftIds.insert(0, id);   // << siempre arriba
-      _expandedId = id;          // << abrirla al crear
+      _draftIds.insert(0, id); // << siempre arriba
+      _expandedId = id; // << abrirla al crear
     });
   }
 
@@ -570,7 +637,8 @@ class _StepFormationState extends State<_StepFormation>
 
     if (anyValid) {
       widget.onSaveSiValido(lastData ??
-          FormacionData(titulo: '', centro: '', nivel: '', inicio: null, fin: null));
+          FormacionData(
+              titulo: '', centro: '', nivel: '', inicio: null, fin: null));
     }
     return anyValid;
   }
@@ -599,10 +667,10 @@ class _StepFormationState extends State<_StepFormation>
             const SizedBox(height: 8),
             Text(
               widget.question,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.primary900,
+                  fontSize: 30),
             ),
             const SizedBox(height: 18),
 
@@ -632,7 +700,8 @@ class _StepFormationState extends State<_StepFormation>
               StreamBuilder<List<Experience>>(
                 stream: database.myExperiencesStream(user.userId ?? ''),
                 builder: (context, snapshot) {
-                  if (!(snapshot.hasData && snapshot.connectionState == ConnectionState.active)) {
+                  if (!(snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.active)) {
                     return const SizedBox.shrink();
                   }
 
@@ -644,7 +713,8 @@ class _StepFormationState extends State<_StepFormation>
                       .toList();
 
                   final items = <_EduItem>[
-                    ..._draftIds.map((id) => _EduItem(id: id, exp: null, isDraft: true)),
+                    ..._draftIds.map(
+                        (id) => _EduItem(id: id, exp: null, isDraft: true)),
                     ...existing.map((exp) => _EduItem(
                           id: exp.id ?? exp.hashCode.toString(),
                           exp: exp,
@@ -667,14 +737,14 @@ class _StepFormationState extends State<_StepFormation>
                           formKey: _formKeyFor(it.id),
                           stepperKey: _stepperKeyFor(it.id),
                           onSaved: () {
-                           setState(() {
-                            if (it.isDraft) {
-                              _draftIds.remove(it.id);             
-                              _formKeysById.remove(it.id);  
-                              _stepperKeysById.remove(it.id);
-                            }
-                            _expandedId = null;               
-                          });
+                            setState(() {
+                              if (it.isDraft) {
+                                _draftIds.remove(it.id);
+                                _formKeysById.remove(it.id);
+                                _stepperKeysById.remove(it.id);
+                              }
+                              _expandedId = null;
+                            });
                           },
                           onDelete: () async {
                             if (it.isDraft) {
@@ -687,20 +757,25 @@ class _StepFormationState extends State<_StepFormation>
                                     context: context,
                                     builder: (_) => AlertDialog(
                                       title: Text('Eliminar formación'),
-                                      content: Text('¿Confirmas la eliminación?'),
+                                      content:
+                                          Text('¿Confirmas la eliminación?'),
                                       actions: [
                                         TextButton(
-                                          onPressed: () => Navigator.of(context).pop(false),
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(false),
                                           child: const Text('Cancelar'),
                                         ),
                                         FilledButton.icon(
-                                          icon: const Icon(Icons.delete_outline_rounded),
-                                          onPressed: () => Navigator.of(context).pop(true),
+                                          icon: const Icon(
+                                              Icons.delete_outline_rounded),
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(true),
                                           label: const Text('Eliminar'),
                                         ),
                                       ],
                                     ),
-                                  ) ?? false;
+                                  ) ??
+                                  false;
                               if (!confirmed) return;
                               try {
                                 await database.deleteExperience(it.exp!);
@@ -710,13 +785,13 @@ class _StepFormationState extends State<_StepFormation>
                               } catch (e) {
                                 if (!mounted) return;
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('No se pudo eliminar: $e')),
+                                  SnackBar(
+                                      content: Text('No se pudo eliminar: $e')),
                                 );
                               }
                             }
                           },
                         ),
-
                       const SizedBox(height: 12),
                       Align(
                         alignment: Alignment.centerLeft,
@@ -792,7 +867,10 @@ class _EducationFormCard extends StatelessWidget {
                         Text(title,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
                                   fontWeight: FontWeight.w700,
                                   color: AppColors.primary900,
                                 )),
@@ -851,14 +929,16 @@ class _EducationFormCard extends StatelessWidget {
                           final form = formKey.currentState;
                           if (form != null && form.validate()) {
                             try {
-                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Formación guardada')),
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Formación guardada')),
                               );
                               await stepperKey.currentState?.saveExperience();
                               onSaved?.call();
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('No se pudo guardar: $e')),
+                                SnackBar(
+                                    content: Text('No se pudo guardar: $e')),
                               );
                             }
                           }
@@ -883,10 +963,8 @@ class _EducationFormCard extends StatelessWidget {
   }
 }
 
-
-
 class _StepExperience extends StatefulWidget {
-    _StepExperience({
+  _StepExperience({
     super.key,
     required this.onSelectNoAndContinue,
     required this.onSaveSiValido,
@@ -897,9 +975,9 @@ class _StepExperience extends StatefulWidget {
     this.isProfesional = false,
   });
 
-  final VoidCallback onSelectNoAndContinue;                // Avanzar si pulsa "No"
-  final ValueChanged<FormacionData> onSaveSiValido;        // Callback tras guardar OK
-  final UserEnreda user;                                   // <- nuevo (como en StepFormation)
+  final VoidCallback onSelectNoAndContinue; // Avanzar si pulsa "No"
+  final ValueChanged<FormacionData> onSaveSiValido; // Callback tras guardar OK
+  final UserEnreda user; // <- nuevo (como en StepFormation)
   final void Function(Future<bool> Function()) registerBeforeNext; // <- nuevo
   final String title;
   final String question;
@@ -908,7 +986,6 @@ class _StepExperience extends StatefulWidget {
   @override
   State<_StepExperience> createState() => _StepExperienceState();
 }
-
 
 class _StepExperienceState extends State<_StepExperience>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
@@ -936,13 +1013,14 @@ class _StepExperienceState extends State<_StepExperience>
       _formKeysById.putIfAbsent(id, () => GlobalKey<FormState>());
 
   GlobalKey<StepperExperienceFormState> _stepperKeyFor(String id) =>
-      _stepperKeysById.putIfAbsent(id, () => GlobalKey<StepperExperienceFormState>());
+      _stepperKeysById.putIfAbsent(
+          id, () => GlobalKey<StepperExperienceFormState>());
 
   void _addDraft() {
     final id = '_new_${_newCounter++}';
     setState(() {
-      _draftIds.insert(0, id);   // << siempre arriba
-      _expandedId = id;          // << abrirla al crear
+      _draftIds.insert(0, id); // << siempre arriba
+      _expandedId = id; // << abrirla al crear
     });
   }
 
@@ -984,7 +1062,8 @@ class _StepExperienceState extends State<_StepExperience>
 
     if (anyValid) {
       widget.onSaveSiValido(lastData ??
-          FormacionData(titulo: '', centro: '', nivel: '', inicio: null, fin: null));
+          FormacionData(
+              titulo: '', centro: '', nivel: '', inicio: null, fin: null));
     }
     return anyValid;
   }
@@ -1003,7 +1082,10 @@ class _StepExperienceState extends State<_StepExperience>
           padding: const EdgeInsets.all(16),
           children: [
             // Título + pregunta
-            Text(widget.isProfesional ? 'Experiencia profesional' : 'Experiencia personal',
+            Text(
+                widget.isProfesional
+                    ? 'Experiencia profesional'
+                    : 'Experiencia personal',
                 style: TextStyle(
                   fontWeight: FontWeight.w100,
                   color: AppColors.primary900,
@@ -1013,10 +1095,10 @@ class _StepExperienceState extends State<_StepExperience>
             const SizedBox(height: 8),
             Text(
               widget.question,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.primary900,
+                  fontSize: 30),
             ),
             const SizedBox(height: 18),
 
@@ -1046,7 +1128,8 @@ class _StepExperienceState extends State<_StepExperience>
               StreamBuilder<List<Experience>>(
                 stream: database.myExperiencesStream(user.userId ?? ''),
                 builder: (context, snapshot) {
-                  if (!(snapshot.hasData && snapshot.connectionState == ConnectionState.active)) {
+                  if (!(snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.active)) {
                     return const SizedBox.shrink();
                   }
 
@@ -1058,7 +1141,8 @@ class _StepExperienceState extends State<_StepExperience>
                       .toList();
 
                   final items = <_EduItem>[
-                    ..._draftIds.map((id) => _EduItem(id: id, exp: null, isDraft: true)),
+                    ..._draftIds.map(
+                        (id) => _EduItem(id: id, exp: null, isDraft: true)),
                     ...existing.map((exp) => _EduItem(
                           id: exp.id ?? exp.hashCode.toString(),
                           exp: exp,
@@ -1083,11 +1167,11 @@ class _StepExperienceState extends State<_StepExperience>
                           onSaved: () {
                             setState(() {
                               if (it.isDraft) {
-                                _draftIds.remove(it.id);              
-                                _formKeysById.remove(it.id);          
+                                _draftIds.remove(it.id);
+                                _formKeysById.remove(it.id);
                                 _stepperKeysById.remove(it.id);
                               }
-                              _expandedId = null;                     
+                              _expandedId = null;
                             });
                           },
                           onDelete: () async {
@@ -1101,20 +1185,25 @@ class _StepExperienceState extends State<_StepExperience>
                                     context: context,
                                     builder: (_) => AlertDialog(
                                       title: Text('Eliminar formación'),
-                                      content: Text('¿Confirmas la eliminación?'),
+                                      content:
+                                          Text('¿Confirmas la eliminación?'),
                                       actions: [
                                         TextButton(
-                                          onPressed: () => Navigator.of(context).pop(false),
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(false),
                                           child: const Text('Cancelar'),
                                         ),
                                         FilledButton.icon(
-                                          icon: const Icon(Icons.delete_outline_rounded),
-                                          onPressed: () => Navigator.of(context).pop(true),
+                                          icon: const Icon(
+                                              Icons.delete_outline_rounded),
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(true),
                                           label: const Text('Eliminar'),
                                         ),
                                       ],
                                     ),
-                                  ) ?? false;
+                                  ) ??
+                                  false;
                               if (!confirmed) return;
                               try {
                                 await database.deleteExperience(it.exp!);
@@ -1124,13 +1213,13 @@ class _StepExperienceState extends State<_StepExperience>
                               } catch (e) {
                                 if (!mounted) return;
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('No se pudo eliminar: $e')),
+                                  SnackBar(
+                                      content: Text('No se pudo eliminar: $e')),
                                 );
                               }
                             }
                           },
                         ),
-
                       const SizedBox(height: 12),
                       Align(
                         alignment: Alignment.centerLeft,
@@ -1165,7 +1254,6 @@ class _ExperienceFormCard extends StatelessWidget {
   final Experience? experience;
   final GlobalKey<FormState> formKey;
   final GlobalKey<StepperExperienceFormState> stepperKey;
-
 
   // NUEVO:
   final bool expanded;
@@ -1207,7 +1295,10 @@ class _ExperienceFormCard extends StatelessWidget {
                         Text(title,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
                                   fontWeight: FontWeight.w700,
                                   color: AppColors.primary900,
                                 )),
@@ -1272,7 +1363,8 @@ class _ExperienceFormCard extends StatelessWidget {
                               onSaved?.call();
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('No se pudo guardar: $e')),
+                                SnackBar(
+                                    content: Text('No se pudo guardar: $e')),
                               );
                             }
                           }
@@ -1297,7 +1389,6 @@ class _ExperienceFormCard extends StatelessWidget {
   }
 }
 
-
 /// === PASO 3: Organismo ===
 class _StepOrganismo extends StatefulWidget {
   const _StepOrganismo({super.key, required this.data});
@@ -1307,7 +1398,8 @@ class _StepOrganismo extends StatefulWidget {
   State<_StepOrganismo> createState() => _StepOrganismoState();
 }
 
-class _StepOrganismoState extends State<_StepOrganismo> with AutomaticKeepAliveClientMixin {
+class _StepOrganismoState extends State<_StepOrganismo>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -1343,7 +1435,12 @@ class _StepOrganismoState extends State<_StepOrganismo> with AutomaticKeepAliveC
 
 /// === PASO 4: Fechas ===
 class _StepAboutMe extends StatefulWidget {
-  const _StepAboutMe({super.key, required this.data, required this.user, required this.registerBeforeNext, required this.formKey});
+  const _StepAboutMe(
+      {super.key,
+      required this.data,
+      required this.user,
+      required this.registerBeforeNext,
+      required this.formKey});
   final CvData data;
   final UserEnreda user;
   final void Function(Future<bool> Function()) registerBeforeNext;
@@ -1353,11 +1450,11 @@ class _StepAboutMe extends StatefulWidget {
   State<_StepAboutMe> createState() => _StepAboutMeState();
 }
 
-class _StepAboutMeState extends State<_StepAboutMe> with AutomaticKeepAliveClientMixin {
+class _StepAboutMeState extends State<_StepAboutMe>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   TextEditingController textController = TextEditingController();
-
 
   @override
   void initState() {
@@ -1366,28 +1463,25 @@ class _StepAboutMeState extends State<_StepAboutMe> with AutomaticKeepAliveClien
     widget.registerBeforeNext(_validateSaveAndNotify);
   }
 
-Future<bool> _validateSaveAndNotify() async {
-  // Captura dependencias ANTES del await
-  final db = Provider.of<Database>(context, listen: false);
-  final updated = widget.user.copyWith(aboutMe: textController.text);
+  Future<bool> _validateSaveAndNotify() async {
+    // Captura dependencias ANTES del await
+    final db = Provider.of<Database>(context, listen: false);
+    final updated = widget.user.copyWith(aboutMe: textController.text);
 
-  try {
-    await db.setUserEnreda(updated);
-  } catch (e) {
-    if (mounted) {
-      // Si quieres, muestra error AQUÍ (usa context antes de avanzar de paso)
-     
+    try {
+      await db.setUserEnreda(updated);
+    } catch (e) {
+      if (mounted) {
+        // Si quieres, muestra error AQUÍ (usa context antes de avanzar de paso)
+
         print('No se pudo guardar: $e');
-      
+      }
+      return false;
     }
-    return false;
+    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_ABOUT_ME);
+
+    return true;
   }
-  setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_ABOUT_ME);
-
-  return true;
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -1401,10 +1495,13 @@ Future<bool> _validateSaveAndNotify() async {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              Text('¿Qué puedes contarnos de ti?', style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),),
+              Text(
+                '¿Qué puedes contarnos de ti?',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.primary900,
+                    fontSize: 30),
+              ),
               SpaceH20(),
               AutoGrowTextFormField(
                 controller: textController, // o initialValue: '...'
@@ -1412,15 +1509,17 @@ Future<bool> _validateSaveAndNotify() async {
                     'Aquí te proponemos un ejemplo: Soy una persona responsable y con muchas ganas '
                     'de aprender. Me gusta trabajar en equipo y ayudar a los demás. En mi último '
                     'trabajo como dependiente, aprendí a tratar con clientes y resolver problemas rápidamente.',
-                minLines: 5,              // arranque alto como en la captura
-                maxLines: null,           // que crezca libremente
-                textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),
-                validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? 'Este campo es obligatorio' : null,
+                minLines: 5, // arranque alto como en la captura
+                maxLines: null, // que crezca libremente
+                textStyle: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(height: 1.5),
+                validator: (v) => (v == null || v.trim().isEmpty)
+                    ? 'Este campo es obligatorio'
+                    : null,
               ),
-              
               const SizedBox(height: 8),
-              
             ],
           ),
         ),
@@ -1430,7 +1529,11 @@ Future<bool> _validateSaveAndNotify() async {
 }
 
 class _StepInterests extends StatefulWidget {
-  const _StepInterests({super.key, required this.data, required this.user, required this.registerBeforeNext});
+  const _StepInterests(
+      {super.key,
+      required this.data,
+      required this.user,
+      required this.registerBeforeNext});
   final CvData data;
   final UserEnreda user;
   final void Function(Future<bool> Function()) registerBeforeNext;
@@ -1439,7 +1542,8 @@ class _StepInterests extends StatefulWidget {
   State<_StepInterests> createState() => _StepInterestsState();
 }
 
-class _StepInterestsState extends State<_StepInterests> with AutomaticKeepAliveClientMixin {
+class _StepInterestsState extends State<_StepInterests>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -1456,7 +1560,8 @@ class _StepInterestsState extends State<_StepInterests> with AutomaticKeepAliveC
     final db = Provider.of<Database>(context, listen: false);
     final updated = widget.user.copyWith(dataOfInterest: _skills);
     await db.setUserEnreda(updated);
-    setGamificationFlag(context: context, flagId: UserEnreda.FLAG_CV_DATA_OF_INTEREST);
+    setGamificationFlag(
+        context: context, flagId: UserEnreda.FLAG_CV_DATA_OF_INTEREST);
     return true;
   }
 
@@ -1464,9 +1569,19 @@ class _StepInterestsState extends State<_StepInterests> with AutomaticKeepAliveC
   Widget build(BuildContext context) {
     super.build(context);
     final defaults = [
-      'Carnet de conducir', 'Deportes', 'Lectura', 'Pintura y Dibujo',
-      'Fotografía', 'Viajar', 'Arte', 'Gastronomía', 'Danza',
-      'Juegos y tecnología', 'Cine y series', 'Senderismo', 'Meditación',
+      'Carnet de conducir',
+      'Deportes',
+      'Lectura',
+      'Pintura y Dibujo',
+      'Fotografía',
+      'Viajar',
+      'Arte',
+      'Gastronomía',
+      'Danza',
+      'Juegos y tecnología',
+      'Cine y series',
+      'Senderismo',
+      'Meditación',
     ];
     return Form(
       child: Align(
@@ -1476,10 +1591,13 @@ class _StepInterestsState extends State<_StepInterests> with AutomaticKeepAliveC
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              Text('¿Hay algo más que las empresas deban saber sobre ti?', style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),),
+              Text(
+                '¿Hay algo más que las empresas deban saber sobre ti?',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.primary900,
+                    fontSize: 30),
+              ),
               SpaceH20(),
               SkillsSelector(
                 defaultOptions: defaults,
@@ -1488,9 +1606,7 @@ class _StepInterestsState extends State<_StepInterests> with AutomaticKeepAliveC
                 addLabel: 'Añade nueva habilidad',
                 inputHint: 'Escribe una habilidad',
               ),
-              
               const SizedBox(height: 8),
-              
             ],
           ),
         ),
@@ -1500,7 +1616,8 @@ class _StepInterestsState extends State<_StepInterests> with AutomaticKeepAliveC
 }
 
 class _StepLanguages extends StatefulWidget {
-  const _StepLanguages({super.key, required this.user, required this.registerBeforeNext});
+  const _StepLanguages(
+      {super.key, required this.user, required this.registerBeforeNext});
   final UserEnreda user;
   final void Function(Future<bool> Function()) registerBeforeNext;
 
@@ -1508,18 +1625,18 @@ class _StepLanguages extends StatefulWidget {
   State<_StepLanguages> createState() => _StepLanguagesState();
 }
 
-class _StepLanguagesState extends State<_StepLanguages> with AutomaticKeepAliveClientMixin {
+class _StepLanguagesState extends State<_StepLanguages>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   final _stepperKey = GlobalKey<LanguagesLevelSectionState>();
-
 
   @override
   void initState() {
     super.initState();
     widget.registerBeforeNext(_validateSaveAndNotify);
   }
-  
+
   Future<bool> _validateSaveAndNotify() async {
     _stepperKey.currentState?.saveAndNotify();
     return true;
@@ -1536,10 +1653,13 @@ class _StepLanguagesState extends State<_StepLanguages> with AutomaticKeepAliveC
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              Text('¿Qué idioma quieres añadir?', style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),),
+              Text(
+                '¿Qué idioma quieres añadir?',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.primary900,
+                    fontSize: 30),
+              ),
               SpaceH20(),
               LanguagesLevelSection(
                 key: _stepperKey,
@@ -1547,9 +1667,7 @@ class _StepLanguagesState extends State<_StepLanguages> with AutomaticKeepAliveC
                 onChanged: (list) => {},
                 user: widget.user,
               ),
-              
               const SizedBox(height: 8),
-              
             ],
           ),
         ),
@@ -1558,12 +1676,11 @@ class _StepLanguagesState extends State<_StepLanguages> with AutomaticKeepAliveC
   }
 }
 
-
 class _StepEnd extends StatefulWidget {
-  const _StepEnd({super.key, required this.user, required this.registerBeforeNext});
+  const _StepEnd(
+      {super.key, required this.user, required this.registerBeforeNext});
   final UserEnreda user;
   final void Function(Future<bool> Function()) registerBeforeNext;
-  
 
   @override
   State<_StepEnd> createState() => _StepEndState();
@@ -1578,14 +1695,13 @@ class _StepEndState extends State<_StepEnd> with AutomaticKeepAliveClientMixin {
     super.initState();
     widget.registerBeforeNext(_validateSaveAndNotify);
   }
-  
+
   Future<bool> _validateSaveAndNotify() async {
     final db = Provider.of<Database>(context, listen: false);
     final updated = widget.user.copyWith(cv_state: 'completed');
     await db.setUserEnreda(updated);
     return true;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -1599,19 +1715,23 @@ class _StepEndState extends State<_StepEnd> with AutomaticKeepAliveClientMixin {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('¡Buen trabajo!', style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(fontWeight: FontWeight.w800, color: AppColors.primary900, fontSize: 30),),
+              Text(
+                '¡Buen trabajo!',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.primary900,
+                    fontSize: 30),
+              ),
               SpaceH20(),
-             Text('Siempre podrás editar y actualizar tu currículum.\n ¿Quieres visualizarlo?', style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(fontWeight: FontWeight.w300, color: AppColors.primary900, fontSize: 26),
-                  textAlign: TextAlign.center,),
-              
+              Text(
+                'Siempre podrás editar y actualizar tu currículum.\n ¿Quieres visualizarlo?',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w300,
+                    color: AppColors.primary900,
+                    fontSize: 26),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 20),
-
               Expanded(
                 flex: 5,
                 child: Image.asset(
@@ -1620,9 +1740,7 @@ class _StepEndState extends State<_StepEnd> with AutomaticKeepAliveClientMixin {
                   fit: BoxFit.cover,
                 ),
               ),
-              
-               const SizedBox(height: 40),
-
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -1630,7 +1748,6 @@ class _StepEndState extends State<_StepEnd> with AutomaticKeepAliveClientMixin {
     );
   }
 }
-
 
 class ChoiceCard extends StatelessWidget {
   const ChoiceCard({
@@ -1674,7 +1791,9 @@ class ChoiceCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(28),
       child: Container(
-        width: MediaQuery.of(context).size.width > 600 ? MediaQuery.of(context).size.width/widthFactor : MediaQuery.of(context).size.width/3,
+        width: MediaQuery.of(context).size.width > 600
+            ? MediaQuery.of(context).size.width / widthFactor
+            : MediaQuery.of(context).size.width / 3,
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
@@ -1722,8 +1841,6 @@ class ChoiceCard extends StatelessWidget {
   }
 }
 
-
-
 /// TextFormField que crece según el número de líneas escritas,
 /// manteniendo la decoración de _appDecoration.
 class AutoGrowTextFormField extends StatelessWidget {
@@ -1732,14 +1849,14 @@ class AutoGrowTextFormField extends StatelessWidget {
     this.controller,
     this.initialValue,
     required this.hint,
-    this.minLines = 4,          // altura inicial como en el mock
-    this.maxLines,              // déjalo null para crecimiento libre
+    this.minLines = 4, // altura inicial como en el mock
+    this.maxLines, // déjalo null para crecimiento libre
     this.textStyle,
     this.onChanged,
     this.validator,
-    this.maxLength,             // opcional: límite de caracteres
+    this.maxLength, // opcional: límite de caracteres
   }) : assert(controller == null || initialValue == null,
-         'No puedes usar controller e initialValue a la vez');
+            'No puedes usar controller e initialValue a la vez');
 
   final TextEditingController? controller;
   final String? initialValue;
@@ -1769,12 +1886,17 @@ class AutoGrowTextFormField extends StatelessWidget {
       // Oculta el contador si se define maxLength
       buildCounter: maxLength == null
           ? null
-          : (context, {required int currentLength, required bool isFocused, int? maxLength}) => null,
+          : (context,
+                  {required int currentLength,
+                  required bool isFocused,
+                  int? maxLength}) =>
+              null,
       decoration: _appDecoration(hint).copyWith(
         // Para que el hint largo se muestre en varias líneas
         hintMaxLines: 6,
         alignLabelWithHint: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
       ),
       // Calidad de escritura
       autocorrect: true,
@@ -1783,32 +1905,31 @@ class AutoGrowTextFormField extends StatelessWidget {
   }
 }
 
- InputDecoration _appDecoration(String hintText) {
-    const radius = 30.0;
-    final baseBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(radius),
-      borderSide: const BorderSide(color: AppColors.primary100, width: 1),
-    );
+InputDecoration _appDecoration(String hintText) {
+  const radius = 30.0;
+  final baseBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(radius),
+    borderSide: const BorderSide(color: AppColors.primary100, width: 1),
+  );
 
-    return InputDecoration(
-      hintText: hintText,
-      hintStyle: const TextStyle(color: AppColors.greyHint, fontSize: 12),
-      filled: false,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
-      enabledBorder: baseBorder,
-      disabledBorder: baseBorder,
-      focusedBorder: baseBorder.copyWith(
-        borderSide: const BorderSide(color: AppColors.primary100, width: 3),
-      ),
-      errorBorder: baseBorder.copyWith(
-        borderSide: const BorderSide(color: Colors.redAccent, width: 2),
-      ),
-      focusedErrorBorder: baseBorder.copyWith(
-        borderSide: const BorderSide(color: Colors.redAccent, width: 2),
-      ),
-    );
-  }
-
+  return InputDecoration(
+    hintText: hintText,
+    hintStyle: const TextStyle(color: AppColors.greyHint, fontSize: 12),
+    filled: false,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
+    enabledBorder: baseBorder,
+    disabledBorder: baseBorder,
+    focusedBorder: baseBorder.copyWith(
+      borderSide: const BorderSide(color: AppColors.primary100, width: 3),
+    ),
+    errorBorder: baseBorder.copyWith(
+      borderSide: const BorderSide(color: Colors.redAccent, width: 2),
+    ),
+    focusedErrorBorder: baseBorder.copyWith(
+      borderSide: const BorderSide(color: Colors.redAccent, width: 2),
+    ),
+  );
+}
 
 /// Selector de opciones estilo “píldoras” con sugerencias + entrada libre.
 /// - defaultOptions: lista de sugerencias (aparecen con +)
@@ -1873,7 +1994,10 @@ class _SkillsSelectorState extends State<SkillsSelector> {
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: const Text('Añadir habilidad', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+          title: const Text(
+            'Añadir habilidad',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
           content: TextField(
             controller: ctrl,
             autofocus: true,
@@ -1909,9 +2033,8 @@ class _SkillsSelectorState extends State<SkillsSelector> {
 
     // Para no duplicar: solo pintamos custom que no estén en las sugerencias
     final defaultNorms = widget.defaultOptions.map(_normalize).toSet();
-    final customSelected = _selected
-        .where((s) => !defaultNorms.contains(_normalize(s)))
-        .toList();
+    final customSelected =
+        _selected.where((s) => !defaultNorms.contains(_normalize(s))).toList();
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
@@ -1936,7 +2059,8 @@ class _SkillsSelectorState extends State<SkillsSelector> {
                     height: 36,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.primary100, width: 1.5),
+                      border:
+                          Border.all(color: AppColors.primary100, width: 1.5),
                     ),
                     child: const Icon(Icons.add_rounded,
                         size: 22, color: AppColors.primary100),
@@ -1945,10 +2069,9 @@ class _SkillsSelectorState extends State<SkillsSelector> {
                   Text(
                     widget.addLabel,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      color: AppColors.primary100,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14
-                    ),
+                        color: AppColors.primary100,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14),
                   ),
                 ],
               ),
@@ -2000,8 +2123,7 @@ class _TagPill extends StatelessWidget {
     final borderColor =
         selected ? theme.colorScheme.primary : AppColors.primary100;
     final borderWidth = selected ? 3.0 : 1.0;
-    final icon =
-        selected ? Icons.check_rounded : Icons.add_rounded; // ✔ o +
+    final icon = selected ? Icons.check_rounded : Icons.add_rounded; // ✔ o +
 
     return InkWell(
       onTap: onTap,
@@ -2029,10 +2151,9 @@ class _TagPill extends StatelessWidget {
             Text(
               label,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color:AppColors.greyDark,
-                fontWeight: FontWeight.w400,
-                fontSize: 14
-              ),
+                  color: AppColors.greyDark,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14),
             ),
           ],
         ),
@@ -2089,7 +2210,7 @@ class LanguagesLevelSectionState extends State<LanguagesLevelSection> {
     }
   }
 
-    void _updateLang(int index, {int? speaking, int? writing}) {
+  void _updateLang(int index, {int? speaking, int? writing}) {
     final curr = _langs[index];
     final updated = Language(
       name: curr.name,
@@ -2123,14 +2244,16 @@ class LanguagesLevelSectionState extends State<LanguagesLevelSection> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
               decoration: BoxDecoration(
-                color: const Color(0x0F13B8A6), // un fondo suave (ajústalo a tu paleta)
+                color: const Color(
+                    0x0F13B8A6), // un fondo suave (ajústalo a tu paleta)
                 borderRadius: BorderRadius.circular(28),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 34, height: 34,
+                    width: 34,
+                    height: 34,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: AppColors.primary900, // círculo lleno
@@ -2141,9 +2264,9 @@ class LanguagesLevelSectionState extends State<LanguagesLevelSection> {
                   Text(
                     'Añadir otro idioma',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: AppColors.greyDark,
-                      fontWeight: FontWeight.w600,
-                    ),
+                          color: AppColors.greyDark,
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                 ],
               ),
@@ -2186,17 +2309,20 @@ class LanguageLevelCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 44, height: 44,
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: AppColors.primary100, width: 1.5),
                   ),
-                  child: const Icon(Icons.translate, color: AppColors.primary900, size: 26),
+                  child: const Icon(Icons.translate,
+                      color: AppColors.primary900, size: 26),
                 ),
                 const SizedBox(width: 12),
                 Text(
                   language.name,
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w700),
                 ),
               ],
             ),
@@ -2250,7 +2376,7 @@ class _RatingRow extends StatelessWidget {
   });
 
   final String label;
-  final double value;            // 0..3
+  final double value; // 0..3
   final ValueChanged<double> onChanged;
 
   @override
@@ -2259,7 +2385,8 @@ class _RatingRow extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(label, style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
+        Text(label,
+            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400)),
         const SizedBox(width: 12),
         SmoothStarRating(
           starCount: 3,
@@ -2268,7 +2395,7 @@ class _RatingRow extends StatelessWidget {
           onRatingChanged: onChanged,
           size: 22,
           spacing: 10,
-          filledIconData: Icons.circle,           // ● seleccionado
+          filledIconData: Icons.circle, // ● seleccionado
           defaultIconData: Icons.circle_outlined, // ○ vacío
           color: AppColors.primary900,
           borderColor: AppColors.primary900,
@@ -2278,9 +2405,10 @@ class _RatingRow extends StatelessWidget {
   }
 }
 
-Future<Language?> showAddLanguageDialog(BuildContext context, {Language? initial}) {
+Future<Language?> showAddLanguageDialog(BuildContext context,
+    {Language? initial}) {
   int speakingLevel = initial?.speakingLevel ?? 0;
-  int writingLevel  = initial?.writingLevel  ?? 0;
+  int writingLevel = initial?.writingLevel ?? 0;
   final nameCtrl = TextEditingController(text: initial?.name ?? '');
 
   return showDialog<Language>(
@@ -2293,7 +2421,9 @@ Future<Language?> showAddLanguageDialog(BuildContext context, {Language? initial
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Idioma')),
+                TextField(
+                    controller: nameCtrl,
+                    decoration: const InputDecoration(labelText: 'Idioma')),
                 const SizedBox(height: 12),
                 _buildSpeakingLevelRow(
                   value: speakingLevel.toDouble(),
@@ -2309,7 +2439,9 @@ Future<Language?> showAddLanguageDialog(BuildContext context, {Language? initial
               ],
             ),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+              TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Cancelar')),
               FilledButton(
                 onPressed: () {
                   final lang = Language(
@@ -2329,7 +2461,6 @@ Future<Language?> showAddLanguageDialog(BuildContext context, {Language? initial
   );
 }
 
-
 Widget _buildSpeakingLevelRow({
   required TextTheme textTheme,
   required double value,
@@ -2339,7 +2470,9 @@ Widget _buildSpeakingLevelRow({
   return Row(
     children: [
       Expanded(
-        child: Text('Expresión oral', style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.normal)),
+        child: Text('Expresión oral',
+            style:
+                textTheme.bodySmall?.copyWith(fontWeight: FontWeight.normal)),
       ),
       SmoothStarRating(
         allowHalfRating: false,
@@ -2366,7 +2499,9 @@ Widget _buildWritingLevelRow({
   return Row(
     children: [
       Expanded(
-        child: Text('Expresión escrita', style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.normal)),
+        child: Text('Expresión escrita',
+            style:
+                textTheme.bodySmall?.copyWith(fontWeight: FontWeight.normal)),
       ),
       SmoothStarRating(
         allowHalfRating: false,
@@ -2383,7 +2518,6 @@ Widget _buildWritingLevelRow({
     ],
   );
 }
-
 
 // Tarjeta plegada con lápiz de editar
 class _CollapsedExperienceTile extends StatelessWidget {
@@ -2402,13 +2536,13 @@ class _CollapsedExperienceTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final titleStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
-      fontWeight: FontWeight.w700,
-      color: AppColors.primary500,
-    );
+          fontWeight: FontWeight.w700,
+          color: AppColors.primary500,
+        );
     final subtitleStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
-      fontWeight: FontWeight.w600,
-      color: AppColors.greyAlt,
-    );
+          fontWeight: FontWeight.w600,
+          color: AppColors.greyAlt,
+        );
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -2421,7 +2555,6 @@ class _CollapsedExperienceTile extends StatelessWidget {
         children: [
           const Icon(Icons.menu_book_rounded, size: 22),
           const SizedBox(width: 12),
-
           Expanded(
             child: Text.rich(
               TextSpan(
@@ -2436,7 +2569,6 @@ class _CollapsedExperienceTile extends StatelessWidget {
               softWrap: false,
             ),
           ),
-
           IconButton(
             onPressed: onEdit,
             icon: const Icon(Icons.edit_rounded),
@@ -2453,7 +2585,6 @@ class _CollapsedExperienceTile extends StatelessWidget {
     );
   }
 }
-
 
 class CreateEducationButton extends StatelessWidget {
   const CreateEducationButton({
@@ -2508,8 +2639,3 @@ class CreateEducationButton extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

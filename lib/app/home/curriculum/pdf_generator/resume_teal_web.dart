@@ -204,7 +204,11 @@ Future<Uint8List> generateResumeTeal(
                           name: '${ref.certifierName}',
                           position: '${ref.certifierPosition}',
                           company: '${ref.certifierCompany}',
-                          contact: '${ref.email} / ${ref.phone}',
+                          contact: [ref.phone, ref.email]
+                              .whereType<String>()
+                              .where((s) =>
+                                  s.trim().isNotEmpty && s.trim() != '+34')
+                              .join(' / '),
                         ),
                     ],
 

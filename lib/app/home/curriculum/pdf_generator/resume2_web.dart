@@ -210,7 +210,11 @@ Future<Uint8List> generateResume2(
                           name: '${ref.certifierName}',
                           position: '${ref.certifierPosition}',
                           company: '${ref.certifierCompany}',
-                          contact: '${ref.phone} / ${ref.email}',
+                          contact: [ref.phone, ref.email]
+                              .whereType<String>()
+                              .where((s) =>
+                                  s.trim().isNotEmpty && s.trim() != '+34')
+                              .join(' / '),
                         ),
                     ],
 

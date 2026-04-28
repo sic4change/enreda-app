@@ -8,6 +8,7 @@ import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
+import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/common_widgets/show_custom_dialog.dart';
@@ -42,15 +43,27 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildGamificationSection(context),
-          SpaceH50(),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                margin: const EdgeInsets.only(top: 10.0, right: 10.0, left: 0.0, bottom: 10.0,),
+                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.rectangle,
+                  border: Border.all(color: AppColors.greyLight2.withOpacity(0.3), width: 1),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: _buildCvSection(context),
+              ),
+              SpaceW30(),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    _buildGamificationSection(context),
+                    SpaceH20(),
                     _buildCompetenciesSection(context),
                     SpaceH20(),
                     widget.participantUser.assignedEntityId != null && widget.participantUser.assignedEntityId != "" ?
@@ -62,17 +75,8 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                   ],
                 ),
               ),
-              SpaceW30(),
-              Container(
-                margin: const EdgeInsets.only(top: 10.0, right: 10.0, left: 0.0, bottom: 10.0,),
-                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.rectangle,
-                  border: Border.all(color: AppColors.greyLight2.withOpacity(0.3), width: 1),
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: _buildCvSection(context)),
+              
+              
               SpaceH40(),
             ],
           ),
@@ -122,9 +126,9 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Responsive.isMobile(context) || Responsive.isDesktopS(context) ? Container() :
-              Container(
+              /*Container(
                   height: 250,
-                  child: Image.asset(ImagePath.GAMIFICATION_LOGO, height: 250.0,)),
+                  child: Image.asset(ImagePath.GAMIFICATION_LOGO, height: 250.0,)),*/
               SpaceW8(),
               Expanded(
                 child: Container(
@@ -369,6 +373,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
   }
 
   Widget _buildCvSection(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Container(
       margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
         const EdgeInsets.only(top: 10.0, right: 10.0, left: 0.0, bottom: 10.0,),
@@ -409,12 +414,31 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                             WebHome.controller.selectIndex(1);
                           });
                         },
-                        child: Transform.scale(
-                          scale: Responsive.isMobile(context) ? 0.25 : Responsive.isDesktopS(context) ? 0.29 : 0.33,
-                          child: MyCurriculumPage(
-                            mini: true,
-                          ),
-                          alignment: Alignment.topLeft,),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Transform.scale(
+                              scale: Responsive.isMobile(context) ? 0.25 : Responsive.isDesktopS(context) ? 0.29 : 0.33,
+                              child: MyCurriculumPage(
+                                mini: true,
+                              ),
+                              alignment: Alignment.topLeft,),
+                              widget.participantUser.cv_state != "completed" ? Padding(
+                                padding: EdgeInsets.only(top: Responsive.isMobile(context) ? 260 : MediaQuery.sizeOf(context).height * 0.3,),
+                                child: Center(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary400,
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    width: 200,
+                                    height: 50,
+                                    child: Center(child: Text( widget.participantUser.cv_state == "draft" ? "Terminar mi CV" : "Crear mi CV", style: textTheme.bodyMedium?.copyWith(color: AppColors.white, fontSize: 16),)),
+                                  ),
+                                ),
+                              ) : Container()
+                          ],
+                        ),
                       ),
                     ],
                   ),

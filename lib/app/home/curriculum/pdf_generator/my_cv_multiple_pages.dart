@@ -1,17 +1,16 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:enreda_app/app/home/curriculum/pdf_generator/cv_multiple_pages.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
-import 'package:enreda_app/values/values.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:open_filex/open_filex.dart';
-import 'package:path_provider/path_provider.dart';
+
 import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
+
 import 'package:printing/printing.dart';
 import '../../../../utils/const.dart';
 import '../../models/experience.dart';
@@ -71,10 +70,8 @@ class MyCvMultiplePages extends StatefulWidget {
   }
 }
 
-class MyAppState extends State<MyCvMultiplePages> with SingleTickerProviderStateMixin {
-
-  int _tab = 0;
-  TabController? _tabController;
+class MyAppState extends State<MyCvMultiplePages> {
+  int _selectedTemplateIndex = 0;
   PrintingInfo? printingInfo;
   var _data = const CustomData();
 
@@ -84,27 +81,8 @@ class MyAppState extends State<MyCvMultiplePages> with SingleTickerProviderState
     _init();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
   Future<void> _init() async {
     final info = await Printing.info();
-
-    _tabController = TabController(
-      vsync: this,
-      length: examplesMultiplePages.length,
-      initialIndex: _tab,
-    );
-    _tabController!.addListener(() {
-      if (_tab != _tabController!.index) {
-        setState(() {
-          _tab = _tabController!.index;
-        });
-      }
-    });
-
     setState(() {
       printingInfo = info;
     });
@@ -128,89 +106,231 @@ class MyAppState extends State<MyCvMultiplePages> with SingleTickerProviderState
     );
   }
 
-  Future<void> _saveAsFile(
-      BuildContext context,
-      LayoutCallback build,
-      PdfPageFormat pageFormat,
-      ) async {
-    final bytes = await build(pageFormat);
-
-    final appDocDir = await getApplicationDocumentsDirectory();
-    final appDocPath = appDocDir.path;
-    final file = File('$appDocPath/miCurriculum.pdf');
-    print('Save as file ${file.path} ...');
-    await file.writeAsBytes(bytes);
-    await OpenFilex.open(file.path);
+  Future<Uint8List> _generatePdf(PdfPageFormat format) async {
+    return await examplesMultiplePages[_selectedTemplateIndex].builder(
+      format,
+      _data,
+      widget.user!,
+      widget.city!,
+      widget.province!,
+      widget.country!,
+      widget.myExperiences!,
+      widget.myPersonalExperiences,
+      widget.myEducation!,
+      widget.mySecondaryEducation,
+      widget.idSelectedDateEducation,
+      widget.idSelectedDateSecondaryEducation,
+      widget.idSelectedDateExperience,
+      widget.idSelectedDatePersonalExperience,
+      widget.competenciesNames,
+      widget.languagesNames,
+      widget.aboutMe,
+      widget.myDataOfInterest,
+      widget.myCustomEmail,
+      widget.myCustomPhone,
+      widget.myPhoto,
+      widget.myCustomReferences,
+      widget.myMaxEducation,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
-    pw.RichText.debug = true;
-
-    if (_tabController == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    final actions = <PdfPreviewAction>[
-      /*if (!kIsWeb)
-        PdfPreviewAction(
-          icon: const Icon(Icons.save),
-          onPressed: _saveAsFile,
-        )*/
-    ];
+    // Custom Colors
+    final Color tealColor = Color(0xFF005B5B);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.primary100,
+        toolbarHeight: 71,
+        backgroundColor: tealColor,
         foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: AppColors.primary900,),
-        title: const Text('Mi Currículum'),
-        titleTextStyle: textTheme.bodyLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.primary900,
-            fontSize: 22.0),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: examplesMultiplePages.map<Tab>((e) => Tab(text: e.name)).toList(),
-          labelColor: AppColors.primary900,
-          labelStyle: TextStyle(fontSize: 20),
-          isScrollable: true,
+        automaticallyImplyLeading: false, // Hide default back button
+        elevation: 0,
+        titleSpacing: 20,
+        title: Row(
+          children: [
+            // Custom Back Button
+            InkWell(
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  'Volver atrás',
+                  style: TextStyle(
+                    color: tealColor.withOpacity(0.5),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
+        actions: [
+          // Print Button
+          Padding(
+            padding: const EdgeInsets.only(right: 15.0),
+            child: InkWell(
+              onTap: () async {
+                await Printing.layoutPdf(
+                    onLayout: (format) => _generatePdf(format));
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      'IMPRIMIR',
+                      style: TextStyle(
+                        color: tealColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Icon(Icons.print, color: tealColor, size: 20),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Download Button
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: InkWell(
+              onTap: () async {
+                final bytes = await _generatePdf(PdfPageFormat.a4);
+                await Printing.sharePdf(
+                    bytes: bytes,
+                    filename:
+                        '${widget.user?.firstName ?? ""} ${widget.user?.lastName ?? ""} CV.pdf'
+                            .trim());
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      'DESCARGAR',
+                      style: TextStyle(
+                        color: tealColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Icon(Icons.download, color: tealColor, size: 20),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      body: PdfPreview(
-        maxPageWidth: 700,
-        build: (format) => examplesMultiplePages[_tab].builder(
-            format,
-            _data,
-            widget.user!,
-            widget.city!,
-            widget.province!,
-            widget.country!,
-            widget.myExperiences!,
-            widget.myPersonalExperiences,
-            widget.myEducation!,
-            widget.mySecondaryEducation,
-            widget.idSelectedDateEducation,
-            widget.idSelectedDateSecondaryEducation,
-            widget.idSelectedDateExperience,
-            widget.idSelectedDatePersonalExperience,
-            widget.competenciesNames,
-            widget.languagesNames,
-            widget.aboutMe,
-            widget.myDataOfInterest,
-            widget.myCustomEmail,
-            widget.myCustomPhone,
-            widget.myPhoto,
-            widget.myCustomReferences,
-            widget.myMaxEducation,
-        ),
-        actions: actions,
-        canDebug: false,
-        initialPageFormat: PdfPageFormat.a4,
-        onPrinted: _showPrintedToast,
-        onShared: _showSharedToast,
-        canChangeOrientation: false,
+      body: Row(
+        children: [
+          // Sidebar
+          Container(
+            width: 250,
+            color: Colors.white,
+            child: Column(
+              children: [
+                SizedBox(height: 20),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: examplesMultiplePages.length,
+                    itemBuilder: (context, index) {
+                      final isSelected = _selectedTemplateIndex == index;
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            _selectedTemplateIndex = index;
+                          });
+                        },
+                        child: Container(
+                          margin:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 20),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? Color(0xFFA7E4E1)
+                                : Colors.transparent, // Highlight color
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(25),
+                              bottomRight: Radius.circular(25),
+                              topLeft: Radius.circular(25),
+                              bottomLeft: Radius.circular(25),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.description_outlined,
+                                color: tealColor,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                examplesMultiplePages[index].name,
+                                style: TextStyle(
+                                  color: tealColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Separator line
+          Container(width: 1, color: Colors.grey[300]),
+          // PDF Preview Area
+          Expanded(
+            child: PdfPreview(
+              key: ValueKey(_selectedTemplateIndex),
+              maxPageWidth: 700,
+              build: (format) => _generatePdf(format),
+              // We hide the default actions since we have custom ones in AppBar
+              // Or we can keep them for functionality if the custom ones are just for show/external trigger.
+              // Given the constraints, let's keep default actions visible for now or hide if we implement the logic.
+              // The user asked for design, let's trust PdfPreview's own toolbar for actual functional heavy lifting for now
+              // but hiding it to match the "clean" look of the screenshot might be desired.
+              // The screenshot shows NO PdfPreview toolbar.
+              // So we should try: useActions: false.
+              useActions: false,
+              canChangePageFormat: false,
+              canChangeOrientation: false,
+              canDebug: false,
+              initialPageFormat: PdfPageFormat.a4,
+              onPrinted: _showPrintedToast,
+              onShared: _showSharedToast,
+              // To make our custom buttons work, we would need to generate the PDF and call Printing.layoutPdf or similar.
+              // But PdfPreview wraps a lot of that.
+              // For this iteration, we focus on the UI layout. Functionality of custom buttons to trigger PdfPreview actions
+              // is complex without accessing its state. We will leave standard functionality accessible via PdfPreview if we don't hide it,
+              // or just impl the UI as requested.
+              // The screenshot implies the PdfPreview is just the document viewer.
+            ),
+          ),
+        ],
       ),
     );
   }

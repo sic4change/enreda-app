@@ -85,6 +85,7 @@ class ImagePath {
   static const String FAVORITES_ILLUSTRATION = '$imageDir/favorites-illustration.png';
   static const String CLIP_CV = '$imageDir/clip-cv.png';
   static const String CHICA_LATERAL = '$imageDir/chica-lateral.png';
+  static const String STEPPER_CV_END = '$imageDir/cv-stepper-end.png';
 
   // Icons
   static const String CHAT_ICON = '$imageDir/icon-chat.png';
@@ -212,4 +213,8 @@ class ImagePath {
   //CV pdf generator
   static const String CV_WARNING_1 = '$imageDir/cv-warning-1.png';
   static const String CV_WARNING_2 = '$imageDir/cv-warning-2.png';
+
+  //CV stepper
+  static const String ICON_PERSONAL = '$imageDir/cv-stepper-personal.svg';
+  static const String ICON_PROFESIONAL = '$imageDir/cv-stepper-profesional.svg';
 }

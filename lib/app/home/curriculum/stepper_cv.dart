@@ -1184,7 +1184,7 @@ class _StepExperienceState extends State<_StepExperience>
                               final confirmed = await showDialog<bool>(
                                     context: context,
                                     builder: (_) => AlertDialog(
-                                      title: Text('Eliminar formación'),
+                                      title: Text('Eliminar experiencia'),
                                       content:
                                           Text('¿Confirmas la eliminación?'),
                                       actions: [
@@ -1223,7 +1223,10 @@ class _StepExperienceState extends State<_StepExperience>
                       const SizedBox(height: 12),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: CreateEducationButton(onPressed: _addDraft),
+                        child: CreateEducationButton(
+                          onPressed: _addDraft,
+                          label: 'Crear nueva experiencia',
+                        ),
                       ),
                     ],
                   );

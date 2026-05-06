@@ -204,6 +204,7 @@ class StepperFormationFormState extends State<StepperFormationForm> {
                 firstDate: _startDate?.toDate() ?? DateTime(DateTime.now().year - 100, 1, 1),
                 lastDate: DateTime.now(),
                 textStyle: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                isEndDate: true,
                 onChanged: (dt) {
                   setState(() => _endDate = dt != null ? Timestamp.fromDate(dt) : null);
                 },
@@ -410,6 +411,7 @@ class StepperFormationFormState extends State<StepperFormationForm> {
   final ValueChanged<DateTime?>? onChanged;
   final FormFieldValidator<String>? validator;
   final TextStyle? textStyle;
+  final bool isEndDate;
 
   const YearPickerFormField({
     super.key,
@@ -421,6 +423,7 @@ class StepperFormationFormState extends State<StepperFormationForm> {
     this.onChanged,
     this.validator,
     this.textStyle,
+    this.isEndDate = false,
   });
 
   @override
@@ -446,15 +449,51 @@ class _YearPickerFormFieldState extends State<YearPickerFormField> {
   }
 
   Future<void> _pickYear() async {
+    // Si es campo de fecha fin, mostrar diálogo previo con opción "Continúa actualmente"
+    if (widget.isEndDate) {
+      final action = await showDialog<String>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Fecha de fin'),
+          content: const Text('¿Cuándo finalizó o sigue activa?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop('cancel'),
+              child: const Text('Cancelar'),
+            ),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.timelapse_rounded),
+              label: const Text('Continúa actualmente'),
+              onPressed: () => Navigator.of(ctx).pop('current'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop('pick'),
+              child: const Text('Elegir año'),
+            ),
+          ],
+        ),
+      );
+
+      if (action == null || action == 'cancel') return;
+
+      if (action == 'current') {
+        // Limpiar el campo → fin = null → se considera activa
+        _ctrl.clear();
+        widget.onChanged?.call(null);
+        setState(() {});
+        return;
+      }
+      // action == 'pick' → continúa al picker normal
+    }
+
     final base = widget.initialDate ??
-        ( _ctrl.text.isNotEmpty
+        (_ctrl.text.isNotEmpty
             ? DateTime(int.tryParse(_ctrl.text) ?? DateTime.now().year)
             : DateTime.now());
 
     final picked = await showDatePicker(
       context: context,
       locale: const Locale('es', 'ES'),
-      // El truco: abrir en selección de año y sólo calendario
       initialDatePickerMode: DatePickerMode.year,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       initialDate: base.isBefore(widget.firstDate) || base.isAfter(widget.lastDate)
@@ -466,7 +505,6 @@ class _YearPickerFormFieldState extends State<YearPickerFormField> {
     );
 
     if (picked != null) {
-      // Normalizamos al 1 de enero; mostramos sólo el año
       final normalized = DateTime(picked.year, 1, 1);
       _ctrl.text = _fmt.format(normalized);
       widget.onChanged?.call(normalized);
@@ -505,6 +543,8 @@ Widget _calendarBadge(BuildContext context) {
       ),
       validator: (val) {
         if (widget.validator != null) return widget.validator!(val);
+        // El año de fin no es obligatorio (puede dejarse vacío = "continúa actualmente")
+        if (widget.isEndDate) return null;
         if (val == null || val.trim().isEmpty) return 'Este campo es obligatorio';
         return null;
       },

@@ -52,11 +52,47 @@ import '../app/home/models/question.dart';
 import '../app/home/models/gamificationFlags.dart';
 import 'package:async/async.dart' show StreamGroup;
 
+/// Opaque cursor returned by [Database.resourcesPage]. Hides the underlying
+/// Firestore [DocumentSnapshot] from UI layers so the resources browse flow
+/// stays decoupled from cloud_firestore types.
+class ResourcesPageCursor {
+  ResourcesPageCursor._(this._doc);
+  final DocumentSnapshot<Object?> _doc;
+}
+
 abstract class Database {
   Stream<Resource> resourceStream(String resourceId);
   Stream<List<Resource>> resourcesStream();
   //Stream<List<Resource>> filteredResourcesStream(FilterResource filter);
   Stream<List<Resource>> filteredResourcesCategoryStream(FilterResource filter);
+
+  /// Cursor-paginated, one-shot fetch for the participant resource browse
+  /// flow. Replaces [filteredResourcesCategoryStream] in `ResourcesPage` to
+  /// stop the quadratic re-read that the growing `.limit()` pattern caused.
+  ///
+  /// Each call reads at most [pageSize] documents from Firestore. Pass the
+  /// [ResourcesPageCursor] from the previous call to fetch the next page.
+  ///
+  /// Server-side filters: `status == 'Disponible'`, optional
+  /// `resourceCategory == filter.resourceCategoryId`, ordered by
+  /// `createdate` descending. Required composite indexes:
+  ///   - `(status ASC, createdate DESC)`
+  ///   - `(status ASC, resourceCategory ASC, createdate DESC)`
+  ///
+  /// Text search ([FilterResource.searchText]) is applied client-side over
+  /// the fetched page, preserving the legacy behavior of
+  /// [filteredResourcesCategoryStream].
+  Future<
+      ({
+        List<Resource> items,
+        ResourcesPageCursor? cursor,
+        bool hasMore,
+      })> resourcesPage({
+    required FilterResource filter,
+    ResourcesPageCursor? startAfter,
+    int pageSize = 50,
+  });
+
   Stream<List<Resource>> myResourcesStream(String userId);
   Stream<List<Resource>> likeResourcesStream(String userId);
   Stream<List<Resource>> recommendedResourcesStream(UserEnreda? user);
@@ -292,6 +328,63 @@ class FirestoreDatabase implements Database {
         return resourceSelected ? Resource.fromMap(data, documentId) : null;
       },
       sort: (rhs, lhs) => lhs.createdate.compareTo(rhs.createdate), // Sort client-side
+    );
+  }
+
+  @override
+  Future<
+      ({
+        List<Resource> items,
+        ResourcesPageCursor? cursor,
+        bool hasMore,
+      })> resourcesPage({
+    required FilterResource filter,
+    ResourcesPageCursor? startAfter,
+    int pageSize = 50,
+  }) async {
+    final result = await _service.paginatedFetch<Resource>(
+      path: APIPath.resources(),
+      queryBuilder: (query) {
+        query = query.where('status', isEqualTo: 'Disponible');
+        if (filter.resourceCategoryId.isNotEmpty) {
+          query = query.where('resourceCategory',
+              isEqualTo: filter.resourceCategoryId);
+        }
+        // orderBy required so startAfterDocument can anchor the cursor.
+        return query.orderBy('createdate', descending: true);
+      },
+      // The page itself has no client-side narrowing. Text search is applied
+      // after this returns so cursor advancement remains stable.
+      builder: (data, documentId) => Resource.fromMap(data, documentId),
+      startAfter: startAfter?._doc,
+      pageSize: pageSize,
+    );
+
+    // Apply legacy client-side text search to match the behavior of
+    // filteredResourcesCategoryStream. Tokens must ALL be found across the
+    // semicolon-separated `searchText` haystack on the document.
+    final searchText =
+        removeDiacritics(filter.searchText.toLowerCase()).trim();
+    final List<Resource> items;
+    if (searchText.isEmpty) {
+      items = result.items;
+    } else {
+      final tokens =
+          searchText.split(' ').where((t) => t.isNotEmpty).toList();
+      items = result.items.where((r) {
+        final haystack =
+            removeDiacritics((r.searchText ?? '').toLowerCase()).split(';');
+        return tokens
+            .every((t) => haystack.any((segment) => segment.contains(t)));
+      }).toList();
+    }
+
+    return (
+      items: items,
+      cursor: result.cursor == null
+          ? null
+          : ResourcesPageCursor._(result.cursor!),
+      hasMore: result.hasMore,
     );
   }
 

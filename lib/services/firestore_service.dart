@@ -119,4 +119,43 @@ class FirestoreService {
       }
     });
   }
+
+  /// Cursor-paginated one-shot fetch.
+  ///
+  /// Designed for browse-style pages where live updates are NOT required
+  /// (e.g. participant resource browsing). Each call reads exactly [pageSize]
+  /// documents from Firestore — no quadratic re-reads on scroll like the
+  /// legacy `limit += 50` pattern.
+  ///
+  /// The caller passes a [queryBuilder] that MUST include an `orderBy(...)`
+  /// clause; otherwise `startAfterDocument` cannot anchor the cursor.
+  Future<({List<T> items, DocumentSnapshot<Object?>? cursor, bool hasMore})>
+      paginatedFetch<T>({
+    required String path,
+    required Query<Map<String, dynamic>> Function(Query<Map<String, dynamic>>)
+        queryBuilder,
+    required T? Function(Map<String, dynamic> data, String documentId) builder,
+    DocumentSnapshot<Object?>? startAfter,
+    int pageSize = 50,
+  }) async {
+    Query<Map<String, dynamic>> query =
+        FirebaseFirestore.instance.collection(path);
+    query = queryBuilder(query).limit(pageSize);
+    if (startAfter != null) {
+      query = query.startAfterDocument(startAfter);
+    }
+    final snapshot = await query.get();
+    FirestoreMonitor.logRead(path, count: snapshot.docs.length);
+    final docs = snapshot.docs;
+    final List<T> items = [];
+    for (final doc in docs) {
+      final built = builder(doc.data(), doc.id);
+      if (built != null) items.add(built);
+    }
+    return (
+      items: items,
+      cursor: docs.isEmpty ? null : docs.last,
+      hasMore: docs.length >= pageSize,
+    );
+  }
 }

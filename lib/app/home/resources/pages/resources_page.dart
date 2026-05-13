@@ -68,9 +68,31 @@ class _ResourcesPageState extends State<ResourcesPage> {
   ResourceMetadata _metadata = ResourceMetadata();
   List<StreamSubscription> _metadataSubscriptions = [];
 
-  bool _isLoadingMore = false;
   String _categoryName = 'Empleo';
   String _categoryFormationId = '';
+
+  // ---------------------------------------------------------------------------
+  // Resource pagination state (replaces stream-based, growing-.limit() pattern)
+  //
+  // The old code created a fresh `filteredResourcesCategoryStream(filter)`
+  // subscription inside `_buildContents`'s `build()` AND grew `filter.limit`
+  // by 50 on every scroll page — which forced Firestore to replay the entire
+  // window from doc 0 each step. The new flow does cursor-paged one-shot
+  // fetches, accumulating results in `_resourceItems`.
+  // ---------------------------------------------------------------------------
+  static const int _kResourcesPageSize = 50;
+  List<Resource> _resourceItems = <Resource>[];
+  ResourcesPageCursor? _resourceCursor;
+  bool _isInitialResourcesLoad = true;
+  bool _isLoadingMoreResources = false;
+  bool _hasMoreResources = true;
+  Object? _resourcesLoadError;
+  String _activeResourceFilterSignature = '';
+
+  // Auth/role gate (replaces the nested StreamBuilder<List<UserEnreda>> that
+  // re-subscribed on every rebuild). `null` while verifying, `true` once the
+  // current user has been confirmed as a valid 'Desempleado' (or is anon).
+  bool? _userRoleVerified;
   String _backgroundImageUrl(String categoryId) {
     Map<String, String> backgroundImages = {
       "6ag9Px7zkFpHgRe17PQk": ImagePath.BACKGROUND_2,
@@ -185,6 +207,140 @@ class _ResourcesPageState extends State<ResourcesPage> {
     });
   }
 
+  // ---------------------------------------------------------------------------
+  // Resource pagination + auth-role helpers
+  // ---------------------------------------------------------------------------
+
+  /// Stable key for the current resource filter. Compared against
+  /// [_activeResourceFilterSignature] to decide whether a filter mutation
+  /// (category or search text) requires a fresh first page.
+  String _computeResourceFilterSignature() =>
+      '${filterResource.resourceCategoryId}|${filterResource.searchText}';
+
+  /// Resets pagination state and fetches the first page for the current
+  /// filter. Safe to call from anywhere; deduplicates against the active
+  /// signature so back-to-back identical filter sets are a no-op.
+  Future<void> _loadFirstResourcesPage({bool force = false}) async {
+    final signature = _computeResourceFilterSignature();
+    if (!force && signature == _activeResourceFilterSignature && _resourceItems.isNotEmpty) {
+      return;
+    }
+    final database = Provider.of<Database>(context, listen: false);
+    setStateIfMounted(() {
+      _activeResourceFilterSignature = signature;
+      _resourceItems = <Resource>[];
+      _resourceCursor = null;
+      _hasMoreResources = true;
+      _isInitialResourcesLoad = true;
+      _resourcesLoadError = null;
+    });
+    try {
+      final page = await database.resourcesPage(
+        filter: filterResource,
+        pageSize: _kResourcesPageSize,
+      );
+      if (!mounted) return;
+      // Drop the result if the filter changed while we were waiting on the
+      // network (a newer load is already in flight or done).
+      if (_computeResourceFilterSignature() != signature) return;
+      setStateIfMounted(() {
+        _resourceItems = page.items;
+        _resourceCursor = page.cursor;
+        _hasMoreResources = page.hasMore;
+        _isInitialResourcesLoad = false;
+      });
+    } catch (e, st) {
+      debugPrint('[ResourcesPage] First-page fetch failed: $e\n$st');
+      if (!mounted) return;
+      setStateIfMounted(() {
+        _isInitialResourcesLoad = false;
+        _hasMoreResources = false;
+        _resourcesLoadError = e;
+      });
+    }
+  }
+
+  /// Appends the next page using the stored cursor. Guarded against
+  /// concurrent triggers and end-of-list.
+  Future<void> _loadNextResourcesPage() async {
+    if (_isLoadingMoreResources ||
+        _isInitialResourcesLoad ||
+        !_hasMoreResources ||
+        _resourceCursor == null) {
+      return;
+    }
+    final database = Provider.of<Database>(context, listen: false);
+    final signatureAtStart = _activeResourceFilterSignature;
+    setStateIfMounted(() => _isLoadingMoreResources = true);
+    try {
+      final page = await database.resourcesPage(
+        filter: filterResource,
+        startAfter: _resourceCursor,
+        pageSize: _kResourcesPageSize,
+      );
+      if (!mounted) return;
+      // If the filter changed mid-flight, the returned page is no longer
+      // contiguous with `_resourceItems`. Drop it; the new first page will
+      // be loaded by `_loadFirstResourcesPage`.
+      if (_activeResourceFilterSignature != signatureAtStart) return;
+      setStateIfMounted(() {
+        _resourceItems = <Resource>[..._resourceItems, ...page.items];
+        _resourceCursor = page.cursor ?? _resourceCursor;
+        _hasMoreResources = page.hasMore;
+        _isLoadingMoreResources = false;
+      });
+    } catch (e, st) {
+      debugPrint('[ResourcesPage] Next-page fetch failed: $e\n$st');
+      if (!mounted) return;
+      setStateIfMounted(() => _isLoadingMoreResources = false);
+    }
+  }
+
+  /// One-shot replacement for the legacy `StreamBuilder<List<UserEnreda>>`
+  /// that wrapped the resources content. Verifies the current user is a
+  /// 'Desempleado' (or unauthenticated) before rendering the resources
+  /// list; signs out non-participants on the same path the old code did.
+  Future<void> _verifyUserRole() async {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    if (auth.currentUser == null) {
+      setStateIfMounted(() => _userRoleVerified = true);
+      return;
+    }
+    final database = Provider.of<Database>(context, listen: false);
+    final email = auth.currentUser!.email ?? '';
+    try {
+      // `.first` collects exactly one snapshot then closes the subscription —
+      // a single Firestore read instead of an open per-rebuild listener.
+      final users = await database.userStream(email).first;
+      if (!mounted) return;
+      if (users.isEmpty) {
+        setStateIfMounted(() => _userRoleVerified = true);
+        return;
+      }
+      final user = users.first;
+      if (user.role == 'Desempleado') {
+        _register(user);
+        setStateIfMounted(() => _userRoleVerified = true);
+        return;
+      }
+      // Non-participant logged in — same defensive sign-out the legacy
+      // nested StreamBuilder performed.
+      if (!widget._errorNotValidUser) {
+        widget._errorNotValidUser = true;
+        await _signOut(context);
+        if (!isAlertBoxOpened && mounted) {
+          adminSignOut(context);
+        }
+      }
+    } catch (e, st) {
+      debugPrint('[ResourcesPage] User role verification failed: $e\n$st');
+      if (!mounted) return;
+      // Fail-open: render resources anyway rather than blocking the UI on
+      // a transient network error.
+      setStateIfMounted(() => _userRoleVerified = true);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -193,21 +349,15 @@ class _ResourcesPageState extends State<ResourcesPage> {
     getResourceCategories();
     _getMetadata();
     _loadPillControllers();
+    _verifyUserRole();
+    _loadFirstResourcesPage(force: true);
 
-    // Infinite scroll listener for resources
+    // Infinite scroll listener — cursor-paged. Each trigger appends ONE page
+    // (50 docs max) instead of replaying the whole window from doc 0.
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
-        if (!_isLoadingMore) {
-          _isLoadingMore = true;
-          setStateIfMounted(() {
-            filterResource.limit += 50;
-            print("[FIRESTORE MONITOR] Paginating: Loading more resources. New limit: ${filterResource.limit}");
-          });
-          // Small delay to prevent rapid double-triggering while stream updates
-          Future.delayed(Duration(seconds: 2), () {
-            _isLoadingMore = false;
-          });
-        }
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent * 0.8) {
+        _loadNextResourcesPage();
       }
     });
   }
@@ -464,12 +614,18 @@ class _ResourcesPageState extends State<ResourcesPage> {
               SpaceH12(),
               FilterTextFieldRow(
                 searchTextController: _searchTextController,
-                onPressed: () => setStateIfMounted(() {
-                  filterResource.searchText = _searchTextController.text;
-                }),
-                onFieldSubmitted: (value) => setStateIfMounted(() {
-                  filterResource.searchText = _searchTextController.text;
-                }),
+                onPressed: () {
+                  setStateIfMounted(() {
+                    filterResource.searchText = _searchTextController.text;
+                  });
+                  _loadFirstResourcesPage();
+                },
+                onFieldSubmitted: (value) {
+                  setStateIfMounted(() {
+                    filterResource.searchText = _searchTextController.text;
+                  });
+                  _loadFirstResourcesPage();
+                },
                 clearFilter: () => _clearFilter(),
                 hintText: 'Nombre del recurso, organizador, país...',
               ),
@@ -637,12 +793,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
           onTap: () {
             setStateIfMounted(() {
               filterResource.resourceCategoryId = (resourceCategories[index].id);
-              filterResource.limit = 50; // Reset limit for new category
               ResourcesPage.selectedIndex.value = 1;
               _categoryName = resourceCategories[index].name;
               _categoryFormationId = resourceCategories[index].id;
               _clearScrollPosition();
             });
+            // Category changed → reset pagination + fetch fresh first page.
+            _loadFirstResourcesPage();
           },
           child: Container(
               decoration: BoxDecoration(
@@ -780,113 +937,96 @@ class _ResourcesPageState extends State<ResourcesPage> {
   }
 
   Widget _buildContents(BuildContext context) {
-    final auth = Provider.of<AuthBase>(context, listen: false);
-    final database = Provider.of<Database>(context, listen: false);
-    if (auth.currentUser == null) {
-      return Container(
-        padding: Responsive.isMobile(context)
-            ? EdgeInsets.symmetric(horizontal: 10)
-            : Responsive.isDesktopS(context)
-            ? EdgeInsets.symmetric(horizontal: 20, vertical: 30)
-            : EdgeInsets.symmetric(horizontal: 100, vertical: 30),
-        child: StreamBuilder<List<Resource>>(
-            stream: database.filteredResourcesCategoryStream(filterResource),
-            builder: (context, snapshot) {
-              return ListItemBuilderGrid<Resource>(
-                scrollController: _scrollController,
-                snapshot: snapshot,
-                itemBuilder: (context, resource) {
-                  resource.organizerName = _metadata.organizerNames[resource.organizer] ?? '';
-                  resource.organizerImage = _metadata.organizerImages[resource.organizer];
-                  resource.countryName = _metadata.countryNames[resource.country] ?? '';
-                  resource.provinceName = _metadata.provinceNames[resource.province] ?? '';
-                  resource.cityName = _metadata.cityNames[resource.city] ?? '';
-                  resource.setResourceTypeName();
-                  resource.setResourceCategoryName();
+    final EdgeInsets contentPadding = Responsive.isMobile(context)
+        ? const EdgeInsets.symmetric(horizontal: 10)
+        : Responsive.isDesktopS(context)
+            ? const EdgeInsets.symmetric(horizontal: 20, vertical: 30)
+            : const EdgeInsets.symmetric(horizontal: 100, vertical: 30);
 
-                  return Container(
-                    key: Key('resource-${resource.resourceId}'),
-                    child: ResourceListTile(
-                      resource: resource,
-                      onTap: () {
-                        _saveScrollPosition();
-                        setState(() {
-                          globals.currentResource = resource;
-                          ResourcesPage.selectedIndex.value = 3;
-                        });
-                      },
-                    ),
-                  );
-                },
-                emptyTitle: 'Sin recursos',
-                emptyMessage: 'Aún no tenemos recursos que mostrarte',
-              );
-            }),
+    // User-role verification is a one-shot kicked off in `initState` via
+    // `_verifyUserRole`. Don't render the resources grid until it resolves;
+    // this avoids the nested `StreamBuilder<List<UserEnreda>>` that
+    // re-subscribed on every parent rebuild.
+    if (_userRoleVerified != true) {
+      return Container(
+        padding: contentPadding,
+        alignment: Alignment.center,
+        child: const CircularProgressIndicator(),
       );
     }
-    String email = auth.currentUser!.email ?? '';
-    return Container(
-      padding: Responsive.isMobile(context)
-          ? EdgeInsets.symmetric(horizontal: 10)
-          : Responsive.isDesktopS(context)
-          ? EdgeInsets.symmetric(horizontal: 20, vertical: 30)
-          : EdgeInsets.symmetric(horizontal: 100, vertical: 30),
-      child: StreamBuilder<List<UserEnreda>>(
-          stream: database.userStream(email),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              if (snapshot.data!.isNotEmpty) {
-                final user = snapshot.data![0];
-                if (user.role == 'Desempleado') {
-                  _register(user);
-                } else {
-                  if (!widget._errorNotValidUser) {
-                    widget._errorNotValidUser = true;
-                    Future.delayed(Duration.zero, () {
-                      _signOut(context);
-                      if (!isAlertBoxOpened) {
-                        adminSignOut(context);
-                      }
-                    });
-                  }
-                }
-              }
-              return StreamBuilder<List<Resource>>(
-                  stream: database.filteredResourcesCategoryStream(filterResource),
-                  builder: (context, snapshot) {
-                    return ListItemBuilderGrid<Resource>(
-                      scrollController: _scrollController,
-                      snapshot: snapshot,
-                      itemBuilder: (context, resource) {
-                        resource.organizerName = _metadata.organizerNames[resource.organizer] ?? '';
-                        resource.organizerImage = _metadata.organizerImages[resource.organizer];
-                        resource.countryName = _metadata.countryNames[resource.country] ?? '';
-                        resource.provinceName = _metadata.provinceNames[resource.province] ?? '';
-                        resource.cityName = _metadata.cityNames[resource.city] ?? '';
-                        resource.setResourceTypeName();
-                        resource.setResourceCategoryName();
 
-                        return Container(
-                          key: Key('resource-${resource.resourceId}'),
-                          child: ResourceListTile(
-                            resource: resource,
-                            onTap: () {
-                              _saveScrollPosition();
-                              setState(() {
-                                globals.currentResource = resource;
-                                ResourcesPage.selectedIndex.value = 3;
-                              });
-                            },
-                          ),
-                        );
-                      },
-                      emptyTitle: 'Sin recursos',
-                      emptyMessage: 'Aún no tenemos recursos que mostrarte',
-                    );
-                  });
-            }
-            return Container();
-          }),
+    // Compose an AsyncSnapshot from cached pagination state so the existing
+    // ListItemBuilderGrid (which expects a snapshot) keeps working unchanged.
+    final AsyncSnapshot<List<Resource>> resourcesSnapshot;
+    if (_resourcesLoadError != null && _resourceItems.isEmpty) {
+      resourcesSnapshot = AsyncSnapshot<List<Resource>>.withError(
+        ConnectionState.done,
+        _resourcesLoadError!,
+      );
+    } else if (_isInitialResourcesLoad) {
+      resourcesSnapshot = const AsyncSnapshot<List<Resource>>.nothing();
+    } else {
+      resourcesSnapshot = AsyncSnapshot<List<Resource>>.withData(
+        ConnectionState.active,
+        _resourceItems,
+      );
+    }
+
+    // Preserve the original layout flow (ListItemBuilderGrid sits directly
+    // inside a Container, sized by the Stack ancestor) and overlay a small
+    // spinner via `Positioned` while a subsequent page is loading.
+    return Container(
+      padding: contentPadding,
+      child: Stack(
+        children: [
+          ListItemBuilderGrid<Resource>(
+            scrollController: _scrollController,
+            snapshot: resourcesSnapshot,
+            itemBuilder: (context, resource) {
+              resource.organizerName =
+                  _metadata.organizerNames[resource.organizer] ?? '';
+              resource.organizerImage =
+                  _metadata.organizerImages[resource.organizer];
+              resource.countryName =
+                  _metadata.countryNames[resource.country] ?? '';
+              resource.provinceName =
+                  _metadata.provinceNames[resource.province] ?? '';
+              resource.cityName = _metadata.cityNames[resource.city] ?? '';
+              resource.setResourceTypeName();
+              resource.setResourceCategoryName();
+
+              return Container(
+                key: Key('resource-${resource.resourceId}'),
+                child: ResourceListTile(
+                  resource: resource,
+                  onTap: () {
+                    _saveScrollPosition();
+                    setState(() {
+                      globals.currentResource = resource;
+                      ResourcesPage.selectedIndex.value = 3;
+                    });
+                  },
+                ),
+              );
+            },
+            emptyTitle: 'Sin recursos',
+            emptyMessage: 'Aún no tenemos recursos que mostrarte',
+          ),
+          if (_isLoadingMoreResources)
+            const Positioned(
+              left: 0,
+              right: 0,
+              bottom: 12,
+              child: Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2.5),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -948,9 +1088,10 @@ class _ResourcesPageState extends State<ResourcesPage> {
     setStateIfMounted(() {
       _searchTextController.clear();
       filterResource.searchText = '';
-      filterResource.limit = 50; // Reset limit on clear
       filterTrainingPill.searchText = '';
     });
+    // Filter cleared → reload first page so results reflect the new state.
+    _loadFirstResourcesPage();
   }
 
   void _clearScrollPosition() {

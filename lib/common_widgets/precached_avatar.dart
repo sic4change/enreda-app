@@ -165,18 +165,36 @@ class _PrecacheCompetencyCardState extends State<PrecacheCompetencyCard> {
   @override
   void initState() {
     super.initState();
-    profileImage = FadeInImage.assetNetwork(
-      width: widget.imageWidth,
-      placeholder: ImagePath.IMAGE_DEFAULT,
-      alignment: Alignment.center,
-      image: widget.imageUrl,
-    );
+    profileImage = _buildImage();
   }
 
   @override
   void didChangeDependencies() {
     precacheImage(profileImage.image, context);
     super.didChangeDependencies();
+  }
+
+  @override
+  void didUpdateWidget(covariant PrecacheCompetencyCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Rebuild the FadeInImage when the source URL or width changes so the
+    // badge reflects the latest status (e.g. when user data arrives from a
+    // StreamBuilder after the first frame). build() runs immediately after
+    // didUpdateWidget, so a direct assignment is sufficient.
+    if (oldWidget.imageUrl != widget.imageUrl ||
+        oldWidget.imageWidth != widget.imageWidth) {
+      profileImage = _buildImage();
+      precacheImage(profileImage.image, context);
+    }
+  }
+
+  FadeInImage _buildImage() {
+    return FadeInImage.assetNetwork(
+      width: widget.imageWidth,
+      placeholder: ImagePath.IMAGE_DEFAULT,
+      alignment: Alignment.center,
+      image: widget.imageUrl,
+    );
   }
 
   @override

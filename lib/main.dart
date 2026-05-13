@@ -6,6 +6,7 @@ import 'package:enreda_app/app_theme.dart';
 import 'package:enreda_app/firebase_options.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/services/firestore_monitor.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -35,6 +36,12 @@ Future<void> main() async {
   if (kIsWeb) {
     _processInitialDeepLink();
   }
+
+  // Resources-collection audit logging — runs only in debug builds AND on
+  // localhost (or any native debug device). No-op in release. Use this to
+  // validate the cursor-pagination fix by watching `[RES-AUDIT]` log lines
+  // and the every-30s summary in the console while exercising the app.
+  FirestoreMonitor.startPeriodicResourcesSummary();
 
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);

@@ -56,6 +56,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import '../../../../../../services/database.dart';
 import '../../../../../../utils/responsive.dart';
 import '../../../../../../values/values.dart';
@@ -166,6 +167,8 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
 
   int sum = 0;
 
+  late Future<void> _cacheReadyFuture;
+
   List<DropdownMenuItem<String>> _futureLearningOptions = ['No me interesa nada', 'Formación', 'Prácticas', 'Ocio', 'Voluntariado', 'Empleo'].map<DropdownMenuItem<String>>((String value){
     return DropdownMenuItem<String>(
       value: value,
@@ -176,6 +179,8 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
   @override
   void initState() {
     super.initState();
+    final database = Provider.of<Database>(context, listen: false);
+    _cacheReadyFuture = LocationCache.instance.warmUp(database);
     _email = "";
     _firstName = "";
     _lastName = "";
@@ -1190,77 +1195,85 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
               ],
             ),
           ),
-          body: Center(
-            child: Container(
-              constraints: BoxConstraints(
-                maxHeight: Responsive.isMobile(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.height * 0.9,
-                maxWidth: Responsive.isMobile(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.width * 0.7,
-              ),
-              child: RoundedContainer(
-                color: AppColors.grey80,
-                borderColor: Responsive.isMobile(context) ? Colors.transparent : AppColors.gre600,
-                margin: Responsive.isMobile(context) ? EdgeInsets.all(0) : EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-                contentPadding: Responsive.isMobile(context) ? EdgeInsets.all(0) : EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-                child: Stack(
-                  alignment: Alignment.topLeft,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 3),
-                      child: CustomStepper(
-                        elevation: 0.0,
-                        type: Responsive.isMobile(context) ? CustomStepperType.vertical : CustomStepperType.horizontal,
-                        steps: getSteps(),
-                        currentStep: currentStep,
-                        onStepContinue: onStepContinue,
-                        onStepTapped: (step) => goToStep(step),
-                        onStepCancel: onStepCancel,
-                        controlsBuilder: (context, _) {
-                          return Container(
-                            height: Borders.kDefaultPaddingDouble * 2,
-                            margin: EdgeInsets.only(top: Borders.kDefaultPaddingDouble * 2),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                if(currentStep != 0)
-                                  EnredaButton(
-                                    buttonTitle: StringConst.FORM_BACK,
-                                    width: contactBtnWidth,
-                                    onPressed: onStepCancel,
-                                  ),
-                                SizedBox(width: Borders.kDefaultPaddingDouble),
-                                isLoading ? Center(child: CircularProgressIndicator(color: AppColors.primary300,)) :
-                                EnredaButton(
-                                  buttonTitle: isLastStep ? StringConst.FORM_CONFIRM : StringConst.FORM_NEXT,
-                                  width: contactBtnWidth,
-                                  buttonColor: AppColors.primaryColor,
-                                  titleColor: AppColors.white,
-                                  onPressed: onStepContinue,
+          body: FutureBuilder<void>(
+            future: _cacheReadyFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return Center(child: CircularProgressIndicator(color: AppColors.primary300));
+              }
+              return Center(
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxHeight: Responsive.isMobile(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.height * 0.9,
+                    maxWidth: Responsive.isMobile(context) ? MediaQuery.of(context).size.height : MediaQuery.of(context).size.width * 0.7,
+                  ),
+                  child: RoundedContainer(
+                    color: AppColors.grey80,
+                    borderColor: Responsive.isMobile(context) ? Colors.transparent : AppColors.gre600,
+                    margin: Responsive.isMobile(context) ? EdgeInsets.all(0) : EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                    contentPadding: Responsive.isMobile(context) ? EdgeInsets.all(0) : EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                    child: Stack(
+                      alignment: Alignment.topLeft,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 3),
+                          child: CustomStepper(
+                            elevation: 0.0,
+                            type: Responsive.isMobile(context) ? CustomStepperType.vertical : CustomStepperType.horizontal,
+                            steps: getSteps(),
+                            currentStep: currentStep,
+                            onStepContinue: onStepContinue,
+                            onStepTapped: (step) => goToStep(step),
+                            onStepCancel: onStepCancel,
+                            controlsBuilder: (context, _) {
+                              return Container(
+                                height: Borders.kDefaultPaddingDouble * 2,
+                                margin: EdgeInsets.only(top: Borders.kDefaultPaddingDouble * 2),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    if(currentStep != 0)
+                                      EnredaButton(
+                                        buttonTitle: StringConst.FORM_BACK,
+                                        width: contactBtnWidth,
+                                        onPressed: onStepCancel,
+                                      ),
+                                    SizedBox(width: Borders.kDefaultPaddingDouble),
+                                    isLoading ? Center(child: CircularProgressIndicator(color: AppColors.primary300,)) :
+                                    EnredaButton(
+                                      buttonTitle: isLastStep ? StringConst.FORM_CONFIRM : StringConst.FORM_NEXT,
+                                      width: contactBtnWidth,
+                                      buttonColor: AppColors.primaryColor,
+                                      titleColor: AppColors.white,
+                                      onPressed: onStepContinue,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-                      child: Row(
-                        children: [
-                          CustomTextMedium(text: StringConst.FORM_CREATE_PROFILE,),
-                          Spacer(),
-                          Padding(
-                            padding: EdgeInsets.only(right: Responsive.isMobile(context) || Responsive.isTablet(context)? 30.0: 0.0),
-                            child: Container(
-                                width: 34,
-                                child: PillTooltip(title: StringConst.PILL_TRAVEL_BEGINS, pillId: TrainingPill.TRAVEL_BEGINS_ID)),
+                              );
+                            },
                           ),
-                        ],
-                      ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                          child: Row(
+                            children: [
+                              CustomTextMedium(text: StringConst.FORM_CREATE_PROFILE,),
+                              Spacer(),
+                              Padding(
+                                padding: EdgeInsets.only(right: Responsive.isMobile(context) || Responsive.isTablet(context)? 30.0: 0.0),
+                                child: Container(
+                                    width: 34,
+                                    child: PillTooltip(title: StringConst.PILL_TRAVEL_BEGINS, pillId: TrainingPill.TRAVEL_BEGINS_ID)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           )
       ),
     );

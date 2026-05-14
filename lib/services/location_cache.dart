@@ -211,6 +211,22 @@ class LocationCache {
     if (_provinces == null) {
       futures.add(database.provincesStream().first.then((v) => _provinces = v));
     }
+    
+    // Form metadata warm-up
+    if (_abilities == null) futures.add(database.abilityStream().first.then((v) => _abilities = v));
+    if (_dedications == null) futures.add(database.dedicationStream().first.then((v) => _dedications = v));
+    if (_educations == null) futures.add(database.educationStream().first.then((v) => _educations = v));
+    if (_genders == null) futures.add(database.genderStream().first.then((v) => _genders = v));
+    if (_keepLearningOptions == null) futures.add(database.keepLearningOptionsStream().first.then((v) => _keepLearningOptions = v));
+    if (_natures == null) futures.add(database.natureStream().first.then((v) => _natures = v));
+    if (_scopes == null) futures.add(database.scopeStream().first.then((v) => _scopes = v));
+    if (_sizeOrgs == null) futures.add(database.sizeStream().first.then((v) => _sizeOrgs = v));
+    if (_nations == null) futures.add(database.nationsSpanishStream().first.then((v) => _nations = v));
+    if (_timeSearchings == null) futures.add(database.timeSearchingStream().first.then((v) => _timeSearchings = v));
+    if (_timeSpentWeeklies == null) futures.add(database.timeSpentWeeklyStream().first.then((v) => _timeSpentWeeklies = v));
+    if (_questions == null) futures.add(database.questionsStream().first.then((v) => _questions = v));
+    if (_socialEntities == null) futures.add(database.socialEntitiesStream().first.then((v) => _socialEntities = v));
+
     if (futures.isNotEmpty) {
       await Future.wait(futures);
     }

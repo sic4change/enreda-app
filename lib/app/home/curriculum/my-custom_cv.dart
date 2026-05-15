@@ -1226,13 +1226,11 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                         onTap: () {
                           print(
                               'selected item: ${widget.myEducation![index].activity}');
-                          bool exists = widget.myCustomEducation.any(
-                              (element) =>
-                                  element.id == widget.myEducation![index].id);
+                          bool exists = widget.mySelectedEducation.contains(index);
                           setState(() {
                             if (exists == true) {
-                              widget.myCustomEducation
-                                  .remove(widget.myEducation![index]);
+                              widget.myCustomEducation.removeWhere((e) =>
+                                  identical(e, widget.myEducation![index]));
                               widget.mySelectedEducation.remove(index);
                               //Disguise date
                               mySelectedDateEducation.remove(index);
@@ -1244,8 +1242,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               widget.mySelectedEducation.add(index);
                               //Show date
                               mySelectedDateEducation.add(index);
-                              idSelectedDateEducation.add(
-                                  widget.myEducation!.elementAt(index).id!);
+                              if (widget.myEducation!.elementAt(index).id != null) {
+                                idSelectedDateEducation.add(
+                                    widget.myEducation!.elementAt(index).id!);
+                              }
                             }
                           });
                         },
@@ -1370,21 +1370,20 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                   .id);
                             } else {
                               mySelectedDateSecondaryEducation.add(index);
-                              idSelectedDateSecondaryEducation.add(widget
-                                  .mySecondaryEducation!
-                                  .elementAt(index)
-                                  .id!);
+                              if (widget.mySecondaryEducation!.elementAt(index).id != null) {
+                                idSelectedDateSecondaryEducation.add(widget
+                                    .mySecondaryEducation!
+                                    .elementAt(index)
+                                    .id!);
+                              }
                             }
                           }
                           setState(() {
-                            bool exists = widget.mySecondaryCustomEducation.any(
-                                (element) =>
-                                    element.id ==
-                                    widget.mySecondaryEducation![index].id);
+                            bool exists = widget.mySecondarySelectedEducation.contains(index);
 
                             if (exists) {
-                              widget.mySecondaryCustomEducation
-                                  .remove(widget.mySecondaryEducation![index]);
+                              widget.mySecondaryCustomEducation.removeWhere((e) =>
+                                  identical(e, widget.mySecondaryEducation![index]));
                               widget.mySecondarySelectedEducation.remove(index);
                             } else {
                               widget.mySecondaryCustomEducation
@@ -1501,14 +1500,11 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                         onTap: () {
                           print(
                               'selected item: ${widget.myExperiences![index].activity}');
-                          bool exists = widget.myCustomExperiences.any(
-                              (element) =>
-                                  element.id ==
-                                  widget.myExperiences![index].id);
+                          bool exists = widget.mySelectedExperiences.contains(index);
                           setState(() {
                             if (exists == true) {
-                              widget.myCustomExperiences
-                                  .remove(widget.myExperiences![index]);
+                              widget.myCustomExperiences.removeWhere((e) =>
+                                  identical(e, widget.myExperiences![index]));
                               widget.mySelectedExperiences.remove(index);
                               //Disguise date
                               mySelectedDateExperience.remove(index);
@@ -1520,8 +1516,10 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               widget.mySelectedExperiences.add(index);
                               //Show date
                               mySelectedDateExperience.add(index);
-                              idSelectedDateExperience.add(
-                                  widget.myExperiences!.elementAt(index).id!);
+                              if (widget.myExperiences!.elementAt(index).id != null) {
+                                idSelectedDateExperience.add(
+                                    widget.myExperiences!.elementAt(index).id!);
+                              }
                             }
                           });
                         },
@@ -1650,14 +1648,11 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                         onTap: () {
                           print(
                               'selected item: ${widget.myPersonalExperiences![index].activity}');
-                          bool exists = widget.myPersonalCustomExperiences.any(
-                              (element) =>
-                                  element.id ==
-                                  widget.myPersonalExperiences![index].id);
+                          bool exists = widget.myPersonalSelectedExperiences.contains(index);
                           setState(() {
                             if (exists == true) {
-                              widget.myPersonalCustomExperiences
-                                  .remove(widget.myPersonalExperiences![index]);
+                              widget.myPersonalCustomExperiences.removeWhere((e) =>
+                                  identical(e, widget.myPersonalExperiences![index]));
                               widget.myPersonalSelectedExperiences
                                   .remove(index);
                               //Disguise date
@@ -1672,10 +1667,12 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               widget.myPersonalSelectedExperiences.add(index);
                               //Show date
                               mySelectedDatePersonalExperience.add(index);
-                              idSelectedDatePersonalExperience.add(widget
-                                  .myPersonalExperiences!
-                                  .elementAt(index)
-                                  .id!);
+                              if (widget.myPersonalExperiences!.elementAt(index).id != null) {
+                                idSelectedDatePersonalExperience.add(widget
+                                    .myPersonalExperiences!
+                                    .elementAt(index)
+                                    .id!);
+                              }
                             }
                           });
                         },

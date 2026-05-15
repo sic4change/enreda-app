@@ -189,6 +189,7 @@ Future<Uint8List> generateResume2(
                 padding: const pw.EdgeInsets.only(left: 30.0, right: 15.0),
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: [
                     //pw.SizedBox(height: 40),
                     // Datos Personales
@@ -201,7 +202,7 @@ Future<Uint8List> generateResume2(
                         text:
                             '${city ?? ''} & ${province ?? ''}\n${country?.toUpperCase() ?? ''}'),
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Referencias
                     if (myReferences != null && myReferences.isNotEmpty) ...[
                       _Category(title: StringConst.REFERENCES, color: teal),
@@ -218,7 +219,7 @@ Future<Uint8List> generateResume2(
                         ),
                     ],
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Competencias
                     if (competenciesNames.isNotEmpty) ...[
                       _Category(title: StringConst.COMPETENCIES, color: teal),
@@ -229,7 +230,7 @@ Future<Uint8List> generateResume2(
                         ),
                     ],
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Datos de Interés
                     if (myDataOfInterest.isNotEmpty) ...[
                       _Category(
@@ -238,7 +239,7 @@ Future<Uint8List> generateResume2(
                         _BulletItem(text: item),
                     ],
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     if (languagesNames != null &&
                         languagesNames.isNotEmpty) ...[
                       _Category(
@@ -264,6 +265,7 @@ Future<Uint8List> generateResume2(
                 padding: const pw.EdgeInsets.only(left: 15.0, right: 30.0),
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: [
                     //pw.SizedBox(height: 40),
                     // Experiencias Profesionales
@@ -283,7 +285,7 @@ Future<Uint8List> generateResume2(
                         ),
                     ],
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Experiencias Personales
                     if ((myPersonalExperiences ?? []).isNotEmpty) ...[
                       _Category(
@@ -299,7 +301,7 @@ Future<Uint8List> generateResume2(
                         ),
                     ],
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Formación
                     if ((myEducation ?? []).isNotEmpty) ...[
                       _Category(title: StringConst.EDUCATION, color: teal),
@@ -313,7 +315,7 @@ Future<Uint8List> generateResume2(
                         ),
                     ],
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Cursos y Certificados
                     if ((mySecondaryEducation ?? []).isNotEmpty) ...[
                       _Category(title: 'CURSOS Y CERTIFICADOS', color: teal),

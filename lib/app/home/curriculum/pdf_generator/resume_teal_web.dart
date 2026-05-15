@@ -78,7 +78,7 @@ Future<Uint8List> generateResumeTeal(
   final DateFormat formatter = DateFormat('yyyy');
 
   final headerSvg =
-      '<svg width="600" height="280"><path d="M0,0 L600,0 L600,280 L200,280 Q0,280 0,80 Z" fill="#004D5E" /></svg>';
+      '<svg width="600" height="220"><path d="M0,0 L600,0 L600,220 L200,220 Q0,220 0,20 Z" fill="#004D5E" /></svg>';
 
   doc.addPage(
     pw.MultiPage(
@@ -102,7 +102,7 @@ Future<Uint8List> generateResumeTeal(
       build: (pw.Context context) => <pw.Widget>[
         // Header
         pw.Container(
-          height: 280,
+          height: 220,
           child: pw.Stack(
             children: [
               pw.SvgImage(svg: headerSvg),
@@ -183,8 +183,9 @@ Future<Uint8List> generateResumeTeal(
                 padding: const pw.EdgeInsets.only(left: 30.0, right: 15.0),
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: [
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Datos Personales
                     _Category(title: StringConst.PERSONAL_DATA, color: teal),
                     _IconText(
@@ -195,7 +196,7 @@ Future<Uint8List> generateResumeTeal(
                         text:
                             '${city ?? ''}\n${province ?? ''}\n${country?.toUpperCase() ?? ''}'),
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Referencias
                     if (myReferences != null && myReferences.isNotEmpty) ...[
                       _Category(title: StringConst.REFERENCES, color: teal),
@@ -212,7 +213,7 @@ Future<Uint8List> generateResumeTeal(
                         ),
                     ],
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Competencias
                     if (competenciesNames != null &&
                         competenciesNames.isNotEmpty) ...[
@@ -224,7 +225,7 @@ Future<Uint8List> generateResumeTeal(
                         ),
                     ],
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Datos de Interés
                     if (myDataOfInterest != null &&
                         myDataOfInterest.isNotEmpty) ...[
@@ -234,7 +235,7 @@ Future<Uint8List> generateResumeTeal(
                         _BulletItem(text: item),
                     ],
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Idiomas
                     if (languagesNames != null &&
                         languagesNames.isNotEmpty) ...[
@@ -260,8 +261,9 @@ Future<Uint8List> generateResumeTeal(
                 padding: const pw.EdgeInsets.only(left: 15.0, right: 30.0),
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: [
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Experiencias Profesionales
                     if (myExperiences != null && myExperiences.isNotEmpty) ...[
                       _TimelineCategory(
@@ -279,7 +281,7 @@ Future<Uint8List> generateResumeTeal(
                         ),
                     ],
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Experiencias Personales
                     if (myPersonalExperiences != null &&
                         myPersonalExperiences.isNotEmpty) ...[
@@ -296,7 +298,7 @@ Future<Uint8List> generateResumeTeal(
                         ),
                     ],
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Formación
                     if (myEducation != null && myEducation.isNotEmpty) ...[
                       _TimelineCategory(
@@ -311,7 +313,7 @@ Future<Uint8List> generateResumeTeal(
                         ),
                     ],
 
-                    pw.SizedBox(height: 20),
+                    pw.SizedBox(height: 10),
                     // Cursos y Certificados
                     if (mySecondaryEducation != null &&
                         mySecondaryEducation.isNotEmpty) ...[
@@ -367,7 +369,7 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
             ),
             // Vertical Divider
             pw.Positioned(
-              top: (context.pageNumber == 1 ? 280 : 30) + 40,
+              top: (context.pageNumber == 1 ? 220 : 30) + 40,
               bottom: 40,
               left: 190,
               child: _VerticalTimelineShape(teal),

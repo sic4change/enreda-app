@@ -1229,22 +1229,26 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                           bool exists = widget.mySelectedEducation.contains(index);
                           setState(() {
                             if (exists == true) {
-                              widget.myCustomEducation.removeWhere((e) =>
-                                  identical(e, widget.myEducation![index]));
                               widget.mySelectedEducation.remove(index);
                               //Disguise date
                               mySelectedDateEducation.remove(index);
-                              idSelectedDateEducation.remove(
-                                  widget.myEducation!.elementAt(index).id);
+                              if (widget.myEducation!.elementAt(index).id != null) {
+                                idSelectedDateEducation.remove(
+                                    widget.myEducation!.elementAt(index).id!);
+                              }
                             } else {
-                              widget.myCustomEducation
-                                  .add(widget.myEducation![index]);
                               widget.mySelectedEducation.add(index);
                               //Show date
                               mySelectedDateEducation.add(index);
                               if (widget.myEducation!.elementAt(index).id != null) {
                                 idSelectedDateEducation.add(
                                     widget.myEducation!.elementAt(index).id!);
+                              }
+                            }
+                            widget.myCustomEducation.clear();
+                            for (int i = 0; i < widget.myEducation!.length; i++) {
+                              if (widget.mySelectedEducation.contains(i)) {
+                                widget.myCustomEducation.add(widget.myEducation![i]);
                               }
                             }
                           });
@@ -1359,16 +1363,19 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                   itemBuilder: (context, index) {
                     return InkWell(
                         onTap: () {
-                          if (widget.mySecondarySelectedEducation
-                              .contains(index)) {
-                            if (mySelectedDateSecondaryEducation
-                                .contains(index)) {
+                          bool exists = widget.mySecondarySelectedEducation.contains(index);
+                          setState(() {
+                            if (exists == true) {
+                              widget.mySecondarySelectedEducation.remove(index);
+                              //Disguise date
                               mySelectedDateSecondaryEducation.remove(index);
-                              idSelectedDateSecondaryEducation.remove(widget
-                                  .mySecondaryEducation!
-                                  .elementAt(index)
-                                  .id);
+                              if (widget.mySecondaryEducation!.elementAt(index).id != null) {
+                                idSelectedDateSecondaryEducation.remove(
+                                    widget.mySecondaryEducation!.elementAt(index).id!);
+                              }
                             } else {
+                              widget.mySecondarySelectedEducation.add(index);
+                              //Show date
                               mySelectedDateSecondaryEducation.add(index);
                               if (widget.mySecondaryEducation!.elementAt(index).id != null) {
                                 idSelectedDateSecondaryEducation.add(widget
@@ -1377,18 +1384,11 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                     .id!);
                               }
                             }
-                          }
-                          setState(() {
-                            bool exists = widget.mySecondarySelectedEducation.contains(index);
-
-                            if (exists) {
-                              widget.mySecondaryCustomEducation.removeWhere((e) =>
-                                  identical(e, widget.mySecondaryEducation![index]));
-                              widget.mySecondarySelectedEducation.remove(index);
-                            } else {
-                              widget.mySecondaryCustomEducation
-                                  .add(widget.mySecondaryEducation![index]);
-                              widget.mySecondarySelectedEducation.add(index);
+                            widget.mySecondaryCustomEducation.clear();
+                            for (int i = 0; i < widget.mySecondaryEducation!.length; i++) {
+                              if (widget.mySecondarySelectedEducation.contains(i)) {
+                                widget.mySecondaryCustomEducation.add(widget.mySecondaryEducation![i]);
+                              }
                             }
                           });
                         },
@@ -1503,22 +1503,26 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                           bool exists = widget.mySelectedExperiences.contains(index);
                           setState(() {
                             if (exists == true) {
-                              widget.myCustomExperiences.removeWhere((e) =>
-                                  identical(e, widget.myExperiences![index]));
                               widget.mySelectedExperiences.remove(index);
                               //Disguise date
                               mySelectedDateExperience.remove(index);
-                              idSelectedDateExperience.remove(
-                                  widget.myExperiences!.elementAt(index).id);
+                              if (widget.myExperiences!.elementAt(index).id != null) {
+                                idSelectedDateExperience.remove(
+                                    widget.myExperiences!.elementAt(index).id!);
+                              }
                             } else {
-                              widget.myCustomExperiences
-                                  .add(widget.myExperiences![index]);
                               widget.mySelectedExperiences.add(index);
                               //Show date
                               mySelectedDateExperience.add(index);
                               if (widget.myExperiences!.elementAt(index).id != null) {
                                 idSelectedDateExperience.add(
                                     widget.myExperiences!.elementAt(index).id!);
+                              }
+                            }
+                            widget.myCustomExperiences.clear();
+                            for (int i = 0; i < widget.myExperiences!.length; i++) {
+                              if (widget.mySelectedExperiences.contains(i)) {
+                                widget.myCustomExperiences.add(widget.myExperiences![i]);
                               }
                             }
                           });
@@ -1651,19 +1655,16 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                           bool exists = widget.myPersonalSelectedExperiences.contains(index);
                           setState(() {
                             if (exists == true) {
-                              widget.myPersonalCustomExperiences.removeWhere((e) =>
-                                  identical(e, widget.myPersonalExperiences![index]));
-                              widget.myPersonalSelectedExperiences
-                                  .remove(index);
+                              widget.myPersonalSelectedExperiences.remove(index);
                               //Disguise date
                               mySelectedDatePersonalExperience.remove(index);
-                              idSelectedDatePersonalExperience.remove(widget
-                                  .myPersonalExperiences!
-                                  .elementAt(index)
-                                  .id);
+                              if (widget.myPersonalExperiences!.elementAt(index).id != null) {
+                                idSelectedDatePersonalExperience.remove(widget
+                                    .myPersonalExperiences!
+                                    .elementAt(index)
+                                    .id!);
+                              }
                             } else {
-                              widget.myPersonalCustomExperiences
-                                  .add(widget.myPersonalExperiences![index]);
                               widget.myPersonalSelectedExperiences.add(index);
                               //Show date
                               mySelectedDatePersonalExperience.add(index);
@@ -1672,6 +1673,12 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                     .myPersonalExperiences!
                                     .elementAt(index)
                                     .id!);
+                              }
+                            }
+                            widget.myPersonalCustomExperiences.clear();
+                            for (int i = 0; i < widget.myPersonalExperiences!.length; i++) {
+                              if (widget.myPersonalSelectedExperiences.contains(i)) {
+                                widget.myPersonalCustomExperiences.add(widget.myPersonalExperiences![i]);
                               }
                             }
                           });

@@ -188,6 +188,8 @@ class LocationCache {
     if (_timeSearchings == null) futures.add(database.timeSearchingStream().first.then((v) => _timeSearchings = v));
     if (_timeSpentWeeklies == null) futures.add(database.timeSpentWeeklyStream().first.then((v) => _timeSpentWeeklies = v));
     if (_questions == null) futures.add(database.questionsStream().first.then((v) => _questions = v));
+    if (_interests == null) futures.add(database.interestStream().first.then((v) => _interests = v));
+    if (_specificInterests == null) futures.add(database.specificInterestsStream().first.then((v) => _specificInterests = v));
 
     if (futures.isNotEmpty) {
       await Future.wait(futures);
@@ -226,6 +228,8 @@ class LocationCache {
     if (_timeSpentWeeklies == null) futures.add(database.timeSpentWeeklyStream().first.then((v) => _timeSpentWeeklies = v));
     if (_questions == null) futures.add(database.questionsStream().first.then((v) => _questions = v));
     if (_socialEntities == null) futures.add(database.socialEntitiesStream().first.then((v) => _socialEntities = v));
+    if (_interests == null) futures.add(database.interestStream().first.then((v) => _interests = v));
+    if (_specificInterests == null) futures.add(database.specificInterestsStream().first.then((v) => _specificInterests = v));
 
     if (futures.isNotEmpty) {
       await Future.wait(futures);

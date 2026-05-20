@@ -196,6 +196,7 @@ Future<Uint8List> generateResumePurple(
                             .join(' / '),
                       )).toList();
                       return [
+                        pw.SizedBox(height: 10),
                         pw.Inseparable(
                           child: pw.Column(
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -208,7 +209,6 @@ Future<Uint8List> generateResumePurple(
                         ...items.skip(1),
                       ];
                     })(),
-                    pw.SizedBox(height: 15), // Reduced spacing
                     // Removed AboutMe from here
 
                     if (competenciesNames != null && competenciesNames.isNotEmpty) ...(() {
@@ -217,6 +217,7 @@ Future<Uint8List> generateResumePurple(
                         child: _CompetencyChip(title: name),
                       )).toList();
                       return [
+                        pw.SizedBox(height: 15),
                         pw.Inseparable(
                           child: pw.Column(
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -231,13 +232,13 @@ Future<Uint8List> generateResumePurple(
                       ];
                     })(),
 
-                    pw.SizedBox(height: 10),
                     if (myDataOfInterest != null && myDataOfInterest.isNotEmpty) ...(() {
                       final items = dataOfInterest!.map((data) => _BlockSimpleList(
                         title: data,
                         color: grey,
                       )).toList();
                       return [
+                        pw.SizedBox(height: 10),
                         pw.Inseparable(
                           child: pw.Column(
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -250,7 +251,6 @@ Future<Uint8List> generateResumePurple(
                         ...items.skip(1),
                       ];
                     })(),
-                    pw.SizedBox(height: 15),
                     if (languagesNames != null && languagesNames.isNotEmpty) ...(() {
                       final items = languagesNames.map((lang) => pw.Padding(
                         padding: const pw.EdgeInsets.only(bottom: 2),
@@ -260,6 +260,7 @@ Future<Uint8List> generateResumePurple(
                         ),
                       )).toList();
                       return [
+                        pw.SizedBox(height: 15),
                         pw.Inseparable(
                           child: pw.Column(
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -314,7 +315,6 @@ Future<Uint8List> generateResumePurple(
                           textScaleFactor: 1.2,
                           style: pw.Theme.of(context).defaultTextStyle.copyWith(
                               fontWeight: pw.FontWeight.normal, color: grey)),
-                      pw.SizedBox(height: 10),
                       if (myExperiences != null && myExperiences.isNotEmpty) ...(() {
                         final items = myExperiences.map((experience) => _Block(
                             title: (experience.activity != null) ? experience.activity : '',
@@ -343,6 +343,7 @@ Future<Uint8List> generateResumePurple(
                                     .join('\n'))
                         ).toList();
                         return [
+                          pw.SizedBox(height: 10),
                           pw.Inseparable(
                             child: pw.Column(
                               crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -355,7 +356,6 @@ Future<Uint8List> generateResumePurple(
                           ...items.skip(1),
                         ];
                       })(),
-                      pw.SizedBox(height: 10),
                       if (myPersonalExperiences != null && myPersonalExperiences.isNotEmpty) ...(() {
                         final items = myPersonalExperiences.map((experience) => _Block(
                           title: experience.subtype == 'Responsabilidades familiares' || experience.subtype == "Compromiso social"
@@ -381,6 +381,7 @@ Future<Uint8List> generateResumePurple(
                           descriptionPlace: '${experience.location}',
                         )).toList();
                         return [
+                          pw.SizedBox(height: 10),
                           pw.Inseparable(
                             child: pw.Column(
                               crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -393,7 +394,6 @@ Future<Uint8List> generateResumePurple(
                           ...items.skip(1),
                         ];
                       })(),
-                      pw.SizedBox(height: 10),
                       if (myEducation != null && myEducation.isNotEmpty) ...(() {
                         final items = myEducation.map((education) => _Block(
                           title: education.institution != null && education.nameFormation != null && education.nameFormation != ''
@@ -409,6 +409,7 @@ Future<Uint8List> generateResumePurple(
                           descriptionPlace: '${education.location}',
                         )).toList();
                         return [
+                          pw.SizedBox(height: 10),
                           pw.Inseparable(
                             child: pw.Column(
                               crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -421,7 +422,6 @@ Future<Uint8List> generateResumePurple(
                           ...items.skip(1),
                         ];
                       })(),
-                      pw.SizedBox(height: 10),
                       if (mySecondaryEducation != null && mySecondaryEducation.isNotEmpty) ...(() {
                         final items = mySecondaryEducation.map((education) => _Block(
                           title: education.institution != null && education.nameFormation != null && education.nameFormation != ''
@@ -437,6 +437,7 @@ Future<Uint8List> generateResumePurple(
                           descriptionPlace: '${education.location}',
                         )).toList();
                         return [
+                          pw.SizedBox(height: 10),
                           pw.Inseparable(
                             child: pw.Column(
                               crossAxisAlignment: pw.CrossAxisAlignment.start,

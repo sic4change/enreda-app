@@ -202,7 +202,6 @@ Future<Uint8List> generateResume2(
                         text:
                             '${city ?? ''} & ${province ?? ''}\n${country?.toUpperCase() ?? ''}'),
 
-                    pw.SizedBox(height: 10),
                     // Referencias
                     if (myReferences != null && myReferences.isNotEmpty) ...(() {
                       final items = myReferences.map((ref) => _ReferenceBlock(
@@ -228,7 +227,6 @@ Future<Uint8List> generateResume2(
                       ];
                     })(),
 
-                    pw.SizedBox(height: 10),
                     // Competencias
                     if (competenciesNames.isNotEmpty) ...(() {
                       final items = competenciesNames.map((name) => pw.Padding(
@@ -249,7 +247,6 @@ Future<Uint8List> generateResume2(
                       ];
                     })(),
 
-                    pw.SizedBox(height: 10),
                     // Datos de Interés
                     if (myDataOfInterest.isNotEmpty) ...(() {
                       final items = myDataOfInterest.map((item) => _BulletItem(text: item)).toList();
@@ -267,7 +264,6 @@ Future<Uint8List> generateResume2(
                       ];
                     })(),
 
-                    pw.SizedBox(height: 10),
                     if (languagesNames != null && languagesNames.isNotEmpty) ...(() {
                       final items = languagesNames.map((lang) => pw.Padding(
                         padding: const pw.EdgeInsets.only(bottom: 2),
@@ -326,7 +322,6 @@ Future<Uint8List> generateResume2(
                       ];
                     })(),
 
-                    pw.SizedBox(height: 10),
                     // Experiencias Personales
                     if ((myPersonalExperiences ?? []).isNotEmpty) ...(() {
                       final items = (myPersonalExperiences ?? []).map((exp) => _ExperienceBlock(
@@ -349,7 +344,6 @@ Future<Uint8List> generateResume2(
                       ];
                     })(),
 
-                    pw.SizedBox(height: 10),
                     // Formación
                     if ((myEducation ?? []).isNotEmpty) ...(() {
                       final items = (myEducation ?? []).map((edu) => _ExperienceBlock(
@@ -372,7 +366,6 @@ Future<Uint8List> generateResume2(
                       ];
                     })(),
 
-                    pw.SizedBox(height: 10),
                     // Cursos y Certificados
                     if ((mySecondaryEducation ?? []).isNotEmpty) ...(() {
                       final items = (mySecondaryEducation ?? []).map((edu) => _ExperienceBlock(

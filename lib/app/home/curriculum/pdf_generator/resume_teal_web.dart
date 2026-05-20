@@ -191,7 +191,6 @@ Future<Uint8List> generateResumeTeal(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: [
-                    pw.SizedBox(height: 10),
                     // Datos Personales
                     _Category(title: StringConst.PERSONAL_DATA, color: teal),
                     _IconText(
@@ -202,7 +201,6 @@ Future<Uint8List> generateResumeTeal(
                         text:
                             '${city ?? ''}\n${province ?? ''}\n${country?.toUpperCase() ?? ''}'),
 
-                    pw.SizedBox(height: 10),
                     // Referencias
                     if (myReferences != null && myReferences.isNotEmpty)
                       ...(() {
@@ -234,7 +232,6 @@ Future<Uint8List> generateResumeTeal(
                         ];
                       })(),
 
-                    pw.SizedBox(height: 10),
                     // Competencias
                     if (competenciesNames != null &&
                         competenciesNames.isNotEmpty)
@@ -261,7 +258,6 @@ Future<Uint8List> generateResumeTeal(
                         ];
                       })(),
 
-                    pw.SizedBox(height: 10),
                     // Datos de Interés
                     if (myDataOfInterest != null && myDataOfInterest.isNotEmpty)
                       ...(() {
@@ -284,7 +280,6 @@ Future<Uint8List> generateResumeTeal(
                         ];
                       })(),
 
-                    pw.SizedBox(height: 10),
                     // Idiomas
                     if (languagesNames != null && languagesNames.isNotEmpty)
                       ...(() {
@@ -325,7 +320,6 @@ Future<Uint8List> generateResumeTeal(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   mainAxisAlignment: pw.MainAxisAlignment.start,
                   children: [
-                    pw.SizedBox(height: 10),
                     // Experiencias Profesionales
                     if (myExperiences != null && myExperiences.isNotEmpty)
                       ...(() {
@@ -357,7 +351,6 @@ Future<Uint8List> generateResumeTeal(
                         ];
                       })(),
 
-                    pw.SizedBox(height: 10),
                     // Experiencias Personales
                     if (myPersonalExperiences != null &&
                         myPersonalExperiences.isNotEmpty)
@@ -387,7 +380,6 @@ Future<Uint8List> generateResumeTeal(
                         ];
                       })(),
 
-                    pw.SizedBox(height: 10),
                     // Formación
                     if (myEducation != null && myEducation.isNotEmpty)
                       ...(() {
@@ -415,7 +407,6 @@ Future<Uint8List> generateResumeTeal(
                         ];
                       })(),
 
-                    pw.SizedBox(height: 10),
                     // Cursos y Certificados
                     if (mySecondaryEducation != null &&
                         mySecondaryEducation.isNotEmpty)

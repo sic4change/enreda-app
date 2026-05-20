@@ -434,11 +434,15 @@ class _IconText extends pw.StatelessWidget {
           pw.SizedBox(width: 6),
           pw.Expanded(
             child: isLink
-                ? pw.UrlLink(
-                    destination: 'mailto:$text',
-                    child: pw.Text(text,
-                        style:
-                            const pw.TextStyle(fontSize: 8, color: greyBody)))
+                ? pw.FittedBox(
+                    fit: pw.BoxFit.scaleDown,
+                    alignment: pw.Alignment.centerLeft,
+                    child: pw.UrlLink(
+                        destination: 'mailto:$text',
+                        child: pw.Text(text,
+                            style:
+                                const pw.TextStyle(fontSize: 8, color: greyBody))),
+                  )
                 : pw.Text(text,
                     style: const pw.TextStyle(fontSize: 8, color: greyBody)),
           ),

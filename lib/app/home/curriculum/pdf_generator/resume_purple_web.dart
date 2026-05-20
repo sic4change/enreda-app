@@ -122,7 +122,7 @@ Future<Uint8List> generateResumePurple(
                             children: [
                               _SectionIcon(0xe0be),
                               pw.SizedBox(width: 4),
-                              _UrlText(myCustomEmail, 'mailto: $myCustomEmail')
+                              pw.Expanded(child: _UrlText(myCustomEmail, 'mailto: $myCustomEmail'))
                             ],
                           )
                         : pw.Container(),
@@ -681,13 +681,17 @@ class _UrlText extends pw.StatelessWidget {
 
   @override
   pw.Widget build(pw.Context context) {
-    return pw.UrlLink(
-        destination: url,
-        child: pw.Text(text,
-            textScaleFactor: 0.8,
-            style: pw.Theme.of(context)
-                .defaultTextStyle
-                .copyWith(fontWeight: pw.FontWeight.normal, color: grey)));
+    return pw.FittedBox(
+      fit: pw.BoxFit.scaleDown,
+      alignment: pw.Alignment.centerLeft,
+      child: pw.UrlLink(
+          destination: url,
+          child: pw.Text(text,
+              textScaleFactor: 0.8,
+              style: pw.Theme.of(context)
+                  .defaultTextStyle
+                  .copyWith(fontWeight: pw.FontWeight.normal, color: grey))),
+    );
   }
 }
 

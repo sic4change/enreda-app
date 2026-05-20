@@ -185,61 +185,93 @@ Future<Uint8List> generateResumePurple(
                     pw.SizedBox(height: 10),
 
                     // References section - below personal data, no icons
-                    myReferences != null && myReferences.isNotEmpty
-                        ? _Category(
-                            title: StringConst.REFERENCES, color: primary900)
-                        : pw.Container(),
-                    for (var reference in myReferences!)
-                      _ReferenceBlock(
+                    if (myReferences != null && myReferences.isNotEmpty) ...(() {
+                      final items = myReferences.map((reference) => _ReferenceBlock(
                         name: '${reference.certifierName}',
                         position: '${reference.certifierPosition}',
                         company: '${reference.certifierCompany}',
                         contact: [reference.phone, reference.email]
                             .whereType<String>()
-                            .where(
-                                (s) => s.trim().isNotEmpty && s.trim() != '+34')
+                            .where((s) => s.trim().isNotEmpty && s.trim() != '+34')
                             .join(' / '),
-                      ),
+                      )).toList();
+                      return [
+                        pw.Inseparable(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              _Category(title: StringConst.REFERENCES, color: primary900),
+                              items.first,
+                            ],
+                          ),
+                        ),
+                        ...items.skip(1),
+                      ];
+                    })(),
                     pw.SizedBox(height: 15), // Reduced spacing
                     // Removed AboutMe from here
 
-                    if (competenciesNames != null &&
-                        competenciesNames.isNotEmpty) ...[
-                      _Category(
-                          title: StringConst.COMPETENCIES, color: primary900),
-                      pw.SizedBox(height: 8),
-                      for (var name in competenciesNames)
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.only(bottom: 6),
-                          child: _CompetencyChip(title: name),
-                        ),
-                    ],
-
-                    pw.SizedBox(height: 10),
-                    myDataOfInterest != null && myDataOfInterest.isNotEmpty
-                        ? _Category(
-                            title: StringConst.DATA_OF_INTEREST,
-                            color: primary900)
-                        : pw.Container(),
-                    for (var data in dataOfInterest!)
-                      _BlockSimpleList(
-                        title: data,
-                        color: grey,
-                      ),
-                    pw.SizedBox(height: 15),
-                    if (languagesNames != null &&
-                        languagesNames.isNotEmpty) ...[
-                      _Category(
-                          title: StringConst.LANGUAGES, color: primary900),
-                      for (var lang in languagesNames)
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.only(bottom: 2),
-                          child: pw.Text(
-                            '${lang.name.toUpperCase()} | ${lang.speakingLevel == 1 ? 'PRINCIPIANTE' : lang.speakingLevel == 2 ? 'MEDIO' : 'AVANZADO'}',
-                            style: const pw.TextStyle(fontSize: 8, color: grey),
+                    if (competenciesNames != null && competenciesNames.isNotEmpty) ...(() {
+                      final items = competenciesNames.map((name) => pw.Padding(
+                        padding: const pw.EdgeInsets.only(bottom: 6),
+                        child: _CompetencyChip(title: name),
+                      )).toList();
+                      return [
+                        pw.Inseparable(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              _Category(title: StringConst.COMPETENCIES, color: primary900),
+                              pw.SizedBox(height: 8),
+                              items.first,
+                            ],
                           ),
                         ),
-                    ],
+                        ...items.skip(1),
+                      ];
+                    })(),
+
+                    pw.SizedBox(height: 10),
+                    if (myDataOfInterest != null && myDataOfInterest.isNotEmpty) ...(() {
+                      final items = dataOfInterest!.map((data) => _BlockSimpleList(
+                        title: data,
+                        color: grey,
+                      )).toList();
+                      return [
+                        pw.Inseparable(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              _Category(title: StringConst.DATA_OF_INTEREST, color: primary900),
+                              items.first,
+                            ],
+                          ),
+                        ),
+                        ...items.skip(1),
+                      ];
+                    })(),
+                    pw.SizedBox(height: 15),
+                    if (languagesNames != null && languagesNames.isNotEmpty) ...(() {
+                      final items = languagesNames.map((lang) => pw.Padding(
+                        padding: const pw.EdgeInsets.only(bottom: 2),
+                        child: pw.Text(
+                          '${lang.name.toUpperCase()} | ${lang.speakingLevel == 1 ? 'PRINCIPIANTE' : lang.speakingLevel == 2 ? 'MEDIO' : 'AVANZADO'}',
+                          style: const pw.TextStyle(fontSize: 8, color: grey),
+                        ),
+                      )).toList();
+                      return [
+                        pw.Inseparable(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              _Category(title: StringConst.LANGUAGES, color: primary900),
+                              items.first,
+                            ],
+                          ),
+                        ),
+                        ...items.skip(1),
+                      ];
+                    })(),
                   ],
                 ),
               ),
@@ -283,142 +315,140 @@ Future<Uint8List> generateResumePurple(
                           style: pw.Theme.of(context).defaultTextStyle.copyWith(
                               fontWeight: pw.FontWeight.normal, color: grey)),
                       pw.SizedBox(height: 10),
-                      myExperiences != null && myExperiences.isNotEmpty
-                          ? _Category(
-                              title: StringConst.MY_PROFESIONAL_EXPERIENCES,
-                              color: primary900)
-                          : pw.Container(),
-                      for (var experience in myExperiences!)
-                        _Block(
-                            title: (experience.activity != null)
-                                ? experience.activity
-                                : '',
+                      if (myExperiences != null && myExperiences.isNotEmpty) ...(() {
+                        final items = myExperiences.map((experience) => _Block(
+                            title: (experience.activity != null) ? experience.activity : '',
                             organization: experience.organization != "" &&
                                     experience.organization != null &&
                                     experience.position != "" &&
                                     experience.position != null
                                 ? '${experience.position} - ${experience.organization}'
-                                : experience.organization != null ||
-                                        experience.organization != ""
+                                : experience.organization != null || experience.organization != ""
                                     ? experience.organization
-                                    : experience.position != null &&
-                                            experience.position != ""
+                                    : experience.position != null && experience.position != ""
                                         ? experience.position
                                         : "",
-                            showDescriptionDate: idSelectedDateExperience!
-                                .contains(experience.id),
-                            descriptionDate:
-                                '${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : '-'} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
+                            showDescriptionDate: idSelectedDateExperience!.contains(experience.id),
+                            descriptionDate: '${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : '-'} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
                             descriptionPlace: '${experience.location}',
-                            descriptionActivities: experience
-                                        .professionActivitiesText !=
-                                    null
+                            descriptionActivities: experience.professionActivitiesText != null
                                 ? experience.professionActivitiesText!
                                     .split(' / ')
-                                    .where((item) => item
-                                        .isNotEmpty) // Filter out empty items.
-                                    .map((item) =>
-                                        '• $item') // Prefix each item with a bullet point.
+                                    .where((item) => item.isNotEmpty)
+                                    .map((item) => '• $item')
                                     .join('\n')
                                 : experience.professionActivities
-                                    .where((item) => item
-                                        .isNotEmpty) // Filter out empty items.
-                                    .map((item) =>
-                                        '• $item') // Prefix each item with a bullet point.
-                                    .join('\n')),
+                                    .where((item) => item.isNotEmpty)
+                                    .map((item) => '• $item')
+                                    .join('\n'))
+                        ).toList();
+                        return [
+                          pw.Inseparable(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _Category(title: StringConst.MY_PROFESIONAL_EXPERIENCES, color: primary900),
+                                items.first,
+                              ],
+                            ),
+                          ),
+                          ...items.skip(1),
+                        ];
+                      })(),
                       pw.SizedBox(height: 10),
-                      myPersonalExperiences != null &&
-                              myPersonalExperiences.isNotEmpty
-                          ? _Category(
-                              title: StringConst.MY_PERSONAL_EXPERIENCES,
-                              color: primary900)
-                          : pw.Container(),
-                      for (var experience in myPersonalExperiences!)
-                        _Block(
-                          title: experience.subtype ==
-                                      'Responsabilidades familiares' ||
-                                  experience.subtype == "Compromiso social"
+                      if (myPersonalExperiences != null && myPersonalExperiences.isNotEmpty) ...(() {
+                        final items = myPersonalExperiences.map((experience) => _Block(
+                          title: experience.subtype == 'Responsabilidades familiares' || experience.subtype == "Compromiso social"
                               ? experience.subtype
-                              : experience.activityRole != null &&
-                                      experience.activity != null &&
-                                      experience.subtype != null
+                              : experience.activityRole != null && experience.activity != null && experience.subtype != null
                                   ? '${experience.subtype} - ${experience.activityRole} - ${experience.activity}'
-                                  : experience.activityRole != null &&
-                                          experience.activity != null
+                                  : experience.activityRole != null && experience.activity != null
                                       ? '${experience.activityRole} - ${experience.activity}'
-                                      : experience.activity != null &&
-                                              experience.subtype != null
+                                      : experience.activity != null && experience.subtype != null
                                           ? '${experience.subtype} - ${experience.activity}'
                                           : experience.activity != null
                                               ? experience.activity
                                               : '',
-                          organization: experience.organization != "" &&
-                                  experience.organization != null &&
-                                  experience.position != "" &&
-                                  experience.position != null
+                          organization: experience.organization != "" && experience.organization != null && experience.position != "" && experience.position != null
                               ? '${experience.position} - ${experience.organization}'
-                              : experience.organization != null ||
-                                      experience.organization != ""
+                              : experience.organization != null || experience.organization != ""
                                   ? experience.organization
-                                  : experience.position != null &&
-                                          experience.position != ""
+                                  : experience.position != null && experience.position != ""
                                       ? experience.position
                                       : "",
-                          showDescriptionDate: idSelectedDatePersonalExperience!
-                              .contains(experience.id),
-                          descriptionDate:
-                              '${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : '-'} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
+                          showDescriptionDate: idSelectedDatePersonalExperience!.contains(experience.id),
+                          descriptionDate: '${experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : '-'} / ${experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente'}',
                           descriptionPlace: '${experience.location}',
-                        ),
+                        )).toList();
+                        return [
+                          pw.Inseparable(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _Category(title: StringConst.MY_PERSONAL_EXPERIENCES, color: primary900),
+                                items.first,
+                              ],
+                            ),
+                          ),
+                          ...items.skip(1),
+                        ];
+                      })(),
                       pw.SizedBox(height: 10),
-                      myEducation!.isNotEmpty
-                          ? _Category(
-                              title: StringConst.EDUCATION, color: primary900)
-                          : pw.Container(),
-                      for (var education in myEducation)
-                        _Block(
-                          title: education.institution != null &&
-                                  education.nameFormation != null &&
-                                  education.nameFormation != ''
+                      if (myEducation != null && myEducation.isNotEmpty) ...(() {
+                        final items = myEducation.map((education) => _Block(
+                          title: education.institution != null && education.nameFormation != null && education.nameFormation != ''
                               ? '${education.institution} - ${education.nameFormation}'
                               : education.institution == null
                                   ? education.nameFormation
                                   : education.institution,
-                          organization: education.organization != "" &&
-                                  education.organization != null
+                          organization: education.organization != "" && education.organization != null
                               ? education.organization
                               : '',
-                          showDescriptionDate:
-                              idSelectedDateEducation!.contains(education.id),
-                          descriptionDate:
-                              '${education.startDate != null ? formatter.format(education.startDate!.toDate()) : '-'} / ${education.endDate != null ? formatter.format(education.endDate!.toDate()) : 'Actualmente'}',
+                          showDescriptionDate: idSelectedDateEducation!.contains(education.id),
+                          descriptionDate: '${education.startDate != null ? formatter.format(education.startDate!.toDate()) : '-'} / ${education.endDate != null ? formatter.format(education.endDate!.toDate()) : 'Actualmente'}',
                           descriptionPlace: '${education.location}',
-                        ),
+                        )).toList();
+                        return [
+                          pw.Inseparable(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _Category(title: StringConst.EDUCATION, color: primary900),
+                                items.first,
+                              ],
+                            ),
+                          ),
+                          ...items.skip(1),
+                        ];
+                      })(),
                       pw.SizedBox(height: 10),
-                      mySecondaryEducation!.isNotEmpty
-                          ? _Category(
-                              title: StringConst.SECONDARY_EDUCATION,
-                              color: primary900)
-                          : pw.Container(),
-                      for (var education in mySecondaryEducation)
-                        _Block(
-                          title: education.institution != null &&
-                                  education.nameFormation != null &&
-                                  education.nameFormation != ''
+                      if (mySecondaryEducation != null && mySecondaryEducation.isNotEmpty) ...(() {
+                        final items = mySecondaryEducation.map((education) => _Block(
+                          title: education.institution != null && education.nameFormation != null && education.nameFormation != ''
                               ? '${education.institution} - ${education.nameFormation}'
                               : education.institution == null
                                   ? education.nameFormation
                                   : education.institution,
-                          organization: education.organization != "" &&
-                                  education.organization != null
+                          organization: education.organization != "" && education.organization != null
                               ? education.organization
                               : '',
-                          showDescriptionDate: idSelectedDateSecondaryEducation!
-                              .contains(education.id),
-                          descriptionDate:
-                              '${education.startDate != null ? formatter.format(education.startDate!.toDate()) : '-'} / ${education.endDate != null ? formatter.format(education.endDate!.toDate()) : 'Actualmente'}',
+                          showDescriptionDate: idSelectedDateSecondaryEducation!.contains(education.id),
+                          descriptionDate: '${education.startDate != null ? formatter.format(education.startDate!.toDate()) : '-'} / ${education.endDate != null ? formatter.format(education.endDate!.toDate()) : 'Actualmente'}',
                           descriptionPlace: '${education.location}',
-                        ),
+                        )).toList();
+                        return [
+                          pw.Inseparable(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _Category(title: StringConst.SECONDARY_EDUCATION, color: primary900),
+                                items.first,
+                              ],
+                            ),
+                          ),
+                          ...items.skip(1),
+                        ];
+                      })(),
                     ],
                   ),
                 ))

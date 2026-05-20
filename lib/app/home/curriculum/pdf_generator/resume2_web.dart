@@ -204,56 +204,91 @@ Future<Uint8List> generateResume2(
 
                     pw.SizedBox(height: 10),
                     // Referencias
-                    if (myReferences != null && myReferences.isNotEmpty) ...[
-                      _Category(title: StringConst.REFERENCES, color: teal),
-                      for (var ref in myReferences)
-                        _ReferenceBlock(
-                          name: '${ref.certifierName}',
-                          position: '${ref.certifierPosition}',
-                          company: '${ref.certifierCompany}',
-                          contact: [ref.phone, ref.email]
-                              .whereType<String>()
-                              .where((s) =>
-                                  s.trim().isNotEmpty && s.trim() != '+34')
-                              .join(' / '),
+                    if (myReferences != null && myReferences.isNotEmpty) ...(() {
+                      final items = myReferences.map((ref) => _ReferenceBlock(
+                        name: '${ref.certifierName}',
+                        position: '${ref.certifierPosition}',
+                        company: '${ref.certifierCompany}',
+                        contact: [ref.phone, ref.email]
+                            .whereType<String>()
+                            .where((s) => s.trim().isNotEmpty && s.trim() != '+34')
+                            .join(' / '),
+                      )).toList();
+                      return [
+                        pw.Inseparable(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              _Category(title: StringConst.REFERENCES, color: teal),
+                              items.first,
+                            ],
+                          ),
                         ),
-                    ],
+                        ...items.skip(1),
+                      ];
+                    })(),
 
                     pw.SizedBox(height: 10),
                     // Competencias
-                    if (competenciesNames.isNotEmpty) ...[
-                      _Category(title: StringConst.COMPETENCIES, color: teal),
-                      for (var name in competenciesNames)
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.only(bottom: 6),
-                          child: _CompetencyChip(title: name),
+                    if (competenciesNames.isNotEmpty) ...(() {
+                      final items = competenciesNames.map((name) => pw.Padding(
+                        padding: const pw.EdgeInsets.only(bottom: 6),
+                        child: _CompetencyChip(title: name),
+                      )).toList();
+                      return [
+                        pw.Inseparable(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              _Category(title: StringConst.COMPETENCIES, color: teal),
+                              items.first,
+                            ],
+                          ),
                         ),
-                    ],
+                        ...items.skip(1),
+                      ];
+                    })(),
 
                     pw.SizedBox(height: 10),
                     // Datos de Interés
-                    if (myDataOfInterest.isNotEmpty) ...[
-                      _Category(
-                          title: StringConst.DATA_OF_INTEREST, color: teal),
-                      for (var item in myDataOfInterest)
-                        _BulletItem(text: item),
-                    ],
-
-                    pw.SizedBox(height: 10),
-                    if (languagesNames != null &&
-                        languagesNames.isNotEmpty) ...[
-                      _Category(
-                          title: StringConst.LANGUAGES, color: primary900),
-                      for (var lang in languagesNames)
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.only(bottom: 2),
-                          child: pw.Text(
-                            '${lang.name.toUpperCase()} | ${lang.speakingLevel == 1 ? 'PRINCIPIANTE' : lang.speakingLevel == 2 ? 'MEDIO' : 'AVANZADO'}',
-                            style: const pw.TextStyle(
-                                fontSize: 8, color: greyBody),
+                    if (myDataOfInterest.isNotEmpty) ...(() {
+                      final items = myDataOfInterest.map((item) => _BulletItem(text: item)).toList();
+                      return [
+                        pw.Inseparable(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              _Category(title: StringConst.DATA_OF_INTEREST, color: teal),
+                              items.first,
+                            ],
                           ),
                         ),
-                    ],
+                        ...items.skip(1),
+                      ];
+                    })(),
+
+                    pw.SizedBox(height: 10),
+                    if (languagesNames != null && languagesNames.isNotEmpty) ...(() {
+                      final items = languagesNames.map((lang) => pw.Padding(
+                        padding: const pw.EdgeInsets.only(bottom: 2),
+                        child: pw.Text(
+                          '${lang.name.toUpperCase()} | ${lang.speakingLevel == 1 ? 'PRINCIPIANTE' : lang.speakingLevel == 2 ? 'MEDIO' : 'AVANZADO'}',
+                          style: const pw.TextStyle(fontSize: 8, color: greyBody),
+                        ),
+                      )).toList();
+                      return [
+                        pw.Inseparable(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              _Category(title: StringConst.LANGUAGES, color: primary900),
+                              items.first,
+                            ],
+                          ),
+                        ),
+                        ...items.skip(1),
+                      ];
+                    })(),
                   ],
                 ),
               ),
@@ -269,65 +304,96 @@ Future<Uint8List> generateResume2(
                   children: [
                     //pw.SizedBox(height: 40),
                     // Experiencias Profesionales
-                    if ((myExperiences ?? []).isNotEmpty) ...[
-                      _Category(
-                          title: StringConst.MY_PROFESIONAL_EXPERIENCES,
-                          color: teal),
-                      for (var exp in (myExperiences ?? []))
-                        _ExperienceBlock(
-                          title: exp.activity ?? '',
-                          subtitle:
-                              '${exp.position ?? ""} ${(exp.position ?? "").isNotEmpty && (exp.organization ?? "").isNotEmpty ? "- " : ""}${exp.organization ?? ""}',
-                          date:
-                              '${exp.startDate != null ? formatter.format(exp.startDate!.toDate()) : '-'} / ${exp.endDate != null ? formatter.format(exp.endDate!.toDate()) : 'Actualmente'}',
-                          location: exp.location ?? '',
-                          activities: exp.professionActivitiesText,
+                    if ((myExperiences ?? []).isNotEmpty) ...(() {
+                      final items = (myExperiences ?? []).map((exp) => _ExperienceBlock(
+                        title: exp.activity ?? '',
+                        subtitle: '${exp.position ?? ""} ${(exp.position ?? "").isNotEmpty && (exp.organization ?? "").isNotEmpty ? "- " : ""}${exp.organization ?? ""}',
+                        date: '${exp.startDate != null ? formatter.format(exp.startDate!.toDate()) : '-'} / ${exp.endDate != null ? formatter.format(exp.endDate!.toDate()) : 'Actualmente'}',
+                        location: exp.location ?? '',
+                        activities: exp.professionActivitiesText,
+                      )).toList();
+                      return [
+                        pw.Inseparable(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              _Category(title: StringConst.MY_PROFESIONAL_EXPERIENCES, color: teal),
+                              items.first,
+                            ],
+                          ),
                         ),
-                    ],
+                        ...items.skip(1),
+                      ];
+                    })(),
 
                     pw.SizedBox(height: 10),
                     // Experiencias Personales
-                    if ((myPersonalExperiences ?? []).isNotEmpty) ...[
-                      _Category(
-                          title: StringConst.MY_PERSONAL_EXPERIENCES,
-                          color: teal),
-                      for (var exp in (myPersonalExperiences ?? []))
-                        _ExperienceBlock(
-                          title: exp.activity ?? '',
-                          subtitle: exp.organization ?? '',
-                          date:
-                              '${exp.startDate != null ? formatter.format(exp.startDate!.toDate()) : '-'} / ${exp.endDate != null ? formatter.format(exp.endDate!.toDate()) : 'Actualmente'}',
-                          location: exp.location ?? '',
+                    if ((myPersonalExperiences ?? []).isNotEmpty) ...(() {
+                      final items = (myPersonalExperiences ?? []).map((exp) => _ExperienceBlock(
+                        title: exp.activity ?? '',
+                        subtitle: exp.organization ?? '',
+                        date: '${exp.startDate != null ? formatter.format(exp.startDate!.toDate()) : '-'} / ${exp.endDate != null ? formatter.format(exp.endDate!.toDate()) : 'Actualmente'}',
+                        location: exp.location ?? '',
+                      )).toList();
+                      return [
+                        pw.Inseparable(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              _Category(title: StringConst.MY_PERSONAL_EXPERIENCES, color: teal),
+                              items.first,
+                            ],
+                          ),
                         ),
-                    ],
+                        ...items.skip(1),
+                      ];
+                    })(),
 
                     pw.SizedBox(height: 10),
                     // Formación
-                    if ((myEducation ?? []).isNotEmpty) ...[
-                      _Category(title: StringConst.EDUCATION, color: teal),
-                      for (var edu in (myEducation ?? []))
-                        _ExperienceBlock(
-                          title: edu.nameFormation ?? '',
-                          subtitle: edu.institution ?? '',
-                          date:
-                              '${edu.startDate != null ? formatter.format(edu.startDate!.toDate()) : '-'} / ${edu.endDate != null ? formatter.format(edu.endDate!.toDate()) : 'Actualmente'}',
-                          location: edu.location ?? '',
+                    if ((myEducation ?? []).isNotEmpty) ...(() {
+                      final items = (myEducation ?? []).map((edu) => _ExperienceBlock(
+                        title: edu.nameFormation ?? '',
+                        subtitle: edu.institution ?? '',
+                        date: '${edu.startDate != null ? formatter.format(edu.startDate!.toDate()) : '-'} / ${edu.endDate != null ? formatter.format(edu.endDate!.toDate()) : 'Actualmente'}',
+                        location: edu.location ?? '',
+                      )).toList();
+                      return [
+                        pw.Inseparable(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              _Category(title: StringConst.EDUCATION, color: teal),
+                              items.first,
+                            ],
+                          ),
                         ),
-                    ],
+                        ...items.skip(1),
+                      ];
+                    })(),
 
                     pw.SizedBox(height: 10),
                     // Cursos y Certificados
-                    if ((mySecondaryEducation ?? []).isNotEmpty) ...[
-                      _Category(title: 'CURSOS Y CERTIFICADOS', color: teal),
-                      for (var edu in (mySecondaryEducation ?? []))
-                        _ExperienceBlock(
-                          title: edu.nameFormation ?? '',
-                          subtitle: edu.institution ?? '',
-                          date:
-                              '${edu.startDate != null ? formatter.format(edu.startDate!.toDate()) : '-'} / ${edu.endDate != null ? formatter.format(edu.endDate!.toDate()) : 'Actualmente'}',
-                          location: edu.location ?? '',
+                    if ((mySecondaryEducation ?? []).isNotEmpty) ...(() {
+                      final items = (mySecondaryEducation ?? []).map((edu) => _ExperienceBlock(
+                        title: edu.nameFormation ?? '',
+                        subtitle: edu.institution ?? '',
+                        date: '${edu.startDate != null ? formatter.format(edu.startDate!.toDate()) : '-'} / ${edu.endDate != null ? formatter.format(edu.endDate!.toDate()) : 'Actualmente'}',
+                        location: edu.location ?? '',
+                      )).toList();
+                      return [
+                        pw.Inseparable(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              _Category(title: 'CURSOS Y CERTIFICADOS', color: teal),
+                              items.first,
+                            ],
+                          ),
                         ),
-                    ],
+                        ...items.skip(1),
+                      ];
+                    })(),
                   ],
                 ),
               ),

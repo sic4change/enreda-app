@@ -77,9 +77,6 @@ Future<Uint8List> generateResumeTeal(
   final pageTheme = await _myPageTheme(format1);
   final DateFormat formatter = DateFormat('yyyy');
 
-  final headerSvg =
-      '<svg width="600" height="220"><path d="M0,0 L600,0 L600,220 L200,220 Q0,220 0,20 Z" fill="#004D5E" /></svg>';
-
   doc.addPage(
     pw.MultiPage(
       pageTheme: pageTheme,
@@ -102,21 +99,30 @@ Future<Uint8List> generateResumeTeal(
       build: (pw.Context context) => <pw.Widget>[
         // Header
         pw.Container(
-          height: 220,
+          height: 230,
           child: pw.Stack(
             children: [
-              pw.SvgImage(svg: headerSvg),
+              pw.Positioned.fill(
+                child: pw.Container(
+                  decoration: pw.BoxDecoration(
+                    color: const PdfColor.fromInt(0xFF054D5E),
+                    borderRadius: const pw.BorderRadius.only(
+                      bottomLeft: pw.Radius.circular(115),
+                    ),
+                  ),
+                ),
+              ),
               // Profile Photo
               if (myPhoto)
                 pw.Positioned(
-                  left: 60,
-                  top: 20,
+                  left: 50,
+                  top: 45,
                   child: pw.Container(
                     width: 140,
                     height: 140,
                     decoration: pw.BoxDecoration(
                       shape: pw.BoxShape.circle,
-                      border: pw.Border.all(color: white, width: 6),
+                      border: pw.Border.all(color: white, width: 9),
                     ),
                     child: pw.ClipOval(
                       child: pw.Image(profileImageWeb, fit: pw.BoxFit.cover),
@@ -198,58 +204,114 @@ Future<Uint8List> generateResumeTeal(
 
                     pw.SizedBox(height: 10),
                     // Referencias
-                    if (myReferences != null && myReferences.isNotEmpty) ...[
-                      _Category(title: StringConst.REFERENCES, color: teal),
-                      for (var ref in myReferences)
-                        _ReferenceBlock(
-                          name: '${ref.certifierName}',
-                          position: '${ref.certifierPosition}',
-                          company: '${ref.certifierCompany}',
-                          contact: [ref.phone, ref.email]
-                              .whereType<String>()
-                              .where((s) =>
-                                  s.trim().isNotEmpty && s.trim() != '+34')
-                              .join(' / '),
-                        ),
-                    ],
+                    if (myReferences != null && myReferences.isNotEmpty)
+                      ...(() {
+                        final items = myReferences
+                            .map((ref) => _ReferenceBlock(
+                                  name: '${ref.certifierName}',
+                                  position: '${ref.certifierPosition}',
+                                  company: '${ref.certifierCompany}',
+                                  contact: [ref.phone, ref.email]
+                                      .whereType<String>()
+                                      .where((s) =>
+                                          s.trim().isNotEmpty &&
+                                          s.trim() != '+34')
+                                      .join(' / '),
+                                ))
+                            .toList();
+                        return [
+                          pw.Inseparable(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _Category(
+                                    title: StringConst.REFERENCES, color: teal),
+                                items.first,
+                              ],
+                            ),
+                          ),
+                          ...items.skip(1),
+                        ];
+                      })(),
 
                     pw.SizedBox(height: 10),
                     // Competencias
                     if (competenciesNames != null &&
-                        competenciesNames.isNotEmpty) ...[
-                      _Category(title: StringConst.COMPETENCIES, color: teal),
-                      for (var name in competenciesNames)
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.only(bottom: 6),
-                          child: _CompetencyChip(title: name),
-                        ),
-                    ],
+                        competenciesNames.isNotEmpty)
+                      ...(() {
+                        final items = competenciesNames
+                            .map((name) => pw.Padding(
+                                  padding: const pw.EdgeInsets.only(bottom: 6),
+                                  child: _CompetencyChip(title: name),
+                                ))
+                            .toList();
+                        return [
+                          pw.Inseparable(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _Category(
+                                    title: StringConst.COMPETENCIES,
+                                    color: teal),
+                                items.first,
+                              ],
+                            ),
+                          ),
+                          ...items.skip(1),
+                        ];
+                      })(),
 
                     pw.SizedBox(height: 10),
                     // Datos de Interés
-                    if (myDataOfInterest != null &&
-                        myDataOfInterest.isNotEmpty) ...[
-                      _Category(
-                          title: StringConst.DATA_OF_INTEREST, color: teal),
-                      for (var item in myDataOfInterest)
-                        _BulletItem(text: item),
-                    ],
+                    if (myDataOfInterest != null && myDataOfInterest.isNotEmpty)
+                      ...(() {
+                        final items = myDataOfInterest
+                            .map((item) => _BulletItem(text: item))
+                            .toList();
+                        return [
+                          pw.Inseparable(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _Category(
+                                    title: StringConst.DATA_OF_INTEREST,
+                                    color: teal),
+                                items.first,
+                              ],
+                            ),
+                          ),
+                          ...items.skip(1),
+                        ];
+                      })(),
 
                     pw.SizedBox(height: 10),
                     // Idiomas
-                    if (languagesNames != null &&
-                        languagesNames.isNotEmpty) ...[
-                      _Category(title: StringConst.LANGUAGES, color: teal),
-                      for (var lang in languagesNames)
-                        pw.Padding(
-                          padding: const pw.EdgeInsets.only(bottom: 2),
-                          child: pw.Text(
-                            '${lang.name.toUpperCase()} | ${lang.speakingLevel == 1 ? 'PRINCIPIANTE' : lang.speakingLevel == 2 ? 'MEDIO' : 'AVANZADO'}',
-                            style: const pw.TextStyle(
-                                fontSize: 8, color: greyBody),
+                    if (languagesNames != null && languagesNames.isNotEmpty)
+                      ...(() {
+                        final items = languagesNames
+                            .map((lang) => pw.Padding(
+                                  padding: const pw.EdgeInsets.only(bottom: 2),
+                                  child: pw.Text(
+                                    '${lang.name.toUpperCase()} | ${lang.speakingLevel == 1 ? 'PRINCIPIANTE' : lang.speakingLevel == 2 ? 'MEDIO' : 'AVANZADO'}',
+                                    style: const pw.TextStyle(
+                                        fontSize: 8, color: greyBody),
+                                  ),
+                                ))
+                            .toList();
+                        return [
+                          pw.Inseparable(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _Category(
+                                    title: StringConst.LANGUAGES, color: teal),
+                                items.first,
+                              ],
+                            ),
                           ),
-                        ),
-                    ],
+                          ...items.skip(1),
+                        ];
+                      })(),
                   ],
                 ),
               ),
@@ -265,69 +327,123 @@ Future<Uint8List> generateResumeTeal(
                   children: [
                     pw.SizedBox(height: 10),
                     // Experiencias Profesionales
-                    if (myExperiences != null && myExperiences.isNotEmpty) ...[
-                      _TimelineCategory(
-                          title: StringConst.MY_PROFESIONAL_EXPERIENCES,
-                          color: teal),
-                      for (var exp in myExperiences)
-                        _ExperienceBlock(
-                          title: exp.activity ?? '',
-                          subtitle:
-                              '${exp.position ?? ""} ${(exp.position ?? "").isNotEmpty && (exp.organization ?? "").isNotEmpty ? "- " : ""}${exp.organization ?? ""}',
-                          date:
-                              '${exp.startDate != null ? formatter.format(exp.startDate!.toDate()) : '-'} / ${exp.endDate != null ? formatter.format(exp.endDate!.toDate()) : 'Actualmente'}',
-                          location: exp.location ?? '',
-                          activities: exp.professionActivitiesText,
-                        ),
-                    ],
+                    if (myExperiences != null && myExperiences.isNotEmpty)
+                      ...(() {
+                        final items = myExperiences
+                            .map((exp) => _ExperienceBlock(
+                                  title: exp.activity ?? '',
+                                  subtitle:
+                                      '${exp.position ?? ""} ${(exp.position ?? "").isNotEmpty && (exp.organization ?? "").isNotEmpty ? "- " : ""}${exp.organization ?? ""}',
+                                  date:
+                                      '${exp.startDate != null ? formatter.format(exp.startDate!.toDate()) : '-'} / ${exp.endDate != null ? formatter.format(exp.endDate!.toDate()) : 'Actualmente'}',
+                                  location: exp.location ?? '',
+                                  activities: exp.professionActivitiesText,
+                                ))
+                            .toList();
+                        return [
+                          pw.Inseparable(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _TimelineCategory(
+                                    title:
+                                        StringConst.MY_PROFESIONAL_EXPERIENCES,
+                                    color: teal),
+                                items.first,
+                              ],
+                            ),
+                          ),
+                          ...items.skip(1),
+                        ];
+                      })(),
 
                     pw.SizedBox(height: 10),
                     // Experiencias Personales
                     if (myPersonalExperiences != null &&
-                        myPersonalExperiences.isNotEmpty) ...[
-                      _TimelineCategory(
-                          title: StringConst.MY_PERSONAL_EXPERIENCES,
-                          color: teal),
-                      for (var exp in myPersonalExperiences)
-                        _ExperienceBlock(
-                          title: exp.activity ?? '',
-                          subtitle: exp.organization ?? '',
-                          date:
-                              '${exp.startDate != null ? formatter.format(exp.startDate!.toDate()) : '-'} / ${exp.endDate != null ? formatter.format(exp.endDate!.toDate()) : 'Actualmente'}',
-                          location: exp.location ?? '',
-                        ),
-                    ],
+                        myPersonalExperiences.isNotEmpty)
+                      ...(() {
+                        final items = myPersonalExperiences
+                            .map((exp) => _ExperienceBlock(
+                                  title: exp.activity ?? '',
+                                  subtitle: exp.organization ?? '',
+                                  date:
+                                      '${exp.startDate != null ? formatter.format(exp.startDate!.toDate()) : '-'} / ${exp.endDate != null ? formatter.format(exp.endDate!.toDate()) : 'Actualmente'}',
+                                  location: exp.location ?? '',
+                                ))
+                            .toList();
+                        return [
+                          pw.Inseparable(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _TimelineCategory(
+                                    title: StringConst.MY_PERSONAL_EXPERIENCES,
+                                    color: teal),
+                                items.first,
+                              ],
+                            ),
+                          ),
+                          ...items.skip(1),
+                        ];
+                      })(),
 
                     pw.SizedBox(height: 10),
                     // Formación
-                    if (myEducation != null && myEducation.isNotEmpty) ...[
-                      _TimelineCategory(
-                          title: StringConst.EDUCATION, color: teal),
-                      for (var edu in myEducation)
-                        _ExperienceBlock(
-                          title: edu.nameFormation ?? '',
-                          subtitle: edu.institution ?? '',
-                          date:
-                              '${edu.startDate != null ? formatter.format(edu.startDate!.toDate()) : '-'} / ${edu.endDate != null ? formatter.format(edu.endDate!.toDate()) : 'Actualmente'}',
-                          location: edu.location ?? '',
-                        ),
-                    ],
+                    if (myEducation != null && myEducation.isNotEmpty)
+                      ...(() {
+                        final items = myEducation
+                            .map((edu) => _ExperienceBlock(
+                                  title: edu.nameFormation ?? '',
+                                  subtitle: edu.institution ?? '',
+                                  date:
+                                      '${edu.startDate != null ? formatter.format(edu.startDate!.toDate()) : '-'} / ${edu.endDate != null ? formatter.format(edu.endDate!.toDate()) : 'Actualmente'}',
+                                  location: edu.location ?? '',
+                                ))
+                            .toList();
+                        return [
+                          pw.Inseparable(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _TimelineCategory(
+                                    title: StringConst.EDUCATION, color: teal),
+                                items.first,
+                              ],
+                            ),
+                          ),
+                          ...items.skip(1),
+                        ];
+                      })(),
 
                     pw.SizedBox(height: 10),
                     // Cursos y Certificados
                     if (mySecondaryEducation != null &&
-                        mySecondaryEducation.isNotEmpty) ...[
-                      _TimelineCategory(
-                          title: 'CURSOS Y CERTIFICADOS', color: teal),
-                      for (var edu in mySecondaryEducation)
-                        _ExperienceBlock(
-                          title: edu.nameFormation ?? '',
-                          subtitle: edu.institution ?? '',
-                          date:
-                              '${edu.startDate != null ? formatter.format(edu.startDate!.toDate()) : '-'} / ${edu.endDate != null ? formatter.format(edu.endDate!.toDate()) : 'Actualmente'}',
-                          location: edu.location ?? '',
-                        ),
-                    ],
+                        mySecondaryEducation.isNotEmpty)
+                      ...(() {
+                        final items = mySecondaryEducation
+                            .map((edu) => _ExperienceBlock(
+                                  title: edu.nameFormation ?? '',
+                                  subtitle: edu.institution ?? '',
+                                  date:
+                                      '${edu.startDate != null ? formatter.format(edu.startDate!.toDate()) : '-'} / ${edu.endDate != null ? formatter.format(edu.endDate!.toDate()) : 'Actualmente'}',
+                                  location: edu.location ?? '',
+                                ))
+                            .toList();
+                        return [
+                          pw.Inseparable(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _TimelineCategory(
+                                    title: 'CURSOS Y CERTIFICADOS',
+                                    color: teal),
+                                items.first,
+                              ],
+                            ),
+                          ),
+                          ...items.skip(1),
+                        ];
+                      })(),
                   ],
                 ),
               ),
@@ -341,9 +457,6 @@ Future<Uint8List> generateResumeTeal(
 }
 
 Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
-  final headerSvgSmall =
-      '<svg width="600" height="30"><path d="M0,0 L600,0 L600,30 L50,30 Q0,30 0,0 Z" fill="#004D5E" /></svg>';
-
   format = format.applyMargin(left: 0, top: 0, right: 0, bottom: 0);
   return pw.PageTheme(
     pageFormat: format,
@@ -365,7 +478,15 @@ Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
               right: 0,
               child: context.pageNumber == 1
                   ? pw.Container()
-                  : pw.SvgImage(svg: headerSvgSmall, fit: pw.BoxFit.fill),
+                  : pw.Container(
+                      height: 30,
+                      decoration: pw.BoxDecoration(
+                        color: const PdfColor.fromInt(0xFF054D5E),
+                        borderRadius: const pw.BorderRadius.only(
+                          bottomLeft: pw.Radius.elliptical(50, 30),
+                        ),
+                      ),
+                    ),
             ),
             // Vertical Divider
             pw.Positioned(
@@ -458,8 +579,8 @@ class _IconText extends pw.StatelessWidget {
                     child: pw.UrlLink(
                         destination: 'mailto:$text',
                         child: pw.Text(text,
-                            style:
-                                const pw.TextStyle(fontSize: 8, color: greyBody))),
+                            style: const pw.TextStyle(
+                                fontSize: 8, color: greyBody))),
                   )
                 : pw.Text(text,
                     style: const pw.TextStyle(fontSize: 8, color: greyBody)),

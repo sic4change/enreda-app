@@ -71,4 +71,8 @@ class APIPath {
   static String competenciesSubCategory(String competencySubCategoryId) => 'competenciesSubCategories/$competencySubCategoryId';
   static String competenciesSubCategories() => 'competenciesSubCategories';
   static String nations() => 'nations';
+
+  // Sesiones — shared collection with the enredaEntidadSocial técnico dashboard.
+  static String sesiones() => 'sesiones';
+  static String sesion(String sesionId) => 'sesiones/$sesionId';
 }

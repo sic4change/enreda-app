@@ -50,6 +50,7 @@ import '../app/home/models/resourcePicture.dart';
 import '../app/home/models/activity.dart';
 import '../app/home/models/question.dart';
 import '../app/home/models/gamificationFlags.dart';
+import '../app/home/models/sesion.dart';
 import 'package:async/async.dart' show StreamGroup;
 
 /// Opaque cursor returned by [Database.resourcesPage]. Hides the underlying
@@ -163,6 +164,7 @@ abstract class Database {
   Stream<List<PersonalDocumentType>> documentSubCategoriesByCategoryStream(String categoryId);
   Stream<List<DocumentationParticipant>> documentationParticipantBySubCategoryStream(PersonalDocumentType documentSubCategory, UserEnreda user);
   Stream<List<JobOfferApplication>> applicantStreamByJobOffer(String? jobOfferId, String? userId);
+  Stream<List<Sesion>> mySesionesStream(String participantId);
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> updateUserEnredaField(String userId, Map<String, dynamic> data);
@@ -200,6 +202,22 @@ class FirestoreDatabase implements Database {
   FirestoreDatabase();
 
   final _service = FirestoreService.instance;
+
+  @override
+  Stream<List<Sesion>> mySesionesStream(String participantId) {
+    // Participant-facing read of the técnico-owned `sesiones` collection,
+    // filtered server-side to sessions this participant was invited to.
+    // where(arrayContains) + limit() satisfies the §4.5 read guard; no
+    // orderBy here (would require a composite index) — sorted client-side.
+    return _service.collectionStream<Sesion>(
+      path: APIPath.sesiones(),
+      queryBuilder: (query) => query
+          .where('invitedParticipants', arrayContains: participantId)
+          .limit(100),
+      builder: (data, documentId) => Sesion.fromMap(data, documentId),
+      sort: (lhs, rhs) => lhs.scheduledAt.compareTo(rhs.scheduledAt),
+    );
+  }
 
   @override
   Future<void> addResource(Resource resource) =>

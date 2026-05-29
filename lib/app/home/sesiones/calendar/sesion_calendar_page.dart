@@ -111,25 +111,21 @@ class _SesionCalendarPageState extends State<SesionCalendarPage> {
             sessionsByDay: byDay,
             isMobile: isMobile,
             filter: _filter,
+            onFilterChange: (f) => setState(() {
+              _filter = f;
+              _selectedDay = null;
+            }),
+          );
+
+          final panelHeader = _PanelHeader(
+            isMobile: isMobile,
+            onExport: () => _handleExportIcs(context, allSesiones),
           );
 
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _CalendarHeader(isMobile: isMobile),
-                SizedBox(height: isMobile ? Sizes.PADDING_8 : Sizes.PADDING_12),
-                _ExportIcsButton(
-                  isMobile: isMobile,
-                  onPressed: () => _handleExportIcs(context, allSesiones),
-                ),
-                SizedBox(height: isMobile ? Sizes.PADDING_16 : Sizes.PADDING_20),
-                // Filter pills — Próximas / Pasadas / Todas. Default = Próximas.
-                // Mounted directly above the sessions panel (NOT above the
-                // full-width content) so the pills visually scope to the
-                // right rail they actually control. Tapping a filter also
-                // clears any day selection so the panel re-renders from the
-                // new filter rather than the previously selected day.
                 if (isDesktop)
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,20 +133,31 @@ class _SesionCalendarPageState extends State<SesionCalendarPage> {
                       ConstrainedBox(
                         constraints:
                             const BoxConstraints(maxWidth: _kCalendarMaxWidth),
-                        child: calendarCard,
+                        // Mirror the right column's panel header as an
+                        // invisible spacer so the calendar's top lines up
+                        // with the sessions panel (below the title), not
+                        // with the panel header itself.
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Visibility(
+                              visible: false,
+                              maintainSize: true,
+                              maintainAnimation: true,
+                              maintainState: true,
+                              child: panelHeader,
+                            ),
+                            const SizedBox(height: Sizes.PADDING_16),
+                            calendarCard,
+                          ],
+                        ),
                       ),
                       const SizedBox(width: Sizes.PADDING_24),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _CalendarFilterBar(
-                              activeFilter: _filter,
-                              onSelect: (f) => setState(() {
-                                _filter = f;
-                                _selectedDay = null;
-                              }),
-                            ),
+                            panelHeader,
                             const SizedBox(height: Sizes.PADDING_16),
                             sessionsPanel,
                           ],
@@ -160,14 +167,8 @@ class _SesionCalendarPageState extends State<SesionCalendarPage> {
                   )
                 else ...[
                   calendarCard,
-                  const SizedBox(height: Sizes.PADDING_16),
-                  _CalendarFilterBar(
-                    activeFilter: _filter,
-                    onSelect: (f) => setState(() {
-                      _filter = f;
-                      _selectedDay = null;
-                    }),
-                  ),
+                  const SizedBox(height: Sizes.PADDING_20),
+                  panelHeader,
                   const SizedBox(height: Sizes.PADDING_12),
                   sessionsPanel,
                 ],
@@ -222,40 +223,39 @@ class _SesionCalendarPageState extends State<SesionCalendarPage> {
   }
 }
 
-// ── Header ──────────────────────────────────────────────────────────────────
+// ── Panel header ────────────────────────────────────────────────────────────
 
-class _CalendarHeader extends StatelessWidget {
-  const _CalendarHeader({required this.isMobile});
+/// Header rendered immediately ABOVE the sessions panel (right rail on
+/// desktop, full width on mobile). Shows the section title on the left and
+/// the "Descargar .ics" export button flush to the right.
+class _PanelHeader extends StatelessWidget {
+  const _PanelHeader({required this.isMobile, required this.onExport});
 
   final bool isMobile;
+  final VoidCallback onExport;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          StringConst.MI_CALENDARIO,
-          style: (isMobile ? textTheme.titleMedium : textTheme.headlineSmall)
-              ?.copyWith(color: AppColors.primary900),
-        ),
-        const SizedBox(height: Sizes.PADDING_4),
-        Text(
-          StringConst.CALENDARIO_TITLE,
-          style: (isMobile ? textTheme.bodyLarge : textTheme.titleMedium)
-              ?.copyWith(
-            color: AppColors.greyTxtAlt,
-            fontWeight: FontWeight.w400,
+        Expanded(
+          child: Text(
+            StringConst.MI_CALENDARIO,
+            style: (isMobile ? textTheme.titleMedium : textTheme.headlineSmall)
+                ?.copyWith(color: AppColors.primary900),
+            overflow: TextOverflow.ellipsis,
           ),
-          overflow: TextOverflow.ellipsis,
         ),
+        const SizedBox(width: Sizes.PADDING_12),
+        _ExportIcsButton(isMobile: isMobile, onPressed: onExport),
       ],
     );
   }
 }
 
-/// Right-aligned "Descargar .ics" button shown beneath the page header.
+/// Right-aligned "Descargar .ics" button. Rendered inside [_PanelHeader].
 class _ExportIcsButton extends StatelessWidget {
   const _ExportIcsButton({required this.isMobile, required this.onPressed});
 
@@ -265,34 +265,31 @@ class _ExportIcsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Tooltip(
-        message: StringConst.CALENDARIO_EXPORT_ICS_TOOLTIP,
-        child: OutlinedButton.icon(
-          onPressed: onPressed,
-          icon: const Icon(
-            Icons.file_download_outlined,
-            size: Sizes.ICON_SIZE_20,
+    return Tooltip(
+      message: StringConst.CALENDARIO_EXPORT_ICS_TOOLTIP,
+      child: OutlinedButton.icon(
+        onPressed: onPressed,
+        icon: const Icon(
+          Icons.file_download_outlined,
+          size: Sizes.ICON_SIZE_20,
+          color: AppColors.primary900,
+        ),
+        label: Text(
+          StringConst.CALENDARIO_EXPORT_ICS_LABEL,
+          style: (isMobile ? textTheme.bodySmall : textTheme.bodyMedium)
+              ?.copyWith(
             color: AppColors.primary900,
+            fontWeight: FontWeight.w600,
           ),
-          label: Text(
-            StringConst.CALENDARIO_EXPORT_ICS_LABEL,
-            style: (isMobile ? textTheme.bodySmall : textTheme.bodyMedium)
-                ?.copyWith(
-              color: AppColors.primary900,
-              fontWeight: FontWeight.w600,
-            ),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: AppColors.greyBorder),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Sizes.RADIUS_24),
           ),
-          style: OutlinedButton.styleFrom(
-            side: const BorderSide(color: AppColors.greyBorder),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(Sizes.RADIUS_24),
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: isMobile ? Sizes.PADDING_12 : Sizes.PADDING_16,
-              vertical: isMobile ? Sizes.PADDING_8 : Sizes.PADDING_12,
-            ),
+          padding: EdgeInsets.symmetric(
+            horizontal: isMobile ? Sizes.PADDING_12 : Sizes.PADDING_16,
+            vertical: isMobile ? Sizes.PADDING_8 : Sizes.PADDING_12,
           ),
         ),
       ),
@@ -764,6 +761,7 @@ class _SessionsPanel extends StatelessWidget {
     required this.sessionsByDay,
     required this.isMobile,
     required this.filter,
+    required this.onFilterChange,
   });
 
   final DateTime focusedMonth;
@@ -772,12 +770,18 @@ class _SessionsPanel extends StatelessWidget {
   final Map<String, List<Sesion>> sessionsByDay;
   final bool isMobile;
   final _CalendarFilter filter;
+  final ValueChanged<_CalendarFilter> onFilterChange;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
+      // Always fill the parent column. Without this the Container shrinks to
+      // its content width — which on an empty "Próximas sesiones" state
+      // (just a header + a one-line "No tienes ninguna sesión" message)
+      // leaves the panel visibly narrower than the panel header above it.
+      width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(Sizes.RADIUS_16),
@@ -792,6 +796,16 @@ class _SessionsPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Filter pills — Próximas / Pasadas / Todas. Mounted INSIDE the
+          // panel container so they read as part of the same surface as the
+          // sessions list they filter. Tapping a pill also clears any day
+          // selection so the panel re-renders from the new filter rather
+          // than the previously selected day.
+          _CalendarFilterBar(
+            activeFilter: filter,
+            onSelect: onFilterChange,
+          ),
+          SizedBox(height: isMobile ? Sizes.PADDING_16 : Sizes.PADDING_20),
           Text(
             _resolveHeader(),
             style: (isMobile ? textTheme.titleMedium : textTheme.headlineSmall)
@@ -954,7 +968,7 @@ class _CalendarFilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: Sizes.PADDING_12,
+      spacing: Sizes.PADDING_8,
       runSpacing: Sizes.PADDING_8,
       children: [
         _FilterPill(
@@ -992,17 +1006,17 @@ class _FilterPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return InkWell(
-      borderRadius: BorderRadius.circular(Sizes.RADIUS_24),
+      borderRadius: BorderRadius.circular(Sizes.RADIUS_20),
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         padding: const EdgeInsets.symmetric(
-          horizontal: Sizes.PADDING_30,
-          vertical: Sizes.PADDING_12,
+          horizontal: Sizes.PADDING_16,
+          vertical: Sizes.PADDING_6,
         ),
         decoration: BoxDecoration(
           color: isActive ? AppColors.yellowDark : AppColors.white,
-          borderRadius: BorderRadius.circular(Sizes.RADIUS_24),
+          borderRadius: BorderRadius.circular(Sizes.RADIUS_20),
           border: Border.all(
             color: isActive ? AppColors.yellowDark : AppColors.violet,
             width: 1,
@@ -1010,7 +1024,7 @@ class _FilterPill extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: textTheme.bodyLarge?.copyWith(
+          style: textTheme.bodySmall?.copyWith(
             color:
                 isActive ? AppColors.primary900 : AppColors.greyTxtAlt,
             fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,

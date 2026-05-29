@@ -140,6 +140,7 @@ class _SideBarWidgetState extends State<SideBarWidget> {
         SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_GAMIFICATION_SIDEBAR), width: 20,), label: StringConst.GAMIFICATION, onTap: _clearResourcesNavigation),
         if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_CONTACT_SIDEBAR), width: 20,), label: 'Contacto Enreda', onTap: _clearResourcesNavigation),
         if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(iconWidget: Container(child: Image.asset(ImagePath.ICON_DOCUMENTS_SIDEBAR), width: 20,), label: 'Mis documentos', onTap: _clearResourcesNavigation),
+        if(widget.user.assignedEntityId != null && widget.user.assignedEntityId != "") SidebarXItem(icon: Icons.calendar_today_outlined, label: StringConst.MI_CALENDARIO, onTap: _clearResourcesNavigation),
       ],
     );
   }

@@ -5,6 +5,7 @@ import 'package:enreda_app/app/home/competencies/my_competencies_page.dart';
 import 'package:enreda_app/app/home/control_panel/control_panel_mobile_intervention.dart';
 import 'package:enreda_app/app/home/control_panel/control_panel_mobile_no_intervention.dart';
 import 'package:enreda_app/app/home/control_panel/control_panel_page.dart';
+import 'package:enreda_app/app/home/sesiones/calendar/sesion_calendar_page.dart';
 import 'package:enreda_app/app/home/curriculum/my_curriculum_page.dart';
 import 'package:enreda_app/app/home/contact/enreda_contact_page.dart';
 import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
@@ -366,6 +367,8 @@ class _WebHomeState extends State<WebHome> {
                                     return EnredaContactPage();
                                   case 7:
                                     return ParticipantDocumentationPage(participantUser: user);
+                                  case 8:
+                                    return const SesionCalendarPage();
                                   default:
                                     return ResourcesPage();
                                 }

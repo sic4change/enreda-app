@@ -97,6 +97,10 @@ class AppColors {
   static const Color chatDarkGray = Color(0xFF44494B);
   static const Color darkGray = Color(0xFF535A5F);
   static const Color greyHint = Color(0xFFB1B1B1);
+  // Selected-chip text colour — mirrors entidadSocial's `AppColors.greyChip`
+  // (#F5F5F5) so the participant-side modality chip can render its label
+  // pixel-for-pixel identical to the técnico-side `CustomChip(selected:true)`.
+  static const Color greyChip = Color(0xFFF5F5F5);
 
   //Alternative
   static const Color red = Color(0xFFF1291A);

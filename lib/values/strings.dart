@@ -492,6 +492,74 @@ class StringConst {
   static const String PATH_RESOURCES = "/resources";
   static const String PATH_TRAINING_PILLS = "/pills";
   static const String PATH_COMPETENCIES = "/competencies";
+  static const String PATH_CALENDAR = "/calendar";
+
+  // ── Sesiones / Mi calendario ──────────────────────────────────────────
+  static const String MI_CALENDARIO = "Mi calendario";
+  static const String CALENDARIO_TITLE = "Tus próximas sesiones";
+  static const String SESIONES = "Sesiones";
+
+  static const List<String> CALENDARIO_WEEKDAYS = [
+    'L', 'M', 'X', 'J', 'V', 'S', 'D',
+  ];
+
+  static const String CALENDARIO_LEGEND_UPCOMING = "Próximas";
+  static const String CALENDARIO_LEGEND_PAST = "Pasadas";
+  static const String CALENDARIO_LEGEND_TODAY = "Hoy";
+  static const String CALENDARIO_LEGEND_SELECTED = "Seleccionado";
+
+  static const String CALENDARIO_HOVER_SESION_SINGULAR = "sesión";
+  static const String CALENDARIO_HOVER_SESION_PLURAL = "sesiones";
+  static const String CALENDARIO_HOVER_AND_MORE = "y %COUNT% más";
+
+  static const String CALENDARIO_EMPTY =
+      "No tienes ninguna sesión programada.";
+  static const String CALENDARIO_EMPTY_DAY = "No tienes sesiones este día.";
+  static const String CALENDARIO_PANEL_EMPTY_MONTH =
+      "No tienes sesiones este mes.";
+  static const String CALENDARIO_PANEL_MONTH = "Sesiones del mes";
+  // Filter pills above the calendar (mirrors the Próximas / Pasadas tabs
+  // on the entidadSocial Sesiones list, plus a "Todas" option).
+  static const String CALENDARIO_FILTER_PROXIMAS = "Próximas sesiones";
+  static const String CALENDARIO_FILTER_PASADAS = "Sesiones pasadas";
+  static const String CALENDARIO_FILTER_TODAS = "Todas las sesiones";
+  // Replaces the long localized date in the right panel when a day is
+  // selected — past / future relative to "today".
+  static const String CALENDARIO_PANEL_PROXIMA_SESION = "Próxima sesión";
+  static const String CALENDARIO_PANEL_SESION_PASADA = "Sesión pasada";
+  // Empty-state copy for each filter (matches the entidadSocial wording).
+  static const String SESION_EMPTY_PROXIMAS =
+      "No tienes sesiones próximas programadas.";
+  static const String SESION_EMPTY_PASADAS = "Aún no has asistido a ninguna sesión.";
+
+  static const String CALENDARIO_EXPORT_ICS_LABEL = "Descargar .ics";
+  static const String CALENDARIO_EXPORT_ICS_TOOLTIP =
+      "Descarga las sesiones del mes en formato iCalendar (.ics)";
+  static const String CALENDARIO_EXPORT_ICS_EMPTY =
+      "No hay sesiones este mes para exportar.";
+  static const String CALENDARIO_EXPORT_ICS_SUCCESS =
+      "Calendario exportado correctamente.";
+  static const String CALENDARIO_EXPORT_ICS_UNSUPPORTED =
+      "La descarga solo está disponible en la versión web.";
+
+  static const String CALENDARIO_EVENT_INICIO_LABEL = "Inicio";
+  static const String CALENDARIO_EVENT_FIN_LABEL = "Fin";
+  static const String CALENDARIO_EVENT_PARTICIPANTES_LABEL = "Participantes";
+
+  static const String SESION_INDIVIDUAL = "Sesión individual";
+  static const String SESION_GRUPAL = "Sesión grupal";
+  static const String SESION_ONLINE_LABEL = "Online";
+  static const String SESION_PRESENCIAL_LABEL = "Presencial";
+  static const String SESION_BLENDED_LABEL = "Mixta";
+  static const String SESION_TODO_EL_DIA_BADGE = "Todo el día";
+  static const String SESION_BUTTON_GCAL = "Añadir a Google Calendar";
+  static const String SESION_GCAL_UNSUPPORTED =
+      "No se pudo abrir Google Calendar.";
+  static const String SESION_DETAIL_DESARROLLO = "Desarrollo y evaluación:";
+  static const String SESION_DETAIL_OBSERVACIONES =
+      "Observaciones y/o incidencias:";
+  static const String SESION_PARTICIPANTE_SINGULAR = "participante";
+  static const String SESION_PARTICIPANTES_PLURAL = "participantes";
 
   //Assistant Chat
   static const String START_CHAT = '¡Inicia el chat!';

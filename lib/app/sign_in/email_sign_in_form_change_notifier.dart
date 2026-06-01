@@ -80,8 +80,8 @@ class _EmailSignInFormChangeNotifierState
         child: TextButton(
           onPressed: model.canSubmit ? _submit : null,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: 16.0, horizontal: 48.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 48.0),
             child: Text(
               StringConst.ACCESS.toUpperCase(),
               style: TextStyle(
@@ -91,12 +91,11 @@ class _EmailSignInFormChangeNotifierState
             ),
           ),
           style: ButtonStyle(
-              backgroundColor:
-              MaterialStateProperty.all(Constants.turquoise),
+              backgroundColor: MaterialStateProperty.all(Constants.turquoise),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ))),
+                borderRadius: BorderRadius.circular(10.0),
+              ))),
         ),
       ),
       SpaceH12(),
@@ -149,7 +148,6 @@ class _EmailSignInFormChangeNotifierState
           ),
         ),
         floatingLabelStyle: TextStyle(color: Constants.turquoise),
-
       ),
       autocorrect: false,
       keyboardType: TextInputType.emailAddress,
@@ -182,8 +180,13 @@ class _EmailSignInFormChangeNotifierState
             onTap: _toggle,
             child: CircleAvatar(
                 backgroundColor: Colors.transparent,
-                child: FaIcon(_obscureText ? FontAwesomeIcons.eye :
-                FontAwesomeIcons.eyeSlash, size: 20, color: AppColors.white,)),
+                child: FaIcon(
+                  _obscureText
+                      ? FontAwesomeIcons.eye
+                      : FontAwesomeIcons.eyeSlash,
+                  size: 20,
+                  color: AppColors.white,
+                )),
           ),
         ),
         focusColor: AppColors.primaryColor,
@@ -221,8 +224,7 @@ class _EmailSignInFormChangeNotifierState
 
   void _launchForgotPassword(BuildContext context) {
     if (_emailController.value.text.isNotEmpty &&
-        RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
             .hasMatch(_emailController.value.text)) {
       _confirmChangePassword(context);
     } else {
@@ -235,13 +237,14 @@ class _EmailSignInFormChangeNotifierState
     return InkWell(
       mouseCursor: MaterialStateMouseCursor.clickable,
       onTap: () => _launchForgotPassword(context),
-      child: Center(child: Text("¿Has olvidado la contraseña?",
+      child: Center(
+          child: Text(
+        "¿Has olvidado la contraseña?",
         style: textTheme.bodySmall?.copyWith(
           height: 1.5,
           color: AppColors.white,
         ),
-      )
-      ),
+      )),
     );
   }
 
@@ -260,7 +263,8 @@ class _EmailSignInFormChangeNotifierState
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('¿Aún no tienes cuenta?',
+        Text(
+          '¿Aún no tienes cuenta?',
           style: textTheme.bodySmall?.copyWith(
             height: 1.5,
             color: AppColors.white,
@@ -272,9 +276,10 @@ class _EmailSignInFormChangeNotifierState
           onTap: () => _unemployedRegistering(context),
           child: Center(
               child: Text(
-                "Regístrate",
-                style: TextStyle(color: Constants.white, fontWeight: FontWeight.bold),
-              )),
+            "Regístrate",
+            style:
+                TextStyle(color: Constants.white, fontWeight: FontWeight.bold),
+          )),
         ),
       ],
     );
@@ -288,14 +293,14 @@ class _EmailSignInFormChangeNotifierState
   }
 
   Future<void> _submit() async {
-    final database = Provider.of<Database>(context, listen: false);
-    final userEnreda = await database.userStream(_emailController.text).first;
-    if (userEnreda.isNotEmpty && userEnreda.first.role != "Desempleado") {
-      adminSignOut(context);
-    }
-    else {
-      try {
-        await model.submit();
+    try {
+      await model.submit();
+      final database = Provider.of<Database>(context, listen: false);
+      final userEnreda = await database.userStream(_emailController.text).first;
+      if (userEnreda.isNotEmpty && userEnreda.first.role != "Desempleado") {
+        model.updateWith(isLoading: false);
+        adminSignOut(context);
+      } else {
         if (Constants.pendingResourceId != null) {
           String rid = Constants.pendingResourceId!;
           Constants.pendingResourceId = null;
@@ -307,13 +312,19 @@ class _EmailSignInFormChangeNotifierState
         } else {
           GoRouter.of(context).go(StringConst.PATH_HOME);
         }
-      } on FirebaseAuthException catch (e) {
-        showExceptionAlertDialog(
-          context,
-          title: 'Error',
-          exception: e,
-        );
       }
+    } on FirebaseAuthException catch (e) {
+      showExceptionAlertDialog(
+        context,
+        title: 'Error',
+        exception: e,
+      );
+    } catch (e) {
+      showExceptionAlertDialog(
+        context,
+        title: 'Error',
+        exception: e is Exception ? e : Exception(e.toString()),
+      );
     }
   }
 

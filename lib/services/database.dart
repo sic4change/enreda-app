@@ -163,6 +163,11 @@ abstract class Database {
   Stream<List<DocumentCategory>> documentCategoriesStream();
   Stream<List<PersonalDocumentType>> documentSubCategoriesByCategoryStream(String categoryId);
   Stream<List<DocumentationParticipant>> documentationParticipantBySubCategoryStream(PersonalDocumentType documentSubCategory, UserEnreda user);
+  /// All documents uploaded for [userId] — newest first. Used by the
+  /// participant's "Mis Documentos" panel on Panel de control. The widget
+  /// previously read `user.personalDocuments`, which is a vestigial array
+  /// no current upload flow writes to.
+  Stream<List<DocumentationParticipant>> documentationParticipantStreamByUserId(String userId, {int limit = 50});
   Stream<List<JobOfferApplication>> applicantStreamByJobOffer(String? jobOfferId, String? userId);
   Stream<List<Sesion>> mySesionesStream(String participantId);
 
@@ -1022,6 +1027,23 @@ class FirestoreDatabase implements Database {
     builder: (data, documentId) => DocumentationParticipant.fromMap(data, documentId),
     sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
   );
+
+  @override
+  Stream<List<DocumentationParticipant>> documentationParticipantStreamByUserId(
+    String userId, {
+    int limit = 50,
+  }) =>
+      _service.collectionStream(
+        path: APIPath.documentationParticipants(),
+        // CLAUDE.md §4.5 — server-side where() + limit() on every query.
+        queryBuilder: (query) =>
+            query.where('userId', isEqualTo: userId).limit(limit),
+        builder: (data, documentId) =>
+            DocumentationParticipant.fromMap(data, documentId),
+        // Newest first — the "Mis Documentos" panel is a horizontal scroll,
+        // so the latest upload should be the first card.
+        sort: (lhs, rhs) => rhs.createDate.compareTo(lhs.createDate),
+      );
 
   @override
   Stream<List<JobOfferApplication>> applicantStreamByJobOffer(String? jobOfferId, String? userId) {

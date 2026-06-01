@@ -1,6 +1,5 @@
 import 'package:enreda_app/app/home/web_home.dart';
-import 'package:enreda_app/app/home/models/personalDocument.dart';
-import 'package:enreda_app/app/home/models/personalDocumentType.dart';
+import 'package:enreda_app/app/home/models/documentationParticipant.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
@@ -9,11 +8,19 @@ import 'package:enreda_app/utils/my_scroll_behaviour.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
-import 'package:enreda_app/services/location_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+/// Compact "Mis Documentos" card rendered on the participant's Panel de
+/// control. Lists the latest documents uploaded for this participant.
+///
+/// Reads from the `documentationParticipants` Firestore collection (where
+/// both the participant's own upload form and the técnico's upload form
+/// write) via `documentationParticipantStreamByUserId`. Previously this
+/// widget read `user.personalDocuments`, which is a vestigial array that
+/// no current upload flow writes to — that's why the card was always empty
+/// even when documents had been uploaded.
 class ParticipantDocumentationList extends StatefulWidget {
   ParticipantDocumentationList({required this.participantUser, super.key});
 
@@ -24,14 +31,14 @@ class ParticipantDocumentationList extends StatefulWidget {
 }
 
 class _ParticipantDocumentationListState extends State<ParticipantDocumentationList> {
-  List<PersonalDocument> _userDocuments = [];
+  List<DocumentationParticipant> _userDocuments = [];
 
   @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
-    late int documentsCount = 0;
     final controller = ScrollController();
     var scrollJump = Responsive.isDesktopS(context) ? 150 : 150;
+    final userId = widget.participantUser.userId ?? '';
     return InkWell(
       onTap: () {
         setState(() {
@@ -40,48 +47,25 @@ class _ParticipantDocumentationListState extends State<ParticipantDocumentationL
           WebHome.controller.selectIndex(7);
         });
       },
-      child: StreamBuilder<UserEnreda>(
-          stream: database.userEnredaStreamByUserId(widget.participantUser.userId),
+      child: StreamBuilder<List<DocumentationParticipant>>(
+          stream: database.documentationParticipantStreamByUserId(userId),
           builder: (context, snapshot) {
-            if(snapshot.hasData){
-              _userDocuments = snapshot.data!.personalDocuments;
+            // CLAUDE.md §10 DoD — every StreamBuilder handles waiting + error
+            // + data.
+            if (snapshot.hasError) {
+              return _emptyCard(context, StringConst.NO_DOCUMENTS);
             }
-            
-            final types = LocationCache.instance.personalDocumentTypes;
-            types.forEach((element) {
-              bool containsDocument = false;
-              _userDocuments.forEach((item) {
-                if(item.name == element.title){
-                  containsDocument = true;
-                }
-              });
-            });
-            _userDocuments.sort((a, b) {
-              return a.order.compareTo(b.order);
-            },);
-            documentsCount = _userDocuments.length;
+            if (snapshot.connectionState == ConnectionState.waiting &&
+                !snapshot.hasData) {
+              return _emptyCard(context, '');
+            }
+            _userDocuments = snapshot.data ?? const [];
+            // Sort order comes from the Firestore query (createDate desc) —
+            // no client-side re-sort needed.
 
-                  return _userDocuments.isEmpty ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: Container(
-                        margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
-                          const EdgeInsets.only(top: 10.0, right: 10.0, left: 0.0, bottom: 10.0,),
-                        padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.rectangle,
-                          border: Border.all(color: AppColors.greyLight2.withOpacity(0.3), width: 1),
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            CustomTextBoldTitle(title: StringConst.MY_DOCUMENTS),
-                            SpaceH8(),
-                            Center(child: CustomTextSubTitle(title: StringConst.NO_DOCUMENTS,)),
-                          ],
-                        )),
-                  ) : Container(
+            return _userDocuments.isEmpty
+                ? _emptyCard(context, StringConst.NO_DOCUMENTS)
+                : Container(
                     margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
                       const EdgeInsets.only(top: 10.0, right: 10.0, left: 0.0, bottom: 10.0,),
                     padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
@@ -153,15 +137,44 @@ class _ParticipantDocumentationListState extends State<ParticipantDocumentationL
     );
   }
 
+  /// Empty/placeholder state — used while the stream is still pending AND for
+  /// the "no documents uploaded yet" final state. Pass an empty [subtitle] to
+  /// suppress the inner text while data is loading.
+  Widget _emptyCard(BuildContext context, String subtitle) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Container(
+          margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
+            const EdgeInsets.only(top: 10.0, right: 10.0, left: 0.0, bottom: 10.0,),
+          padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.rectangle,
+            border: Border.all(color: AppColors.greyLight2.withOpacity(0.3), width: 1),
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              CustomTextBoldTitle(title: StringConst.MY_DOCUMENTS),
+              SpaceH8(),
+              if (subtitle.isNotEmpty)
+                Center(child: CustomTextSubTitle(title: subtitle)),
+            ],
+          )),
+    );
+  }
 
-  Widget _documentTile(BuildContext context, PersonalDocument document, UserEnreda user){
+
+  Widget _documentTile(BuildContext context, DocumentationParticipant document, UserEnreda user){
+    final url = document.urlDocument ?? '';
     return Container(
       padding: const EdgeInsets.only(right: 10),
       constraints: BoxConstraints(
         maxWidth: 150,
         minWidth: 150
       ),
-      child: document.document != '' ? Column(
+      child: url.isNotEmpty ? Column(
         children: [
           Image.asset(ImagePath.ICON_DOCUMENT, width: 80,),
           SpaceH12(),

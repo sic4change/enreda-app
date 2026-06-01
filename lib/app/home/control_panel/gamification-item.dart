@@ -30,7 +30,15 @@ class GamificationItem extends StatelessWidget {
           width: !Responsive.isDesktop(context) ? size/2 : size,
           startAngle: 45,
           sweepAngle: 270,
-          progress: progress,
+          // Clamp to the seek bar's 0–100 range. Without this, callers that
+          // divide raw counts by a small target (e.g. RECURSOS INSCRITOS on
+          // the participant Panel de control divides resourcesAccessCount
+          // by 15) produce values >100 once the participant exceeds the
+          // target, and the arc wraps past the top gap — closing the
+          // opening where the count number is meant to sit. Capping here
+          // protects every call site instead of every call site capping
+          // independently.
+          progress: progress.clamp(0.0, 100.0).toDouble(),
           barWidth: !Responsive.isDesktop(context) ? 5 : 10,
           progressColor: AppColors.darkYellow,
           innerThumbStrokeWidth: !Responsive.isDesktop(context) ? 5 : 10,

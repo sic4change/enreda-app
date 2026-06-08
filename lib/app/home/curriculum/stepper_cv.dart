@@ -162,8 +162,9 @@ class CvWizard extends StatefulWidget {
   State<CvWizard> createState() => _CvWizardState();
 }
 
-class _CvWizardState extends State<CvWizard> {
+class _CvWizardState extends State<CvWizard> with WidgetsBindingObserver {
   final data = CvData();
+  bool _isKeyboardVisible = false;
 
   // Un Form por paso
   final formKeys = List.generate(steps.length, (_) => GlobalKey<FormState>());
@@ -175,6 +176,7 @@ class _CvWizardState extends State<CvWizard> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     // Restaurar la posición guardada del PageView
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -247,13 +249,30 @@ class _CvWizardState extends State<CvWizard> {
   }
 
   @override
+  void didChangeMetrics() {
+    // Leemos los insets directamente de la vista del sistema operativo,
+    // que no dependen de cómo el Scaffold o los padres manejen los insets.
+    final bottomInset = WidgetsBinding
+        .instance.platformDispatcher.views.first.viewInsets.bottom;
+    final isOpen = bottomInset > 0;
+    if (isOpen != _isKeyboardVisible) {
+      setState(() {
+        _isKeyboardVisible = isOpen;
+      });
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     data.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // _isKeyboardVisible se actualiza en didChangeMetrics() con WidgetsBindingObserver.
+    final bool isKeyboardOpen = _isKeyboardVisible;
     return RoundedContainer(
       margin: Responsive.isMobile(context)
           ? const EdgeInsets.all(0)
@@ -344,22 +363,24 @@ class _CvWizardState extends State<CvWizard> {
                 ],
               ),
             ),
-            const SizedBox(height: 8),
-            index == 0
-                ? Container(
-                    height: 50,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.blue050),
+            if (!isKeyboardOpen) ...[
+              const SizedBox(height: 8),
+              index == 0
+                  ? Container(
+                      height: 50,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: AppColors.blue050),
+                        ),
+                        onPressed: index == 0 ? () => _goTo(index + 1) : null,
+                        child: const Text(
+                          'Saltar vídeo y empezar CV',
+                          style: TextStyle(color: AppColors.blue050),
+                        ),
                       ),
-                      onPressed: index == 0 ? () => _goTo(index + 1) : null,
-                      child: const Text(
-                        'Saltar vídeo y empezar CV',
-                        style: TextStyle(color: AppColors.blue050),
-                      ),
-                    ),
-                  )
-                : _buildAcciones(context, index, _goTo, _saveDraft, _next),
+                    )
+                  : _buildAcciones(context, index, _goTo, _saveDraft, _next),
+            ],
           ],
         ),
       ),
@@ -377,28 +398,38 @@ Widget _buildAcciones(BuildContext context, int index, void Function(int) _goTo,
       final isMobile = constraints.maxWidth < _mobileBreakpoint;
 
       final volverBtn = SizedBox(
-        width: isMobile ? double.infinity : 200,
+        width: isMobile ? null : 200,
         height: 50,
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: AppColors.blue050),
           ),
           onPressed: index > 0 ? () => _goTo(index - 1) : null,
-          child:
-              const Text('Volver', style: TextStyle(color: AppColors.blue050)),
+          child: Text(
+            'Volver atrás',
+            style: TextStyle(
+              color: AppColors.blue050,
+              fontSize: isMobile ? 12 : 14,
+            ),
+          ),
         ),
       );
 
       final borradorBtn = SizedBox(
-        width: isMobile ? double.infinity : 200,
+        width: isMobile ? null : 200,
         height: 50,
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(
             side: const BorderSide(color: AppColors.blue050),
           ),
           onPressed: _saveDraft,
-          child: const Text('Guardar en borrador',
-              style: TextStyle(color: AppColors.blue050)),
+          child: Text(
+            'Guardar en borrador',
+            style: TextStyle(
+              color: AppColors.blue050,
+              fontSize: isMobile ? 12 : 14,
+            ),
+          ),
         ),
       );
 
@@ -418,9 +449,13 @@ Widget _buildAcciones(BuildContext context, int index, void Function(int) _goTo,
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            volverBtn,
-            const SizedBox(height: 12),
-            borradorBtn,
+            Row(
+              children: [
+                Expanded(child: volverBtn),
+                const SizedBox(width: 12),
+                Expanded(child: borradorBtn),
+              ],
+            ),
             const SizedBox(height: 12),
             siguienteBtn,
           ],
@@ -453,13 +488,21 @@ class _StepWelcome extends StatefulWidget {
 class _StepWelcomeState extends State<_StepWelcome>
     with AutomaticKeepAliveClientMixin {
   late YoutubePlayerController _controller;
+  Stream<TrainingPill>? _trainingPillStream;
 
   @override
   bool get wantKeepAlive => true;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     final database = Provider.of<Database>(context, listen: false);
+    _trainingPillStream = database.trainingPillStreamById(TrainingPill.HOW_TO_DO_CV_ID);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -468,8 +511,7 @@ class _StepWelcomeState extends State<_StepWelcome>
         CustomTextMediumCenter(text: StringConst.STEPPER_CV_TEXT_1),
         const SizedBox(height: 20),
         StreamBuilder<TrainingPill>(
-            stream:
-                database.trainingPillStreamById(TrainingPill.HOW_TO_DO_CV_ID),
+            stream: _trainingPillStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 TrainingPill trainingPill = snapshot.data!;
@@ -574,12 +616,16 @@ class _StepFormationState extends State<_StepFormation>
   String? _expandedId;
 
   bool? _tieneFormacion; // null = sin elegir, true = Sí, false = No
+  late Stream<List<Experience>> _experiencesStream;
+
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
+    final database = Provider.of<Database>(context, listen: false);
+    _experiencesStream = database.myExperiencesStream(widget.user.userId ?? '');
     widget.registerBeforeNext(_validateSaveAndNotify);
   }
 
@@ -698,7 +744,7 @@ class _StepFormationState extends State<_StepFormation>
             // Lista de tarjetas, cada una con su propio formulario
             if (_tieneFormacion == true)
               StreamBuilder<List<Experience>>(
-                stream: database.myExperiencesStream(user.userId ?? ''),
+                stream: _experiencesStream,
                 builder: (context, snapshot) {
                   if (!(snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.active)) {
@@ -999,12 +1045,16 @@ class _StepExperienceState extends State<_StepExperience>
   String? _expandedId;
 
   bool? _tieneExperiencia = true; // null = sin elegir, true = Sí, false = No
+  late Stream<List<Experience>> _experiencesStream;
+
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
+    final database = Provider.of<Database>(context, listen: false);
+    _experiencesStream = database.myExperiencesStream(widget.user.userId ?? '');
     widget.registerBeforeNext(_validateSaveAndNotify);
   }
 
@@ -1102,31 +1152,52 @@ class _StepExperienceState extends State<_StepExperience>
             ),
             const SizedBox(height: 18),
 
-            // Sí / No
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              spacing: 16,
-              children: [
-                ChoiceCard(
-                  selected: widget.isProfesional == true,
-                  svgAsset: ImagePath.ICON_PROFESIONAL,
-                  label: 'Profesional',
-                  onTap: () => setState(() => widget.isProfesional = true),
-                ),
-                ChoiceCard(
-                  selected: widget.isProfesional == false,
-                  svgAsset: ImagePath.ICON_PERSONAL,
-                  label: 'Personal',
-                  onTap: () => setState(() => widget.isProfesional = false),
-                ),
-              ],
-            ),
+            // Profesional / Personal
+            Responsive.isMobile(context)
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ChoiceCard(
+                        fullWidth: true,
+                        selected: widget.isProfesional == true,
+                        svgAsset: ImagePath.ICON_PROFESIONAL,
+                        label: 'Profesional',
+                        onTap: () => setState(() => widget.isProfesional = true),
+                      ),
+                      const SizedBox(height: 12),
+                      ChoiceCard(
+                        fullWidth: true,
+                        selected: widget.isProfesional == false,
+                        svgAsset: ImagePath.ICON_PERSONAL,
+                        label: 'Personal',
+                        onTap: () => setState(() => widget.isProfesional = false),
+                      ),
+                    ],
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    spacing: 16,
+                    children: [
+                      ChoiceCard(
+                        selected: widget.isProfesional == true,
+                        svgAsset: ImagePath.ICON_PROFESIONAL,
+                        label: 'Profesional',
+                        onTap: () => setState(() => widget.isProfesional = true),
+                      ),
+                      ChoiceCard(
+                        selected: widget.isProfesional == false,
+                        svgAsset: ImagePath.ICON_PERSONAL,
+                        label: 'Personal',
+                        onTap: () => setState(() => widget.isProfesional = false),
+                      ),
+                    ],
+                  ),
             const SizedBox(height: 12),
 
             // Lista de tarjetas, cada una con su propio formulario
             if (_tieneExperiencia == true)
               StreamBuilder<List<Experience>>(
-                stream: database.myExperiencesStream(user.userId ?? ''),
+                stream: _experiencesStream,
                 builder: (context, snapshot) {
                   if (!(snapshot.hasData &&
                       snapshot.connectionState == ConnectionState.active)) {
@@ -1764,6 +1835,7 @@ class ChoiceCard extends StatelessWidget {
     this.iconSize = 20,
     this.circleSize = 36,
     this.widthFactor = 4.5,
+    this.fullWidth = false,
   }) : assert(
           (icon != null) ^ (svgAsset != null),
           'Debes proporcionar exactamente uno: icon O svgAsset.',
@@ -1780,6 +1852,7 @@ class ChoiceCard extends StatelessWidget {
   final double iconSize;
   final double circleSize;
   final double widthFactor;
+  final bool fullWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -1794,9 +1867,11 @@ class ChoiceCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(28),
       child: Container(
-        width: MediaQuery.of(context).size.width > 600
-            ? MediaQuery.of(context).size.width / widthFactor
-            : MediaQuery.of(context).size.width / 3,
+        width: fullWidth
+            ? double.infinity
+            : MediaQuery.of(context).size.width > 600
+                ? MediaQuery.of(context).size.width / widthFactor
+                : MediaQuery.of(context).size.width / 3,
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),

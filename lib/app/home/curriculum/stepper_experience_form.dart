@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:enreda_app/services/location_cache.dart';
 
 import '../../../common_widgets/flex_row_column.dart';
 import '../../anallytics/analytics.dart';
@@ -52,7 +53,7 @@ class StepperExperienceForm extends StatefulWidget {
 class StepperExperienceFormState extends State<StepperExperienceForm> {
   bool _isProfesional = true;
   bool _general = false;
-  Stream<List<Choice>> _experienceActivitiesStream = Stream.empty();
+  
   Choice? _type, _subtype, _activity, _role, _level;
   List<Choice> _experienceTypes = [],
       _experienceSubtypes = [],
@@ -76,9 +77,14 @@ class StepperExperienceFormState extends State<StepperExperienceForm> {
   String _otherText = "";
   List<Activity> _allProffesionActivities = [];
 
+  late Future<void> _warmUpFuture;
+
   @override
   void initState() {
     super.initState();
+    final database = Provider.of<Database>(context, listen: false);
+    _warmUpFuture = LocationCache.instance.warmUpAll(database);
+
     final _experience = widget.experience;
     _isProfesional = widget.isProfesional;
     if(widget.general != null){
@@ -110,123 +116,123 @@ class StepperExperienceFormState extends State<StepperExperienceForm> {
       }else{
         _contextPlace = null;
       }
-
-      _loadProfessionActivities();
     }
   }
 
-  Future<void> _loadProfessionActivities() async {
-    final database = Provider.of<Database>(context, listen: false);
-    _allProffesionActivities = await database.professionsActivitiesStream().first;
+  @override
+  void dispose() {
+    _organizationController.dispose();
+    _positionController.dispose();
+    _locationController.dispose();
+    _textEditingControllerProfessionsActivities.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final database = Provider.of<Database>(context, listen: false);
+    return FutureBuilder(
+      future: _warmUpFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    return StatefulBuilder(builder: (context, setState) {
-      return Card(
-        elevation: 0,
-        color: Colors.white,
-        child: StreamBuilder<List<Choice>>(
-            stream: database.choicesStream(APIPath.experienceTypes(), null, null),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                _experienceTypes = snapshot.data!.where((choice) => choice.name == 'Profesional' || choice.name == 'Personal').toList();
-                /*
-                _experienceTypes = _isProfesional
-                    ? snapshot.data!
-                        .where((choice) => choice.name == 'Profesional')
-                        .toList()
-                    : snapshot.data!
-                        .where((choice) => choice.name == 'Personal')
-                        .toList();*/
-              } else {
-                _experienceTypes = [];
-              }
+        return StatefulBuilder(builder: (context, setState) {
+          _allProffesionActivities = LocationCache.instance.activities;
+          // 1. Get base collections
+          _experienceTypes = LocationCache.instance.experienceTypes
+              .where((choice) => choice.name == 'Profesional' || choice.name == 'Personal')
+              .toList();
 
-              return StreamBuilder<List<Choice>>(
-                  stream: database.choicesStream(
-                      APIPath.experienceSubtypes(), null, null),
-                  builder: (context, snapshot) {
-                    _experienceSubtypes =
-                        snapshot.hasData && !_isProfesional
-                            ? snapshot.data!
-                            : [];
+          _experienceSubtypes = !_isProfesional ? LocationCache.instance.experienceSubtypes : [];
 
-                    return StreamBuilder<List<Choice>>(
-                        stream: _experienceActivitiesStream,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData &&
-                              _type != null &&
-                              ((_type?.name == 'Personal' && _subtype != null) ||
-                                  _type?.name != 'Personal')) {
-                            _experienceActivities = snapshot.data!;
-                          } else {
-                            _experienceActivities = [];
-                          }
-                          return StreamBuilder<List<Choice>>(
-                              stream: database.choicesStream(
-                                  APIPath.activityRoleChoices(),
-                                  _type?.id,
-                                  _subtype?.id),
-                              builder: (context, snapshot) {
-                                _experienceRoles = snapshot.hasData &&
-                                        _type != null &&
-                                        _subtype != null
-                                    ? snapshot.data!
-                                    : [];
+          // 2. Set default types if null (for new items)
+          if (_isProfesional && _type == null && !_general && _experienceTypes.isNotEmpty) {
+            _type = _experienceTypes.firstWhere((element) => element.name == 'Profesional');
+          }
+          if (!_isProfesional && _type == null && !_general && _experienceTypes.isNotEmpty) {
+            _type = _experienceTypes.firstWhere((element) => element.name == 'Personal');
+          }
 
-                                return StreamBuilder<List<Choice>>(
-                                    stream: database.choicesStream(
-                                        APIPath.activityLevelChoices(),
-                                        null,
-                                        null),
-                                    builder: (context, snapshot) {
-                                      _experienceLevels = snapshot.hasData &&
-                                              _type != null &&
-                                              _subtype != null &&
-                                              _subtype!.name == 'Deporte'
-                                          ? snapshot.data!
-                                          : [];
+          // 3. Load experience data if editing existing item
+          if (widget.experience != null && !_experienceIsLoaded) {
+            // First resolve type and subtype
+            if (_type == null && _experienceTypes.isNotEmpty) {
+              try {
+                _type = _experienceTypes.firstWhere((element) => element.name == widget.experience!.type);
+              } catch (_) {}
+            }
+            if (_subtype == null && _experienceSubtypes.isNotEmpty) {
+              try {
+                _subtype = _experienceSubtypes.firstWhere((element) => element.name == widget.experience!.subtype);
+              } catch (_) {}
+            }
+          }
 
-                                      if ((widget.experience?.activityLevel !=
-                                                  null &&
-                                              _level != null) ||
-                                          (widget.experience?.activityRole !=
-                                                  null &&
-                                              _role != null) ||
-                                          (widget.experience?.activity != null &&
-                                              _activity != null)) {
-                                        _experienceIsLoaded = true;
-                                      }
+          // 4. Now filter activities, roles, levels in memory based on the resolved type/subtype
+          if (_type != null) {
+            if (_type?.name == 'Personal') {
+              _experienceActivities = LocationCache.instance.activityChoices
+                  .where((choice) => choice.typeId == _type?.id && choice.subtypeId == _subtype?.id)
+                  .toList();
+            } else {
+              _experienceActivities = LocationCache.instance.professions;
+            }
+          } else {
+            _experienceActivities = [];
+          }
 
-                                      if (widget.experience != null &&
-                                          !_experienceIsLoaded)
-                                        _loadDropdowns(database);
+          _experienceRoles = (_type != null && _subtype != null)
+              ? LocationCache.instance.activityRoleChoices
+                  .where((choice) => choice.typeId == _type?.id && choice.subtypeId == _subtype?.id)
+                  .toList()
+              : [];
 
-                                      if(_isProfesional && _type == null && !_general && _experienceTypes.isNotEmpty){
-                                        _type = _experienceTypes.firstWhere(
-                                                (element) =>
-                                            element.name == 'Profesional');
-                                        _experienceActivitiesStream =
-                                            database.choicesStream(APIPath.professions(), null, null);
-                                      }
-                                      if(!_isProfesional && _type == null && !_general && _experienceTypes.isNotEmpty){
-                                        _type = _experienceTypes.firstWhere(
-                                                (element) =>
-                                            element.name == 'Personal');
-                                      }
+          _experienceLevels = (_type != null && _subtype != null && _subtype!.name == 'Deporte')
+              ? LocationCache.instance.activityLevelChoices
+              : [];
 
+          // 5. Complete loading for activity, role, level
+          if (widget.experience != null && !_experienceIsLoaded) {
+            if (_activity == null && _experienceActivities.isNotEmpty) {
+              try {
+                _activity = _experienceActivities.firstWhere((element) => element.name == widget.experience!.activity);
+                activitiesIds = _activity?.activities;
+                if (activitiesIds != null && activitiesIds!.isNotEmpty) {
+                  activitiesIds!.add("30twSwwnuVmpIp3MoE6e");
+                }
+                selectedProfessionActivities.addAll(_allProffesionActivities.where((a) => widget.experience!.professionActivities.contains(a.id)));
+              } catch (_) {}
+            }
 
-                                      return _buildForm(context, setState);
-                                    });
-                              });
-                        });
-                  });
-            }),
-      );
-    });
+            if (_role == null && _experienceRoles.isNotEmpty) {
+              try {
+                _role = _experienceRoles.firstWhere((element) => element.name == widget.experience!.activityRole);
+              } catch (_) {}
+            }
+
+            if (_level == null && _experienceLevels.isNotEmpty) {
+              try {
+                _level = _experienceLevels.firstWhere((element) => element.name == widget.experience!.activityLevel);
+              } catch (_) {}
+            }
+
+            if ((widget.experience?.activityLevel != null && _level != null) ||
+                (widget.experience?.activityRole != null && _role != null) ||
+                (widget.experience?.activity != null && _activity != null) ||
+                (widget.experience?.activity == null && widget.experience?.activityRole == null && widget.experience?.activityLevel == null)) {
+              _experienceIsLoaded = true;
+            }
+          }
+
+          return Card(
+            elevation: 0,
+            color: Colors.white,
+            child: _buildForm(context, setState),
+          );
+        });
+      },
+    );
   }
 
   Form _buildForm(BuildContext context, StateSetter setState) {
@@ -240,7 +246,6 @@ class StepperExperienceFormState extends State<StepperExperienceForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             formFieldCustom(
-              //_buildTypeDropdown(database, setState),
               Visibility(
                 child: _isProfesional ? _buildActivityDropdown(database, setState) : _buildSubtypeDropdown(database, setState),
                   visible: !_general,
@@ -406,118 +411,10 @@ class StepperExperienceFormState extends State<StepperExperienceForm> {
                 return null;
               },
             ), '¿Esta experiencia te supuso hacer cosas que no solías hacer antes?')
-
-            /*SpaceH24(),
-            !_general ? Row(
-              children: [
-                Expanded(
-                    child: TextButton(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: (Text(
-                      StringConst.CANCEL,
-                      style: textTheme.bodyMedium,
-                    )),
-                  ),
-                  onPressed: () => Navigator.of(context).pop(),
-                )),
-                SpaceW24(),
-                Expanded(
-                    child: TextButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                          MaterialStateProperty.all<Color>(Constants.turquoise),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
-                          child: (Text(
-                            StringConst.SAVE,
-                            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600,
-                              color: Constants.white,),
-                          )),
-                        ),
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            saveExperience();
-                          }
-                        })),
-              ],
-            ) : Container(),*/
           ],
         ),
       ),
     );
-  }
-
-  void _loadDropdowns(Database database) {
-    if (_type == null &&
-        _experienceTypes.isNotEmpty &&
-        widget.experience != null) {
-      try {
-        _type = _experienceTypes
-            .firstWhere((element) => element.name == widget.experience!.type);
-      } catch (e) {
-        print(e);
-      }
-    }
-
-    if (_subtype == null &&
-        _experienceSubtypes.isNotEmpty &&
-        widget.experience != null) {
-      try {
-        _subtype = _experienceSubtypes.firstWhere(
-            (element) => element.name == widget.experience!.subtype);
-      } catch (e) {
-        print(e);
-      }
-    }
-
-    if (_type?.name == 'Profesional') {
-      _experienceActivitiesStream =
-          database.choicesStream(APIPath.professions(), null, null);
-
-    } else {
-      _experienceActivitiesStream = database.choicesStream(
-          APIPath.activityChoices(), _type?.id, _subtype?.id);
-    }
-
-    if (_activity == null &&
-        _experienceActivities.isNotEmpty &&
-        widget.experience != null) {
-      try {
-        _activity = _experienceActivities.firstWhere(
-            (element) => element.name == widget.experience!.activity);
-        activitiesIds =_activity?.activities;
-        if (activitiesIds != null && activitiesIds!.isNotEmpty) {
-          activitiesIds!.add("30twSwwnuVmpIp3MoE6e");
-        }
-        selectedProfessionActivities.addAll(_allProffesionActivities.where((a) => widget.experience!.professionActivities.contains(a.id)));
-      } catch (e) {
-        print(e);
-      }
-    }
-
-    if (_role == null &&
-        _experienceRoles.isNotEmpty &&
-        widget.experience != null) {
-      try {
-        _role = _experienceRoles.firstWhere(
-            (element) => element.name == widget.experience!.activityRole);
-      } catch (e) {
-        print(e);
-      }
-    }
-
-    if (_level == null &&
-        _experienceLevels.isNotEmpty &&
-        widget.experience != null) {
-      try {
-        _level = _experienceLevels.firstWhere(
-            (element) => element.name == widget.experience!.activityLevel);
-      } catch (e) {
-        print(e);
-      }
-    }
   }
 
   Widget _buildTypeDropdown(
@@ -543,12 +440,8 @@ class StepperExperienceFormState extends State<StepperExperienceForm> {
             _general = false;
 
             if (_type?.name == 'Profesional') {
-              _experienceActivitiesStream =
-                  database.choicesStream(APIPath.professions(), null, null);
               _isProfesional = true;
             } else {
-              _experienceActivitiesStream = database.choicesStream(
-                  APIPath.activityChoices(), _type?.id, _subtype?.id);
               _isProfesional = false;
             }
           });
@@ -580,8 +473,6 @@ class StepperExperienceFormState extends State<StepperExperienceForm> {
             _activity = null;
             _role = null;
             _level = null;
-            _experienceActivitiesStream = database.choicesStream(
-                APIPath.activityChoices(), _type?.id, _subtype?.id);
           });
         });
   }

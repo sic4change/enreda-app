@@ -1,4 +1,5 @@
 import 'package:enreda_app/app/home/models/ability.dart';
+import 'package:enreda_app/app/home/models/activity.dart';
 import 'package:enreda_app/app/home/models/city.dart';
 import 'package:enreda_app/app/home/models/company.dart';
 import 'package:enreda_app/app/home/models/competency.dart';
@@ -24,6 +25,8 @@ import 'package:enreda_app/app/home/models/specificinterest.dart';
 import 'package:enreda_app/app/home/models/timeSearching.dart';
 import 'package:enreda_app/app/home/models/timeSpentWeekly.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
+import 'package:enreda_app/app/home/models/choice.dart';
+import 'package:enreda_app/services/api_path.dart';
 import 'package:enreda_app/services/database.dart';
 
 /// Singleton cache for static/rarely-changing Firestore collections.
@@ -71,6 +74,15 @@ class LocationCache {
   List<Interest>? _interests;
   List<SpecificInterest>? _specificInterests;
 
+  // Choices Data
+  List<Choice>? _experienceTypes;
+  List<Choice>? _experienceSubtypes;
+  List<Choice>? _activityLevelChoices;
+  List<Choice>? _activityRoleChoices;
+  List<Activity>? _activities;
+  List<Choice>? _activityChoices;
+  List<Choice>? _professions;
+
   bool get hasCountries => _countries != null;
   bool get hasProvinces => _provinces != null;
   bool get hasCities => _allCities != null;
@@ -102,6 +114,14 @@ class LocationCache {
   List<TimeSpentWeekly> get timeSpentWeeklies => _timeSpentWeeklies ?? [];
   List<SocialEntity> get socialEntities => _socialEntities ?? [];
   List<Question> get questions => _questions ?? [];
+
+  List<Choice> get experienceTypes => _experienceTypes ?? [];
+  List<Choice> get experienceSubtypes => _experienceSubtypes ?? [];
+  List<Choice> get activityLevelChoices => _activityLevelChoices ?? [];
+  List<Choice> get activityRoleChoices => _activityRoleChoices ?? [];
+  List<Choice> get activityChoices => _activityChoices ?? [];
+  List<Choice> get professions => _professions ?? [];
+  List<Activity> get activities => _activities ?? [];
 
   void setInterests(List<Interest> v) => _interests = v;
   void setSpecificInterests(List<SpecificInterest> v) => _specificInterests = v;
@@ -191,6 +211,29 @@ class LocationCache {
     if (_interests == null) futures.add(database.interestStream().first.then((v) => _interests = v));
     if (_specificInterests == null) futures.add(database.specificInterestsStream().first.then((v) => _specificInterests = v));
 
+    // Choices metadata warm-up
+    if (_experienceTypes == null) {
+      futures.add(database.choicesStream(APIPath.experienceTypes(), null, null).first.then((v) => _experienceTypes = v));
+    }
+    if (_experienceSubtypes == null) {
+      futures.add(database.choicesStream(APIPath.experienceSubtypes(), null, null).first.then((v) => _experienceSubtypes = v));
+    }
+    if (_activityLevelChoices == null) {
+      futures.add(database.choicesStream(APIPath.activityLevelChoices(), null, null).first.then((v) => _activityLevelChoices = v));
+    }
+    if (_activityRoleChoices == null) {
+      futures.add(database.choicesStream(APIPath.activityRoleChoices(), null, null).first.then((v) => _activityRoleChoices = v));
+    }
+    if (_activityChoices == null) {
+      futures.add(database.choicesStream(APIPath.activityChoices(), null, null).first.then((v) => _activityChoices = v));
+    }
+    if (_professions == null) {
+      futures.add(database.choicesStream(APIPath.professions(), null, null).first.then((v) => _professions = v));
+    }
+    if (_activities == null) {
+      futures.add(database.professionsActivitiesStream().first.then((v) => _activities = v));
+    }
+
     if (futures.isNotEmpty) {
       await Future.wait(futures);
     }
@@ -276,6 +319,13 @@ class LocationCache {
     _timeSpentWeeklies = null;
     _socialEntities = null;
     _questions = null;
+    _experienceTypes = null;
+    _experienceSubtypes = null;
+    _activityLevelChoices = null;
+    _activityRoleChoices = null;
+    _activityChoices = null;
+    _professions = null;
+    _activities = null;
     _citiesByProvince = {};
     _warmUpFuture = null;
     _lightWarmUpFuture = null;

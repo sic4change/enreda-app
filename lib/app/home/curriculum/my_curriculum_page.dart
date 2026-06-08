@@ -104,6 +104,15 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   UserEnreda? _userCache;
   List<Competency> _compsCache = const [];
 
+  Stream<List<UserEnreda>>? _userStream;
+  Stream<List<Experience>>? _experiencesStream;
+
+  // Streams para localización — se crean una sola vez para evitar lecturas
+  // repetidas de Firestore al reconstruir el widget.
+  Stream<Country>? _countryStream;
+  Stream<Province>? _provinceStream;
+  Stream<City>? _cityStream;
+
   void setStateIfMounted(f) {
     if (mounted) setState(f);
   }
@@ -111,8 +120,15 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   @override
   void initState() {
     super.initState();
+    final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
     LocationCache.instance.warmUpAll(database);
+
+    final email = auth.currentUser?.email ?? '';
+    final uid = auth.currentUser?.uid ?? '';
+
+    _userStream = database.userStream(email);
+    _experiencesStream = database.myExperiencesStream(uid);
   }
 
   @override
@@ -122,7 +138,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     final email = auth.currentUser?.email ?? '';
 
     return StreamBuilder<List<UserEnreda>>(
-      stream: database.userStream(email),
+      stream: _userStream,
       builder: (context, su) {
         if (!su.hasData || su.connectionState != ConnectionState.active) {
           if (_userCache == null) return const Center(child: CircularProgressIndicator());
@@ -136,9 +152,22 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           return const Center(child: CircularProgressIndicator());
         }
         user = _userCache!;
+
+        // Inicializar streams de localización una sola vez.
+        final addr = user?.address;
+        final database2 = Provider.of<Database>(context, listen: false);
+        if (_countryStream == null && (addr?.country ?? '').isNotEmpty) {
+          _countryStream = database2.countryStream(addr!.country);
+        }
+        if (_provinceStream == null && (addr?.province ?? '').isNotEmpty) {
+          _provinceStream = database2.provinceStream(addr!.province);
+        }
+        if (_cityStream == null && (addr?.city ?? '').isNotEmpty) {
+          _cityStream = database2.cityStream(addr!.city);
+        }
         
         return StreamBuilder<List<Experience>>(
-          stream: database.myExperiencesStream(user?.userId ?? ''),
+          stream: _experiencesStream,
           builder: (context, expSnapshot) {
             if (!expSnapshot.hasData) return const Center(child: CircularProgressIndicator());
             myExperiences = expSnapshot.data;
@@ -1092,25 +1121,21 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   }
 
   Widget _buildMyLocation(BuildContext context, UserEnreda? user) {
-    final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
-    Country? myCountry;
-    Province? myProvince;
-    City? myCity;
 
     return StreamBuilder<Country>(
-        stream: database.countryStream(user?.address?.country),
+        stream: _countryStream,
         builder: (context, snapshot) {
-          myCountry = snapshot.data;
+          final myCountry = snapshot.data;
           return StreamBuilder<Province>(
-              stream: database.provinceStream(user?.address?.province),
+              stream: _provinceStream,
               builder: (context, snapshot) {
-                myProvince = snapshot.data;
+                final myProvince = snapshot.data;
 
                 return StreamBuilder<City>(
-                    stream: database.cityStream(user?.address?.city),
+                    stream: _cityStream,
                     builder: (context, snapshot) {
-                      myCity = snapshot.data;
+                      final myCity = snapshot.data;
 
                       myLocation =
                           '${myCity?.name ?? ''}, ${myProvince?.name ?? ''}, ${myCountry?.name ?? ''}';

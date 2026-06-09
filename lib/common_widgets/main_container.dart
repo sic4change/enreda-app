@@ -1,4 +1,3 @@
-import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
@@ -32,15 +31,16 @@ class MainContainer extends StatelessWidget {
       decoration: Responsive.isMobile(context) ? null : BoxDecoration(
         boxShadow: [
           BoxShadow(
-              color: shadowColor ?? Colors.black.withOpacity(0.15),
-              offset: Offset(0, 1), //(x,y)
-              blurRadius: 4.0,
-              spreadRadius: 1.0),
+            color: shadowColor ?? Colors.black.withValues(alpha: 0.25),
+            offset: const Offset(0, 2), // (x,y)
+            blurRadius: 8.0,
+            spreadRadius: 0.0,
+          ),
         ],
-        borderRadius: BorderRadius.all(Radius.circular(15)),
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
         color: color,
       ),
       child: child,
-      );
+    );
   }
 }

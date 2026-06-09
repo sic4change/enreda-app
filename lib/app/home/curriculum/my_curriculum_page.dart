@@ -246,7 +246,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   myReferences: myReferences,
                   myCustomReferences: myCustomReferences,
                   mySelectedReferences: mySelectedReferences,
-                  myMaxEducation: '',
+                  myMaxEducation: myMaxEducation?.label ?? "",
                   onBack: () {
                     setState(() {
                       downloadStep = false;

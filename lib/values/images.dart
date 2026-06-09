@@ -217,4 +217,5 @@ class ImagePath {
   //CV stepper
   static const String ICON_PERSONAL = '$imageDir/cv-stepper-personal.svg';
   static const String ICON_PROFESIONAL = '$imageDir/cv-stepper-profesional.svg';
+  static const String ICON_EXCLAMATION = '$imageDir/exclamation.svg';
 }

@@ -8,11 +8,10 @@ import 'package:flutter/foundation.dart';
 import 'package:pdf/pdf.dart';
 import 'data.dart';
 
-import 'package:enreda_app/app/home/curriculum/pdf_generator/resume1_mobile.dart'
-if (dart.library.html) 'package:enreda_app/app/home/curriculum/pdf_generator/resume1_web.dart' as my_cv;
+import 'package:enreda_app/app/home/curriculum/pdf_generator/resume1_web.dart' as my_cv;
 
 const examplesOnePage = <Example>[
-  !kIsWeb ? Example('CV', 'resume1_mobile.dart', my_cv.generateResume1) : Example('CV', 'resume1_web.dart', my_cv.generateResume1),
+  Example('CV', 'resume1_web.dart', my_cv.generateResume1),
 ];
 
 typedef LayoutCallbackWithData = Future<Uint8List> Function(

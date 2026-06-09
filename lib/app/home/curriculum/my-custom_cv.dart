@@ -166,14 +166,14 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
       contentPadding: Responsive.isMobile(context)
           ? EdgeInsets.all(Sizes.mainPadding)
           : EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Responsive.isDesktop(context)
-              ? _myCurriculumWeb(context)
-              : _myCurriculumMobile(context),
-        ],
-      ),
+      child: Responsive.isDesktop(context)
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _myCurriculumWeb(context),
+              ],
+            )
+          : _myCurriculumMobile(context),
     );
   }
 
@@ -507,241 +507,123 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
     final textTheme = Theme.of(context).textTheme;
     var profilePic = widget.user?.profilePic?.src ?? "";
     return SingleChildScrollView(
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.95,
-        margin: EdgeInsets.only(
-            top: Constants.mainPadding, bottom: Constants.mainPadding),
-        decoration: BoxDecoration(
-          border: Border.all(color: Constants.lightGray, width: 1),
-          borderRadius: BorderRadius.all(Radius.circular(40.0)),
-          color: Constants.lightLilac,
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(Constants.mainPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+      child: Padding(
+        padding: EdgeInsets.all(Constants.mainPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: EnredaButton(
+                    buttonTitle: "Siguiente >",
+                    width: 100,
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        _isSelected2Page == false //TODO AJUSTAR
+                            ? MaterialPageRoute(
+                                builder: (context) => MyCvMultiplePages(
+                                      user: widget.user!,
+                                      myPhoto: _isSelectedPhoto,
+                                      city: widget.myCustomCity,
+                                      province: widget.myCustomProvince,
+                                      country: widget.myCustomCountry,
+                                      myExperiences:
+                                          widget.myCustomExperiences,
+                                      myPersonalExperiences:
+                                          widget.myPersonalCustomExperiences,
+                                      myEducation: widget.myCustomEducation,
+                                      mySecondaryEducation:
+                                          widget.mySecondaryCustomEducation,
+                                      idSelectedDateEducation:
+                                          idSelectedDateEducation,
+                                      idSelectedDateSecondaryEducation:
+                                          idSelectedDateSecondaryEducation,
+                                      idSelectedDateExperience:
+                                          idSelectedDateExperience,
+                                      idSelectedDatePersonalExperience:
+                                          idSelectedDatePersonalExperience,
+                                      competenciesNames:
+                                          widget.myCustomCompetencies,
+                                      aboutMe: widget.myCustomAboutMe,
+                                      languagesNames:
+                                          widget.myCustomLanguages,
+                                      myDataOfInterest:
+                                          widget.myCustomDataOfInterest,
+                                      myCustomEmail: widget.myCustomEmail,
+                                      myCustomPhone: widget.myCustomPhone,
+                                      myCustomReferences:
+                                          widget.myCustomReferences,
+                                      myMaxEducation: _myMaxEducation,
+                                    ))
+                            : MaterialPageRoute(
+                                builder: (context) => MyCvOnePage(
+                                      user: widget.user!,
+                                      myPhoto: _isSelectedPhoto,
+                                      city: widget.myCustomCity,
+                                      province: widget.myCustomProvince,
+                                      country: widget.myCustomCountry,
+                                      myExperiences:
+                                          widget.myCustomExperiences,
+                                      myPersonalExperiences:
+                                          widget.myPersonalCustomExperiences,
+                                      myEducation: widget.myCustomEducation,
+                                      mySecondaryEducation:
+                                          widget.mySecondaryCustomEducation,
+                                      idSelectedDateEducation:
+                                          idSelectedDateEducation,
+                                      idSelectedDateSecondaryEducation:
+                                          idSelectedDateSecondaryEducation,
+                                      idSelectedDateExperience:
+                                          idSelectedDateExperience,
+                                      idSelectedDatePersonalExperience:
+                                          idSelectedDatePersonalExperience,
+                                      competenciesNames:
+                                          widget.myCustomCompetencies,
+                                      aboutMe: widget.myCustomAboutMe,
+                                      languagesNames:
+                                          widget.myCustomLanguages,
+                                      myDataOfInterest:
+                                          widget.myCustomDataOfInterest,
+                                      myCustomEmail: widget.myCustomEmail,
+                                      myCustomPhone: widget.myCustomPhone,
+                                      myCustomReferences:
+                                          widget.myCustomReferences,
+                                      myMaxEducation: _myMaxEducation,
+                                    )),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SpaceH12(),
+            InkWell(
+              onTap: () {
+                setState(() {
+                  _isSelectedPhoto = !_isSelectedPhoto;
+                });
+              },
+              child: Stack(
                 children: [
-                  Column(
-                    children: [
-                      Container(
-                        height: 30,
-                        width: 180,
-                        child: ListTile(
-                          title: CustomTextSmall(
-                            text: printingOptions[0],
-                          ),
-                          leading: Radio<String>(
-                            value: printingOptions[0],
-                            groupValue: currentPrintingOption,
-                            onChanged: (value) {
-                              setState(() {
-                                currentPrintingOption = value.toString();
-                                _isSelected2Page = false;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      Container(
-                        height: 50,
-                        width: 180,
-                        child: ListTile(
-                          title: CustomTextSmall(
-                            text: printingOptions[1],
-                          ),
-                          leading: Radio<String>(
-                            value: printingOptions[1],
-                            groupValue: currentPrintingOption,
-                            onChanged: (value) {
-                              setState(() {
-                                currentPrintingOption = value.toString();
-                                _isSelected2Page = true;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: EnredaButton(
-                      buttonTitle: "Vista previa",
-                      width: 100,
-                      onPressed: () async {
-                        if (_isSelectedAboutMe == true &&
-                            widget.myCustomAboutMe.length > 330 &&
-                            !_isSelected2Page) {
-                          showAlertDialog(
-                            context,
-                            title: StringConst.WARNING,
-                            content: StringConst.PAGE_WARNING_6,
-                            defaultActionText: StringConst.FORM_ACCEPT,
-                          );
-                          return;
-                        }
-                        if (getTotalLeftElements() >= 5 &&
-                            getTotalRightElements() > 9 &&
-                            !_isSelected2Page &&
-                            _isSelectedAboutMe == true &&
-                            widget.myCustomAboutMe.length > 130) {
-                          showAlertDialog(
-                            context,
-                            title: StringConst.WARNING,
-                            content: StringConst.PAGE_WARNING_3,
-                            defaultActionText: StringConst.FORM_ACCEPT,
-                          );
-                          return;
-                        }
-                        if (getTotalLeftElements() > 5 &&
-                            getTotalRightElements() > 9 &&
-                            !_isSelected2Page) {
-                          showAlertDialog(
-                            context,
-                            title: StringConst.WARNING,
-                            content: widget.myCustomAboutMe.length > 130
-                                ? StringConst.PAGE_WARNING_3
-                                : StringConst.PAGE_WARNING_5,
-                            defaultActionText: StringConst.FORM_ACCEPT,
-                            cancelActionText: StringConst.CANCEL,
-                          );
-                          return;
-                        }
-                        if (getTotalRightElements() < 9 && _isSelected2Page) {
-                          showAlertDialog(
-                            context,
-                            title: StringConst.WARNING,
-                            content: StringConst.PAGE_WARNING_1,
-                            defaultActionText: StringConst.FORM_ACCEPT,
-                            cancelActionText: StringConst.CANCEL,
-                          );
-                          return;
-                        }
-                        Navigator.push(
-                          context,
-                          _isSelected2Page == true
-                              ? MaterialPageRoute(
-                                  builder: (context) => MyCvMultiplePages(
-                                        user: widget.user!,
-                                        myPhoto: _isSelectedPhoto,
-                                        city: widget.myCustomCity,
-                                        province: widget.myCustomProvince,
-                                        country: widget.myCustomCountry,
-                                        myExperiences:
-                                            widget.myCustomExperiences,
-                                        myPersonalExperiences:
-                                            widget.myPersonalCustomExperiences,
-                                        myEducation: widget.myCustomEducation,
-                                        mySecondaryEducation:
-                                            widget.mySecondaryCustomEducation,
-                                        idSelectedDateEducation:
-                                            idSelectedDateEducation,
-                                        idSelectedDateSecondaryEducation:
-                                            idSelectedDateSecondaryEducation,
-                                        idSelectedDateExperience:
-                                            idSelectedDateExperience,
-                                        idSelectedDatePersonalExperience:
-                                            idSelectedDatePersonalExperience,
-                                        competenciesNames:
-                                            widget.myCustomCompetencies,
-                                        aboutMe: widget.myCustomAboutMe,
-                                        languagesNames:
-                                            widget.myCustomLanguages,
-                                        myDataOfInterest:
-                                            widget.myCustomDataOfInterest,
-                                        myCustomEmail: widget.myCustomEmail,
-                                        myCustomPhone: widget.myCustomPhone,
-                                        myCustomReferences:
-                                            widget.myCustomReferences,
-                                        myMaxEducation: _myMaxEducation,
-                                      ))
-                              : MaterialPageRoute(
-                                  builder: (context) => MyCvOnePage(
-                                        user: widget.user!,
-                                        myPhoto: _isSelectedPhoto,
-                                        city: widget.myCustomCity,
-                                        province: widget.myCustomProvince,
-                                        country: widget.myCustomCountry,
-                                        myExperiences:
-                                            widget.myCustomExperiences,
-                                        myPersonalExperiences:
-                                            widget.myPersonalCustomExperiences,
-                                        myEducation: widget.myCustomEducation,
-                                        mySecondaryEducation:
-                                            widget.mySecondaryCustomEducation,
-                                        idSelectedDateEducation:
-                                            idSelectedDateEducation,
-                                        idSelectedDateSecondaryEducation:
-                                            idSelectedDateSecondaryEducation,
-                                        idSelectedDateExperience:
-                                            idSelectedDateExperience,
-                                        idSelectedDatePersonalExperience:
-                                            idSelectedDatePersonalExperience,
-                                        competenciesNames:
-                                            widget.myCustomCompetencies,
-                                        aboutMe: widget.myCustomAboutMe,
-                                        languagesNames:
-                                            widget.myCustomLanguages,
-                                        myDataOfInterest:
-                                            widget.myCustomDataOfInterest,
-                                        myCustomEmail: widget.myCustomEmail,
-                                        myCustomPhone: widget.myCustomPhone,
-                                        myCustomReferences:
-                                            widget.myCustomReferences,
-                                        myMaxEducation: _myMaxEducation,
-                                      )),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              SpaceH12(),
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    _isSelectedPhoto = !_isSelectedPhoto;
-                  });
-                },
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: Responsive.isMobile(context)
-                          ? const EdgeInsets.all(8.0)
-                          : const EdgeInsets.all(20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          !kIsWeb
-                              ? ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(60)),
-                                  child: Center(
-                                    child: profilePic == ""
-                                        ? Container(
-                                            color: Colors.transparent,
-                                            height: 120,
-                                            width: 120,
-                                            child: Image.asset(
-                                                ImagePath.USER_DEFAULT),
-                                          )
-                                        : CachedNetworkImage(
-                                            width: 120,
-                                            height: 120,
-                                            fit: BoxFit.cover,
-                                            alignment: Alignment.center,
-                                            imageUrl: profilePic),
-                                  ),
-                                )
-                              : ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(60)),
-                                  child: widget.user?.profilePic?.src == ""
+                    padding: Responsive.isMobile(context)
+                        ? const EdgeInsets.all(8.0)
+                        : const EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        !kIsWeb
+                            ? ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(60)),
+                                child: Center(
+                                  child: profilePic == ""
                                       ? Container(
                                           color: Colors.transparent,
                                           height: 120,
@@ -754,83 +636,103 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                                           height: 120,
                                           fit: BoxFit.cover,
                                           alignment: Alignment.center,
-                                          imageUrl:
-                                              widget.user!.profilePic!.src),
+                                          imageUrl: profilePic),
                                 ),
-                        ],
-                      ),
+                              )
+                            : ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(60)),
+                                child: widget.user?.profilePic?.src == ""
+                                    ? Container(
+                                        color: Colors.transparent,
+                                        height: 120,
+                                        width: 120,
+                                        child: Image.asset(
+                                            ImagePath.USER_DEFAULT),
+                                      )
+                                    : CachedNetworkImage(
+                                        width: 120,
+                                        height: 120,
+                                        fit: BoxFit.cover,
+                                        alignment: Alignment.center,
+                                        imageUrl:
+                                            widget.user!.profilePic!.src),
+                              ),
+                      ],
                     ),
-                    Positioned(
-                      right: 20,
-                      top: 20,
-                      child: Icon(
-                        _isSelectedPhoto ? Icons.check_box : Icons.crop_square,
-                        color: Constants.darkGray,
-                        size: 20.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Responsive.isMobile(context) ? SpaceH12() : SpaceH24(),
-              Text(
-                '${widget.user?.firstName} ${widget.user?.lastName}',
-                style: textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    height: 1.2,
-                    fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-                    color: AppColors.primary900),
-                textAlign: TextAlign.center,
-              ),
-              SpaceH24(),
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    _isSelectedMaxEducation = !_isSelectedMaxEducation;
-                    if (_myMaxEducation == "") {
-                      _myMaxEducation = widget.myMaxEducation;
-                    } else {
-                      _myMaxEducation = "";
-                    }
-                  });
-                },
-                child: Row(
-                  children: [
-                    CustomTextSmall(text: widget.myMaxEducation),
-                    SpaceW8(),
-                    Icon(
-                      _isSelectedMaxEducation
-                          ? Icons.check_box
-                          : Icons.crop_square,
+                  ),
+                  Positioned(
+                    right: 20,
+                    top: 20,
+                    child: Icon(
+                      _isSelectedPhoto ? Icons.check_box : Icons.crop_square,
                       color: Constants.darkGray,
                       size: 20.0,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              SpaceH24(),
-              _buildMyEducation(context),
-              SpaceH24(),
-              _buildMySecondaryEducation(context),
-              SpaceH24(),
-              _buildMyExperiences(context),
-              SpaceH24(),
-              _buildMyPersonalExperiences(context),
-              SpaceH24(),
-              _buildMyCompetencies(context),
-              SpaceH24(),
-              _buildPersonalData(context),
-              SpaceH24(),
-              _buildAboutMe(context),
-              SpaceH24(),
-              _buildMyDataOfInterest(context),
-              SpaceH24(),
-              _buildMyLanguages(context),
-              SpaceH24(),
-              _buildMyReferences(context),
-              SpaceH24(),
-            ],
-          ),
+            ),
+            Responsive.isMobile(context) ? SpaceH12() : SpaceH24(),
+            Text(
+              '${widget.user?.firstName} ${widget.user?.lastName}',
+              style: textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                  fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
+                  color: AppColors.primary900),
+              textAlign: TextAlign.center,
+            ),
+            SpaceH24(),
+            InkWell(
+              onTap: () {
+                setState(() {
+                  _isSelectedMaxEducation = !_isSelectedMaxEducation;
+                  if (_myMaxEducation == "") {
+                    _myMaxEducation = widget.myMaxEducation;
+                  } else {
+                    _myMaxEducation = "";
+                  }
+                });
+              },
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CustomTextSmall(text: widget.myMaxEducation),
+                  ),
+                  SpaceW8(),
+                  Icon(
+                    _isSelectedMaxEducation
+                        ? Icons.check_box
+                        : Icons.crop_square,
+                    color: Constants.darkGray,
+                    size: 20.0,
+                  ),
+                ],
+              ),
+            ),
+            SpaceH24(),
+            _buildMyEducation(context),
+            SpaceH24(),
+            _buildMySecondaryEducation(context),
+            SpaceH24(),
+            _buildMyExperiences(context),
+            SpaceH24(),
+            _buildMyPersonalExperiences(context),
+            SpaceH24(),
+            _buildMyCompetencies(context),
+            SpaceH24(),
+            _buildPersonalData(context),
+            SpaceH24(),
+            _buildAboutMe(context),
+            SpaceH24(),
+            _buildMyDataOfInterest(context),
+            SpaceH24(),
+            _buildMyLanguages(context),
+            SpaceH24(),
+            _buildMyReferences(context),
+            SpaceH24(),
+          ],
         ),
       ),
     );
@@ -868,17 +770,29 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  child: Text(
-                    widget.user?.aboutMe != null &&
-                            widget.user!.aboutMe!.isNotEmpty
-                        ? widget.user!.aboutMe!
-                        : 'Aún no has añadido información adicional sobre ti',
-                    style: GoogleFonts.rubik(
-                        fontSize: 14.0, color: Colors.black87, height: 1.4),
+                if (Responsive.isMobile(context))
+                  Expanded(
+                    child: Text(
+                      widget.user?.aboutMe != null &&
+                              widget.user!.aboutMe!.isNotEmpty
+                          ? widget.user!.aboutMe!
+                          : 'Aún no has añadido información adicional sobre ti',
+                      style: GoogleFonts.rubik(
+                          fontSize: 14.0, color: Colors.black87, height: 1.4),
+                    ),
+                  )
+                else
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: Text(
+                      widget.user?.aboutMe != null &&
+                              widget.user!.aboutMe!.isNotEmpty
+                          ? widget.user!.aboutMe!
+                          : 'Aún no has añadido información adicional sobre ti',
+                      style: GoogleFonts.rubik(
+                          fontSize: 14.0, color: Colors.black87, height: 1.4),
+                    ),
                   ),
-                ),
                 SpaceW8(),
                 Icon(
                   _isSelectedAboutMe
@@ -1033,10 +947,12 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 },
                 child: Row(
                   children: [
-                    Text(
-                      (widget.city ?? '') + ", ",
-                      style: GoogleFonts.rubik(
-                          fontSize: 14.0, color: Colors.black54),
+                    Expanded(
+                      child: Text(
+                        (widget.city ?? '') + ", ",
+                        style: GoogleFonts.rubik(
+                            fontSize: 14.0, color: Colors.black54),
+                      ),
                     ),
                     Icon(
                       _isSelectedMyCity
@@ -1061,10 +977,12 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 },
                 child: Row(
                   children: [
-                    Text(
-                      (widget.province ?? '') + ", ",
-                      style: GoogleFonts.rubik(
-                          fontSize: 14.0, color: Colors.black54),
+                    Expanded(
+                      child: Text(
+                        (widget.province ?? '') + ", ",
+                        style: GoogleFonts.rubik(
+                            fontSize: 14.0, color: Colors.black54),
+                      ),
                     ),
                     Icon(
                       _isSelectedMyProvince
@@ -1089,10 +1007,12 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 },
                 child: Row(
                   children: [
-                    Text(
-                      widget.country ?? '',
-                      style: GoogleFonts.rubik(
-                          fontSize: 14.0, color: Colors.black54),
+                    Expanded(
+                      child: Text(
+                        widget.country ?? '',
+                        style: GoogleFonts.rubik(
+                            fontSize: 14.0, color: Colors.black54),
+                      ),
                     ),
                     SpaceW4(),
                     Icon(

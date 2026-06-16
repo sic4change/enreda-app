@@ -38,6 +38,18 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
   }
 
   @override
+  void dispose() {
+    if (_isVideoVisible) {
+      try {
+        _controller.close();
+      } catch (e) {
+        debugPrint('Error closing YoutubePlayerController: $e');
+      }
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final database = Provider.of<Database>(context, listen: false);
     TextTheme textTheme = Theme.of(context).textTheme;
@@ -305,6 +317,7 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
         showControls: true,
         mute: false,
         showFullscreenButton: true,
+        origin: 'https://www.youtube-nocookie.com',
       ),
     );
     setState(() {

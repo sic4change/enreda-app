@@ -202,6 +202,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
         params: const YoutubePlayerParams(
           showControls: true,
           showFullscreenButton: true,
+          origin: 'https://www.youtube-nocookie.com',
         ),
       );
     });

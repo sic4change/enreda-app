@@ -487,8 +487,9 @@ class _StepWelcome extends StatefulWidget {
 
 class _StepWelcomeState extends State<_StepWelcome>
     with AutomaticKeepAliveClientMixin {
-  late YoutubePlayerController _controller;
+  YoutubePlayerController? _controller;
   Stream<TrainingPill>? _trainingPillStream;
+  String? _currentVideoId;
 
   @override
   bool get wantKeepAlive => true;
@@ -498,6 +499,34 @@ class _StepWelcomeState extends State<_StepWelcome>
     super.initState();
     final database = Provider.of<Database>(context, listen: false);
     _trainingPillStream = database.trainingPillStreamById(TrainingPill.HOW_TO_DO_CV_ID);
+  }
+
+  @override
+  void dispose() {
+    try {
+      _controller?.close();
+    } catch (e) {
+      debugPrint('Error closing YoutubePlayerController: $e');
+    }
+    super.dispose();
+  }
+
+  void _updateController(String videoId) {
+    if (_currentVideoId == videoId && _controller != null) return;
+    _currentVideoId = videoId;
+    try {
+      _controller?.close();
+    } catch (e) {
+      debugPrint('Error closing YoutubePlayerController: $e');
+    }
+    _controller = YoutubePlayerController.fromVideoId(
+      videoId: videoId,
+      autoPlay: false,
+      params: const YoutubePlayerParams(
+        showFullscreenButton: true,
+        origin: 'https://www.youtube-nocookie.com',
+      ),
+    );
   }
 
   @override
@@ -519,13 +548,13 @@ class _StepWelcomeState extends State<_StepWelcome>
                 final videoId = YoutubePlayerController.convertUrlToId(
                         trainingPill.urlVideo) ??
                     '';
-                _controller = YoutubePlayerController.fromVideoId(
-                  videoId: videoId,
-                  autoPlay: false,
-                  params: const YoutubePlayerParams(
-                    showFullscreenButton: true,
-                  ),
-                );
+
+                _updateController(videoId);
+
+                if (_controller == null) {
+                  return const SizedBox.shrink();
+                }
+
                 return Container(
                   width: MediaQuery.of(context).size.width > 600
                       ? MediaQuery.of(context).size.width / 3.5
@@ -543,13 +572,14 @@ class _StepWelcomeState extends State<_StepWelcome>
                     child: AspectRatio(
                       aspectRatio: 16 / 9,
                       child: YoutubePlayer(
-                        controller: _controller,
+                        controller: _controller!,
                       ),
                     ),
                   ),
                 );
-              } else
+              } else {
                 return Container();
+              }
             }),
       ],
     );

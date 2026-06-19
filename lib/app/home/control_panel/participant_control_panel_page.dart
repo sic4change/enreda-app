@@ -179,7 +179,7 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
                                     }),
                                 GamificationItem(
                                   imagePath: ImagePath.GAMIFICATION_RESOURCES_ICON,
-                                  progress: ((widget.participantUser.resourcesAccessCount?? 0) / 15) * 100,
+                                  progress: (((widget.participantUser.resourcesAccessCount?? 0) / 15) * 100).clamp(0.0, 100.0),
                                   progressText: "${widget.participantUser.resourcesAccessCount}",
                                   title: "RECURSOS INSCRITOS",
                                 ),

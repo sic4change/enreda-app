@@ -163,6 +163,7 @@ abstract class Database {
   Stream<List<DocumentCategory>> documentCategoriesStream();
   Stream<List<PersonalDocumentType>> documentSubCategoriesByCategoryStream(String categoryId);
   Stream<List<DocumentationParticipant>> documentationParticipantBySubCategoryStream(PersonalDocumentType documentSubCategory, UserEnreda user);
+  Stream<List<DocumentationParticipant>> documentationParticipantStream(String userId);
   Stream<List<JobOfferApplication>> applicantStreamByJobOffer(String? jobOfferId, String? userId);
   Stream<List<Sesion>> mySesionesStream(String participantId);
 
@@ -1019,6 +1020,14 @@ class FirestoreDatabase implements Database {
     path: APIPath.documentationParticipants(),
     queryBuilder: (query) => query.where('userId', isEqualTo: user.userId)
         .where('documentSubCategoryId', isEqualTo: documentSubCategory.personalDocId),
+    builder: (data, documentId) => DocumentationParticipant.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
+  );
+
+  @override
+  Stream<List<DocumentationParticipant>> documentationParticipantStream(String userId) => _service.collectionStream(
+    path: APIPath.documentationParticipants(),
+    queryBuilder: (query) => query.where('userId', isEqualTo: userId),
     builder: (data, documentId) => DocumentationParticipant.fromMap(data, documentId),
     sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
   );

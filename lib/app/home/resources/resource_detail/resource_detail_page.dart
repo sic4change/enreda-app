@@ -616,6 +616,110 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     );
   }
 
+  Future<void> _showExternalRedirectDialog(BuildContext context, String url, String resourceId, String userId) async {
+    final textTheme = Theme.of(context).textTheme;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.primary050,
+        title: Text(
+          'Redirección externa',
+          style: textTheme.titleMedium?.copyWith(
+            color: AppColors.primary900,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          'Vas a ser redireccionado a una página externa. ¿Estás de acuerdo?',
+          style: textTheme.bodyMedium?.copyWith(
+            color: AppColors.greyTxtAlt,
+            height: 1.5,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              'No',
+              style: textTheme.bodyMedium?.copyWith(
+                color: AppColors.primary900,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Constants.turquoise,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              'Sí',
+              style: textTheme.bodyMedium?.copyWith(
+                color: AppColors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      launchURL(url);
+      if (!mounted) return;
+      final enrolled = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: AppColors.primary050,
+          title: Text(
+            '¿Te inscribiste al recurso externo?',
+            style: textTheme.titleMedium?.copyWith(
+              color: AppColors.primary900,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(
+                'No',
+                style: textTheme.bodyMedium?.copyWith(
+                  color: AppColors.primary900,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Constants.turquoise,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(
+                'Sí',
+                style: textTheme.bodyMedium?.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      if (enrolled == true && mounted) {
+        final database = Provider.of<Database>(context, listen: false);
+        await database.updateUserEnredaField(
+          userId,
+          {'resourcesEnrolled': FieldValue.arrayUnion([resourceId])},
+        );
+      }
+    }
+  }
+
   Widget _buildRegisterButton(BuildContext context, Resource resource) {
     final auth = Provider.of<AuthBase>(context);
     final userId = auth.currentUser?.uid ?? '';
@@ -637,7 +741,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               addUserToResource(context: context, userId: userId, resource: resource);
               setGamificationFlag(context: context, flagId: UserEnreda.FLAG_JOIN_RESOURCE);
             } else if (resource.link != null) {
-              launchURL(resource.link!);
+              _showExternalRedirectDialog(context, resource.link!, resource.resourceId, userId);
             } else {
               showContactDialog(context: context, resource: resource);
             }
@@ -1152,10 +1256,13 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   Future<void> _countUserAccess() async {
     final database = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context, listen: false);
-    if (auth.currentUser != null) {
+    if (auth.currentUser != null && globals.currentResource != null) {
       await database.updateUserEnredaField(
         auth.currentUser!.uid,
-        {'resourcesAccessCount': FieldValue.increment(1)},
+        {
+          'resourcesAccessCount': FieldValue.increment(1),
+          'resourcesVisited': FieldValue.arrayUnion([globals.currentResource!.resourceId]),
+        },
       );
     }
   }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/models/resource.dart';
@@ -32,6 +33,10 @@ Future<void> addUserToLike(
     final database = Provider.of<Database>(context, listen: false);
     resource.likes.add(userId);
     await database.setResource(resource);
+    await database.updateUserEnredaField(
+      userId,
+      {'resourcesLike': FieldValue.arrayUnion([resource.resourceId])},
+    );
   }
 
 Future<void> removeUserToLike(
@@ -41,6 +46,10 @@ Future<void> removeUserToLike(
     final database = Provider.of<Database>(context, listen: false);
     resource.likes.remove(userId);
     await database.setResource(resource);
+    await database.updateUserEnredaField(
+      userId,
+      {'resourcesLike': FieldValue.arrayRemove([resource.resourceId])},
+    );
 }
 
 Future<void> addUserToResource(

@@ -42,6 +42,9 @@ class Constants {
   static const Color onHoverTurquoise = Color(0xFFEFFDFA);
   static const Color turquoise = Color(0xFF00CCCC);
   static const Color skyBlue = Color(0xFF6699C6);
+  static const Color enredaDarkTeal = Color(0xFF054D5E); // Mobile web banner background
+  static const Color enredaTeal = Color(0xFF18C5C1);     // Mobile web banner button
+
   static const Color lightGray = Color(0xFFD9D9D9);
   //static const Color gray = Color(0xFFD0CECE);
   static const Color darkGray = Color(0xFF535A5F);

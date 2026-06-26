@@ -32,6 +32,22 @@ Future<void> launchURL(url) async {
   }
 }
 
+/// Abre una URL en el navegador externo del dispositivo (Android/iOS/Web).
+/// Úsala cuando quieras que el usuario salga de la app y vaya al navegador.
+Future<void> launchExternalBrowserURL(String url) async {
+  if (!url.contains('http://') && !url.contains('https://')) {
+    url = 'http://' + url;
+  }
+  final Uri uri = Uri.parse(url);
+  if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+    // Fallback: intenta abrir sin modo explícito
+    if (!await launchUrl(uri)) {
+      throw 'No se puede abrir la dirección $uri';
+    }
+  }
+}
+
+
 Future<void> openFile(DocumentationParticipant documentParticipant) async{
   final url = documentParticipant.urlDocument;
   if (url == null) {

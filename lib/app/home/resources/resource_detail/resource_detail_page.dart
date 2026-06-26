@@ -667,7 +667,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
       ),
     );
     if (confirmed == true) {
-      launchURL(url);
+      launchExternalBrowserURL(url);
       if (!mounted) return;
       final enrolled = await showDialog<bool>(
         context: context,

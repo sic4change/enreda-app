@@ -782,15 +782,16 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
                         'Ya no me interesa',
                         style: textTheme.bodyMedium?.copyWith(
                           fontSize: 16,
-                          color: Constants.white,
+                          color: Constants.darkGray,
                         ),
                       ),
                     ),
                     style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(AppColors.red),
+                        backgroundColor: MaterialStateProperty.all(Constants.white),
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
+                              side: BorderSide(color: AppColors.greyBorder),
                             ))),
                   ),
                   if (resource.link != null && resource.link!.isNotEmpty)

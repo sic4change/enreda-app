@@ -139,7 +139,7 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                   ),
                 ) : Container(),
                 Container(
-                  margin: selectedIndex == 1 || selectedIndex == 2 || selectedIndex == 4 ? EdgeInsets.only(top: Sizes.mainPadding * 5) :
+                  margin: selectedIndex == 1 || selectedIndex == 2 || selectedIndex == 4 ? EdgeInsets.only(top: Sizes.mainPadding * 6) :
                   EdgeInsets.only(top: Sizes.mainPadding * 2.5 , bottom: Sizes.mainPadding),
                     child: bodyWidget[MyResourcesPage.selectedIndex.value],
                 ),

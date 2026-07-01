@@ -775,15 +775,16 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                         'Ya no me interesa',
                         style: textTheme.bodyMedium?.copyWith(
                           fontSize: 16,
-                          color: Constants.white,
+                          color: Constants.darkGray,
                         ),
                       ),
                     ),
                     style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(AppColors.red),
+                        backgroundColor: WidgetStateProperty.all(Constants.white),
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
+                              side: BorderSide(color: AppColors.greyBorder),
                             ))),
                   ),
                   if (resource.link != null && resource.link!.isNotEmpty)

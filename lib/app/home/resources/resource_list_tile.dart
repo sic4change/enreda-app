@@ -20,10 +20,15 @@ import '../../../values/strings.dart';
 import '../models/contact.dart';
 
 class ResourceListTile extends StatefulWidget {
-  const ResourceListTile({Key? key, required this.resource, this.onTap})
+  const ResourceListTile(
+      {Key? key, required this.resource, this.onTap, this.onRemoveDiscarded})
       : super(key: key);
   final Resource resource;
   final VoidCallback? onTap;
+
+  /// When provided, renders a trash icon on the card to remove the resource
+  /// from the user's "descartados" list. Only passed by DiscardedResourcesPage.
+  final VoidCallback? onRemoveDiscarded;
 
   @override
   State<ResourceListTile> createState() => _ResourceListTileState();
@@ -297,7 +302,17 @@ class _ResourceListTileState extends State<ResourceListTile> {
                                       _addUserToLike(widget.resource);
                                     },
                                   ),
-
+                          if (widget.onRemoveDiscarded != null) ...[
+                            SpaceW4(),
+                            IconButton(
+                              icon: FaIcon(FontAwesomeIcons.trashCan,
+                                  color: AppColors.greyTxtAlt),
+                              tooltip: 'Quitar de descartados',
+                              color: AppColors.greyTxtAlt,
+                              iconSize: 20,
+                              onPressed: widget.onRemoveDiscarded,
+                            ),
+                          ],
                         ],
                       ),
                     ),

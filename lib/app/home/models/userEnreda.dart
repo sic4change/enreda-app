@@ -47,6 +47,7 @@ class UserEnreda {
     this.resourcesLike = const [],
     this.resourcesVisited = const [],
     this.resourcesEnrolled = const [],
+    this.resourcesDiscarded = const [],
     this.cv_state,
   });
 
@@ -182,6 +183,12 @@ class UserEnreda {
         resourcesEnrolled.add(resource.toString());
       });
     }
+    List<String> resourcesDiscarded = [];
+    if (data['resourcesDiscarded'] != null) {
+      data['resourcesDiscarded'].forEach((resource) {
+        resourcesDiscarded.add(resource.toString());
+      });
+    }
 
     final String? aboutMe = data['aboutMe'];
     final int resourcesAccessCount = data['resourcesAccessCount'] ?? 0;
@@ -261,6 +268,7 @@ class UserEnreda {
       resourcesLike: resourcesLike,
       resourcesVisited: resourcesVisited,
       resourcesEnrolled: resourcesEnrolled,
+      resourcesDiscarded: resourcesDiscarded,
       cv_state: cv_state,
     );
   }
@@ -305,6 +313,7 @@ class UserEnreda {
   final List<String> resourcesLike;
   final List<String> resourcesVisited;
   final List<String> resourcesEnrolled;
+  final List<String> resourcesDiscarded;
   final String? cv_state;
 
   Map<String, dynamic> toMap() {
@@ -345,6 +354,7 @@ class UserEnreda {
       'resourcesLike': resourcesLike,
       'resourcesVisited': resourcesVisited,
       'resourcesEnrolled': resourcesEnrolled,
+      'resourcesDiscarded': resourcesDiscarded,
       'cv_state': cv_state,
     };
   }
@@ -393,6 +403,7 @@ class UserEnreda {
     List<String>? resourcesLike,
     List<String>? resourcesVisited,
     List<String>? resourcesEnrolled,
+    List<String>? resourcesDiscarded,
     String? cv_state,
     List<String>? certifications,
   }) {
@@ -436,6 +447,7 @@ class UserEnreda {
       resourcesLike: resourcesLike ?? this.resourcesLike,
       resourcesVisited: resourcesVisited ?? this.resourcesVisited,
       resourcesEnrolled: resourcesEnrolled ?? this.resourcesEnrolled,
+      resourcesDiscarded: resourcesDiscarded ?? this.resourcesDiscarded,
       cv_state: cv_state ?? this.cv_state,
       certifications: certifications ?? this.certifications,
     );

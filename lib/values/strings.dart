@@ -346,6 +346,7 @@ class StringConst {
   //static String TRAINING_PILL_LINK(String trainingPillId) => 'https://test-enreda.web.app/pills/$trainingPillId';
   static const String ENROLLED_RESOURCES = 'Recursos inscritos';
   static const String FAVORITES_RESOURCES = 'Recursos favoritos';
+  static const String DISCARDED_RESOURCES = 'Recursos descartados';
   static const String FUNCTIONS = "Funciones";
   static const String RESPONSIBILITIES = "Responsabilidades";
   static const String FORM_DESCRIPTION = "Descripción del puesto";
@@ -356,6 +357,7 @@ class StringConst {
   static const String BODY = "Hola! Quisiera más información";
   static const String NO_RESOURCES_SUBTITLE = "Descubre aquello que te hace diferente y ponlo en valor a la hora de buscar empleo";
   static const String NO_FAVORITES_TITLE = "¡Todavía no tienes ningún recuso favorito!";
+  static const String NO_DISCARDED_TITLE = "¡Todavía no has descartado ningún recurso!";
   static const String NO_RESOURCES_TITLE = "¡Todavía no te has inscrito a ningún recuso!";
   static const String NO_COMPETENCIES_TITLE = "¡Todavía no has conseguido ninguna competencia!";
   static const String NO_COMPETENCIES_SUBTITLE = "¿No sabes por dónde empezar con tu búsqueda de empleo?";

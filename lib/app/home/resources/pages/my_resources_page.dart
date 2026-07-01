@@ -1,3 +1,4 @@
+import 'package:enreda_app/app/home/resources/pages/discarded_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/favorite_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/my_enrolled_resources_page.dart';
 import 'package:enreda_app/app/home/resources/resource_detail/resource_detail_page.dart';
@@ -35,6 +36,7 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
       MyEnrolledResourcesPage(),
       FavoriteResourcesPage(),
       ResourceDetailPage(),
+      DiscardedResourcesPage(),
     ];
     super.initState();
   }
@@ -83,13 +85,13 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                               MyResourcesPage.selectedIndex.value = 1;
                             })
                           },
-                          child: selectedIndex == 1 || selectedIndex == 2 ? CustomTextMediumBold(text: StringConst.MY_RESOURCES_SPACE) :
+                          child: selectedIndex == 1 || selectedIndex == 2 || selectedIndex == 4 ? CustomTextMediumBold(text: StringConst.MY_RESOURCES_SPACE) :
                           CustomTextMedium(text: StringConst.MY_RESOURCES_SPACE) ),
                       selectedIndex == 3 ? CustomTextMediumBold(text: '> Detalle del recurso',) : Container()
                     ],
                   ),
                 ),
-                selectedIndex == 1 || selectedIndex == 2 ?
+                selectedIndex == 1 || selectedIndex == 2 || selectedIndex == 4 ?
                 Positioned(
                   top: 60,
                   child: Row(
@@ -120,11 +122,24 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                           color: MyResourcesPage.selectedIndex.value == 2 ? AppColors.primaryColor : AppColors.greyUltraLight,
                         ),
                       ),
+                      SizedBox(width: 10,),
+                      InkWell(
+                        onTap: () => {
+                          setState(() {
+                            MyResourcesPage.selectedIndex.value = 4;
+                          })
+                        },
+                        child: CustomStepperButton(
+                          child: CustomTextBold(title: StringConst.DISCARDED_RESOURCES, color: MyResourcesPage.selectedIndex.value == 4 ? AppColors.white : AppColors.greyTxtAlt,),
+                          icon: SizedBox(width: 21, child: Icon(Icons.block, color: MyResourcesPage.selectedIndex.value == 4 ? AppColors.white : AppColors.greyTxtAlt, size: 21,)),
+                          color: MyResourcesPage.selectedIndex.value == 4 ? AppColors.primaryColor : AppColors.greyUltraLight,
+                        ),
+                      ),
                     ],
                   ),
                 ) : Container(),
                 Container(
-                  margin: selectedIndex == 1 || selectedIndex == 2 ? EdgeInsets.only(top: Sizes.mainPadding * 5) :
+                  margin: selectedIndex == 1 || selectedIndex == 2 || selectedIndex == 4 ? EdgeInsets.only(top: Sizes.mainPadding * 5) :
                   EdgeInsets.only(top: Sizes.mainPadding * 2.5 , bottom: Sizes.mainPadding),
                     child: bodyWidget[MyResourcesPage.selectedIndex.value],
                 ),

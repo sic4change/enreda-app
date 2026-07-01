@@ -719,7 +719,10 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
         final database = Provider.of<Database>(context, listen: false);
         await database.updateUserEnredaField(
           userId,
-          {'resourcesEnrolled': FieldValue.arrayUnion([resourceId])},
+          {
+            'resourcesEnrolled': FieldValue.arrayUnion([resourceId]),
+            'resourcesDiscarded': FieldValue.arrayRemove([resourceId]),
+          },
         );
       }
     }
@@ -757,7 +760,10 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
                     onPressed: () async {
                       await database.updateUserEnredaField(
                         userId,
-                        {'resourcesEnrolled': FieldValue.arrayRemove([resource.resourceId])},
+                        {
+                          'resourcesEnrolled': FieldValue.arrayRemove([resource.resourceId]),
+                          'resourcesDiscarded': FieldValue.arrayUnion([resource.resourceId]),
+                        },
                       );
 
                       if (resource.participants.contains(userId)) {

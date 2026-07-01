@@ -1,0 +1,137 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:enreda_app/app/home/models/resource.dart';
+import 'package:enreda_app/app/home/models/userEnreda.dart';
+import 'package:enreda_app/app/home/resources/list_item_builder_grid.dart';
+import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
+import 'package:enreda_app/app/home/resources/pages/no_resources_ilustration.dart';
+import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
+import 'package:enreda_app/services/auth.dart';
+import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/values/strings.dart';
+import 'package:enreda_app/values/values.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:enreda_app/app/home/resources/global.dart' as globals;
+import 'package:enreda_app/app/home/resources/models/resource_metadata.dart';
+import 'package:enreda_app/services/location_cache.dart';
+import 'dart:async';
+
+
+class DiscardedResourcesPage extends StatefulWidget {
+  @override
+  State<DiscardedResourcesPage> createState() => _DiscardedResourcesPageState();
+}
+
+class _DiscardedResourcesPageState extends State<DiscardedResourcesPage> {
+  ResourceMetadata _metadata = ResourceMetadata();
+  List<StreamSubscription> _metadataSubscriptions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getMetadata();
+  }
+
+  @override
+  void dispose() {
+    _metadataSubscriptions.forEach((s) => s.cancel());
+    super.dispose();
+  }
+
+  void _getMetadata() async {
+    final database = Provider.of<Database>(context, listen: false);
+    await LocationCache.instance.warmUpAll(database);
+    if (mounted) {
+      setState(() {
+        _metadata = ResourceMetadata.fromLists(
+          countries: LocationCache.instance.countries,
+          provinces: LocationCache.instance.provinces,
+          cities: LocationCache.instance.allCities,
+          organizers: LocationCache.instance.organizers,
+        );
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildContents(context);
+  }
+
+  Widget _buildContents(BuildContext context) {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    final database = Provider.of<Database>(context, listen: false);
+    final uid = auth.currentUser?.uid ?? '';
+
+    return Container(
+      child: StreamBuilder<UserEnreda>(
+        stream: database.enredaUserStream(uid),
+        builder: (context, userSnapshot) {
+          if (!userSnapshot.hasData) {
+            return const Padding(
+              padding: EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+          final user = userSnapshot.data!;
+          return StreamBuilder<List<Resource>>(
+            stream: database.resourcesStreamByIds(user.resourcesDiscarded),
+            builder: (context, snapshot) {
+              return snapshot.hasData && snapshot.data!.isNotEmpty
+                  ? ListItemBuilderGrid<Resource>(
+                      scrollController: ScrollController(),
+                      snapshot: snapshot,
+                      fitSmallerLayout: false,
+                      itemBuilder: (context, resource) {
+                        resource.organizerName =
+                            _metadata.organizerNames[resource.organizer] ?? '';
+                        resource.organizerImage =
+                            _metadata.organizerImages[resource.organizer];
+                        resource.countryName =
+                            _metadata.countryNames[resource.country] ?? '';
+                        resource.provinceName =
+                            _metadata.provinceNames[resource.province] ?? '';
+                        resource.cityName =
+                            _metadata.cityNames[resource.city] ?? '';
+                        resource.setResourceTypeName();
+                        resource.setResourceCategoryName();
+
+                        return Container(
+                          key: Key('resource-${resource.resourceId}'),
+                          child: ResourceListTile(
+                            resource: resource,
+                            onTap: () => setState(() {
+                              globals.currentResource = resource;
+                              MyResourcesPage.selectedIndex.value = 3;
+                            }),
+                            onRemoveDiscarded: () => database.updateUserEnredaField(
+                              uid,
+                              {
+                                'resourcesDiscarded':
+                                    FieldValue.arrayRemove([resource.resourceId]),
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      emptyTitle: 'Sin recursos',
+                      emptyMessage: 'No tienes recursos descartados',
+                    )
+                  : snapshot.connectionState == ConnectionState.waiting
+                      ? const Padding(
+                          padding:
+                              EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      : NoResourcesIllustration(
+                          title: StringConst.NO_DISCARDED_TITLE,
+                          subtitle: StringConst.NO_RESOURCES_SUBTITLE,
+                          imagePath: ImagePath.LEARNING_GIRL,
+                        );
+            },
+          );
+        },
+      ),
+    );
+  }
+}

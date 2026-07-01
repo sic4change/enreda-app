@@ -64,48 +64,70 @@ class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
-    return Container(
-      child: StreamBuilder<List<Resource>>(
-          stream: database.myResourcesStream(auth.currentUser?.uid ?? ''),
-          builder: (context, snapshot) {
-            return snapshot.hasData && snapshot.data!.isNotEmpty
-                ? ListItemBuilderGrid<Resource>(
-              scrollController: ScrollController(),
-              snapshot: snapshot,
-              fitSmallerLayout: false,
-              itemBuilder: (context, resource) {
-                resource.organizerName = _metadata.organizerNames[resource.organizer] ?? '';
-                resource.organizerImage = _metadata.organizerImages[resource.organizer];
-                resource.countryName = _metadata.countryNames[resource.country] ?? '';
-                resource.provinceName = _metadata.provinceNames[resource.province] ?? '';
-                resource.cityName = _metadata.cityNames[resource.city] ?? '';
-                resource.setResourceTypeName();
-                resource.setResourceCategoryName();
+    final uid = auth.currentUser?.uid ?? '';
 
-                return Container(
-                  key: Key('resource-${resource.resourceId}'),
-                  child: ResourceListTile(
-                    resource: resource,
-                    onTap: () => setState(() {
-                      globals.currentResource = resource;
-                      MyResourcesPage.selectedIndex.value = 3;
-                    }),
-                  ),
-                );
-              },
-              emptyTitle: 'Sin recursos',
-              emptyMessage: 'No estás inscrito a ningún recurso',
-            ) : snapshot.connectionState == ConnectionState.waiting ?
-            Padding(
-              padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-              child: Center(child: CircularProgressIndicator(),),
-            ) :
-            NoResourcesIllustration(
-              title: StringConst.NO_RESOURCES_TITLE,
-              subtitle: StringConst.NO_RESOURCES_SUBTITLE,
-              imagePath: ImagePath.NO_RESOURCES,
+    return Container(
+      child: StreamBuilder<UserEnreda>(
+        stream: database.enredaUserStream(uid),
+        builder: (context, userSnapshot) {
+          if (!userSnapshot.hasData) {
+            return const Padding(
+              padding: EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+              child: Center(child: CircularProgressIndicator()),
             );
-          }),
+          }
+          final user = userSnapshot.data!;
+          return StreamBuilder<List<Resource>>(
+            stream: database.resourcesStreamByIds(user.resourcesEnrolled),
+            builder: (context, snapshot) {
+              return snapshot.hasData && snapshot.data!.isNotEmpty
+                  ? ListItemBuilderGrid<Resource>(
+                      scrollController: ScrollController(),
+                      snapshot: snapshot,
+                      fitSmallerLayout: false,
+                      itemBuilder: (context, resource) {
+                        resource.organizerName =
+                            _metadata.organizerNames[resource.organizer] ?? '';
+                        resource.organizerImage =
+                            _metadata.organizerImages[resource.organizer];
+                        resource.countryName =
+                            _metadata.countryNames[resource.country] ?? '';
+                        resource.provinceName =
+                            _metadata.provinceNames[resource.province] ?? '';
+                        resource.cityName =
+                            _metadata.cityNames[resource.city] ?? '';
+                        resource.setResourceTypeName();
+                        resource.setResourceCategoryName();
+
+                        return Container(
+                          key: Key('resource-${resource.resourceId}'),
+                          child: ResourceListTile(
+                            resource: resource,
+                            onTap: () => setState(() {
+                              globals.currentResource = resource;
+                              MyResourcesPage.selectedIndex.value = 3;
+                            }),
+                          ),
+                        );
+                      },
+                      emptyTitle: 'Sin recursos',
+                      emptyMessage: 'No estás inscrito a ningún recurso',
+                    )
+                  : snapshot.connectionState == ConnectionState.waiting
+                      ? const Padding(
+                          padding:
+                              EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      : NoResourcesIllustration(
+                          title: StringConst.NO_RESOURCES_TITLE,
+                          subtitle: StringConst.NO_RESOURCES_SUBTITLE,
+                          imagePath: ImagePath.NO_RESOURCES,
+                        );
+            },
+          );
+        },
+      ),
     );
   }
 }

@@ -28,6 +28,7 @@ import 'package:enreda_app/app/home/resources/streams/interests_by_resource.dart
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../common_widgets/show_alert_dialog.dart';
+import '../../../../common_widgets/show_toast.dart';
 import '../../../../common_widgets/show_back_icon.dart';
 import '../../../../common_widgets/show_exception_alert_dialog.dart';
 import '../../../../utils/adaptive.dart';
@@ -620,13 +621,206 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
     );
   }
 
+  Future<void> _showExternalRedirectDialog(BuildContext context, String url, String resourceId, String userId) async {
+    final textTheme = Theme.of(context).textTheme;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.primary050,
+        title: Text(
+          'Redirección externa',
+          style: textTheme.titleMedium?.copyWith(
+            color: AppColors.primary900,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          'Vas a ser redireccionado a una página externa. ¿Estás de acuerdo?',
+          style: textTheme.bodyMedium?.copyWith(
+            color: AppColors.greyTxtAlt,
+            height: 1.5,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              'No',
+              style: textTheme.bodyMedium?.copyWith(
+                color: AppColors.primary900,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Constants.turquoise,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              'Sí',
+              style: textTheme.bodyMedium?.copyWith(
+                color: AppColors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      launchExternalBrowserURL(url);
+      if (!mounted) return;
+      final enrolled = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: AppColors.primary050,
+          title: Text(
+            '¿Te inscribiste al recurso externo?',
+            style: textTheme.titleMedium?.copyWith(
+              color: AppColors.primary900,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(
+                'No',
+                style: textTheme.bodyMedium?.copyWith(
+                  color: AppColors.primary900,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Constants.turquoise,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(
+                'Sí',
+                style: textTheme.bodyMedium?.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      if (enrolled == true && mounted) {
+        final database = Provider.of<Database>(context, listen: false);
+        await database.updateUserEnredaField(
+          userId,
+          {'resourcesEnrolled': FieldValue.arrayUnion([resourceId])},
+        );
+      }
+    }
+  }
+
   Widget _buildButton(BuildContext context, Resource resource) {
     final auth = Provider.of<AuthBase>(context);
+    final database = Provider.of<Database>(context, listen: false);
     final currentUser = auth.currentUser;
     // Treat anonymous users (not truly signed in) the same as null users.
     final bool isGuest = currentUser == null || currentUser.isAnonymous;
-    final userId = currentUser?.uid ?? '';
+    final userId = currentUser?.uid;
     final textTheme = Theme.of(context).textTheme;
+
+    if (isGuest || userId == null) {
+      return _buildDefaultJoinButton(context, resource, isGuest, '', textTheme);
+    }
+
+    return StreamBuilder<UserEnreda>(
+      stream: database.enredaUserStream(userId),
+      builder: (context, snapshot) {
+        final user = snapshot.data;
+        final bool isEnrolled = user != null && user.resourcesEnrolled.contains(resource.resourceId);
+
+        if (isEnrolled) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 15.0,
+                runSpacing: 10.0,
+                children: [
+                  TextButton(
+                    onPressed: () async {
+                      await database.updateUserEnredaField(
+                        userId,
+                        {'resourcesEnrolled': FieldValue.arrayRemove([resource.resourceId])},
+                      );
+
+                      if (resource.participants.contains(userId)) {
+                        resource.participants.remove(userId);
+                        resource.assistants = resource.participants.length.toString();
+                        await database.setResource(resource);
+                      }
+
+                      showToast(context,
+                          title: 'Ha sido eliminado satisfactoriamente al recurso',
+                          color: AppColors.primaryColor);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
+                      child: Text(
+                        'Ya no me interesa',
+                        style: textTheme.bodyMedium?.copyWith(
+                          fontSize: 16,
+                          color: Constants.white,
+                        ),
+                      ),
+                    ),
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(AppColors.red),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ))),
+                  ),
+                  if (resource.link != null && resource.link!.isNotEmpty)
+                    TextButton(
+                      onPressed: () {
+                        launchExternalBrowserURL(resource.link!);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
+                        child: Text(
+                          'Acceder al recurso',
+                          style: textTheme.bodyMedium?.copyWith(
+                            fontSize: 16,
+                            color: Constants.white,
+                          ),
+                        ),
+                      ),
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Constants.turquoise),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                              ))),
+                    ),
+                ],
+              ),
+            ],
+          );
+        } else {
+          return _buildDefaultJoinButton(context, resource, isGuest, userId, textTheme);
+        }
+      },
+    );
+  }
+
+  Widget _buildDefaultJoinButton(BuildContext context, Resource resource, bool isGuest, String userId, TextTheme textTheme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -636,12 +830,11 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
               showAlertNullUser(context, resourceId: resource.resourceId);
             } else if (resource.participants.contains(userId)) {
               removeUserToResource(context: context, userId: userId, resource: resource);
-            } else if (resource.canSignUp!)
-            {
+            } else if (resource.canSignUp!) {
               addUserToResource(context: context, userId: userId, resource: resource);
               setGamificationFlag(context: context, flagId: UserEnreda.FLAG_JOIN_RESOURCE);
             } else if (resource.link != null) {
-              launchURL(resource.link!);
+              _showExternalRedirectDialog(context, resource.link!, resource.resourceId, userId);
             } else {
               showContactDialog(context: context, resource: resource);
             }
@@ -1104,8 +1297,13 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
     final database = Provider.of<Database>(context, listen: false);
     final auth = Provider.of<AuthBase>(context, listen: false);
     if (auth.currentUser != null) {
-      final user = await database.userEnredaStreamByUserId(auth.currentUser!.uid).first;
-      database.setUserEnreda(user.copyWith(resourcesAccessCount: user.resourcesAccessCount! + 1));
+      await database.updateUserEnredaField(
+        auth.currentUser!.uid,
+        {
+          'resourcesAccessCount': FieldValue.increment(1),
+          'resourcesVisited': FieldValue.arrayUnion([widget.resourceId]),
+        },
+      );
     }
   }
 

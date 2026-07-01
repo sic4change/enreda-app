@@ -6,7 +6,9 @@ class Choice extends Equatable {
     required this.name,
     this.order,
     this.competencies = const {},
-    this.activities = const []
+    this.activities = const [],
+    this.typeId,
+    this.subtypeId,
   });
 
   final String id;
@@ -14,11 +16,15 @@ class Choice extends Equatable {
   final int? order;
   final Map<String, int> competencies;
   final List<String> activities;
+  final String? typeId;
+  final String? subtypeId;
 
   factory Choice.fromMap(Map<String, dynamic> data, String documentId) {
-    final String id = data['id'];
-    final String name = data['name'];
+    final String id = data['id'] ?? documentId;
+    final String name = data['name'] ?? '';
     final int? order = data['order'];
+    final String? typeId = data['typeId'];
+    final String? subtypeId = data['subtypeId'];
 
     Map<String, int> competencies = {};
     if (data['competencies'] != null) {
@@ -39,12 +45,14 @@ class Choice extends Equatable {
         name: name,
         order: order,
         competencies: competencies,
-        activities: activities
+        activities: activities,
+        typeId: typeId,
+        subtypeId: subtypeId,
     );
   }
 
   @override
-  List<Object?> get props => [id, name];
+  List<Object?> get props => [id, name, order, typeId, subtypeId];
 
   @override
   bool get stringify => true;

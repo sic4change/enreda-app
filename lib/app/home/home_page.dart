@@ -3,6 +3,7 @@ import 'package:enreda_app/app/home/assistant/assistant_page_web.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold.dart';
 import 'package:enreda_app/app/home/cupertino_scaffold_anonymous.dart';
 import 'package:enreda_app/app/home/web_home.dart';
+import 'package:enreda_app/common_widgets/mobile_web_banner.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/functions.dart';
@@ -40,20 +41,20 @@ class _HomePageState extends State<HomePage> {
         stream: Provider.of<AuthBase>(context).authStateChanges(),
         builder: (context, snapshot) {
           final isBigScreen = !Responsive.isMobile(context);
-          return !snapshot.hasData && !kIsWeb
-              ? OnboardingCarousel()
-              : Stack(
+          if (!snapshot.hasData && !kIsWeb) return OnboardingCarousel();
+          final content = Stack(
             children: [
-              isBigScreen ? WebHome(showChatNotifier: showChatNotifier)
+              isBigScreen
+                  ? WebHome(showChatNotifier: showChatNotifier)
                   : snapshot.hasData
-                  ? CupertinoScaffold(
-                  showChatNotifier: showChatNotifier)
-                  : CupertinoScaffoldAnonymous(
-                  showChatNotifier: showChatNotifier),
+                      ? CupertinoScaffold(showChatNotifier: showChatNotifier)
+                      : CupertinoScaffoldAnonymous(
+                          showChatNotifier: showChatNotifier),
               if (snapshot.hasData && isBigScreen) _buildChatFAB(context),
               if (snapshot.hasData && isBigScreen) _buildChatContainer(),
             ],
           );
+          return MobileWebBanner(child: content);
         });
   }
 

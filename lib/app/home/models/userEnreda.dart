@@ -44,6 +44,9 @@ class UserEnreda {
     this.personalDocuments = const [],
     this.newsletterSubscribed,
     required this.resources,
+    this.resourcesLike = const [],
+    this.resourcesVisited = const [],
+    this.resourcesEnrolled = const [],
     this.cv_state,
   });
 
@@ -98,19 +101,22 @@ class UserEnreda {
 
     List<String> certifications = [];
     try {
-      data['certifications'].forEach((certification) {certifications.add(certification.toString());});
+      data['certifications'].forEach((certification) {
+        certifications.add(certification.toString());
+      });
     } catch (e) {
       //print('user does not have certifications');
     }
 
-    final ProfilePic profilePic = new ProfilePic(src: photo, title: 'photo.jpg');
+    final ProfilePic profilePic =
+        new ProfilePic(src: photo, title: 'photo.jpg');
     final Address address = new Address(
         country: country,
         province: province,
         city: city,
         postalCode: postalCode);
 
-    final String educationId = data['educationId']?? "";
+    final String educationId = data['educationId'] ?? "";
 
     final bool? showChatWelcome = data['showChatWelcome'];
 
@@ -135,30 +141,50 @@ class UserEnreda {
       data['languages'].forEach((language) {
         languages.add(language.toString());
       });
-    } catch (e) {
-    }
+    } catch (e) {}
 
     List<Language> languagesLevels = [];
     if (data['languagesLevels'] != null) {
       data['languagesLevels'].forEach((languageLevel) {
         final languageLevelFirestore = languageLevel as Map<String, dynamic>;
-        languagesLevels.add(
-            Language(
-                name: languageLevelFirestore['name']?? "",
-                speakingLevel: languageLevelFirestore['speakingLevel']?? 1,
-                writingLevel: languageLevelFirestore['writingLevel']?? 1,
-            )
-        );
+        languagesLevels.add(Language(
+          name: languageLevelFirestore['name'] ?? "",
+          speakingLevel: languageLevelFirestore['speakingLevel'] ?? 1,
+          writingLevel: languageLevelFirestore['writingLevel'] ?? 1,
+        ));
       });
     }
 
     List<String> resources = [];
     if (data['resources'] != null) {
-      data['resources'].forEach((resource) {resources.add(resource.toString());});
+      data['resources'].forEach((resource) {
+        resources.add(resource.toString());
+      });
+    }
+
+    List<String> resourcesLike = [];
+    if (data['resourcesLike'] != null) {
+      data['resourcesLike'].forEach((resource) {
+        resourcesLike.add(resource.toString());
+      });
+    }
+
+    List<String> resourcesVisited = [];
+    if (data['resourcesVisited'] != null) {
+      data['resourcesVisited'].forEach((resource) {
+        resourcesVisited.add(resource.toString());
+      });
+    }
+
+    List<String> resourcesEnrolled = [];
+    if (data['resourcesEnrolled'] != null) {
+      data['resourcesEnrolled'].forEach((resource) {
+        resourcesEnrolled.add(resource.toString());
+      });
     }
 
     final String? aboutMe = data['aboutMe'];
-    final int resourcesAccessCount = data['resourcesAccessCount']?? 0;
+    final int resourcesAccessCount = data['resourcesAccessCount'] ?? 0;
     final bool? checkAgreeCV = data['checkAgreeCV'];
     final bool? newsletterSubscribed = data['newsletterSubscribed'];
 
@@ -177,20 +203,18 @@ class UserEnreda {
         abilities: abilities,
         dedication: data['dedication'],
         timeSearching: data['timeSearching'],
-        timeSpentWeekly: data['timeSpentWeekly']
-    );
+        timeSpentWeekly: data['timeSpentWeekly']);
 
     List<PersonalDocument> personalDocuments = [];
     if (data['personalDocuments'] != null) {
       data['personalDocuments'].forEach((personalDocument) {
-        final personalDocumentsFirestore = personalDocument as Map<String, dynamic>;
-        personalDocuments.add(
-            PersonalDocument(
-              name: personalDocumentsFirestore['name'] ?? '',
-              order: personalDocumentsFirestore['order'] ?? 0,
-              document: personalDocumentsFirestore['document'] ?? '',
-            )
-        );
+        final personalDocumentsFirestore =
+            personalDocument as Map<String, dynamic>;
+        personalDocuments.add(PersonalDocument(
+          name: personalDocumentsFirestore['name'] ?? '',
+          order: personalDocumentsFirestore['order'] ?? 0,
+          document: personalDocumentsFirestore['document'] ?? '',
+        ));
       });
     }
 
@@ -234,6 +258,9 @@ class UserEnreda {
       assignedById: assignedById,
       newsletterSubscribed: newsletterSubscribed,
       resources: resources,
+      resourcesLike: resourcesLike,
+      resourcesVisited: resourcesVisited,
+      resourcesEnrolled: resourcesEnrolled,
       cv_state: cv_state,
     );
   }
@@ -275,6 +302,9 @@ class UserEnreda {
   final List<PersonalDocument> personalDocuments;
   final bool? newsletterSubscribed;
   final List<String> resources;
+  final List<String> resourcesLike;
+  final List<String> resourcesVisited;
+  final List<String> resourcesEnrolled;
   final String? cv_state;
 
   Map<String, dynamic> toMap() {
@@ -307,11 +337,14 @@ class UserEnreda {
       'educationId': educationId,
       'nationality': nationality,
       'assignedEntityId': assignedEntityId,
-      'assignedById' : assignedById,
+      'assignedById': assignedById,
       'newsletterSubscribed': newsletterSubscribed,
       'motivation': motivation?.toMap(),
       'personalDocuments': personalDocuments.map((e) => e.toMap()).toList(),
       'resources': resources,
+      'resourcesLike': resourcesLike,
+      'resourcesVisited': resourcesVisited,
+      'resourcesEnrolled': resourcesEnrolled,
       'cv_state': cv_state,
     };
   }
@@ -357,6 +390,9 @@ class UserEnreda {
     List<PersonalDocument>? personalDocuments,
     bool? newsletterSubscribed,
     List<String>? resources,
+    List<String>? resourcesLike,
+    List<String>? resourcesVisited,
+    List<String>? resourcesEnrolled,
     String? cv_state,
     List<String>? certifications,
   }) {
@@ -397,6 +433,9 @@ class UserEnreda {
       personalDocuments: personalDocuments ?? this.personalDocuments,
       newsletterSubscribed: newsletterSubscribed ?? this.newsletterSubscribed,
       resources: resources ?? this.resources,
+      resourcesLike: resourcesLike ?? this.resourcesLike,
+      resourcesVisited: resourcesVisited ?? this.resourcesVisited,
+      resourcesEnrolled: resourcesEnrolled ?? this.resourcesEnrolled,
       cv_state: cv_state ?? this.cv_state,
       certifications: certifications ?? this.certifications,
     );

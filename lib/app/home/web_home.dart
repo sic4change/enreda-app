@@ -59,6 +59,8 @@ class _WebHomeState extends State<WebHome> {
   Color _underlineColor = AppColors.primary500;
   late UserEnreda _userEnreda;
   String _userName = "";
+  Stream<User?>? _authStateChangesStream;
+  Stream<UserEnreda>? _userEnredaStream;
 
   @override
   void initState() {
@@ -69,6 +71,12 @@ class _WebHomeState extends State<WebHome> {
       CompetenciesPage(showChatNotifier: widget.showChatNotifier),
     ];
     super.initState();
+    final auth = Provider.of<AuthBase>(context, listen: false);
+    final database = Provider.of<Database>(context, listen: false);
+    _authStateChangesStream = auth.authStateChanges();
+    if (auth.currentUser != null) {
+      _userEnredaStream = database.userEnredaStreamByUserId(auth.currentUser!.uid);
+    }
   }
 
   Widget _buildMyUserName(BuildContext context, UserEnreda user) {
@@ -94,10 +102,9 @@ class _WebHomeState extends State<WebHome> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
-    final database = Provider.of<Database>(context, listen: false);
 
     return StreamBuilder<User?>(
-        stream: Provider.of<AuthBase>(context).authStateChanges(),
+        stream: _authStateChangesStream,
         builder: (context, snapshot) {
           // If a deep-link resource was detected at startup, redirect immediately.
           if (Constants.initialDeepLinkResourceId != null) {
@@ -122,7 +129,7 @@ class _WebHomeState extends State<WebHome> {
           if (snapshot.hasData && (snapshot.data?.isAnonymous ?? false)) return _buildContentAnonymous(context);
           if (snapshot.hasData) {
             return StreamBuilder<UserEnreda>(
-              stream: database.userEnredaStreamByUserId(auth.currentUser!.uid),
+              stream: _userEnredaStream,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   UserEnreda _userEnreda;
@@ -172,6 +179,7 @@ class _WebHomeState extends State<WebHome> {
           final isSmallScreen = Responsive.isMobile(context);
           return Scaffold(
             key: _key,
+            resizeToAvoidBottomInset: false,
             appBar: isSmallScreen ? null : AppBar(
               toolbarHeight: 100,
               elevation: 1.0,
@@ -397,6 +405,7 @@ class _WebHomeState extends State<WebHome> {
           final isSmallScreen = Responsive.isMobile(context);
           return Scaffold(
             key: _key,
+            resizeToAvoidBottomInset: false,
             appBar: isSmallScreen ? null : AppBar(
               toolbarHeight: 100,
               elevation: 1.0,

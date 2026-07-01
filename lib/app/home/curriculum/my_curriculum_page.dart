@@ -104,6 +104,15 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   UserEnreda? _userCache;
   List<Competency> _compsCache = const [];
 
+  Stream<List<UserEnreda>>? _userStream;
+  Stream<List<Experience>>? _experiencesStream;
+
+  // Streams para localización — se crean una sola vez para evitar lecturas
+  // repetidas de Firestore al reconstruir el widget.
+  Stream<Country>? _countryStream;
+  Stream<Province>? _provinceStream;
+  Stream<City>? _cityStream;
+
   void setStateIfMounted(f) {
     if (mounted) setState(f);
   }
@@ -111,8 +120,15 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   @override
   void initState() {
     super.initState();
+    final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
     LocationCache.instance.warmUpAll(database);
+
+    final email = auth.currentUser?.email ?? '';
+    final uid = auth.currentUser?.uid ?? '';
+
+    _userStream = database.userStream(email);
+    _experiencesStream = database.myExperiencesStream(uid);
   }
 
   @override
@@ -122,39 +138,57 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     final email = auth.currentUser?.email ?? '';
 
     return StreamBuilder<List<UserEnreda>>(
-      stream: database.userStream(email),
+      stream: _userStream,
       builder: (context, su) {
         if (!su.hasData || su.connectionState != ConnectionState.active) {
-          if (_userCache == null) return const Center(child: CircularProgressIndicator());
+          if (_userCache == null)
+            return const Center(child: CircularProgressIndicator());
         } else {
           if (su.data!.isNotEmpty) {
             _userCache = su.data!.first;
           }
         }
-        
+
         if (_userCache == null) {
           return const Center(child: CircularProgressIndicator());
         }
         user = _userCache!;
-        
+
+        // Inicializar streams de localización una sola vez.
+        final addr = user?.address;
+        final database2 = Provider.of<Database>(context, listen: false);
+        if (_countryStream == null && (addr?.country ?? '').isNotEmpty) {
+          _countryStream = database2.countryStream(addr!.country);
+        }
+        if (_provinceStream == null && (addr?.province ?? '').isNotEmpty) {
+          _provinceStream = database2.provinceStream(addr!.province);
+        }
+        if (_cityStream == null && (addr?.city ?? '').isNotEmpty) {
+          _cityStream = database2.cityStream(addr!.city);
+        }
+
         return StreamBuilder<List<Experience>>(
-          stream: database.myExperiencesStream(user?.userId ?? ''),
+          stream: _experiencesStream,
           builder: (context, expSnapshot) {
-            if (!expSnapshot.hasData) return const Center(child: CircularProgressIndicator());
+            if (!expSnapshot.hasData)
+              return const Center(child: CircularProgressIndicator());
             myExperiences = expSnapshot.data;
 
             // Use LocationCache for competencies instead of a new stream listener.
             List<Competency> competencies = LocationCache.instance.competencies;
             final competenciesIds = user!.competencies.keys.toList();
-            
+
             final filtered = competencies
                 .where((c) => competenciesIds.contains(c.id))
                 .toList();
 
             final competenciesNames = <String>[];
             for (final c in filtered) {
-              final status = user!.competencies[c.id] ?? StringConst.BADGE_EMPTY;
-              if (c.name.isNotEmpty && status != StringConst.BADGE_EMPTY && status != StringConst.BADGE_IDENTIFIED ) {
+              final status =
+                  user!.competencies[c.id] ?? StringConst.BADGE_EMPTY;
+              if (c.name.isNotEmpty &&
+                  status != StringConst.BADGE_EMPTY &&
+                  status != StringConst.BADGE_IDENTIFIED) {
                 if (!competenciesNames.contains(c.name)) {
                   competenciesNames.add(c.name);
                 }
@@ -171,18 +205,21 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             myCustomPhone = myPhone;
 
             myCustomCompetencies = competenciesNames.map((e) => e).toList();
-            mySelectedCompetencies = List.generate(myCustomCompetencies.length, (i) => i);
+            mySelectedCompetencies =
+                List.generate(myCustomCompetencies.length, (i) => i);
 
             final myDataOfInterest = user?.dataOfInterest ?? [];
             myCustomDataOfInterest = myDataOfInterest.map((e) => e).toList();
-            mySelectedDataOfInterest = List.generate(myCustomDataOfInterest.length, (i) => i);
+            mySelectedDataOfInterest =
+                List.generate(myCustomDataOfInterest.length, (i) => i);
 
             final myLanguages = user?.languagesLevels ?? [];
             myCustomLanguages = myLanguages.map((e) => e).toList();
-            mySelectedLanguages = List.generate(myCustomLanguages.length, (i) => i);
+            mySelectedLanguages =
+                List.generate(myCustomLanguages.length, (i) => i);
 
             _photo = user!.profilePic?.src ?? "";
-            
+
             if (downloadStep) {
               return MyCvModelsPage(
                   user: user,
@@ -217,7 +254,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   myReferences: myReferences,
                   myCustomReferences: myCustomReferences,
                   mySelectedReferences: mySelectedReferences,
-                  myMaxEducation: '',
+                  myMaxEducation: myMaxEducation?.label ?? "",
                   onBack: () {
                     setState(() {
                       downloadStep = false;
@@ -226,14 +263,16 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             }
 
             if (widget.mini) {
-              return _myCurriculumMini(context, user, _photo, competenciesNames);
+              return _myCurriculumMini(
+                  context, user, _photo, competenciesNames);
             } else {
               if (user!.cv_state == 'draft' || user!.cv_state == 'blank') {
                 return CvWizard(user: user!);
               } else {
                 return Responsive.isDesktop(context)
                     ? _myCurriculumWeb(context, user, _photo, competenciesNames)
-                    : _myCurriculumMobile(context, user, _photo, competenciesNames);
+                    : _myCurriculumMobile(
+                        context, user, _photo, competenciesNames);
               }
             }
           },
@@ -330,30 +369,30 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         ),
         SpaceW20(),
         Container(
-            width: 600,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SpaceH50(),
-                Text(
-                  '${user?.firstName} ${user?.lastName}',
-                  style: textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
-                      color: AppColors.primary900),
-                ),
-                SpaceH30(),
-                _buildMyEducation(context, user),
-                SpaceH30(),
-                _buildMySecondaryEducation(context, user),
-                SpaceH30(),
-                _buildMyExperiences(context, user),
-                SpaceH30(),
-                _buildMyCompetencies(context, user),
-                SpaceH30(),
-                _buildFinalCheck(context, user),
-                SpaceH30(),
+          width: 600,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SpaceH50(),
+              Text(
+                '${user?.firstName} ${user?.lastName}',
+                style: textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: Responsive.isDesktop(context) ? 45.0 : 32.0,
+                    color: AppColors.primary900),
+              ),
+              SpaceH30(),
+              _buildMyEducation(context, user),
+              SpaceH30(),
+              _buildMySecondaryEducation(context, user),
+              SpaceH30(),
+              _buildMyExperiences(context, user),
+              SpaceH30(),
+              _buildMyCompetencies(context, user),
+              SpaceH30(),
+              _buildFinalCheck(context, user),
+              SpaceH30(),
             ],
           ),
         ),
@@ -379,7 +418,12 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             MainContainer(
               //height: MediaQuery.of(context).size.height,
               padding: EdgeInsets.all(Sizes.mainPadding * 2),
-              margin: EdgeInsets.only(top: Sizes.kDefaultPaddingDouble * 2.5),
+              margin: EdgeInsets.only(
+                top: Sizes.kDefaultPaddingDouble * 2.5,
+                left: 10,
+                right: 10,
+                bottom: 20,
+              ),
               child: Column(
                 children: [
                   Row(
@@ -471,133 +515,90 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
       String profilePic, List<String> competenciesNames) {
     final textTheme = Theme.of(context).textTheme;
     return SingleChildScrollView(
-      child: Container(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: Constants.mainPadding, vertical: Constants.mainPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: Constants.mainPadding),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Responsive.isMobile(context)
-                      ? InkWell(
-                          onTap: () {
-                            setStateIfMounted(() {
-                              WebHome.controller.selectIndex(0);
-                            });
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(ImagePath.ARROW_B, height: 30),
-                              Spacer(),
-                              CustomTextMediumBold(text: StringConst.MY_CV),
-                              Spacer(),
-                              SizedBox(width: 30),
-                            ],
-                          ),
-                        )
-                      : Container(),
-                  Responsive.isMobile(context) ? Container() : SpaceH12(),
-                  _buildMyProfilePhoto(user),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${user?.firstName} ${user?.lastName}',
-                        style: textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: AppColors.primary900),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                  Container(
-                    height: 34,
-                    child: PillTooltip(
-                      title: StringConst.PILL_HOW_TO_DO_CV,
-                      pillId: TrainingPill.HOW_TO_DO_CV_ID,
-                    ),
-                  ),
-                  SpaceH24(),
-                  _buildMyEducation(context, user),
-                  SpaceH24(),
-                  _buildMySecondaryEducation(context, user),
-                  SpaceH24(),
-                  _buildMyExperiences(context, user),
-                  SpaceH24(),
-                  _buildMyCompetencies(context, user),
-                ],
-              ),
+            // Row 1: Back arrow and button "previsualizar y descargar"
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                  onTap: () {
+                    setStateIfMounted(() {
+                      WebHome.controller.selectIndex(0);
+                    });
+                  },
+                  child: Image.asset(ImagePath.ARROW_B, height: 30),
+                ),
+                _buildDownloadCV(),
+              ],
             ),
+            SpaceH16(),
+            // Row 2: Title "Mi currículum" aligned to the left
+            CustomTextMediumBold(text: StringConst.MY_CV),
+            SpaceH12(),
+            // Divider
+            Divider(color: AppColors.greyBorder, thickness: 1, height: 24),
+            // Header structure with photo, name, and information pill
+            _buildMyProfilePhoto(user),
+            SpaceH12(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    '${user?.firstName} ${user?.lastName}',
+                    style: textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: AppColors.primary900),
+                  ),
+                ),
+              ],
+            ),
+            SpaceH8(),
             Container(
-              padding: EdgeInsets.all(Constants.mainPadding),
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  AppColors.primary400.withOpacity(0.15),
-                  AppColors.primary020.withOpacity(0.13)
-                ],
-              )),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SpaceH24(),
-                  CustomTextTitle(
-                      title: StringConst.PERSONAL_DATA.toUpperCase(),
-                      color: AppColors.primary900),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.mail,
-                        color: Colors.black.withOpacity(0.7),
-                        size: 16,
-                      ),
-                      SpaceW4(),
-                      CustomTextSmall(text: user?.email ?? ''),
-                    ],
-                  ),
-                  SpaceH8(),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.phone,
-                        color: Constants.darkGray,
-                        size: 12.0,
-                      ),
-                      SpaceW4(),
-                      Text(
-                        user?.phone ?? '',
-                        style: textTheme.bodySmall?.copyWith(
-                            fontSize: Responsive.isDesktop(context) ? 16 : 14.0,
-                            color: Constants.darkGray),
-                      ),
-                    ],
-                  ),
-                  SpaceH8(),
-                  _buildMyLocation(context, user),
-                  SpaceH24(),
-                  _buildAboutMe(context, user),
-                  SpaceH24(),
-                  _buildMyDataOfInterest(context, user),
-                  SpaceH24(),
-                  _buildMyLanguages(context, user),
-                  SpaceH24(),
-                  _buildMyReferences(context, user),
-                  SpaceH24(),
-                  _buildFinalCheck(context, user),
-                  SpaceH24(),
-                ],
+              height: 34,
+              child: PillTooltip(
+                title: StringConst.PILL_HOW_TO_DO_CV,
+                pillId: TrainingPill.HOW_TO_DO_CV_ID,
               ),
             ),
+            SpaceH24(),
+            // 1. Datos personales
+            _buildPersonalData(context, user),
+            Divider(color: AppColors.greyBorder, thickness: 1, height: 40),
+            // 2. Un poco más sobre mí
+            _buildAboutMe(context, user),
+            Divider(color: AppColors.greyBorder, thickness: 1, height: 40),
+            // 3. Nivel educativo
+            _buildMyEducation(context, user),
+            SpaceH24(),
+            _buildMySecondaryEducation(context, user),
+            SpaceH24(),
+            // 4. Experiencias
+            _buildMyExperiences(context, user),
+            SpaceH24(),
+            // 5. Mis competencias
+            _buildMyCompetencies(context, user),
+            SpaceH24(),
+            // 6. Datos de interés
+            _buildMyDataOfInterest(context, user),
+            SpaceH24(),
+            // 7. Idiomas
+            _buildMyLanguages(context, user),
+            SpaceH24(),
+            // 8. Referencias
+            _buildMyReferences(context, user),
+            SpaceH24(),
+            // 9. Final check (Agree CV)
+            _buildFinalCheck(context, user),
+            SpaceH24(),
           ],
         ),
       ),
@@ -637,9 +638,9 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   Widget _buildDownloadCV() {
     return EnredaButton(
       borderRadius: BorderRadiusGeometry.all(Radius.circular(25)),
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 50, vertical: 10),
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 20, vertical: 10),
       buttonTitle: "Previsualizar y descargar",
-      width: 100,
+      width: 0,
       onPressed: () async {
         final checkAgreeDownload = user?.checkAgreeCV ?? false;
         if (!checkAgreeDownload) {
@@ -788,23 +789,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   ],
                 ),
               ),
-            ),
-          ),
-          Positioned(
-            right: 10,
-            top: 0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Responsive.isDesktop(context)
-                    ? Container()
-                    : _buildDownloadCV(),
-                Responsive.isDesktop(context) ? Container() : SpaceH50(),
-                /*PillTooltip(
-                  title: StringConst.PILL_TRAVEL_BEGINS,
-                  pillId: TrainingPill.TRAVEL_BEGINS_ID,
-                ),*/
-              ],
             ),
           ),
         ],
@@ -961,19 +945,25 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                       .where((experience) => experience.type == 'Formativa')
                       .toList();
                   if (myEducationalExperiencies.isNotEmpty) {
-                    final areEduactions = myEducationalExperiencies.any((exp) => exp.education != null && exp.education!.isNotEmpty);
+                    final areEduactions = myEducationalExperiencies.any((exp) =>
+                        exp.education != null && exp.education!.isNotEmpty);
                     if (areEduactions) {
-                      final myEducations = educations.where((edu) => myEducationalExperiencies.any((exp) => exp.education == edu.label)).toList();
+                      final myEducations = educations
+                          .where((edu) => myEducationalExperiencies
+                              .any((exp) => exp.education == edu.label))
+                          .toList();
                       myEducations.sort((a, b) => a.order.compareTo(b.order));
-                      if(myEducations.isNotEmpty){
+                      if (myEducations.isNotEmpty) {
                         myMaxEducation = myEducations.first;
                       } else {
-                        myMaxEducation = Education(label: "", value: "", order: 0);
+                        myMaxEducation =
+                            Education(label: "", value: "", order: 0);
                       }
                     } else {
-                      myMaxEducation = Education(label: "", value: "", order: 0);
+                      myMaxEducation =
+                          Education(label: "", value: "", order: 0);
                     }
-                    return CustomTextBody(text: myMaxEducation?.label??"");
+                    return CustomTextBody(text: myMaxEducation?.label ?? "");
                   } else {
                     return Container();
                   }
@@ -1045,8 +1035,6 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   }
 
   Widget _buildPersonalData(BuildContext context, UserEnreda? user) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1055,33 +1043,37 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           title: StringConst.PERSONAL_DATA.toUpperCase(),
           color: AppColors.primary900,
         ),
+        SpaceH8(),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
               Icons.mail,
               color: Constants.darkGray,
-              size: 12.0,
+              size: 16.0,
             ),
             SpaceW4(),
             Flexible(
-              child: Text(
-                user?.email ?? '',
-                style: textTheme.bodySmall?.copyWith(),
+              child: CustomTextSmall(
+                text: user?.email ?? '',
               ),
             ),
           ],
         ),
+        SpaceH8(),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
               Icons.phone,
               color: Constants.darkGray,
-              size: 12.0,
+              size: 16.0,
             ),
             SpaceW4(),
-            Text(
-              user?.phone ?? '',
-              style: textTheme.bodySmall?.copyWith(),
+            Flexible(
+              child: CustomTextSmall(
+                text: user?.phone ?? '',
+              ),
             ),
           ],
         ),
@@ -1092,25 +1084,21 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   }
 
   Widget _buildMyLocation(BuildContext context, UserEnreda? user) {
-    final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
-    Country? myCountry;
-    Province? myProvince;
-    City? myCity;
 
     return StreamBuilder<Country>(
-        stream: database.countryStream(user?.address?.country),
+        stream: _countryStream,
         builder: (context, snapshot) {
-          myCountry = snapshot.data;
+          final myCountry = snapshot.data;
           return StreamBuilder<Province>(
-              stream: database.provinceStream(user?.address?.province),
+              stream: _provinceStream,
               builder: (context, snapshot) {
-                myProvince = snapshot.data;
+                final myProvince = snapshot.data;
 
                 return StreamBuilder<City>(
-                    stream: database.cityStream(user?.address?.city),
+                    stream: _cityStream,
                     builder: (context, snapshot) {
-                      myCity = snapshot.data;
+                      final myCity = snapshot.data;
 
                       myLocation =
                           '${myCity?.name ?? ''}, ${myProvince?.name ?? ''}, ${myCountry?.name ?? ''}';
@@ -1124,11 +1112,13 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
 
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: Responsive.isMobile(context)
+                            ? CrossAxisAlignment.center
+                            : CrossAxisAlignment.start,
                         children: [
                           Icon(
                             Icons.location_on,
-                            color: Colors.black.withOpacity(0.7),
+                            color: Constants.darkGray,
                             size: 16,
                           ),
                           SpaceW4(),
@@ -1404,7 +1394,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ],
         ),
         _buildMyCareer(context, user),
-        SpaceH20(),
+        Divider(color: AppColors.greyBorder, thickness: 1, height: 40),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -1436,7 +1426,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               .where((experience) => experience.type == 'Formativa')
               .toList();
           myCustomEducation = myEducation!.toList();
-          mySelectedEducation = List.generate(myCustomEducation.length, (i) => i);
+          mySelectedEducation =
+              List.generate(myCustomEducation.length, (i) => i);
           return Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -1447,15 +1438,17 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 ? Wrap(
                     children: myEducation!
                         .map((e) => Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SpaceH12(),
                                 Container(
                                   width: double.infinity,
-                                  child: ExperienceTile(experience: e, type: e.type),
+                                  child: ExperienceTile(
+                                      experience: e, type: e.type),
                                 ),
-                                Divider(color: AppColors.greyBorder,),
+                                Divider(
+                                  color: AppColors.greyBorder,
+                                ),
                               ],
                             ))
                         .toList(),
@@ -1503,7 +1496,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               .where((experience) => experience.type == 'Complementaria')
               .toList();
           mySecondaryCustomEducation = mySecondaryEducation!.toList();
-          mySecondarySelectedEducation = List.generate(mySecondaryCustomEducation.length, (i) => i);
+          mySecondarySelectedEducation =
+              List.generate(mySecondaryCustomEducation.length, (i) => i);
           return Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -1514,15 +1508,17 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 ? Wrap(
                     children: mySecondaryEducation!
                         .map((e) => Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SpaceH12(),
                                 Container(
                                   width: double.infinity,
-                                  child: ExperienceTile(experience: e, type: e.type),
+                                  child: ExperienceTile(
+                                      experience: e, type: e.type),
                                 ),
-                                Divider(color: AppColors.greyBorder,),
+                                Divider(
+                                  color: AppColors.greyBorder,
+                                ),
                               ],
                             ))
                         .toList(),
@@ -1567,7 +1563,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               .where((experience) => experience.type == 'Profesional')
               .toList();
           myCustomExperiences = myProfExperiences.toList();
-          mySelectedExperiences = List.generate(myCustomExperiences.length, (i) => i);
+          mySelectedExperiences =
+              List.generate(myCustomExperiences.length, (i) => i);
           return Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -1578,15 +1575,17 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 ? Wrap(
                     children: myProfExperiences
                         .map((e) => Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SpaceH4(),
                                 Container(
                                   width: double.infinity,
-                                  child: ExperienceTile(experience: e, type: e.type),
+                                  child: ExperienceTile(
+                                      experience: e, type: e.type),
                                 ),
-                                Divider(color: AppColors.greyBorder,),
+                                Divider(
+                                  color: AppColors.greyBorder,
+                                ),
                               ],
                             ))
                         .toList(),
@@ -1631,7 +1630,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
               .where((experience) => experience.type == 'Personal')
               .toList();
           myPersonalCustomExperiences = myPersonalExperiences!.toList();
-          myPersonalSelectedExperiences = List.generate(myPersonalCustomExperiences.length, (i) => i);
+          myPersonalSelectedExperiences =
+              List.generate(myPersonalCustomExperiences.length, (i) => i);
           return Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -1642,15 +1642,17 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 ? Wrap(
                     children: myPersonalExperiences!
                         .map((e) => Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SpaceH4(),
                                 Container(
                                   width: double.infinity,
-                                  child: ExperienceTile(experience: e, type: e.type),
+                                  child: ExperienceTile(
+                                      experience: e, type: e.type),
                                 ),
-                                Divider(color: AppColors.greyBorder,),
+                                Divider(
+                                  color: AppColors.greyBorder,
+                                ),
                               ],
                             ))
                         .toList(),

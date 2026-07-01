@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:enreda_app/app/home/curriculum/pdf_generator/cv_multiple_pages.dart';
@@ -8,13 +9,18 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_filex/open_filex.dart';
 
 import 'package:pdf/pdf.dart';
 
 import 'package:printing/printing.dart';
+import 'package:enreda_app/values/values.dart';
 import '../../../../utils/const.dart';
 import '../../models/experience.dart';
 import 'data.dart';
+import 'package:enreda_app/utils/responsive.dart';
 
 class MyCvMultiplePages extends StatefulWidget {
   const MyCvMultiplePages({
@@ -138,6 +144,170 @@ class MyAppState extends State<MyCvMultiplePages> {
   Widget build(BuildContext context) {
     // Custom Colors
     final Color tealColor = Color(0xFF005B5B);
+
+    if (Responsive.isMobile(context)) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: null, // No internal AppBar on mobile to avoid double AppBars
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Back & Download Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Image.asset(ImagePath.ARROW_B, height: 30),
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        final bytes = await _generatePdf(PdfPageFormat.a4);
+                        final appDocDir = await getApplicationDocumentsDirectory();
+                        final appDocPath = appDocDir.path;
+                        final filename = '${widget.user?.firstName ?? ""} ${widget.user?.lastName ?? ""} CV.pdf'.trim();
+                        final file = File('$appDocPath/$filename');
+                        await file.writeAsBytes(bytes);
+                        await OpenFilex.open(file.path);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF00D0CE),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Descargar',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Icon(Icons.download, color: Colors.white, size: 20),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Info Banner
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      ImagePath.ICON_EXCLAMATION,
+                      width: 24,
+                      height: 24,
+                    ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Elige una plantilla para descargar tu currículum.',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Container(height: 1, color: Colors.grey[200]),
+                const SizedBox(height: 16),
+
+                // Template Selector
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(examplesMultiplePages.length, (index) {
+                    final isSelected = _selectedTemplateIndex == index;
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              _selectedTemplateIndex = index;
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                            decoration: BoxDecoration(
+                              color: isSelected ? const Color(0xFFA7E4E1) : Colors.white,
+                              border: Border.all(color: const Color(0xFF005B5B), width: 1.5),
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.description_outlined,
+                                  color: const Color(0xFF005B5B),
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 4),
+                                Flexible(
+                                  child: Text(
+                                    examplesMultiplePages[index].name,
+                                    style: const TextStyle(
+                                      color: Color(0xFF005B5B),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+                const SizedBox(height: 16),
+
+                // PDF Preview Area
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey[300]!, width: 1.5),
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: PdfPreview(
+                        key: ValueKey(_selectedTemplateIndex),
+                        build: (format) => _generatePdf(format),
+                        useActions: false,
+                        canChangePageFormat: false,
+                        canChangeOrientation: false,
+                        canDebug: false,
+                        initialPageFormat: PdfPageFormat.a4,
+                        onPrinted: _showPrintedToast,
+                        onShared: _showSharedToast,
+                        scrollViewDecoration: const BoxDecoration(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -304,30 +474,58 @@ class MyAppState extends State<MyCvMultiplePages> {
           Container(width: 1, color: Colors.grey[300]),
           // PDF Preview Area
           Expanded(
-            child: PdfPreview(
-              key: ValueKey(_selectedTemplateIndex),
-              maxPageWidth: 700,
-              build: (format) => _generatePdf(format),
-              // We hide the default actions since we have custom ones in AppBar
-              // Or we can keep them for functionality if the custom ones are just for show/external trigger.
-              // Given the constraints, let's keep default actions visible for now or hide if we implement the logic.
-              // The user asked for design, let's trust PdfPreview's own toolbar for actual functional heavy lifting for now
-              // but hiding it to match the "clean" look of the screenshot might be desired.
-              // The screenshot shows NO PdfPreview toolbar.
-              // So we should try: useActions: false.
-              useActions: false,
-              canChangePageFormat: false,
-              canChangeOrientation: false,
-              canDebug: false,
-              initialPageFormat: PdfPageFormat.a4,
-              onPrinted: _showPrintedToast,
-              onShared: _showSharedToast,
-              // To make our custom buttons work, we would need to generate the PDF and call Printing.layoutPdf or similar.
-              // But PdfPreview wraps a lot of that.
-              // For this iteration, we focus on the UI layout. Functionality of custom buttons to trigger PdfPreview actions
-              // is complex without accessing its state. We will leave standard functionality accessible via PdfPreview if we don't hide it,
-              // or just impl the UI as requested.
-              // The screenshot implies the PdfPreview is just the document viewer.
+            child: Container(
+              color: const Color(0xFFF5F7FB),
+              child: Column(
+                children: [
+                  const SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: 660),
+                      width: double.infinity,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset(
+                            ImagePath.ICON_EXCLAMATION,
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Elige una plantilla para descargar tu currículum.',
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: PdfPreview(
+                      key: ValueKey(_selectedTemplateIndex),
+                      maxPageWidth: 700,
+                      build: (format) => _generatePdf(format),
+                      useActions: false,
+                      canChangePageFormat: false,
+                      canChangeOrientation: false,
+                      canDebug: false,
+                      initialPageFormat: PdfPageFormat.a4,
+                      onPrinted: _showPrintedToast,
+                      onShared: _showSharedToast,
+                      scrollViewDecoration: const BoxDecoration(
+                        color: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

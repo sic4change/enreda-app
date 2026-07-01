@@ -34,6 +34,18 @@ class _ChatPillVideoState extends State<ChatPillVideo> {
   }
 
   @override
+  void dispose() {
+    if (_isVideoVisible) {
+      try {
+        _controller.close();
+      } catch (e) {
+        debugPrint('Error closing YoutubePlayerController: $e');
+      }
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
 
@@ -159,6 +171,7 @@ class _ChatPillVideoState extends State<ChatPillVideo> {
         showControls: true,
         mute: false,
         showFullscreenButton: false,
+        origin: 'https://www.youtube-nocookie.com',
       ),
     );
     setState(() {

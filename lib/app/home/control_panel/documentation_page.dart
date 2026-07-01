@@ -31,7 +31,6 @@ class ParticipantDocumentationList extends StatefulWidget {
 }
 
 class _ParticipantDocumentationListState extends State<ParticipantDocumentationList> {
-  List<DocumentationParticipant> _userDocuments = [];
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +58,9 @@ class _ParticipantDocumentationListState extends State<ParticipantDocumentationL
                 !snapshot.hasData) {
               return _emptyCard(context, '');
             }
-            _userDocuments = snapshot.data ?? const [];
-            // Sort order comes from the Firestore query (createDate desc) —
-            // no client-side re-sort needed.
+            final userDocuments = snapshot.data ?? const <DocumentationParticipant>[];
 
-            return _userDocuments.isEmpty
+            return userDocuments.isEmpty
                 ? _emptyCard(context, StringConst.NO_DOCUMENTS)
                 : Container(
                     margin: Responsive.isMobile(context) ? const EdgeInsets.all(0) :
@@ -87,8 +84,8 @@ class _ParticipantDocumentationListState extends State<ParticipantDocumentationL
                             child: ListView(
                               controller: controller,
                               scrollDirection: Axis.horizontal,
-                              children: _userDocuments.map((document) {
-                                return _documentTile(context, document, widget.participantUser);
+                              children: userDocuments.map((document) {
+                                return _documentTile(context, document);
                               }).toList(),
                             ),
                           ),
@@ -166,7 +163,7 @@ class _ParticipantDocumentationListState extends State<ParticipantDocumentationL
   }
 
 
-  Widget _documentTile(BuildContext context, DocumentationParticipant document, UserEnreda user){
+  Widget _documentTile(BuildContext context, DocumentationParticipant document){
     final url = document.urlDocument ?? '';
     return Container(
       padding: const EdgeInsets.only(right: 10),

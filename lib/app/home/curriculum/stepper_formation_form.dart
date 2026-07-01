@@ -11,6 +11,7 @@ import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:enreda_app/services/location_cache.dart';
 
 import '../../../common_widgets/flex_row_column.dart';
 import '../../anallytics/analytics.dart';
@@ -46,9 +47,14 @@ class StepperFormationFormState extends State<StepperFormationForm> {
   final _locationController = TextEditingController();
   final  _extraDataController = TextEditingController();
 
+  late Future<void> _warmUpFuture;
+
   @override
   void initState() {
     super.initState();
+    final database = Provider.of<Database>(context, listen: false);
+    _warmUpFuture = LocationCache.instance.warmUpAll(database);
+
     final _experience = widget.experience;
     if(widget.isMainEducation){
       _type = 'Formativa';
@@ -67,40 +73,50 @@ class StepperFormationFormState extends State<StepperFormationForm> {
   }
 
   @override
+  void dispose() {
+    _nameFormationController.dispose();
+    _organizationController.dispose();
+    _locationController.dispose();
+    _extraDataController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final database = Provider.of<Database>(context, listen: false);
+    return FutureBuilder(
+      future: _warmUpFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    return StatefulBuilder(builder: (context, setState) {
-      return Card(
-        elevation: 0,
-        color: Colors.transparent,
-        child: StreamBuilder<List<Education>>(
-          stream: database.educationStream(),
-            builder: (context, snapshotEducation){
+        return StatefulBuilder(builder: (context, setState) {
+          final educations = LocationCache.instance.educations;
+          educationItems = educations
+              .map((Education education) => DropdownMenuItem<Education>(
+                    value: education,
+                    child: Text(education.label),
+                  ))
+              .toList();
 
-            if (snapshotEducation.hasData) {
-            educationItems = snapshotEducation.data!.map((Education education) =>
-              DropdownMenuItem<Education>(
-              value: education,
-              child: Text(education.label),
-              ))
-                  .toList();
-
-            if(widget.experience != null && widget.experience!.education != '' && _selectedEducation == null){
-              educationItems.forEach((element) {
-                if(element.value!.label == widget.experience!.education){
-                  _selectedEducation = element.value;
-                } else{
-                  _selectedEducation = null;
-                }
-              });
+          if (widget.experience != null &&
+              widget.experience!.education != '' &&
+              _selectedEducation == null) {
+            for (var element in educationItems) {
+              if (element.value!.label == widget.experience!.education) {
+                _selectedEducation = element.value;
+              }
             }
-            }
+          }
 
-            return _buildForm(context, setState);
-            })
-      );
-    });
+          return Card(
+            elevation: 0,
+            color: Colors.transparent,
+            child: _buildForm(context, setState),
+          );
+        });
+      },
+    );
   }
 
   Form _buildForm(BuildContext context, StateSetter setState) {

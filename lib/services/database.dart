@@ -51,7 +51,6 @@ import '../app/home/models/activity.dart';
 import '../app/home/models/question.dart';
 import '../app/home/models/gamificationFlags.dart';
 import '../app/home/models/sesion.dart';
-import 'package:async/async.dart' show StreamGroup;
 
 /// Opaque cursor returned by [Database.resourcesPage]. Hides the underlying
 /// Firestore [DocumentSnapshot] from UI layers so the resources browse flow
@@ -168,6 +167,7 @@ abstract class Database {
   /// previously read `user.personalDocuments`, which is a vestigial array
   /// no current upload flow writes to.
   Stream<List<DocumentationParticipant>> documentationParticipantStreamByUserId(String userId, {int limit = 50});
+  Stream<List<DocumentationParticipant>> documentationParticipantStream(String userId);
   Stream<List<JobOfferApplication>> applicantStreamByJobOffer(String? jobOfferId, String? userId);
   Stream<List<Sesion>> mySesionesStream(String participantId);
 
@@ -1044,6 +1044,14 @@ class FirestoreDatabase implements Database {
         // so the latest upload should be the first card.
         sort: (lhs, rhs) => rhs.createDate.compareTo(lhs.createDate),
       );
+
+  @override
+  Stream<List<DocumentationParticipant>> documentationParticipantStream(String userId) => _service.collectionStream(
+    path: APIPath.documentationParticipants(),
+    queryBuilder: (query) => query.where('userId', isEqualTo: userId),
+    builder: (data, documentId) => DocumentationParticipant.fromMap(data, documentId),
+    sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
+  );
 
   @override
   Stream<List<JobOfferApplication>> applicantStreamByJobOffer(String? jobOfferId, String? userId) {

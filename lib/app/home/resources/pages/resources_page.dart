@@ -202,6 +202,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
         params: const YoutubePlayerParams(
           showControls: true,
           showFullscreenButton: true,
+          origin: 'https://www.youtube-nocookie.com',
         ),
       );
     });
@@ -857,13 +858,28 @@ class _ResourcesPageState extends State<ResourcesPage> {
       child: StreamBuilder<List<TrainingPill>>(
           stream: database.filteredTrainingPillStream(filterTrainingPill),
           builder: (context, snapshot) {
-            double? mainAxisExtentValue;
-            double? maxCrossAxisExtentValue;
-            bool showDescription = true;
-            if (snapshot.hasData && snapshot.data!.where((t) => t.description.isNotEmpty).length == 0) {
-              mainAxisExtentValue = Responsive.isDesktopS(context) ? 310 : 400;
-              maxCrossAxisExtentValue = Responsive.isDesktopS(context) ? 350 : 490;
-              showDescription = false;
+            if (snapshot.hasError) {
+              return ListItemBuilderGrid<TrainingPill>(
+                scrollController: ScrollController(),
+                snapshot: snapshot,
+                itemBuilder: (context, trainingPill) => Container(),
+              );
+            }
+
+            if (snapshot.hasData) {
+              double? mainAxisExtentValue;
+              double? maxCrossAxisExtentValue;
+              bool showDescription = true;
+
+              if (snapshot.data!.where((t) => t.description.isNotEmpty).isEmpty) {
+                mainAxisExtentValue = Responsive.isDesktopS(context) ? 310 : 400;
+                maxCrossAxisExtentValue = Responsive.isDesktopS(context) ? 350 : 490;
+                showDescription = false;
+              } else {
+                mainAxisExtentValue = Responsive.isDesktopS(context) ? 410 : 500;
+                maxCrossAxisExtentValue = Responsive.isDesktopS(context) ? 350 : 490;
+                showDescription = true;
+              }
 
               return ListItemBuilderGrid<TrainingPill>(
                   scrollController: ScrollController(),
@@ -872,6 +888,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   mainAxisExtentValue: mainAxisExtentValue,
                   itemBuilder: (context, trainingPill) {
                     trainingPill.setTrainingPillCategoryName();
+                    _controllers[trainingPill.id] ??= YoutubePlayerController(
+                      params: const YoutubePlayerParams(
+                        showControls: true,
+                        showFullscreenButton: true,
+                        origin: 'https://www.youtube-nocookie.com',
+                      ),
+                    );
                     return Container(
                       key: Key('trainingPill-${trainingPill.id}'),
                       child: TrainingPillListTile(
@@ -886,7 +909,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
             }
 
             return Center(child: CircularProgressIndicator(),);
-
           }),
     );
   }

@@ -659,6 +659,10 @@ class _ResourceListTileState extends State<ResourceListTile> {
       final database = Provider.of<Database>(context, listen: false);
       resource.likes.add(auth.currentUser!.uid);
       await database.setResource(resource);
+      await database.updateUserEnredaField(
+        auth.currentUser!.uid,
+        {'resourcesLike': FieldValue.arrayUnion([resource.resourceId])},
+      );
       setState(() {
         widget.resource;
       });
@@ -669,6 +673,10 @@ class _ResourceListTileState extends State<ResourceListTile> {
     final database = Provider.of<Database>(context, listen: false);
     resource.likes.remove(userId);
     await database.setResource(resource);
+    await database.updateUserEnredaField(
+      userId,
+      {'resourcesLike': FieldValue.arrayRemove([resource.resourceId])},
+    );
     setState(() {
       widget.resource;
     });

@@ -20,7 +20,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "org.sic4change.enreda_app"
-    compileSdkVersion 35
+    compileSdkVersion 36
     ndkVersion "29.0.14033849"
 
     sourceSets {
@@ -30,7 +30,7 @@ android {
     defaultConfig {
         applicationId "org.sic4change.enreda_app"
         minSdkVersion 26
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode 38
         versionName '1.0.38'
         multiDexEnabled true

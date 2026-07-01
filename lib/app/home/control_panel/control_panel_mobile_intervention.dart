@@ -294,7 +294,7 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                             ),
                             child: GamificationItem(
                               imagePath: ImagePath.GAMIFICATION_RESOURCES_ICON,
-                              progress: ((widget.user!.resourcesAccessCount?? 0) / 15) * 100,
+                              progress: (((widget.user!.resourcesAccessCount?? 0) / 15) * 100).clamp(0.0, 100.0),
                               progressText: "${widget.user!.resourcesAccessCount}",
                               title: "RECURSOS INSCRITOS",
                             ),

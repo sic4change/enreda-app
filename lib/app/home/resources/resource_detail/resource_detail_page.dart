@@ -12,6 +12,7 @@ import 'package:enreda_app/app/home/resources/streams/competencies_by_resource.d
 import 'package:enreda_app/app/home/resources/streams/interests_by_resource.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
+import 'package:enreda_app/common_widgets/show_toast.dart';
 import 'package:enreda_app/common_widgets/show_exception_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/auth.dart';
@@ -722,8 +723,97 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   Widget _buildRegisterButton(BuildContext context, Resource resource) {
     final auth = Provider.of<AuthBase>(context);
-    final userId = auth.currentUser?.uid ?? '';
+    final database = Provider.of<Database>(context, listen: false);
+    final userId = auth.currentUser?.uid;
     final textTheme = Theme.of(context).textTheme;
+
+    if (userId == null) {
+      return _buildDefaultJoinButton(context, resource, auth, '', textTheme);
+    }
+
+    return StreamBuilder<UserEnreda>(
+      stream: database.enredaUserStream(userId),
+      builder: (context, snapshot) {
+        final user = snapshot.data;
+        final bool isEnrolled = user != null && user.resourcesEnrolled.contains(resource.resourceId);
+
+        if (isEnrolled) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 15.0,
+                runSpacing: 10.0,
+                children: [
+                  TextButton(
+                    onPressed: () async {
+                      await database.updateUserEnredaField(
+                        userId,
+                        {'resourcesEnrolled': FieldValue.arrayRemove([resource.resourceId])},
+                      );
+
+                      if (resource.participants.contains(userId)) {
+                        resource.participants.remove(userId);
+                        resource.assistants = resource.participants.length.toString();
+                        await database.setResource(resource);
+                      }
+
+                      showToast(context,
+                          title: 'Ha sido eliminado satisfactoriamente al recurso',
+                          color: AppColors.primaryColor);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
+                      child: Text(
+                        'Ya no me interesa',
+                        style: textTheme.bodyMedium?.copyWith(
+                          fontSize: 16,
+                          color: Constants.white,
+                        ),
+                      ),
+                    ),
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(AppColors.red),
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ))),
+                  ),
+                  if (resource.link != null && resource.link!.isNotEmpty)
+                    TextButton(
+                      onPressed: () {
+                        launchExternalBrowserURL(resource.link!);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
+                        child: Text(
+                          'Acceder al recurso',
+                          style: textTheme.bodyMedium?.copyWith(
+                            fontSize: 16,
+                            color: Constants.white,
+                          ),
+                        ),
+                      ),
+                      style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all(Constants.turquoise),
+                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                              ))),
+                    ),
+                ],
+              ),
+            ],
+          );
+        } else {
+          return _buildDefaultJoinButton(context, resource, auth, userId, textTheme);
+        }
+      },
+    );
+  }
+
+  Widget _buildDefaultJoinButton(BuildContext context, Resource resource, AuthBase auth, String userId, TextTheme textTheme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -733,11 +823,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               showAlertNullUser(context, resourceId: resource.resourceId);
             } else if (resource.participants.contains(userId)) {
               removeUserToResource(context: context, userId: userId, resource: resource);
-            } /*else if ((resource.link == null || resource.link!.isEmpty) &&
-                (resource.contactEmail == null || resource.contactEmail!.isEmpty) &&
-                (resource.contactPhone == null || resource.contactPhone!.isEmpty))*/
-            else if (resource.canSignUp!)
-            {
+            } else if (resource.canSignUp!) {
               addUserToResource(context: context, userId: userId, resource: resource);
               setGamificationFlag(context: context, flagId: UserEnreda.FLAG_JOIN_RESOURCE);
             } else if (resource.link != null) {

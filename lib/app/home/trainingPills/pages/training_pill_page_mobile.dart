@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
 import 'package:enreda_app/app/home/resources/resource_actions.dart';
 import 'package:enreda_app/app/home/trainingPills/build_share_training_pill.dart';
@@ -248,8 +249,7 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
 
   Widget playArea() {
     String urlYoutubeVideo = trainingPill.urlVideo;
-    String idYoutubeVideo =
-    urlYoutubeVideo.substring(urlYoutubeVideo.length - 11);
+    String idYoutubeVideo = YoutubePlayerController.convertUrlToId(urlYoutubeVideo) ?? "";
     if (!_isVideoVisible)
       return AspectRatio(
         aspectRatio: 16 / 9,
@@ -264,22 +264,40 @@ class _TrainingPillDetailPageState extends State<TrainingPillDetailPage> {
           },
           child: Stack(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      YoutubePlayerController.getThumbnail(
+              ClipRRect(
+                borderRadius: Responsive.isMobile(context)
+                    ? BorderRadius.circular(10)
+                    : const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                child: Container(
+                  color: AppColors.primary900,
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: CachedNetworkImage(
+                    imageUrl: YoutubePlayerController.getThumbnail(
+                      videoId: idYoutubeVideo,
+                      quality: ThumbnailQuality.max,
+                    ),
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (context, url, error) => CachedNetworkImage(
+                      imageUrl: YoutubePlayerController.getThumbnail(
                         videoId: idYoutubeVideo,
-                        quality: ThumbnailQuality.max,
+                        quality: ThumbnailQuality.standard,
+                      ),
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorWidget: (context, url, error) => Image.asset(
+                        ImagePath.THUMBNAIL_DEFAULT,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    fit: BoxFit.fitWidth,
                   ),
-                  borderRadius: Responsive.isMobile(context)
-                      ? BorderRadius.circular(10)
-                      : BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10)),
                 ),
               ),
               Center(

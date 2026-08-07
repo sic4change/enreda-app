@@ -295,8 +295,10 @@ class _EmailSignInFormChangeNotifierState
   Future<void> _submit() async {
     try {
       await model.submit();
+      if (!mounted) return;
       final database = Provider.of<Database>(context, listen: false);
       final userEnreda = await database.userStream(_emailController.text).first;
+      if (!mounted) return;
       if (userEnreda.isNotEmpty && userEnreda.first.role != "Desempleado") {
         model.updateWith(isLoading: false);
         adminSignOut(context);
@@ -314,12 +316,14 @@ class _EmailSignInFormChangeNotifierState
         }
       }
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
       showExceptionAlertDialog(
         context,
         title: 'Error',
         exception: e,
       );
     } catch (e) {
+      if (!mounted) return;
       showExceptionAlertDialog(
         context,
         title: 'Error',

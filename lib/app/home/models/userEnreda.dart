@@ -48,6 +48,7 @@ class UserEnreda {
     this.resourcesVisited = const [],
     this.resourcesEnrolled = const [],
     this.resourcesDiscarded = const [],
+    this.resourceInvites = const [],
     this.cv_state,
   });
 
@@ -190,6 +191,13 @@ class UserEnreda {
       });
     }
 
+    List<String> resourceInvites = [];
+    if (data['resourceInvites'] != null) {
+      data['resourceInvites'].forEach((resource) {
+        resourceInvites.add(resource.toString());
+      });
+    }
+
     final String? aboutMe = data['aboutMe'];
     final int resourcesAccessCount = data['resourcesAccessCount'] ?? 0;
     final bool? checkAgreeCV = data['checkAgreeCV'];
@@ -269,6 +277,7 @@ class UserEnreda {
       resourcesVisited: resourcesVisited,
       resourcesEnrolled: resourcesEnrolled,
       resourcesDiscarded: resourcesDiscarded,
+      resourceInvites: resourceInvites,
       cv_state: cv_state,
     );
   }
@@ -314,6 +323,7 @@ class UserEnreda {
   final List<String> resourcesVisited;
   final List<String> resourcesEnrolled;
   final List<String> resourcesDiscarded;
+  final List<String> resourceInvites;
   final String? cv_state;
 
   Map<String, dynamic> toMap() {
@@ -355,6 +365,7 @@ class UserEnreda {
       'resourcesVisited': resourcesVisited,
       'resourcesEnrolled': resourcesEnrolled,
       'resourcesDiscarded': resourcesDiscarded,
+      'resourceInvites': resourceInvites,
       'cv_state': cv_state,
     };
   }
@@ -404,6 +415,7 @@ class UserEnreda {
     List<String>? resourcesVisited,
     List<String>? resourcesEnrolled,
     List<String>? resourcesDiscarded,
+    List<String>? resourceInvites,
     String? cv_state,
     List<String>? certifications,
   }) {
@@ -448,6 +460,7 @@ class UserEnreda {
       resourcesVisited: resourcesVisited ?? this.resourcesVisited,
       resourcesEnrolled: resourcesEnrolled ?? this.resourcesEnrolled,
       resourcesDiscarded: resourcesDiscarded ?? this.resourcesDiscarded,
+      resourceInvites: resourceInvites ?? this.resourceInvites,
       cv_state: cv_state ?? this.cv_state,
       certifications: certifications ?? this.certifications,
     );

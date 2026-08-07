@@ -71,22 +71,23 @@ class _MultiSelectListDialogState<V> extends State<MultiSelectListDialog<V>> {
           child: Column(
               children: <Widget> [
                 for (List<MultiSelectDialogItem<V>> items in widget.itemsSet!)
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-                        child: Text(items[0].title, style: textTheme.bodySmall?.copyWith(
-                          height: 1.5,
-                          color: AppColors.primaryColor,
-                          fontWeight: FontWeight.w700,
-                          fontSize: fontSize,
-                        ),),
-                      ),
-                      ListBody(
-                        children: items.map(_buildItem).toList(),
-                      ),
-                    ],
-                  ),
+                  if (items.isNotEmpty)
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                          child: Text(items[0].title, style: textTheme.bodySmall?.copyWith(
+                            height: 1.5,
+                            color: AppColors.primaryColor,
+                            fontWeight: FontWeight.w700,
+                            fontSize: fontSize,
+                          ),),
+                        ),
+                        ListBody(
+                          children: items.map(_buildItem).toList(),
+                        ),
+                      ],
+                    ),
               ]
           ),
         ),

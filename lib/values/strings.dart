@@ -347,6 +347,8 @@ class StringConst {
   static const String ENROLLED_RESOURCES = 'Recursos inscritos';
   static const String FAVORITES_RESOURCES = 'Recursos favoritos';
   static const String DISCARDED_RESOURCES = 'Recursos descartados';
+  static const String INVITED_RESOURCES = 'Recursos recomendados';
+  static const String NO_INVITES_TITLE = '¡Todavía no tienes ningún recurso recomendado!';
   static const String FUNCTIONS = "Funciones";
   static const String RESPONSIBILITIES = "Responsabilidades";
   static const String FORM_DESCRIPTION = "Descripción del puesto";

@@ -102,7 +102,7 @@ class _DiscardedResourcesPageState extends State<DiscardedResourcesPage> {
                             resource: resource,
                             onTap: () => setState(() {
                               globals.currentResource = resource;
-                              MyResourcesPage.selectedIndex.value = 3;
+                              MyResourcesPage.selectedIndex.value = 5;
                             }),
                             onRemoveDiscarded: () => database.updateUserEnredaField(
                               uid,

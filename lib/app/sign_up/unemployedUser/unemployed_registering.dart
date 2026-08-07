@@ -648,55 +648,58 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                   }
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: FormField(
-                    validator: (value) {
-                      if (selectedSpecificInterests.isEmpty) {
-                        return 'Por favor seleccione al menos un interés específico';
-                      }
-                      return null;
-                    },
-                    builder: (FormFieldState<dynamic> field) {
-                      return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget> [
-                            CustomTextSmall(text: StringConst.FORM_SPECIFIC_INTERESTS,),
-                            InkWell(
-                              onTap: () => {_showMultiSelectSpecificInterests(context) },
-                              child: Container(
-                                width: double.infinity,
-                                constraints: BoxConstraints(minHeight: 50),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    border: Border.all(
-                                        color: AppColors.greyUltraLight
-                                    )
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
-                                  child: Wrap(
-                                    spacing: 5,
-                                    children: selectedSpecificInterests.map((s) =>
-                                        BubbledContainer(s.name),
-                                    ).toList(),
+              if (selectedInterests.isNotEmpty &&
+                  !selectedInterests.every(
+                      (i) => i.name.trim().toLowerCase() == 'sin clasificar'))
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FormField(
+                      validator: (value) {
+                        if (selectedSpecificInterests.isEmpty) {
+                          return 'Por favor seleccione al menos un interés específico';
+                        }
+                        return null;
+                      },
+                      builder: (FormFieldState<dynamic> field) {
+                        return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget> [
+                              CustomTextSmall(text: StringConst.FORM_SPECIFIC_INTERESTS,),
+                              InkWell(
+                                onTap: () => {_showMultiSelectSpecificInterests(context) },
+                                child: Container(
+                                  width: double.infinity,
+                                  constraints: BoxConstraints(minHeight: 50),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      border: Border.all(
+                                          color: AppColors.greyUltraLight
+                                      )
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble / 2),
+                                    child: Wrap(
+                                      spacing: 5,
+                                      children: selectedSpecificInterests.map((s) =>
+                                          BubbledContainer(s.name),
+                                      ).toList(),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            if (!field.isValid && field.errorText != null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Text(
-                                  field.errorText!,
-                                  style: TextStyle(color: Colors.red),
+                              if (!field.isValid && field.errorText != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    field.errorText!,
+                                    style: TextStyle(color: Colors.red),
+                                  ),
                                 ),
-                              ),
-                          ]);
-                    }
+                            ]);
+                      }
+                  ),
                 ),
-              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: FormField(
@@ -983,6 +986,14 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
       this.interests = interestsIds;
       this.selectedInterests = selectedValues;
       selectedSpecificInterests.removeWhere((si) => !selectedInterests.any((i) => i.interestId == si.interestId));
+      // If only "sin clasificar" is selected, clear specific interests
+      if (selectedInterests.isNotEmpty &&
+          selectedInterests.every((i) => i.name.trim().toLowerCase() == 'sin clasificar')) {
+        selectedSpecificInterests.clear();
+        specificInterests.clear();
+        specificInterestsNames = '';
+        textEditingControllerSpecificInterests.clear();
+      }
       getValuesFromKeySpecificInterests(selectedSpecificInterests);
     });
     print(interestsNames);

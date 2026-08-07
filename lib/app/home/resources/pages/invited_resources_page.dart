@@ -1,9 +1,4 @@
-import 'package:enreda_app/app/home/models/city.dart';
-import 'package:enreda_app/app/home/models/company.dart';
-import 'package:enreda_app/app/home/models/country.dart';
-import 'package:enreda_app/app/home/models/organization.dart';
-import 'package:enreda_app/app/home/models/province.dart';
-import 'package:enreda_app/app/home/models/socialEntity.dart';
+import 'package:enreda_app/app/home/models/resource.dart';
 import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/resources/list_item_builder_grid.dart';
 import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
@@ -12,25 +7,20 @@ import 'package:enreda_app/app/home/resources/resource_list_tile.dart';
 import 'package:enreda_app/services/auth.dart';
 import 'package:enreda_app/services/database.dart';
 import 'package:enreda_app/values/strings.dart';
+import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../values/values.dart';
-import '../../models/resource.dart';
 import 'package:enreda_app/app/home/resources/global.dart' as globals;
 import 'package:enreda_app/app/home/resources/models/resource_metadata.dart';
-import 'package:async/async.dart' show StreamGroup;
 import 'package:enreda_app/services/location_cache.dart';
 import 'dart:async';
 
-
-class MyEnrolledResourcesPage extends StatefulWidget {
-  const MyEnrolledResourcesPage({Key? key}) : super(key: key);
-
+class InvitedResourcesPage extends StatefulWidget {
   @override
-  State<MyEnrolledResourcesPage> createState() => _MyEnrolledResourcesPageState();
+  State<InvitedResourcesPage> createState() => _InvitedResourcesPageState();
 }
 
-class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
+class _InvitedResourcesPageState extends State<InvitedResourcesPage> {
   ResourceMetadata _metadata = ResourceMetadata();
   List<StreamSubscription> _metadataSubscriptions = [];
 
@@ -60,8 +50,13 @@ class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
+    return _buildContents(context);
+  }
+
+  Widget _buildContents(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
     final database = Provider.of<Database>(context, listen: false);
     final uid = auth.currentUser?.uid ?? '';
@@ -78,7 +73,7 @@ class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
           }
           final user = userSnapshot.data!;
           return StreamBuilder<List<Resource>>(
-            stream: database.resourcesStreamByIds(user.resourcesEnrolled),
+            stream: database.resourcesStreamByIds(user.resourceInvites),
             builder: (context, snapshot) {
               return snapshot.hasData && snapshot.data!.isNotEmpty
                   ? ListItemBuilderGrid<Resource>(
@@ -111,18 +106,17 @@ class _MyEnrolledResourcesPageState extends State<MyEnrolledResourcesPage> {
                         );
                       },
                       emptyTitle: 'Sin recursos',
-                      emptyMessage: 'No estás inscrito a ningún recurso',
+                      emptyMessage: 'No tienes recursos recomendados',
                     )
                   : snapshot.connectionState == ConnectionState.waiting
                       ? const Padding(
-                          padding:
-                              EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                          padding: EdgeInsets.all(Sizes.kDefaultPaddingDouble),
                           child: Center(child: CircularProgressIndicator()),
                         )
                       : NoResourcesIllustration(
-                          title: StringConst.NO_RESOURCES_TITLE,
+                          title: StringConst.NO_INVITES_TITLE,
                           subtitle: StringConst.NO_RESOURCES_SUBTITLE,
-                          imagePath: ImagePath.NO_RESOURCES,
+                          imagePath: ImagePath.LEARNING_GIRL,
                         );
             },
           );

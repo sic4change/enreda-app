@@ -60,6 +60,10 @@ Future<void> addUserToResource(
   resource.participants.add(userId);
   resource.assistants = resource.participants.length.toString();
   await database.setResource(resource);
+  await database.updateUserEnredaField(
+    userId,
+    {'resourcesEnrolled': FieldValue.arrayUnion([resource.resourceId])},
+  );
   showToast(context,
       title: 'Se ha apuntado satisfactoriamente al recurso',
       color: AppColors.primaryColor);
@@ -74,6 +78,10 @@ Future<void> removeUserToResource(
   resource.participants.remove(userId);
   resource.assistants = resource.participants.length.toString();
   await database.setResource(resource);
+  await database.updateUserEnredaField(
+    userId,
+    {'resourcesEnrolled': FieldValue.arrayRemove([resource.resourceId])},
+  );
   showToast(context,
       title: 'Ha sido eliminado satisfactoriamente al recurso',
       color: AppColors.primaryColor);

@@ -108,7 +108,7 @@ class _FavoriteResourcesPageState extends State<FavoriteResourcesPage> {
                             resource: resource,
                             onTap: () => setState(() {
                               globals.currentResource = resource;
-                              MyResourcesPage.selectedIndex.value = 3;
+                              MyResourcesPage.selectedIndex.value = 4;
                             }),
                           ),
                         );

@@ -346,6 +346,8 @@ class StringConst {
   //static String TRAINING_PILL_LINK(String trainingPillId) => 'https://test-enreda.web.app/pills/$trainingPillId';
   static const String ENROLLED_RESOURCES = 'Recursos inscritos';
   static const String FAVORITES_RESOURCES = 'Recursos favoritos';
+  static const String INVITED_RESOURCES = 'Recursos recomendados';
+  static const String NO_INVITES_TITLE = '¡Todavía no tienes ningún recurso recomendado!';
   static const String FUNCTIONS = "Funciones";
   static const String RESPONSIBILITIES = "Responsabilidades";
   static const String FORM_DESCRIPTION = "Descripción del puesto";

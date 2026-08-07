@@ -47,6 +47,7 @@ class UserEnreda {
     this.resourcesLike = const [],
     this.resourcesVisited = const [],
     this.resourcesEnrolled = const [],
+    this.resourceInvites = const [],
     this.cv_state,
   });
 
@@ -183,6 +184,13 @@ class UserEnreda {
       });
     }
 
+    List<String> resourceInvites = [];
+    if (data['resourceInvites'] != null) {
+      data['resourceInvites'].forEach((resource) {
+        resourceInvites.add(resource.toString());
+      });
+    }
+
     final String? aboutMe = data['aboutMe'];
     final int resourcesAccessCount = data['resourcesAccessCount'] ?? 0;
     final bool? checkAgreeCV = data['checkAgreeCV'];
@@ -261,6 +269,7 @@ class UserEnreda {
       resourcesLike: resourcesLike,
       resourcesVisited: resourcesVisited,
       resourcesEnrolled: resourcesEnrolled,
+      resourceInvites: resourceInvites,
       cv_state: cv_state,
     );
   }
@@ -305,6 +314,7 @@ class UserEnreda {
   final List<String> resourcesLike;
   final List<String> resourcesVisited;
   final List<String> resourcesEnrolled;
+  final List<String> resourceInvites;
   final String? cv_state;
 
   Map<String, dynamic> toMap() {
@@ -345,6 +355,7 @@ class UserEnreda {
       'resourcesLike': resourcesLike,
       'resourcesVisited': resourcesVisited,
       'resourcesEnrolled': resourcesEnrolled,
+      'resourceInvites': resourceInvites,
       'cv_state': cv_state,
     };
   }
@@ -393,6 +404,7 @@ class UserEnreda {
     List<String>? resourcesLike,
     List<String>? resourcesVisited,
     List<String>? resourcesEnrolled,
+    List<String>? resourceInvites,
     String? cv_state,
     List<String>? certifications,
   }) {
@@ -436,6 +448,7 @@ class UserEnreda {
       resourcesLike: resourcesLike ?? this.resourcesLike,
       resourcesVisited: resourcesVisited ?? this.resourcesVisited,
       resourcesEnrolled: resourcesEnrolled ?? this.resourcesEnrolled,
+      resourceInvites: resourceInvites ?? this.resourceInvites,
       cv_state: cv_state ?? this.cv_state,
       certifications: certifications ?? this.certifications,
     );

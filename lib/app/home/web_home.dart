@@ -64,6 +64,10 @@ class _WebHomeState extends State<WebHome> {
   String _userName = "";
   Stream<User?>? _authStateChangesStream;
   Stream<UserEnreda>? _userEnredaStream;
+  // uid the memoized _userEnredaStream was created for. Creating the stream
+  // only in initState left it null on a fresh login (currentUser was still
+  // null when WebHome mounted) -> white screen until the widget was rebuilt.
+  String? _userEnredaStreamUid;
 
   @override
   void initState() {
@@ -75,11 +79,7 @@ class _WebHomeState extends State<WebHome> {
     ];
     super.initState();
     final auth = Provider.of<AuthBase>(context, listen: false);
-    final database = Provider.of<Database>(context, listen: false);
     _authStateChangesStream = auth.authStateChanges();
-    if (auth.currentUser != null) {
-      _userEnredaStream = database.userEnredaStreamByUserId(auth.currentUser!.uid);
-    }
   }
 
   Widget _buildMyUserName(BuildContext context, UserEnreda user) {
@@ -134,6 +134,14 @@ class _WebHomeState extends State<WebHome> {
           // Treat anonymous Firebase users (e.g. pre-authed for deep-link reads) as guests.
           if (snapshot.hasData && (snapshot.data?.isAnonymous ?? false)) return _buildContentAnonymous(context);
           if (snapshot.hasData) {
+            // (Re)create the user stream when the signed-in uid changes —
+            // covers fresh logins, where initState ran with no currentUser.
+            final uid = snapshot.data!.uid;
+            if (_userEnredaStreamUid != uid) {
+              _userEnredaStreamUid = uid;
+              _userEnredaStream = Provider.of<Database>(context, listen: false)
+                  .userEnredaStreamByUserId(uid);
+            }
             return StreamBuilder<UserEnreda>(
               stream: _userEnredaStream,
               builder: (context, snapshot) {

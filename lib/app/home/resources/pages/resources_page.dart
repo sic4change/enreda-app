@@ -324,11 +324,11 @@ class _ResourcesPageState extends State<ResourcesPage> {
         setStateIfMounted(() => _userRoleVerified = true);
         return;
       }
-      // Non-participant logged in — same defensive sign-out the legacy
-      // nested StreamBuilder performed.
+      // Non-participant logged in — show the dialog while this context is
+      // still mounted; adminSignOut's dialog signs out on every exit path.
+      // Signing out first unmounted the tree and killed the dialog's context.
       if (!widget._errorNotValidUser) {
         widget._errorNotValidUser = true;
-        await _signOut(context);
         if (!isAlertBoxOpened && mounted) {
           adminSignOut(context);
         }

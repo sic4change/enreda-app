@@ -11,6 +11,7 @@ import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:enreda_app/services/database.dart';
 
@@ -126,28 +127,71 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                 ],
               ),
             ),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  WebHome.controller.selectIndex(4);
-                });
-              },
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
-                decoration: BoxDecoration(
-                  color: AppColors.primary900,
-                  shape: BoxShape.rectangle,
-                  border: Border.all(color: AppColors.primary900.withOpacity(0.3), width: 1),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Row(
-                    children: [
-                      CustomTextBoldTitle(title: StringConst.MY_RESOURCES, color: Colors.white,),
-                      Spacer(),
-                      Image.asset(ImagePath.MY_RESOURCES, height: 70),
-                    ]
-                ),
+            // Mis recursos + Mi calendario side by side (Figma MOBILE - WEB ACTUAL).
+            // This page only renders when hasEntity == true (web_home.dart), so
+            // the calendar (sidebar index 8) is always reachable here.
+            Container(
+              height: 120,
+              margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+              child: Flex(
+                direction: Axis.horizontal,
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            WebHome.controller.selectIndex(4);
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary900,
+                            shape: BoxShape.rectangle,
+                            border: Border.all(color: AppColors.primary900.withOpacity(0.3), width: 1),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CustomTextBoldTitle(title: StringConst.MY_RESOURCES, color: Colors.white,),
+                                SpaceH4(),
+                                Image.asset(ImagePath.MY_RESOURCES, height: 70),
+                              ]
+                          ),
+                        ),
+                      )),
+                  SpaceW12(),
+                  Expanded(
+                      flex: 1,
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            WebHome.controller.selectIndex(8);
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: AppColors.yellowDark,
+                            shape: BoxShape.rectangle,
+                            border: Border.all(color: AppColors.yellowDark.withOpacity(0.3), width: 1),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CustomTextBoldTitle(title: StringConst.MI_CALENDARIO),
+                                SpaceH4(),
+                                SvgPicture.asset(ImagePath.CALENDAR_ILLUSTRATION, height: 70),
+                              ]
+                          ),
+                        ),
+                      )),
+                ],
               ),
             ),
             InkWell(

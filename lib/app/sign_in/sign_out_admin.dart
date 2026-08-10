@@ -12,6 +12,10 @@ Future<void> adminSignOut(BuildContext context) async {
   String targetWeb = "";
 
   WidgetsBinding.instance.addPostFrameCallback((_) async {
+    // The caller's subtree may have been unmounted by an auth-state flip
+    // before this frame fired; a dead context here used to crash and leave
+    // a white screen instead of the dialog.
+    if (!context.mounted) return;
     final auth = Provider.of<AuthBase>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
     double fontSize = responsiveSize(context, 14, 18, md: 15);

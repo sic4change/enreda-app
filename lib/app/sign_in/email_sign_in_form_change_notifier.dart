@@ -295,14 +295,13 @@ class _EmailSignInFormChangeNotifierState
   Future<void> _submit() async {
     try {
       await model.submit();
+      // The auth-state flip can unmount this form before we get here; every
+      // context use below (router, dialogs) needs a live State.
       if (!mounted) return;
-      final database = Provider.of<Database>(context, listen: false);
-      final userEnreda = await database.userStream(_emailController.text).first;
-      if (!mounted) return;
-      if (userEnreda.isNotEmpty && userEnreda.first.role != "Desempleado") {
-        model.updateWith(isLoading: false);
-        adminSignOut(context);
-      } else {
+      // Non-participant gating lives in web_home's auth gate (by uid, with a
+      // mounted context). The old email-based check here ran on a dead
+      // context and ended in a white screen instead of the dialog.
+      {
         if (Constants.pendingResourceId != null) {
           String rid = Constants.pendingResourceId!;
           Constants.pendingResourceId = null;

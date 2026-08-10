@@ -170,6 +170,7 @@ abstract class Database {
   Stream<List<DocumentationParticipant>> documentationParticipantStream(String userId);
   Stream<List<JobOfferApplication>> applicantStreamByJobOffer(String? jobOfferId, String? userId);
   Stream<List<Sesion>> mySesionesStream(String participantId);
+  Future<void> confirmSesionAssistance(String sesionId, String participantId);
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> updateUserEnredaField(String userId, Map<String, dynamic> data);
@@ -223,6 +224,15 @@ class FirestoreDatabase implements Database {
       sort: (lhs, rhs) => lhs.scheduledAt.compareTo(rhs.scheduledAt),
     );
   }
+
+  @override
+  Future<void> confirmSesionAssistance(String sesionId, String participantId) =>
+      _service.updateData(
+        path: APIPath.sesion(sesionId),
+        data: {
+          'confirmedParticipants': FieldValue.arrayUnion([participantId]),
+        },
+      );
 
   @override
   Future<void> addResource(Resource resource) =>

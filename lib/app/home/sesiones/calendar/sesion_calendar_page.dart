@@ -31,7 +31,7 @@ class SesionCalendarPage extends StatefulWidget {
 }
 
 /// Maximum width of the calendar card on desktop.
-const double _kCalendarMaxWidth = 520;
+const double _kCalendarMaxWidth = 420;
 
 /// Filter buttons above the calendar — pill bar mirroring the Próximas /
 /// Pasadas tabs from the técnico-facing `sesiones_page.dart`, plus a third
@@ -42,10 +42,37 @@ enum _CalendarFilter { proximas, pasadas, todas }
 class _SesionCalendarPageState extends State<SesionCalendarPage> {
   DateTime _focusedMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime? _selectedDay;
-  _CalendarFilter _filter = _CalendarFilter.proximas;
+  _CalendarFilter _filter = _CalendarFilter.todas;
 
   Stream<List<Sesion>>? _stream;
   String? _uid;
+
+  // One name lookup per técnico for the whole session (memoized futures).
+  final Map<String, Future<String?>> _tecnicoNameFutures = {};
+
+  Future<String?> _tecnicoName(Database database, String tecnicoId) =>
+      _tecnicoNameFutures.putIfAbsent(tecnicoId, () async {
+        if (tecnicoId.isEmpty) return null;
+        try {
+          final u = await database.userEnredaStreamByUserId(tecnicoId).first;
+          final name = '${u.firstName ?? ''} ${u.lastName ?? ''}'.trim();
+          return name.isEmpty ? null : name;
+        } catch (_) {
+          return null;
+        }
+      });
+
+  Future<void> _confirmAssistance(Database database, Sesion sesion) async {
+    final uid = _uid;
+    if (uid == null || uid.isEmpty || sesion.sesionId == null) return;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await database.confirmSesionAssistance(sesion.sesionId!, uid);
+    } catch (_) {
+      messenger.showSnackBar(const SnackBar(
+          content: Text(StringConst.SESION_ATTENDANCE_ERROR)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +119,7 @@ class _SesionCalendarPageState extends State<SesionCalendarPage> {
             sessionDays: byDay,
             selectedDay: _selectedDay,
             isMobile: isMobile,
+            currentUserId: uid,
             onPrevMonth: () => setState(() => _focusedMonth =
                 DateTime(_focusedMonth.year, _focusedMonth.month - 1)),
             onNextMonth: () => setState(() => _focusedMonth =
@@ -111,16 +139,34 @@ class _SesionCalendarPageState extends State<SesionCalendarPage> {
             sessionsByDay: byDay,
             isMobile: isMobile,
             filter: _filter,
+            currentUserId: uid,
+            tecnicoNameOf: (id) => _tecnicoName(database, id),
+            onConfirm: (s) => _confirmAssistance(database, s),
             onFilterChange: (f) => setState(() {
               _filter = f;
               _selectedDay = null;
             }),
           );
 
-          final panelHeader = _PanelHeader(
-            isMobile: isMobile,
-            onExport: () => _handleExportIcs(context, allSesiones),
+          // Figma: "Calendario" heads the calendar (with the two-dot legend
+          // right under it); "Sesiones" + the .ics export head the list.
+          final calendarTitle = _SectionTitle(
+              label: StringConst.CALENDARIO_TITLE, isMobile: isMobile);
+          final sessionsHeader = Row(
+            children: [
+              Expanded(
+                child: _SectionTitle(
+                    label: StringConst.SESIONES_SECTION_TITLE,
+                    isMobile: isMobile),
+              ),
+              const SizedBox(width: Sizes.PADDING_12),
+              _ExportIcsButton(
+                isMobile: isMobile,
+                onPressed: () => _handleExportIcs(context, allSesiones),
+              ),
+            ],
           );
+          final legend = _CalendarLegend(isMobile: isMobile);
 
           return SingleChildScrollView(
             child: Column(
@@ -133,20 +179,12 @@ class _SesionCalendarPageState extends State<SesionCalendarPage> {
                       ConstrainedBox(
                         constraints:
                             const BoxConstraints(maxWidth: _kCalendarMaxWidth),
-                        // Mirror the right column's panel header as an
-                        // invisible spacer so the calendar's top lines up
-                        // with the sessions panel (below the title), not
-                        // with the panel header itself.
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Visibility(
-                              visible: false,
-                              maintainSize: true,
-                              maintainAnimation: true,
-                              maintainState: true,
-                              child: panelHeader,
-                            ),
+                            calendarTitle,
+                            const SizedBox(height: Sizes.PADDING_12),
+                            legend,
                             const SizedBox(height: Sizes.PADDING_16),
                             calendarCard,
                           ],
@@ -157,7 +195,7 @@ class _SesionCalendarPageState extends State<SesionCalendarPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            panelHeader,
+                            sessionsHeader,
                             const SizedBox(height: Sizes.PADDING_16),
                             sessionsPanel,
                           ],
@@ -166,9 +204,13 @@ class _SesionCalendarPageState extends State<SesionCalendarPage> {
                     ],
                   )
                 else ...[
+                  calendarTitle,
+                  const SizedBox(height: Sizes.PADDING_8),
+                  legend,
+                  const SizedBox(height: Sizes.PADDING_12),
                   calendarCard,
                   const SizedBox(height: Sizes.PADDING_20),
-                  panelHeader,
+                  sessionsHeader,
                   const SizedBox(height: Sizes.PADDING_12),
                   sessionsPanel,
                 ],
@@ -223,34 +265,26 @@ class _SesionCalendarPageState extends State<SesionCalendarPage> {
   }
 }
 
-// ── Panel header ────────────────────────────────────────────────────────────
+// ── Section titles ──────────────────────────────────────────────────────────
 
-/// Header rendered immediately ABOVE the sessions panel (right rail on
-/// desktop, full width on mobile). Shows the section title on the left and
-/// the "Descargar .ics" export button flush to the right.
-class _PanelHeader extends StatelessWidget {
-  const _PanelHeader({required this.isMobile, required this.onExport});
+/// Big navy bold section title — "Calendario" / "Sesiones" (Figma).
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.label, required this.isMobile});
 
+  final String label;
   final bool isMobile;
-  final VoidCallback onExport;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Text(
-            StringConst.MI_CALENDARIO,
-            style: (isMobile ? textTheme.titleMedium : textTheme.headlineSmall)
-                ?.copyWith(color: AppColors.primary900),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        const SizedBox(width: Sizes.PADDING_12),
-        _ExportIcsButton(isMobile: isMobile, onPressed: onExport),
-      ],
+    return Text(
+      label,
+      style: (isMobile ? textTheme.headlineSmall : textTheme.headlineMedium)
+          ?.copyWith(
+        color: AppColors.primary900,
+        fontWeight: FontWeight.w800,
+      ),
+      overflow: TextOverflow.ellipsis,
     );
   }
 }
@@ -305,6 +339,7 @@ class _CalendarCard extends StatelessWidget {
     required this.sessionDays,
     required this.selectedDay,
     required this.isMobile,
+    required this.currentUserId,
     required this.onPrevMonth,
     required this.onNextMonth,
     required this.onDayTap,
@@ -314,22 +349,20 @@ class _CalendarCard extends StatelessWidget {
   final Map<String, List<Sesion>> sessionDays;
   final DateTime? selectedDay;
   final bool isMobile;
+  final String currentUserId;
   final VoidCallback onPrevMonth;
   final VoidCallback onNextMonth;
   final ValueChanged<DateTime> onDayTap;
 
   @override
   Widget build(BuildContext context) {
+    // Figma: thin outlined rounded card (no drop shadow); the legend moved
+    // out of the card, under the "Calendario" title.
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(Sizes.RADIUS_16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary900.withOpacity(0.1),
-            blurRadius: Sizes.PADDING_20,
-          ),
-        ],
+        border: Border.all(color: AppColors.greyBorder, width: 1),
       ),
       padding: EdgeInsets.all(isMobile ? Sizes.PADDING_12 : Sizes.PADDING_24),
       child: Column(
@@ -340,14 +373,13 @@ class _CalendarCard extends StatelessWidget {
             onPrev: onPrevMonth,
             onNext: onNextMonth,
           ),
-          SizedBox(height: isMobile ? Sizes.PADDING_8 : Sizes.PADDING_12),
-          _CalendarLegend(isMobile: isMobile),
-          SizedBox(height: isMobile ? Sizes.PADDING_8 : Sizes.PADDING_16),
+          SizedBox(height: isMobile ? Sizes.PADDING_12 : Sizes.PADDING_16),
           _CalendarGrid(
             focusedMonth: focusedMonth,
             sessionDays: sessionDays,
             selectedDay: selectedDay,
             isMobile: isMobile,
+            currentUserId: currentUserId,
             onDayTap: onDayTap,
           ),
         ],
@@ -372,12 +404,13 @@ class _MonthNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    // Figma: "Noviembre, 2026"
     String label;
     try {
-      label = DateFormat('MMMM yyyy', 'es_ES').format(focusedMonth);
+      label = DateFormat('MMMM, yyyy', 'es_ES').format(focusedMonth);
       label = label[0].toUpperCase() + label.substring(1);
     } catch (_) {
-      label = DateFormat('MMMM yyyy').format(focusedMonth);
+      label = DateFormat('MMMM, yyyy').format(focusedMonth);
     }
     final iconSize = isMobile ? Sizes.ICON_SIZE_20 : Sizes.ICON_SIZE_24;
     final iconPadding = isMobile
@@ -423,29 +456,21 @@ class _CalendarLegend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Figma: two round dots — yellow = attendance confirmed by me,
+    // teal = not confirmed yet.
     return Wrap(
       spacing: isMobile ? Sizes.PADDING_12 : Sizes.PADDING_20,
       runSpacing: Sizes.PADDING_8,
       children: [
         _LegendChip(
-          color: AppColors.primary050,
-          borderColor: AppColors.primary100,
-          label: StringConst.CALENDARIO_LEGEND_UPCOMING,
-        ),
-        _LegendChip(
-          color: AppColors.altWhite,
-          borderColor: AppColors.greyBorder,
-          label: StringConst.CALENDARIO_LEGEND_PAST,
-        ),
-        _LegendChip(
-          color: AppColors.primary100,
-          borderColor: AppColors.primary500,
-          label: StringConst.CALENDARIO_LEGEND_TODAY,
-        ),
-        _LegendChip(
           color: AppColors.yellowDark,
           borderColor: AppColors.yellowDark,
-          label: StringConst.CALENDARIO_LEGEND_SELECTED,
+          label: StringConst.CALENDARIO_LEGEND_CONFIRMADA,
+        ),
+        _LegendChip(
+          color: AppColors.primary500,
+          borderColor: AppColors.primary500,
+          label: StringConst.CALENDARIO_LEGEND_NO_CONFIRMADA,
         ),
       ],
     );
@@ -474,7 +499,7 @@ class _LegendChip extends StatelessWidget {
           height: Sizes.HEIGHT_12,
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(Sizes.RADIUS_4),
+            shape: BoxShape.circle,
             border: Border.all(color: borderColor, width: 1),
           ),
         ),
@@ -497,6 +522,7 @@ class _CalendarGrid extends StatelessWidget {
     required this.sessionDays,
     required this.selectedDay,
     required this.isMobile,
+    required this.currentUserId,
     required this.onDayTap,
   });
 
@@ -504,6 +530,7 @@ class _CalendarGrid extends StatelessWidget {
   final Map<String, List<Sesion>> sessionDays;
   final DateTime? selectedDay;
   final bool isMobile;
+  final String currentUserId;
   final ValueChanged<DateTime> onDayTap;
 
   @override
@@ -543,7 +570,7 @@ class _CalendarGrid extends StatelessWidget {
             crossAxisCount: 7,
             mainAxisSpacing: cellSpacing,
             crossAxisSpacing: cellSpacing,
-            childAspectRatio: isMobile ? 0.9 : 1.0,
+            childAspectRatio: isMobile ? 1.15 : 1.25,
           ),
           itemCount: startOffset + daysInMonth,
           itemBuilder: (context, index) {
@@ -562,10 +589,15 @@ class _CalendarGrid extends StatelessWidget {
             final isPast =
                 date.isBefore(DateTime(today.year, today.month, today.day));
 
+            final allConfirmed = daySessions.isNotEmpty &&
+                daySessions.every((s) =>
+                    s.confirmedParticipants.contains(currentUserId));
+
             return _DayCell(
               day: day,
               date: date,
               sessions: daySessions,
+              allConfirmed: allConfirmed,
               isSelected: isSelected,
               isToday: isToday,
               isPast: isPast,
@@ -584,6 +616,7 @@ class _DayCell extends StatelessWidget {
     required this.day,
     required this.date,
     required this.sessions,
+    required this.allConfirmed,
     required this.isSelected,
     required this.isToday,
     required this.isPast,
@@ -594,6 +627,7 @@ class _DayCell extends StatelessWidget {
   final int day;
   final DateTime date;
   final List<Sesion> sessions;
+  final bool allConfirmed;
   final bool isSelected;
   final bool isToday;
   final bool isPast;
@@ -605,82 +639,44 @@ class _DayCell extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final hasSessions = sessions.isNotEmpty;
 
+    // Figma: session days are solid circles — yellow when I confirmed
+    // attendance for every session that day, teal when at least one is
+    // still unconfirmed. Other days are plain text.
     Color bgColor = Colors.transparent;
     Color textColor = isPast ? AppColors.greyTxtAlt : AppColors.primary900;
-    bool boldText = false;
+    bool boldText = isToday;
 
-    if (isSelected) {
-      bgColor = AppColors.yellowDark;
-      textColor = AppColors.primary900;
-      boldText = true;
-    } else if (isToday) {
-      bgColor = AppColors.primary100;
-      textColor = AppColors.primary900;
-      boldText = true;
-    } else if (hasSessions) {
-      bgColor = isPast ? AppColors.altWhite : AppColors.primary050;
+    if (hasSessions) {
+      bgColor = allConfirmed ? AppColors.yellowDark : AppColors.primary500;
+      textColor = allConfirmed ? AppColors.primary900 : AppColors.white;
       boldText = true;
     }
 
     Border? border;
-    if (isToday && !isSelected) {
-      border = Border.all(color: AppColors.primary500, width: 1.5);
-    } else if (hasSessions && !isSelected && !isToday) {
-      border = Border.all(
-        color: isPast ? AppColors.greyBorder : AppColors.primary100,
-        width: 1,
-      );
+    if (isSelected && hasSessions) {
+      border = Border.all(color: AppColors.primary900, width: 1.5);
     }
 
-    final indicatorColor = isPast ? AppColors.greyTxtAlt : AppColors.primary500;
     final dayTextStyle =
         (isMobile ? textTheme.bodySmall : textTheme.bodyMedium)?.copyWith(
       color: textColor,
       fontWeight: boldText ? FontWeight.w700 : FontWeight.w400,
     );
-    final badgeMinSize = isMobile ? 14.0 : 16.0;
 
+    final circleSize = isMobile ? 28.0 : 34.0;
     final cellInterior = InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(Sizes.RADIUS_8),
-      child: Container(
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(Sizes.RADIUS_8),
-          border: border,
-        ),
-        child: Stack(
-          children: [
-            Center(child: Text('$day', style: dayTextStyle)),
-            if (hasSessions)
-              Positioned(
-                top: 2,
-                right: 2,
-                child: Container(
-                  constraints: BoxConstraints(
-                    minWidth: badgeMinSize,
-                    minHeight: badgeMinSize,
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                  decoration: BoxDecoration(
-                    color: indicatorColor,
-                    borderRadius: BorderRadius.circular(Sizes.RADIUS_10),
-                  ),
-                  child: Center(
-                    child: Text(
-                      '${sessions.length}',
-                      style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: isMobile ? 9.0 : 10.0,
-                        height: 1.1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-          ],
+      customBorder: const CircleBorder(),
+      child: Center(
+        child: Container(
+          width: circleSize,
+          height: circleSize,
+          decoration: BoxDecoration(
+            color: bgColor,
+            shape: BoxShape.circle,
+            border: border,
+          ),
+          child: Center(child: Text('$day', style: dayTextStyle)),
         ),
       ),
     );
@@ -761,6 +757,9 @@ class _SessionsPanel extends StatelessWidget {
     required this.sessionsByDay,
     required this.isMobile,
     required this.filter,
+    required this.currentUserId,
+    required this.tecnicoNameOf,
+    required this.onConfirm,
     required this.onFilterChange,
   });
 
@@ -770,6 +769,9 @@ class _SessionsPanel extends StatelessWidget {
   final Map<String, List<Sesion>> sessionsByDay;
   final bool isMobile;
   final _CalendarFilter filter;
+  final String currentUserId;
+  final Future<String?> Function(String tecnicoId) tecnicoNameOf;
+  final ValueChanged<Sesion> onConfirm;
   final ValueChanged<_CalendarFilter> onFilterChange;
 
   @override
@@ -893,7 +895,12 @@ class _SessionsPanel extends StatelessWidget {
     ];
   }
 
-  Widget _row(Sesion s) => _ParticipantSesionRow(sesion: s);
+  Widget _row(Sesion s) => _ParticipantSesionRow(
+        sesion: s,
+        isConfirmed: s.confirmedParticipants.contains(currentUserId),
+        tecnicoNameFuture: tecnicoNameOf(s.tecnicoId),
+        onConfirm: () => onConfirm(s),
+      );
 
   Widget _emptyText(TextTheme textTheme, String label) => Padding(
         padding: const EdgeInsets.symmetric(vertical: Sizes.PADDING_16),
@@ -967,10 +974,16 @@ class _CalendarFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Figma order: Todas | Próximas sesiones | Sesiones pasadas.
     return Wrap(
       spacing: Sizes.PADDING_8,
       runSpacing: Sizes.PADDING_8,
       children: [
+        _FilterPill(
+          label: StringConst.CALENDARIO_FILTER_TODAS,
+          isActive: activeFilter == _CalendarFilter.todas,
+          onTap: () => onSelect(_CalendarFilter.todas),
+        ),
         _FilterPill(
           label: StringConst.CALENDARIO_FILTER_PROXIMAS,
           isActive: activeFilter == _CalendarFilter.proximas,
@@ -980,11 +993,6 @@ class _CalendarFilterBar extends StatelessWidget {
           label: StringConst.CALENDARIO_FILTER_PASADAS,
           isActive: activeFilter == _CalendarFilter.pasadas,
           onTap: () => onSelect(_CalendarFilter.pasadas),
-        ),
-        _FilterPill(
-          label: StringConst.CALENDARIO_FILTER_TODAS,
-          isActive: activeFilter == _CalendarFilter.todas,
-          onTap: () => onSelect(_CalendarFilter.todas),
         ),
       ],
     );
@@ -1068,19 +1076,29 @@ class _SectionHeader extends StatelessWidget {
 /// optional location and modality chip — lives INSIDE the session card so
 /// the time stays visually paired with its session.
 class _ParticipantSesionRow extends StatelessWidget {
-  const _ParticipantSesionRow({required this.sesion});
+  const _ParticipantSesionRow({
+    required this.sesion,
+    required this.isConfirmed,
+    required this.tecnicoNameFuture,
+    required this.onConfirm,
+  });
 
   final Sesion sesion;
+  final bool isConfirmed;
+  final Future<String?> tecnicoNameFuture;
+  final VoidCallback onConfirm;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final greyStyle =
+        textTheme.bodySmall?.copyWith(color: AppColors.greyTxtAlt);
     return Padding(
       padding: const EdgeInsets.only(bottom: Sizes.PADDING_12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // gCal action sits above the card; the time range moved inside.
+          // gCal action sits above the card.
           Padding(
             padding: const EdgeInsets.only(
               left: Sizes.PADDING_8,
@@ -1092,86 +1110,154 @@ class _ParticipantSesionRow extends StatelessWidget {
               child: _GcalAddIconButton(sesion: sesion),
             ),
           ),
+          // Figma card: thin outlined rounded surface. Header row (icon +
+          // title + modality chip), then invited-by, date | time, place,
+          // divider, "Observaciones: ..." and the confirm CTA.
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(Sizes.RADIUS_16),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary900.withOpacity(0.08),
-                  blurRadius: Sizes.PADDING_12,
-                ),
-              ],
+              border: Border.all(color: AppColors.greyBorder, width: 1),
             ),
             padding: const EdgeInsets.symmetric(
               vertical: Sizes.PADDING_16,
               horizontal: Sizes.PADDING_16,
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _LeadingIcon(sessionType: sesion.sessionType),
-                const SizedBox(width: Sizes.PADDING_12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
+                Row(
+                  children: [
+                    _LeadingIcon(sessionType: sesion.sessionType),
+                    const SizedBox(width: Sizes.PADDING_12),
+                    Expanded(
+                      child: Text(
                         _titleFor(sesion),
                         style: textTheme.titleMedium?.copyWith(
                           color: AppColors.primary900,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w700,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: Sizes.PADDING_2),
-                      Text(
-                        _formatDateLong(sesion.scheduledAt),
-                        style: textTheme.bodySmall?.copyWith(
-                          color: AppColors.greyTxtAlt,
-                        ),
+                    ),
+                    const SizedBox(width: Sizes.PADDING_8),
+                    _ModalityChip(modality: sesion.modality),
+                  ],
+                ),
+                const SizedBox(height: Sizes.PADDING_8),
+                FutureBuilder<String?>(
+                  future: tecnicoNameFuture,
+                  builder: (context, snapshot) {
+                    final name = snapshot.data;
+                    if (name == null || name.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: Sizes.PADDING_2),
+                      child: Text(
+                        '${StringConst.SESION_INVITADO_POR}$name',
+                        style: greyStyle,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: Sizes.PADDING_2),
-                      // Same styling as the date line above (bodySmall +
-                      // greyTxtAlt) so the date and the start-end range read
-                      // as one paragraph rather than two competing emphasis
-                      // levels.
-                      Text(
-                        _formatSessionTimeRange(sesion),
-                        style: textTheme.bodySmall?.copyWith(
-                          color: AppColors.greyTxtAlt,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                    );
+                  },
+                ),
+                Text(
+                  '${_formatDateLong(sesion.scheduledAt)} | ${_formatSessionTimeRange(sesion)}',
+                  style: greyStyle,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (sesion.lugar != null &&
+                    sesion.lugar!.trim().isNotEmpty) ...[
+                  const SizedBox(height: Sizes.PADDING_2),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.place_outlined,
+                        size: Sizes.ICON_SIZE_14,
+                        color: AppColors.greyTxtAlt,
                       ),
-                      if (sesion.lugar != null &&
-                          sesion.lugar!.trim().isNotEmpty) ...[
-                        const SizedBox(height: Sizes.PADDING_2),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.place_outlined,
-                              size: Sizes.ICON_SIZE_14,
-                              color: AppColors.greyTxtAlt,
-                            ),
-                            const SizedBox(width: Sizes.PADDING_4),
-                            Expanded(
-                              child: Text(
-                                sesion.lugar!,
-                                style: textTheme.bodySmall
-                                    ?.copyWith(color: AppColors.greyTxtAlt),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
+                      const SizedBox(width: Sizes.PADDING_4),
+                      Expanded(
+                        child: Text(
+                          sesion.lugar!,
+                          style: greyStyle,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ],
+                      ),
                     ],
                   ),
-                ),
-                const SizedBox(width: Sizes.PADDING_8),
-                _ModalityChip(modality: sesion.modality),
+                ],
+                if (sesion.observations != null &&
+                    sesion.observations!.trim().isNotEmpty) ...[
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: Sizes.PADDING_12),
+                    child: Divider(
+                        height: 1, color: AppColors.greyBorder),
+                  ),
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: StringConst.SESION_OBSERVACIONES_PREFIX,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: AppColors.primary900,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        TextSpan(
+                          text: sesion.observations!.trim(),
+                          style: greyStyle,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                const SizedBox(height: Sizes.PADDING_12),
+                isConfirmed
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Sizes.PADDING_20,
+                          vertical: Sizes.PADDING_8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.yellowDark,
+                          borderRadius:
+                              BorderRadius.circular(Sizes.RADIUS_24),
+                        ),
+                        child: Text(
+                          StringConst.SESION_ASISTENCIA_CONFIRMADA,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: AppColors.primary900,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      )
+                    : ElevatedButton(
+                        onPressed: onConfirm,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary500,
+                          foregroundColor: AppColors.white,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: Sizes.PADDING_24,
+                            vertical: Sizes.PADDING_12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(Sizes.RADIUS_24),
+                          ),
+                        ),
+                        child: Text(
+                          StringConst.SESION_CONFIRMAR_ASISTENCIA,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: AppColors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),

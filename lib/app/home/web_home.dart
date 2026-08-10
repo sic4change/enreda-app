@@ -12,6 +12,7 @@ import 'package:enreda_app/app/home/resources/pages/my_resources_page.dart';
 import 'package:enreda_app/app/home/resources/pages/resources_page.dart';
 import 'package:enreda_app/app/home/side_bar_widget.dart';
 import 'package:enreda_app/app/sign_in/access/access_page.dart';
+import 'package:enreda_app/app/sign_in/sign_out_admin.dart';
 import 'package:enreda_app/common_widgets/custom_icons_icons.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
@@ -54,6 +55,8 @@ class WebHome extends StatefulWidget {
 }
 
 class _WebHomeState extends State<WebHome> {
+  // Guards the non-participant dialog against re-scheduling on every rebuild.
+  bool _nonParticipantDialogShown = false;
   var bodyWidget = [];
   final _key = GlobalKey<ScaffoldState>();
   Color _underlineColor = AppColors.primary500;
@@ -124,7 +127,10 @@ class _WebHomeState extends State<WebHome> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (!snapshot.hasData) return _buildContentAnonymous(context);
+          if (!snapshot.hasData) {
+            _nonParticipantDialogShown = false; // allow the dialog again on next login
+            return _buildContentAnonymous(context);
+          }
           // Treat anonymous Firebase users (e.g. pre-authed for deep-link reads) as guests.
           if (snapshot.hasData && (snapshot.data?.isAnonymous ?? false)) return _buildContentAnonymous(context);
           if (snapshot.hasData) {
@@ -135,10 +141,14 @@ class _WebHomeState extends State<WebHome> {
                   UserEnreda _userEnreda;
                   _userEnreda = snapshot.data!;
                   if (_userEnreda.role != 'Desempleado') {
-                    Future.delayed(Duration.zero, () {
-                      _signOut(context);
-                      adminSignOut(context);
-                    });
+                    // Show the "¿No eres participante?" dialog while this
+                    // context is still mounted — the dialog signs out on every
+                    // exit path itself. Signing out FIRST unmounted the tree,
+                    // killed the dialog's context and left a white screen.
+                    if (!_nonParticipantDialogShown) {
+                      _nonParticipantDialogShown = true;
+                      Future.delayed(Duration.zero, () => adminSignOut(context));
+                    }
                     return Container();
                   }
 
@@ -563,80 +573,3 @@ Future<void> _signOut(BuildContext context) async {
 }
 
 
-Future<void> adminSignOut(BuildContext context) async {
-  String targetWeb = "";
-
-  WidgetsBinding.instance.addPostFrameCallback((_) async {
-    final auth = Provider.of<AuthBase>(context, listen: false);
-    final textTheme = Theme.of(context).textTheme;
-    double fontSize = responsiveSize(context, 14, 18, md: 15);
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) => Center(
-        child: AlertDialog(
-          insetPadding: const EdgeInsets.all(20),
-          contentPadding: const EdgeInsets.only(left: 20, right: 20, top: 30),
-          content: SizedBox(
-            height: 100,
-            width: MediaQuery.of(context).size.width * 0.5,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    ImagePath.LOGO,
-                    height: 30,
-                  ),
-                  SpaceH20(),
-                  Text(StringConst.ARENT_YOU_PARTICIPANT,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.greyDark,
-                        height: 1.5,
-                        fontWeight: FontWeight.w800,
-                        fontSize: fontSize,
-                      )
-                  ),
-                ],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Center(
-                child: EnredaButton(
-                  width: 250.0,
-                  buttonTitle: StringConst.GO_ORGANIZATION_WEB,
-                  onPressed: () {
-                    targetWeb = StringConst.WEB_COMPANIES_URL_ACCESS;
-                    auth.signOut();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 20.0),
-              child: Center(
-                child: EnredaButton(
-                  width: 250.0,
-                  buttonTitle: StringConst.GO_SOCIAL_ENTITY_WEB,
-                  onPressed: () {
-                    targetWeb = StringConst.WEB_SOCIAL_ENTITIES_URL_ACCESS;
-                    auth.signOut();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ).then((exit) {
-      if (exit == null) {
-        auth.signOut();
-        launchURL(targetWeb);
-      }
-    });
-  });
-}

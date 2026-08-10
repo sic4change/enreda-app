@@ -500,7 +500,6 @@ class StringConst {
 
   // ── Sesiones / Mi calendario ──────────────────────────────────────────
   static const String MI_CALENDARIO = "Mi calendario";
-  static const String CALENDARIO_TITLE = "Tus próximas sesiones";
   static const String SESIONES = "Sesiones";
 
   static const List<String> CALENDARIO_WEEKDAYS = [
@@ -526,7 +525,17 @@ class StringConst {
   // on the entidadSocial Sesiones list, plus a "Todas" option).
   static const String CALENDARIO_FILTER_PROXIMAS = "Próximas sesiones";
   static const String CALENDARIO_FILTER_PASADAS = "Sesiones pasadas";
-  static const String CALENDARIO_FILTER_TODAS = "Todas las sesiones";
+  static const String CALENDARIO_FILTER_TODAS = "Todas";
+  static const String CALENDARIO_TITLE = "Calendario";
+  static const String SESIONES_SECTION_TITLE = "Sesiones";
+  static const String CALENDARIO_LEGEND_CONFIRMADA = "Asistencia confirmada";
+  static const String CALENDARIO_LEGEND_NO_CONFIRMADA = "Asistencia no confirmada";
+  static const String SESION_INVITADO_POR = "Invitado por: ";
+  static const String SESION_OBSERVACIONES_PREFIX = "Observaciones: ";
+  static const String SESION_CONFIRMAR_ASISTENCIA = "Confirmar Asistencia";
+  static const String SESION_ASISTENCIA_CONFIRMADA = "Asistencia confirmada";
+  static const String SESION_ATTENDANCE_ERROR =
+      "No se pudo confirmar la asistencia. Inténtalo de nuevo.";
   // Replaces the long localized date in the right panel when a day is
   // selected — past / future relative to "today".
   static const String CALENDARIO_PANEL_PROXIMA_SESION = "Próxima sesión";

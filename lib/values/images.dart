@@ -193,6 +193,7 @@ class ImagePath {
   static const String WHATSAPP_ICON = '$imageDir/logos_whatsapp-icon.png';
   static const String MY_CV = '$imageDir/my-cv.png';
   static const String MY_RESOURCES = '$imageDir/my-resources.png';
+  static const String CALENDAR_ILLUSTRATION = '$imageDir/calendar-illustration.svg';
   static const String RESOURCES = '$imageDir/resources.png';
   static const String MY_COMPETENCIES = '$imageDir/my-competencies.png';
   static const String COMPETENCIES = '$imageDir/competencies.png';

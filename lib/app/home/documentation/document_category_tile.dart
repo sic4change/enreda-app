@@ -159,6 +159,10 @@ class _DocumentCategoryTileState extends State<DocumentCategoryTile> {
                           CustomPopupMenuEntry(child: null, documentationParticipant: documentParticipant),
                           ...MenuItems.getItemOpen(context).map(buildItem).toList(),
                           ...MenuItems.getItemDownload(context).map(buildItem).toList(),
+                          if (!documentParticipant.techCreated) ...[
+                            ...MenuItems.getItemEdit(context).map(buildItem).toList(),
+                            ...MenuItems.getItemDelete(context).map(buildItemRed).toList(),
+                          ],
                         ],
                       ),
                     ),

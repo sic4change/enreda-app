@@ -10,6 +10,7 @@ class DocumentationParticipant {
     this.urlDocument,
     this.nameDocument,
     this.createdBy,
+    this.techCreated = false,
   });
 
   final String? documentationParticipantId;
@@ -22,6 +23,7 @@ class DocumentationParticipant {
   final String? urlDocument;
   final String? nameDocument;
   final String? createdBy;
+  final bool techCreated;
 
   factory DocumentationParticipant.fromMap(Map<String, dynamic> data, String documentId) {
 
@@ -50,6 +52,7 @@ class DocumentationParticipant {
       renovationDate: data['renovationDate'] != null ? DateTime.parse(data['renovationDate'].toDate().toString()) : null,
       urlDocument: urlDocument,
       nameDocument: nameDocument,
+      techCreated: data['techCreated'] ?? false,
     );
   }
 
@@ -71,6 +74,7 @@ class DocumentationParticipant {
       'renovationDate': renovationDate,
       'documentCategoryId': documentCategoryId,
       'documentSubCategoryId': documentSubCategoryId,
+      'techCreated': techCreated,
     };
   }
 
@@ -83,7 +87,7 @@ class DocumentationParticipant {
     DateTime? renovationDate,
     String? documentCategoryId,
     String? documentSubCategoryId,
-
+    bool? techCreated,
   }) {
     return DocumentationParticipant(
       documentationParticipantId: documentationParticipantId?? this.documentationParticipantId,
@@ -94,6 +98,7 @@ class DocumentationParticipant {
       documentCategoryId: documentCategoryId?? this.documentCategoryId,
       documentSubCategoryId: documentSubCategoryId?? this.documentSubCategoryId,
       renovationDate: renovationDate?? this.renovationDate,
+      techCreated: techCreated?? this.techCreated,
     );
   }
 

@@ -1,0 +1,10 @@
+# This file configures the analyzer to exclude the build folder
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**

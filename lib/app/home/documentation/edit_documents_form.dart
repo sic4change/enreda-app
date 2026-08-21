@@ -46,6 +46,7 @@ class _EditDocumentsFormState extends State<EditDocumentsForm> {
   late String _formattedBDate;
   DateTime _creationDate = new DateTime.now();
   DateTime? _renovationDate;
+  String? _observations;
   //DocumentationParticipant? documentationParticipantFromStorage;
   bool isFileRemoved = false;
 
@@ -57,6 +58,7 @@ class _EditDocumentsFormState extends State<EditDocumentsForm> {
     _documentName = documentationParticipant.name;
     _creationDate = documentationParticipant.createDate;
     _renovationDate = documentationParticipant.renovationDate;
+    _observations = documentationParticipant.observations;
 
     //documentationParticipantFromStorage = await database.documentationParticipantStream(widget.documentationParticipant.documentationParticipantId!).first;
 
@@ -109,105 +111,118 @@ class _EditDocumentsFormState extends State<EditDocumentsForm> {
     return AlertDialog(
       content: Container(
         width: 500,
-        height: 560,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              CustomTextBoldCenter(
-                title: StringConst.EDIT_DOCUMENT_TITLE, color: AppColors.primary900,),
-              CustomTextBoldCenter(
-                title: '${widget.documentationParticipant.name}', color: AppColors.primary900,),
-              SizedBox(height: 20,),
-              filesList.length == 0 ? FilesPicker(
-                context: context,
-                filesList: filesList,
-                onTap: () async => pickFiles(),
-                onDeleteDocument: deleteFile,
-              ) : Container(),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: filesList.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(filesList[index].name),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () => deleteFile(filesList[index]),
-                    ),
-                  );
-                },
-              ),
-              SizedBox(height: 20,),
-              CustomTextFormFieldTitle(
-                labelText: StringConst.DOCUMENT_NAME,
-                initialValue: _documentName,
-                validator: (value) =>
-                value!.isNotEmpty ? null : StringConst.FORM_GENERIC_ERROR,
-                onSaved: (value) => _documentName = value!,
-              ),
-              SizedBox(height: 20,),
-              CustomDateOpenValues(
-                labelText: StringConst.CREATION_DOCUMENT,
-                initialValue: _creationDate,
-                onChanged: (value){
-                  _formattedBDate = DateFormat('dd-MM-yyyy').format(value!);
-                  setState(() {
-                    textEditingControllerDateInput.text = _formattedBDate; //set output date to TextField value.
-                    _creationDate = value;
-                  });
-                },
-                validator: (value) => value != null ? null : StringConst.FORM_GENERIC_ERROR,
-              ),
-              SizedBox(height: 20,),
-              CustomDateOpenValues(
-                labelText: StringConst.RENOVATION_DOCUMENT,
-                initialValue: _renovationDate,
-                onChanged: (value){
-                  _formattedBDate = DateFormat('dd-MM-yyyy').format(value!);
-                  setState(() {
-                    textEditingControllerDateInput.text = _formattedBDate; //set output date to TextField value.
-                    _renovationDate = value;
-                  });
-                },
-              ),
-              SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                      ),
-                      onPressed: () => Navigator.of(context).pop((false)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(StringConst.CANCEL,
-                            style: textTheme.bodySmall?.copyWith(
-                                color: AppColors.white,
-                                height: 1.5,
-                                fontWeight: FontWeight.w400,
-                                fontSize: fontSizeButton)),
-                      )),
-                  SizedBox(width: 20,),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                      ),
-                      onPressed: () => _submit(),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(StringConst.EDIT_DOC,
-                            style: textTheme.bodySmall?.copyWith(
-                                color: AppColors.white,
-                                height: 1.5,
-                                fontWeight: FontWeight.w400,
-                                fontSize: fontSizeButton)),
-                      )),
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  CustomTextBoldCenter(
+                    title: StringConst.EDIT_DOCUMENT_TITLE, color: AppColors.primary900,),
+                  CustomTextBoldCenter(
+                    title: '${widget.documentationParticipant.name}', color: AppColors.primary900,),
+                  SizedBox(height: 20,),
+                  filesList.length == 0 ? FilesPicker(
+                    context: context,
+                    filesList: filesList,
+                    onTap: () async => pickFiles(),
+                    onDeleteDocument: deleteFile,
+                  ) : Container(),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: filesList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(filesList[index].name),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () => deleteFile(filesList[index]),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 20,),
+                  CustomTextFormFieldTitle(
+                    labelText: StringConst.DOCUMENT_NAME,
+                    initialValue: _documentName,
+                    validator: (value) =>
+                    value!.isNotEmpty ? null : StringConst.FORM_GENERIC_ERROR,
+                    onSaved: (value) => _documentName = value!,
+                  ),
+                  SizedBox(height: 20,),
+                  CustomDateOpenValues(
+                    labelText: StringConst.CREATION_DOCUMENT,
+                    initialValue: _creationDate,
+                    onChanged: (value){
+                      _formattedBDate = DateFormat('dd-MM-yyyy').format(value!);
+                      setState(() {
+                        textEditingControllerDateInput.text = _formattedBDate; //set output date to TextField value.
+                        _creationDate = value;
+                      });
+                    },
+                    validator: (value) => value != null ? null : StringConst.FORM_GENERIC_ERROR,
+                  ),
+                  SizedBox(height: 20,),
+                  CustomDateOpenValues(
+                    labelText: StringConst.RENOVATION_DOCUMENT,
+                    initialValue: _renovationDate,
+                    onChanged: (value){
+                      _formattedBDate = DateFormat('dd-MM-yyyy').format(value!);
+                      setState(() {
+                        textEditingControllerDateInput.text = _formattedBDate; //set output date to TextField value.
+                        _renovationDate = value;
+                      });
+                    },
+                  ),
+                  SizedBox(height: 20,),
+                  CustomTextFormFieldTitle(
+                    labelText: 'Observaciones',
+                    initialValue: _observations,
+                    onSaved: (value) => _observations = value,
+                  ),
+                  SizedBox(height: 20,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryColor,
+                          ),
+                          onPressed: () => Navigator.of(context).pop((false)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(StringConst.CANCEL,
+                                style: textTheme.bodySmall?.copyWith(
+                                    color: AppColors.white,
+                                    height: 1.5,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: fontSizeButton)),
+                          )),
+                      SizedBox(width: 20,),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryColor,
+                          ),
+                          onPressed: () => _submit(),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(StringConst.EDIT_DOC,
+                                style: textTheme.bodySmall?.copyWith(
+                                    color: AppColors.white,
+                                    height: 1.5,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: fontSizeButton)),
+                          )),
+                    ],
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -248,6 +263,7 @@ class _EditDocumentsFormState extends State<EditDocumentsForm> {
         documentCategoryId: widget.documentationParticipant.documentCategoryId,
         documentSubCategoryId: widget.documentationParticipant.documentSubCategoryId,
         createdBy: auth.currentUser!.uid,
+        observations: _observations,
       );
       try {
         final database = Provider.of<Database>(context, listen: false);

@@ -41,42 +41,45 @@ class _ExpandableDocCategoryTileState extends State<ExpandableDocCategoryTile> {
   Widget build(BuildContext context) {
     List<DocumentCategory> documentCategories = [];
     documentCategories.add(widget.documentCategory);
-    return InkWell(
-      onTap: () {
-        controller.toggle();
-      },
-      child: Stack(
-        children: [
-          Container(
-            child: ExpandablePanel(
-              theme:  ExpandableThemeData(
-                hasIcon: false,
-              ),
-              controller: controller,
-              header: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Container(
-                      color: AppColors.greySearch,
-                      padding: Responsive.isMobile(context) ? const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0) :
-                      const EdgeInsets.symmetric(horizontal: 50.0, vertical: 16.0),
-                      child: CustomTextChip(text: '${(widget.documentCategory.name)}', color: AppColors.primary900),
-                    ),
-                    Divider(thickness: 1, height: 0, color: AppColors.grey400,),
-                  ],
-                ),
-              ),
-              expanded: DocumentCategoryTile(
-                documentCategory: widget.documentCategory,
-                participantUser: widget.participantUser,
-              ),
-              collapsed: Container(),
+    return Stack(
+      children: [
+        Container(
+          child: ExpandablePanel(
+            theme: const ExpandableThemeData(
+              hasIcon: false,
+              tapHeaderToExpand: false,
+              tapBodyToCollapse: false,
+              tapBodyToExpand: false,
             ),
+            controller: controller,
+            header: InkWell(
+              onTap: () {
+                controller.toggle();
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    color: AppColors.greySearch,
+                    padding: Responsive.isMobile(context) ? const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0) :
+                    const EdgeInsets.symmetric(horizontal: 50.0, vertical: 16.0),
+                    child: CustomTextChip(text: '${(widget.documentCategory.name)}', color: AppColors.primary900),
+                  ),
+                  Divider(thickness: 1, height: 0, color: AppColors.grey400,),
+                ],
+              ),
+            ),
+            expanded: DocumentCategoryTile(
+              documentCategory: widget.documentCategory,
+              participantUser: widget.participantUser,
+            ),
+            collapsed: Container(),
           ),
-          Positioned(
-              top: Responsive.isMobile(context) ? 5 : 15,
-              right: Responsive.isMobile(context) ?  10 : 35,
+        ),
+        Positioned(
+            top: Responsive.isMobile(context) ? 5 : 15,
+            right: Responsive.isMobile(context) ?  10 : 35,
+            child: IgnorePointer(
               child: Row(
                 children: [
                   Container(
@@ -93,9 +96,9 @@ class _ExpandableDocCategoryTileState extends State<ExpandableDocCategoryTile> {
                       )),
                   Responsive.isMobile(context) ? SizedBox(width: 5) : SizedBox(width: 20),
                 ],
-              )),
-        ],
-      ),
+              ),
+            )),
+      ],
     );
   }
 }

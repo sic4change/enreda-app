@@ -11,6 +11,9 @@ class DocumentationParticipant {
     this.nameDocument,
     this.createdBy,
     this.techCreated = false,
+    this.isDeleted = false,
+    this.deleteDate,
+    this.observations,
   });
 
   final String? documentationParticipantId;
@@ -24,6 +27,9 @@ class DocumentationParticipant {
   final String? nameDocument;
   final String? createdBy;
   final bool techCreated;
+  final bool isDeleted;
+  final DateTime? deleteDate;
+  final String? observations;
 
   factory DocumentationParticipant.fromMap(Map<String, dynamic> data, String documentId) {
 
@@ -53,6 +59,9 @@ class DocumentationParticipant {
       urlDocument: urlDocument,
       nameDocument: nameDocument,
       techCreated: data['techCreated'] ?? false,
+      isDeleted: data['isDeleted'] ?? false,
+      deleteDate: data['deletedate'] != null ? DateTime.parse(data['deletedate'].toDate().toString()) : null,
+      observations: data['observations'],
     );
   }
 
@@ -75,6 +84,9 @@ class DocumentationParticipant {
       'documentCategoryId': documentCategoryId,
       'documentSubCategoryId': documentSubCategoryId,
       'techCreated': techCreated,
+      'isDeleted': isDeleted,
+      'deletedate': deleteDate,
+      'observations': observations,
     };
   }
 
@@ -88,6 +100,9 @@ class DocumentationParticipant {
     String? documentCategoryId,
     String? documentSubCategoryId,
     bool? techCreated,
+    bool? isDeleted,
+    DateTime? deleteDate,
+    String? observations,
   }) {
     return DocumentationParticipant(
       documentationParticipantId: documentationParticipantId?? this.documentationParticipantId,
@@ -99,6 +114,9 @@ class DocumentationParticipant {
       documentSubCategoryId: documentSubCategoryId?? this.documentSubCategoryId,
       renovationDate: renovationDate?? this.renovationDate,
       techCreated: techCreated?? this.techCreated,
+      isDeleted: isDeleted?? this.isDeleted,
+      deleteDate: deleteDate?? this.deleteDate,
+      observations: observations?? this.observations,
     );
   }
 

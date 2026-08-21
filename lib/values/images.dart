@@ -147,6 +147,7 @@ class ImagePath {
   static const String ICON_EYE = '$imageDir/eye.png';
   static const String ICON_TRASH_ALT  = '$imageDir/trash.png';
   static const String ICON_PLUS = '$imageDir/plus_outline.png';
+  static const String ICON_OBSERVATIONS_BUBBLE = '$imageDir/observations_bubble.png';
 
   //Resources
   static const String BACKGROUND_1 = '$imageDir/desktop-background-empleo.png';

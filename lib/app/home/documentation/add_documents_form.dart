@@ -45,6 +45,7 @@ class _AddDocumentsFormState extends State<AddDocumentsForm> {
   late String _formattedBDate;
   DateTime _creationDate = new DateTime.now();
   DateTime? _renovationDate;
+  String? _observations;
 
   void pickFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -82,7 +83,9 @@ class _AddDocumentsFormState extends State<AddDocumentsForm> {
     return AlertDialog(
       content: Container(
         width: 500,
-        height: Responsive.isMobile(context) ? double.infinity : 560,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+        ),
         padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
@@ -145,6 +148,12 @@ class _AddDocumentsFormState extends State<AddDocumentsForm> {
                       _renovationDate = value;
                     });
                   },
+                ),
+                SizedBox(height: 20,),
+                CustomTextFormFieldTitle(
+                  labelText: 'Observaciones',
+                  hintText: 'Introduce observaciones (opcional)',
+                  onSaved: (value) => _observations = value,
                 ),
                 SizedBox(height: 30,),
                 Flex(
@@ -225,6 +234,7 @@ class _AddDocumentsFormState extends State<AddDocumentsForm> {
         documentCategoryId: widget.documentSubCategory.documentCategoryId,
         documentSubCategoryId: widget.documentSubCategory.personalDocId,
         createdBy: auth.currentUser!.uid,
+        observations: _observations,
       );
       try {
         final database = Provider.of<Database>(context, listen: false);

@@ -778,7 +778,9 @@ class FirestoreDatabase implements Database {
           "renovationDate": document.renovationDate,
           "documentCategoryId": document.documentCategoryId,
           "documentSubCategoryId": document.documentSubCategoryId,
-          "createdBy": document.createdBy
+          "createdBy": document.createdBy,
+          "isDeleted": false,
+          "observations": document.observations,
         },).then((value) => _service.updateData(
             path: APIPath.oneDocumentationParticipant(value),
             data: {
@@ -808,6 +810,7 @@ class FirestoreDatabase implements Database {
             "name": document.name,
             "createDate": document.createDate,
             "renovationDate": document.renovationDate,
+            "observations": document.observations,
           }
       );
     } catch (e) {
@@ -821,7 +824,13 @@ class FirestoreDatabase implements Database {
 
   @override
   Future<void> deleteDocumentationParticipant(DocumentationParticipant document) =>
-      _service.deleteData(path: APIPath.oneDocumentationParticipant(document.documentationParticipantId!));
+      _service.updateData(
+        path: APIPath.oneDocumentationParticipant(document.documentationParticipantId!),
+        data: {
+          'isDeleted': true,
+          'deletedate': DateTime.now(),
+        },
+      );
 
   @override
   Stream<List<Country>> countryFormatedStream() => _service.collectionStream(
@@ -1036,7 +1045,7 @@ class FirestoreDatabase implements Database {
         .where('documentSubCategoryId', isEqualTo: documentSubCategory.personalDocId),
     builder: (data, documentId) => DocumentationParticipant.fromMap(data, documentId),
     sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
-  );
+  ).map((list) => list.where((doc) => doc.isDeleted != true).toList());
 
   @override
   Stream<List<DocumentationParticipant>> documentationParticipantStreamByUserId(
@@ -1053,7 +1062,7 @@ class FirestoreDatabase implements Database {
         // Newest first — the "Mis Documentos" panel is a horizontal scroll,
         // so the latest upload should be the first card.
         sort: (lhs, rhs) => rhs.createDate.compareTo(lhs.createDate),
-      );
+      ).map((list) => list.where((doc) => doc.isDeleted != true).toList());
 
   @override
   Stream<List<DocumentationParticipant>> documentationParticipantStream(String userId) => _service.collectionStream(
@@ -1061,7 +1070,7 @@ class FirestoreDatabase implements Database {
     queryBuilder: (query) => query.where('userId', isEqualTo: userId),
     builder: (data, documentId) => DocumentationParticipant.fromMap(data, documentId),
     sort: (lhs, rhs) => lhs.name.compareTo(rhs.name),
-  );
+  ).map((list) => list.where((doc) => doc.isDeleted != true).toList());
 
   @override
   Stream<List<JobOfferApplication>> applicantStreamByJobOffer(String? jobOfferId, String? userId) {

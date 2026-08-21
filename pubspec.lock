@@ -474,13 +474,13 @@ packages:
     source: hosted
     version: "4.9.3"
   firebase_messaging_web:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: firebase_messaging_web
-      sha256: "8750bacf50573c0383535fc3f9c58c6a2f9dff5320a16a82c30631b9dad894f1"
+      sha256: "663d320e90a41fe57d651ec79df2bc831bf29e051bc0c2cd41faf3106eb412d9"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.5"
+    version: "4.2.4"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -498,7 +498,7 @@ packages:
     source: hosted
     version: "6.0.6"
   firebase_storage_web:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: firebase_storage_web
       sha256: "869c00fd45fad6da5dcfc0d24ce83d245884fb427088af48111cfa62e278e7e1"

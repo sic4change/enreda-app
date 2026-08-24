@@ -116,6 +116,8 @@ class _MyResourcesPageState extends State<MyResourcesPage> {
                 isTabSelected
                     ? Positioned(
                         top: 60,
+                        left: 0,
+                        right: 0,
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(

@@ -748,78 +748,147 @@ class _ResourceDetailLinkPageState extends State<ResourceDetailLinkPage> {
         final bool isEnrolled = user != null && user.resourcesEnrolled.contains(resource.resourceId);
 
         if (isEnrolled) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 15.0,
-                runSpacing: 10.0,
-                children: [
-                  TextButton(
-                    onPressed: () async {
-                      await database.updateUserEnredaField(
-                        userId,
-                        {
-                          'resourcesEnrolled': FieldValue.arrayRemove([resource.resourceId]),
-                          'resourcesDiscarded': FieldValue.arrayUnion([resource.resourceId]),
-                        },
-                      );
-
-                      if (resource.participants.contains(userId)) {
-                        resource.participants.remove(userId);
-                        resource.assistants = resource.participants.length.toString();
-                        await database.setResource(resource);
-                      }
-
-                      showToast(context,
-                          title: 'Ha sido eliminado satisfactoriamente al recurso',
-                          color: AppColors.primaryColor);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
-                      child: Text(
-                        'Ya no me interesa',
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontSize: 16,
-                          color: Constants.darkGray,
-                        ),
-                      ),
-                    ),
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Constants.white),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              side: BorderSide(color: AppColors.greyBorder),
-                            ))),
-                  ),
-                  if (resource.link != null && resource.link!.isNotEmpty)
+          return Responsive.isMobile(context)
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
                     TextButton(
-                      onPressed: () {
-                        launchExternalBrowserURL(resource.link!);
+                      onPressed: () async {
+                        await database.updateUserEnredaField(
+                          userId,
+                          {
+                            'resourcesEnrolled': FieldValue.arrayRemove([resource.resourceId]),
+                            'resourcesDiscarded': FieldValue.arrayUnion([resource.resourceId]),
+                          },
+                        );
+
+                        if (resource.participants.contains(userId)) {
+                          resource.participants.remove(userId);
+                          resource.assistants = resource.participants.length.toString();
+                          await database.setResource(resource);
+                        }
+
+                        showToast(context,
+                            title: 'Ha sido eliminado satisfactoriamente al recurso',
+                            color: AppColors.primaryColor);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
                         child: Text(
-                          'Acceder al recurso',
+                          'Ya no me interesa',
                           style: textTheme.bodyMedium?.copyWith(
                             fontSize: 16,
-                            color: Constants.white,
+                            color: Constants.darkGray,
                           ),
                         ),
                       ),
                       style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Constants.turquoise),
+                          backgroundColor: MaterialStateProperty.all(Constants.white),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
+                                side: BorderSide(color: AppColors.greyBorder),
                               ))),
                     ),
-                ],
-              ),
-            ],
-          );
+                    if (resource.link != null && resource.link!.isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      TextButton(
+                        onPressed: () {
+                          launchExternalBrowserURL(resource.link!);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
+                          child: Text(
+                            'Acceder al recurso',
+                            style: textTheme.bodyMedium?.copyWith(
+                              fontSize: 16,
+                              color: Constants.white,
+                            ),
+                          ),
+                        ),
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(Constants.turquoise),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ))),
+                      ),
+                    ],
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 15.0,
+                      runSpacing: 10.0,
+                      children: [
+                        TextButton(
+                          onPressed: () async {
+                            await database.updateUserEnredaField(
+                              userId,
+                              {
+                                'resourcesEnrolled': FieldValue.arrayRemove([resource.resourceId]),
+                                'resourcesDiscarded': FieldValue.arrayUnion([resource.resourceId]),
+                              },
+                            );
+
+                            if (resource.participants.contains(userId)) {
+                              resource.participants.remove(userId);
+                              resource.assistants = resource.participants.length.toString();
+                              await database.setResource(resource);
+                            }
+
+                            showToast(context,
+                                title: 'Ha sido eliminado satisfactoriamente al recurso',
+                                color: AppColors.primaryColor);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
+                            child: Text(
+                              'Ya no me interesa',
+                              style: textTheme.bodyMedium?.copyWith(
+                                fontSize: 16,
+                                color: Constants.darkGray,
+                              ),
+                            ),
+                          ),
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(Constants.white),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    side: BorderSide(color: AppColors.greyBorder),
+                                  ))),
+                        ),
+                        if (resource.link != null && resource.link!.isNotEmpty)
+                          TextButton(
+                            onPressed: () {
+                              launchExternalBrowserURL(resource.link!);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30.0),
+                              child: Text(
+                                'Acceder al recurso',
+                                style: textTheme.bodyMedium?.copyWith(
+                                  fontSize: 16,
+                                  color: Constants.white,
+                                ),
+                              ),
+                            ),
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(Constants.turquoise),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                    ))),
+                          ),
+                      ],
+                    ),
+                  ],
+                );
         } else {
           return _buildDefaultJoinButton(context, resource, isGuest, userId, textTheme);
         }

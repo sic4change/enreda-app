@@ -171,6 +171,7 @@ abstract class Database {
   Stream<List<JobOfferApplication>> applicantStreamByJobOffer(String? jobOfferId, String? userId);
   Stream<List<Sesion>> mySesionesStream(String participantId);
   Future<void> confirmSesionAssistance(String sesionId, String participantId);
+  Future<void> cancelSesionAssistance(String sesionId, String participantId);
 
   Future<void> setUserEnreda(UserEnreda userEnreda);
   Future<void> updateUserEnredaField(String userId, Map<String, dynamic> data);
@@ -231,6 +232,20 @@ class FirestoreDatabase implements Database {
         path: APIPath.sesion(sesionId),
         data: {
           'confirmedParticipants': FieldValue.arrayUnion([participantId]),
+          // Re-confirming after a cancellation clears the red state on the
+          // entidadSocial side.
+          'rejectedParticipants': FieldValue.arrayRemove([participantId]),
+        },
+      );
+
+  @override
+  Future<void> cancelSesionAssistance(String sesionId, String participantId) =>
+      _service.updateData(
+        path: APIPath.sesion(sesionId),
+        data: {
+          'confirmedParticipants': FieldValue.arrayRemove([participantId]),
+          // Shown as a red dot next to the participant in entidadSocial.
+          'rejectedParticipants': FieldValue.arrayUnion([participantId]),
         },
       );
 

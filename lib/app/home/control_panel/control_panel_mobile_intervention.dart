@@ -186,7 +186,7 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                               children: [
                                 CustomTextBoldTitle(title: StringConst.MI_CALENDARIO),
                                 SpaceH4(),
-                                SvgPicture.asset(ImagePath.CALENDAR_ILLUSTRATION, height: 70),
+                                Center(child: SvgPicture.asset(ImagePath.CALENDAR_ILLUSTRATION, height: 82)),
                               ]
                           ),
                         ),

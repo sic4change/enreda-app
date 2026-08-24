@@ -526,6 +526,9 @@ class StringConst {
   static const String CALENDARIO_FILTER_PROXIMAS = "Próximas sesiones";
   static const String CALENDARIO_FILTER_PASADAS = "Sesiones pasadas";
   static const String CALENDARIO_FILTER_TODAS = "Todas";
+  // Short labels used on mobile so the three pills fit on a single line.
+  static const String CALENDARIO_FILTER_PROXIMAS_SHORT = "Próximas";
+  static const String CALENDARIO_FILTER_PASADAS_SHORT = "Pasadas";
   static const String CALENDARIO_TITLE = "Calendario";
   static const String SESIONES_SECTION_TITLE = "Sesiones";
   static const String CALENDARIO_LEGEND_CONFIRMADA = "Asistencia confirmada";
@@ -533,9 +536,12 @@ class StringConst {
   static const String SESION_INVITADO_POR = "Invitado por: ";
   static const String SESION_OBSERVACIONES_PREFIX = "Observaciones: ";
   static const String SESION_CONFIRMAR_ASISTENCIA = "Confirmar Asistencia";
+  static const String SESION_CANCELAR_ASISTENCIA = "Cancelar Asistencia";
   static const String SESION_ASISTENCIA_CONFIRMADA = "Asistencia confirmada";
   static const String SESION_ATTENDANCE_ERROR =
       "No se pudo confirmar la asistencia. Inténtalo de nuevo.";
+  static const String SESION_CANCEL_ERROR =
+      "No se pudo cancelar la asistencia. Inténtalo de nuevo.";
   // Replaces the long localized date in the right panel when a day is
   // selected — past / future relative to "today".
   static const String CALENDARIO_PANEL_PROXIMA_SESION = "Próxima sesión";

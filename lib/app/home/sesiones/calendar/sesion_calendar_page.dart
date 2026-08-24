@@ -74,6 +74,18 @@ class _SesionCalendarPageState extends State<SesionCalendarPage> {
     }
   }
 
+  Future<void> _cancelAssistance(Database database, Sesion sesion) async {
+    final uid = _uid;
+    if (uid == null || uid.isEmpty || sesion.sesionId == null) return;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await database.cancelSesionAssistance(sesion.sesionId!, uid);
+    } catch (_) {
+      messenger.showSnackBar(const SnackBar(
+          content: Text(StringConst.SESION_CANCEL_ERROR)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthBase>(context, listen: false);
@@ -142,6 +154,7 @@ class _SesionCalendarPageState extends State<SesionCalendarPage> {
             currentUserId: uid,
             tecnicoNameOf: (id) => _tecnicoName(database, id),
             onConfirm: (s) => _confirmAssistance(database, s),
+            onCancel: (s) => _cancelAssistance(database, s),
             onFilterChange: (f) => setState(() {
               _filter = f;
               _selectedDay = null;
@@ -760,6 +773,7 @@ class _SessionsPanel extends StatelessWidget {
     required this.currentUserId,
     required this.tecnicoNameOf,
     required this.onConfirm,
+    required this.onCancel,
     required this.onFilterChange,
   });
 
@@ -772,6 +786,7 @@ class _SessionsPanel extends StatelessWidget {
   final String currentUserId;
   final Future<String?> Function(String tecnicoId) tecnicoNameOf;
   final ValueChanged<Sesion> onConfirm;
+  final ValueChanged<Sesion> onCancel;
   final ValueChanged<_CalendarFilter> onFilterChange;
 
   @override
@@ -805,6 +820,7 @@ class _SessionsPanel extends StatelessWidget {
           // than the previously selected day.
           _CalendarFilterBar(
             activeFilter: filter,
+            isMobile: isMobile,
             onSelect: onFilterChange,
           ),
           SizedBox(height: isMobile ? Sizes.PADDING_16 : Sizes.PADDING_20),
@@ -900,6 +916,7 @@ class _SessionsPanel extends StatelessWidget {
         isConfirmed: s.confirmedParticipants.contains(currentUserId),
         tecnicoNameFuture: tecnicoNameOf(s.tecnicoId),
         onConfirm: () => onConfirm(s),
+        onCancel: () => onCancel(s),
       );
 
   Widget _emptyText(TextTheme textTheme, String label) => Padding(
@@ -966,15 +983,18 @@ class _SessionsPanel extends StatelessWidget {
 class _CalendarFilterBar extends StatelessWidget {
   const _CalendarFilterBar({
     required this.activeFilter,
+    required this.isMobile,
     required this.onSelect,
   });
 
   final _CalendarFilter activeFilter;
+  final bool isMobile;
   final ValueChanged<_CalendarFilter> onSelect;
 
   @override
   Widget build(BuildContext context) {
-    // Figma order: Todas | Próximas sesiones | Sesiones pasadas.
+    // Figma order: Todas | Próximas sesiones | Sesiones pasadas. On mobile
+    // the short labels keep all three pills on a single line.
     return Wrap(
       spacing: Sizes.PADDING_8,
       runSpacing: Sizes.PADDING_8,
@@ -985,12 +1005,16 @@ class _CalendarFilterBar extends StatelessWidget {
           onTap: () => onSelect(_CalendarFilter.todas),
         ),
         _FilterPill(
-          label: StringConst.CALENDARIO_FILTER_PROXIMAS,
+          label: isMobile
+              ? StringConst.CALENDARIO_FILTER_PROXIMAS_SHORT
+              : StringConst.CALENDARIO_FILTER_PROXIMAS,
           isActive: activeFilter == _CalendarFilter.proximas,
           onTap: () => onSelect(_CalendarFilter.proximas),
         ),
         _FilterPill(
-          label: StringConst.CALENDARIO_FILTER_PASADAS,
+          label: isMobile
+              ? StringConst.CALENDARIO_FILTER_PASADAS_SHORT
+              : StringConst.CALENDARIO_FILTER_PASADAS,
           isActive: activeFilter == _CalendarFilter.pasadas,
           onTap: () => onSelect(_CalendarFilter.pasadas),
         ),
@@ -1081,12 +1105,14 @@ class _ParticipantSesionRow extends StatelessWidget {
     required this.isConfirmed,
     required this.tecnicoNameFuture,
     required this.onConfirm,
+    required this.onCancel,
   });
 
   final Sesion sesion;
   final bool isConfirmed;
   final Future<String?> tecnicoNameFuture;
   final VoidCallback onConfirm;
+  final VoidCallback onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -1217,21 +1243,50 @@ class _ParticipantSesionRow extends StatelessWidget {
                 ],
                 const SizedBox(height: Sizes.PADDING_12),
                 isConfirmed
-                    ? Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Sizes.PADDING_20,
-                          vertical: Sizes.PADDING_8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.yellowDark,
-                          borderRadius:
-                              BorderRadius.circular(Sizes.RADIUS_24),
-                        ),
-                        child: Text(
-                          StringConst.SESION_ASISTENCIA_CONFIRMADA,
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: AppColors.primary900,
-                            fontWeight: FontWeight.w700,
+                    // Figma "Cancelar Asistencia": 182×34 yellowDark capsule,
+                    // navy circle flush right with a yellow ✕. Tapping it
+                    // withdraws the confirmation (red dot on entidadSocial).
+                    ? InkWell(
+                        borderRadius: BorderRadius.circular(17),
+                        onTap: onCancel,
+                        child: Container(
+                          width: 182,
+                          height: 34,
+                          decoration: BoxDecoration(
+                            color: AppColors.yellowDark,
+                            borderRadius: BorderRadius.circular(17),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Center(
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      StringConst.SESION_CANCELAR_ASISTENCIA,
+                                      style: textTheme.bodyMedium?.copyWith(
+                                        color: AppColors.primary900,
+                                        fontWeight: FontWeight.w500,
+                                        letterSpacing: -0.26,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 34,
+                                height: 34,
+                                decoration: const BoxDecoration(
+                                  color: AppColors.primary900,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.close_rounded,
+                                  size: 18,
+                                  color: AppColors.yellowDark,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       )

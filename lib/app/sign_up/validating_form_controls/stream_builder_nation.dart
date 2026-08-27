@@ -4,7 +4,15 @@ import 'package:enreda_app/values/strings.dart';
 import 'package:enreda_app/values/values.dart';
 import 'package:flutter/material.dart';
 
-Widget streamBuilderForNation(BuildContext context, String? selectedNation, functionToWriteBackThings, String title, String? nationalityName) {
+Widget streamBuilderForNation(
+  BuildContext context,
+  String? selectedNation,
+  functionToWriteBackThings,
+  String title,
+  String? nationalityName, {
+  bool isRequired = true,
+  Widget? trailing,
+}) {
   TextTheme textTheme = Theme.of(context).textTheme;
   double fontSize = responsiveSize(context, 14, 16, md: 15);
   return Builder(
@@ -37,43 +45,56 @@ Widget streamBuilderForNation(BuildContext context, String? selectedNation, func
                 ),
               ),
             ),
-            DropdownButtonFormField(
-              value: selectedNation,
-              isExpanded: true,
-              items: nationItems,
-              onChanged: (value) => functionToWriteBackThings(value),
-              validator: (value) => selectedNation != null ? null : StringConst.FORM_FIELD_ERROR,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: EdgeInsets.all(5),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  borderSide: BorderSide(
-                    color: AppColors.greyUltraLight,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: DropdownButtonFormField(
+                    value: selectedNation,
+                    isExpanded: true,
+                    items: nationItems,
+                    onChanged: (value) => functionToWriteBackThings(value),
+                    validator: isRequired
+                        ? (value) => selectedNation != null ? null : StringConst.FORM_FIELD_ERROR
+                        : null,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: EdgeInsets.all(5),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: AppColors.greyUltraLight,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: AppColors.greyUltraLight,
+                          width: 1.0,
+                        ),
+                      ),
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                          color: AppColors.greyUltraLight,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    style: textTheme.bodySmall?.copyWith(
+                      height: 1.5,
+                      color: AppColors.greyDark,
+                      fontWeight: FontWeight.w400,
+                      fontSize: fontSize,
+                    ),
                   ),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  borderSide: BorderSide(
-                    color: AppColors.greyUltraLight,
-                    width: 1.0,
-                  ),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  borderSide: BorderSide(
-                    color: AppColors.greyUltraLight,
-                    width: 1.0,
-                  ),
-                ),
-              ),
-              style: textTheme.bodySmall?.copyWith(
-                height: 1.5,
-                color: AppColors.greyDark,
-                fontWeight: FontWeight.w400,
-                fontSize: fontSize,
-              ),
+                if (trailing != null) ...[
+                  SizedBox(width: 8),
+                  trailing,
+                ],
+              ],
             ),
           ],
         );

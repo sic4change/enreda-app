@@ -75,4 +75,8 @@ class APIPath {
   // Sesiones — shared collection with the enredaEntidadSocial técnico dashboard.
   static String sesiones() => 'sesiones';
   static String sesion(String sesionId) => 'sesiones/$sesionId';
+
+  // Companion data — separate collection to avoid saturating the user document.
+  static String companionDataCollection() => 'companionData';
+  static String companionDataItem(String id) => 'companionData/$id';
 }

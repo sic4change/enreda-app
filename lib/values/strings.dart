@@ -433,6 +433,8 @@ class StringConst {
   static const String FORM_SOCIAL_ENTITY = "¿Vienes de mano de una Entidad Social?";
   static const String FORM_CURRENT_COUNTRY = "País actual";
   static const String FORM_CURRENT_NATIONALITY = "Nacionalidad";
+  static const String FORM_SECOND_NATIONALITY = "Segunda Nacionalidad";
+
   static const String FORM_EDUCATION_REV_CREATE = "Nivel educativo";
   static const String FORM_SOCIAL_ENTITY_REV = "Entidad social";
   static const String FORM_GOALS = 'Objetivos';
@@ -443,7 +445,9 @@ class StringConst {
   static const String FORM_GENERAL_INFO = "Información general";
   static const String FORM_MOTIVATION = "Motivaciones";
   static const String FORM_INTERESTS = "Intereses";
+  static const String FORM_COMPANION_STEP = "Acompañamiento";
   static const String FORM_REVISION = "Revisión";
+  static const String FORM_NEEDS_COMPANIONSHIP = "¿Necesitas acompañamiento especializado con una organización social?";
   static const String FORM_CONFIRM = "Aceptar";
   static const String FORM_NEXT = "Siguiente";
   static const String FORM_BACK = "Atrás";

@@ -88,6 +88,9 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
   City? selectedCity;
   Gender? selectedGender;
   String? selectedNation;
+  String? selectedNationSecond;
+  String _nationalitySecond = '';
+  bool _showSecondNationality = false;
   Education? selectedEducation;
   SocialEntity? selectedSocialEntity;
   Set<Interest> _interests = Set.from([]);
@@ -116,6 +119,8 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
     _city = user.city ?? '';
     _postalCode = user.postalCode ?? '';
     _nationality = user.nationality ?? '';
+    _nationalitySecond = user.nationalitySecond ?? '';
+    _showSecondNationality = _nationalitySecond.isNotEmpty;
     _education = user.educationId ?? '';
     _socialEntity = user.assignedEntityId ?? '';
     _birthday = user.birthday ?? null;
@@ -358,8 +363,31 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
                     ),
                   ),
                   CustomFlexRowColumn(
-                    childLeft: streamBuilderForNation(context, selectedNation,
-                        nationalitySetState, StringConst.FORM_CURRENT_NATIONALITY, _nationality),
+                    childLeft: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        streamBuilderForNation(
+                          context,
+                          selectedNation,
+                          nationalitySetState,
+                          StringConst.FORM_CURRENT_NATIONALITY,
+                          _nationality,
+                          trailing: _buildAddNationalityButton(),
+                        ),
+                        if (_showSecondNationality) ...
+                        [
+                          SizedBox(height: 16),
+                          streamBuilderForNation(
+                            context,
+                            selectedNationSecond,
+                            nationalitySecondSetState,
+                            StringConst.FORM_SECOND_NATIONALITY,
+                            _nationalitySecond,
+                            isRequired: false,
+                          ),
+                        ],
+                      ],
+                    ),
                     childRight: streamBuilderDropdownEducation(context, selectedEducation,
                         educationSetState, user, StringConst.FORM_EDUCATION),
                   ),
@@ -532,6 +560,7 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
         birthday: _birthday,
         educationId: _education,
         nationality: _nationality,
+        nationalitySecond: _showSecondNationality ? _nationalitySecond : null,
         assignedEntityId: _socialEntity,
         //assignedById:,
       );
@@ -613,6 +642,28 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
     setState(() {
       _nationality = nationalityName!;
     });
+  }
+
+  void nationalitySecondSetState(String? nationalityName) {
+    setState(() {
+      _nationalitySecond = nationalityName ?? '';
+      selectedNationSecond = nationalityName;
+    });
+  }
+
+  Widget _buildAddNationalityButton() {
+    return _AddNationalityButton(
+      isActive: _showSecondNationality,
+      onTap: () {
+        setState(() {
+          _showSecondNationality = !_showSecondNationality;
+          if (!_showSecondNationality) {
+            _nationalitySecond = '';
+            selectedNationSecond = null;
+          }
+        });
+      },
+    );
   }
 
   void educationSetState(Education? education) {
@@ -940,5 +991,55 @@ class _PersonalDataFormState extends State<PersonalDataForm> {
     } catch (e) {
       print(e.toString());
     }
+  }
+}
+
+// ── Botón + para segunda nacionalidad ────────────────────────────────────────
+// Widget independiente para que el estado de hover (_hovered) viva en su
+// propio State y no se reinicie con cada rebuild del formulario padre.
+class _AddNationalityButton extends StatefulWidget {
+  const _AddNationalityButton({
+    required this.isActive,
+    required this.onTap,
+  });
+
+  final bool isActive;
+  final VoidCallback onTap;
+
+  @override
+  State<_AddNationalityButton> createState() => _AddNationalityButtonState();
+}
+
+class _AddNationalityButtonState extends State<_AddNationalityButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final filled = _hovered || widget.isActive;
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: filled ? const Color(0xFF18C5C1) : Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: const Color(0xFF18C5C1),
+              width: 2,
+            ),
+          ),
+          child: Icon(
+            Icons.add,
+            color: filled ? Colors.white : const Color(0xFF18C5C1),
+            size: 20,
+          ),
+        ),
+      ),
+    );
   }
 }

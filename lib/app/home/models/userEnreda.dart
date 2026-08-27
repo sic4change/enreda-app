@@ -38,6 +38,7 @@ class UserEnreda {
     this.checkAgreeCV,
     this.gamificationFlags = const {},
     this.nationality,
+    this.nationalitySecond,
     this.assignedEntityId,
     this.assignedById,
     this.motivation,
@@ -211,6 +212,7 @@ class UserEnreda {
     }
 
     final String? nationality = data['nationality'];
+    final String? nationalitySecond = data['nationalitySecond'];
     final String? assignedEntityId = data['assignedEntityId'];
     final String? assignedById = data['assignedById'];
 
@@ -267,6 +269,7 @@ class UserEnreda {
       checkAgreeCV: checkAgreeCV,
       gamificationFlags: gamificationFlags,
       nationality: nationality,
+      nationalitySecond: nationalitySecond,
       assignedEntityId: assignedEntityId,
       motivation: motivation,
       personalDocuments: personalDocuments,
@@ -313,6 +316,7 @@ class UserEnreda {
   final bool? checkAgreeCV;
   final Map<String, bool> gamificationFlags;
   final String? nationality;
+  final String? nationalitySecond;
   final String? assignedEntityId;
   final String? assignedById;
   final Motivation? motivation;
@@ -355,6 +359,7 @@ class UserEnreda {
       'gamificationFlags': gamificationFlags,
       'educationId': educationId,
       'nationality': nationality,
+      'nationalitySecond': nationalitySecond,
       'assignedEntityId': assignedEntityId,
       'assignedById': assignedById,
       'newsletterSubscribed': newsletterSubscribed,
@@ -405,6 +410,7 @@ class UserEnreda {
     bool? checkAgreeCV,
     Map<String, bool>? gamificationFlags,
     String? nationality,
+    String? nationalitySecond,
     String? assignedEntityId,
     String? assignedById,
     Motivation? motivation,
@@ -450,6 +456,7 @@ class UserEnreda {
       checkAgreeCV: checkAgreeCV ?? this.checkAgreeCV,
       gamificationFlags: gamificationFlags ?? this.gamificationFlags,
       nationality: nationality ?? this.nationality,
+      nationalitySecond: nationalitySecond ?? this.nationalitySecond,
       assignedEntityId: assignedEntityId ?? this.assignedEntityId,
       assignedById: assignedById ?? this.assignedById,
       motivation: motivation ?? this.motivation,

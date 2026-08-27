@@ -858,7 +858,25 @@ class _StepperState extends State<CustomStepper> with TickerProviderStateMixin {
       );
     }
 
+    final bool isUnbounded = widget.physics is NeverScrollableScrollPhysics;
+
+    Widget contentList = ListView(
+      controller: widget.controller,
+      physics: widget.physics,
+      shrinkWrap: isUnbounded,
+      padding: const EdgeInsets.all(24.0),
+      children: <Widget>[
+        AnimatedSize(
+          curve: Curves.fastOutSlowIn,
+          duration: kThemeAnimationDuration,
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: stepPanels),
+        ),
+        _buildVerticalControls(widget.currentStep),
+      ],
+    );
+
     return Column(
+      mainAxisSize: isUnbounded ? MainAxisSize.min : MainAxisSize.max,
       children: <Widget>[
         Material(
           elevation: widget.elevation ?? 2,
@@ -869,21 +887,7 @@ class _StepperState extends State<CustomStepper> with TickerProviderStateMixin {
             ),
           ),
         ),
-        Expanded(
-          child: ListView(
-            controller: widget.controller,
-            physics: widget.physics,
-            padding: const EdgeInsets.all(24.0),
-            children: <Widget>[
-              AnimatedSize(
-                curve: Curves.fastOutSlowIn,
-                duration: kThemeAnimationDuration,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: stepPanels),
-              ),
-              _buildVerticalControls(widget.currentStep),
-            ],
-          ),
-        ),
+        isUnbounded ? contentList : Expanded(child: contentList),
       ],
     );
   }

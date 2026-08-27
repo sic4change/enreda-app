@@ -43,6 +43,7 @@ import 'package:enreda_app/services/firestore_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../app/home/models/certificationRequest.dart';
 import '../app/home/models/company.dart';
+import '../app/home/models/companion_data.dart';
 import '../app/home/models/documentCategory.dart';
 import '../app/home/models/documentationParticipant.dart';
 import '../app/home/models/personalDocument.dart';
@@ -202,6 +203,9 @@ abstract class Database {
   Future<void> updateDocumentationParticipant(DocumentationParticipant document);
   Future<void> deleteDocumentationParticipant(DocumentationParticipant document);
   Future<void> addJobOfferApplication(JobOfferApplication jobOfferApplication);
+  Future<void> addCompanionData(CompanionData companionData);
+  Stream<CompanionData?> companionDataStream(String userId, String? email);
+  Future<void> setCompanionData(CompanionData companionData);
   Stream<List<String>> nationsSpanishStream();
 }
 
@@ -1177,6 +1181,39 @@ class FirestoreDatabase implements Database {
   @override
   Future<void> addUnemployedUser(UnemployedUser unemployedUser) =>
       _service.addData(path: APIPath.users(), data: unemployedUser.toMap());
+
+  @override
+  Future<void> addCompanionData(CompanionData companionData) =>
+      _service.addData(path: APIPath.companionDataCollection(), data: companionData.toMap());
+
+  @override
+  Stream<CompanionData?> companionDataStream(String userId, String? email) {
+    final ids = <String>[userId];
+    if (email != null && email.isNotEmpty && !ids.contains(email)) {
+      ids.add(email);
+    }
+    return _service.collectionStream<CompanionData>(
+      path: APIPath.companionDataCollection(),
+      queryBuilder: (query) => query.where('userId', whereIn: ids).limit(1),
+      builder: (data, documentId) => CompanionData.fromMap(data, documentId),
+      sort: (lhs, rhs) => 0,
+    ).map((list) => list.isNotEmpty ? list.first : null);
+  }
+
+  @override
+  Future<void> setCompanionData(CompanionData companionData) async {
+    if (companionData.companionDataId != null && companionData.companionDataId!.isNotEmpty) {
+      await _service.updateData(
+        path: APIPath.companionDataItem(companionData.companionDataId!),
+        data: companionData.toMap(),
+      );
+    } else {
+      await _service.addData(
+        path: APIPath.companionDataCollection(),
+        data: companionData.toMap(),
+      );
+    }
+  }
 
   @override
   Future<void> addMentorUser(MentorUser mentorUser) =>

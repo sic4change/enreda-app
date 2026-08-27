@@ -34,7 +34,7 @@ import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_i
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_keepLearning.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_nation.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_province.dart';
-// import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_social_entity.dart'; // commented: social entity selector replaced by companionship Si/No
+import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_social_entity.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/select_specific_interests_dialog.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_timeSearching.dart';
 import 'package:enreda_app/app/sign_up/validating_form_controls/stream_builder_timeSpentWeekly.dart';
@@ -338,7 +338,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
         unemployedType: unemployedType,
         nationality: selectedNationality,
         nationalitySecond: selectedNationalitySecond,
-        assignedEntityId: selectedSocialEntity?.socialEntityId ?? null,
+        assignedEntityId: _needsCompanionship == true ? (selectedSocialEntity?.socialEntityId) : null,
         checkAgreeCV: _isCheckedDataProtectionPolicy,
         newsletterSubscribed: _isNewsletterChecked,
         gamificationFlags: {
@@ -585,13 +585,18 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
               streamBuilderDropdownEducation(context, selectedEducation,
                   _buildEducationStreamBuilder_setState, null, StringConst.FORM_EDUCATION),
               SpaceH20(),
-              // Pregunta de acompañamiento (reemplaza al selector de entidad social)
               _buildNeedsCompanionshipSelector(context),
-              // streamBuilderForSocialEntity(
-              //   context, selectedSocialEntity,
-              //   _buildSocialEntityStreamBuilder_setState, null,
-              //   StringConst.FORM_SOCIAL_ENTITY, true
-              // ),
+              if (_needsCompanionship == true) ...[
+                SpaceH20(),
+                streamBuilderForSocialEntity(
+                  context,
+                  selectedSocialEntity,
+                  _buildSocialEntityStreamBuilder_setState,
+                  null,
+                  StringConst.FORM_SOCIAL_ENTITY,
+                  true,
+                ),
+              ],
             ]),
       );
   }
@@ -832,6 +837,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
       filled: true,
       fillColor: AppColors.white,
       errorStyle: const TextStyle(height: 0.01),
+      hintStyle: textTheme.bodySmall?.copyWith(color: AppColors.darkGray, fontSize: fontSize),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5.0),
         borderSide: const BorderSide(color: AppColors.greyUltraLight),
@@ -881,8 +887,12 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                 _needsCompanionship = true;
               } else if (val == 'No') {
                 _needsCompanionship = false;
+                selectedSocialEntity = null;
+                entityName = "Ninguna";
               } else {
                 _needsCompanionship = null;
+                selectedSocialEntity = null;
+                entityName = "Ninguna";
               }
             });
           },
@@ -891,6 +901,12 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
               _needsCompanionship = true;
             } else if (val == 'No') {
               _needsCompanionship = false;
+              selectedSocialEntity = null;
+              entityName = "Ninguna";
+            } else {
+              _needsCompanionship = null;
+              selectedSocialEntity = null;
+              entityName = "Ninguna";
             }
           },
           style: textTheme.bodySmall?.copyWith(color: AppColors.greyDark, fontSize: fontSize),
@@ -907,6 +923,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
       filled: true,
       fillColor: AppColors.white,
       errorStyle: const TextStyle(height: 0.01),
+      hintStyle: textTheme.bodySmall?.copyWith(color: AppColors.darkGray, fontSize: fontSize),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5.0),
         borderSide: const BorderSide(color: AppColors.greyUltraLight),
@@ -965,7 +982,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
             maxLines: 4,
             decoration: inputDecoration.copyWith(
               hintText: 'Describe brevemente tu situación familiar en España...',
-              hintStyle: textTheme.bodySmall?.copyWith(color: AppColors.greyLight, fontSize: fontSize),
+              hintStyle: textTheme.bodySmall?.copyWith(color: AppColors.darkGray, fontSize: fontSize),
             ),
             style: textTheme.bodySmall?.copyWith(color: AppColors.greyDark, fontSize: fontSize),
             onSaved: (v) => _companionFamilySituation = v,
@@ -996,7 +1013,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
             initialValue: _companionDateArriveSpain,
             decoration: inputDecoration.copyWith(
               hintText: '¿Recuerdas la fecha exacta? Indica el año, mes o día en que llegaste al país.',
-              hintStyle: textTheme.bodySmall?.copyWith(color: AppColors.greyLight, fontSize: fontSize),
+              hintStyle: textTheme.bodySmall?.copyWith(color: AppColors.darkGray, fontSize: fontSize),
             ),
             style: textTheme.bodySmall?.copyWith(color: AppColors.greyDark, fontSize: fontSize),
             onSaved: (v) => _companionDateArriveSpain = v,
@@ -1013,10 +1030,17 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
             decoration: inputDecoration.copyWith(
               hintText: 'Selecciona...',
             ),
-            items: ['Regular', 'Irregular', 'En trámite', 'No lo tengo claro']
+            items: ['Regular', 'Irregular', 'Protección Internacional', 'En trámite', 'No lo tengo claro']
                 .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                 .toList(),
-            onChanged: (v) => setState(() => _companionAdministrativeStatus = v),
+            onChanged: (v) {
+              setState(() {
+                _companionAdministrativeStatus = v;
+                if (v == 'Irregular') {
+                  _companionWorkPermit = false;
+                }
+              });
+            },
             onSaved: (v) => _companionAdministrativeStatus = v,
             style: textTheme.bodySmall?.copyWith(color: AppColors.greyDark, fontSize: fontSize),
           ),
@@ -1108,7 +1132,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                       initialValue: _companionDocumentNumber,
                       decoration: inputDecoration.copyWith(
                         hintText: 'Escribe el número de documento',
-                        hintStyle: textTheme.bodySmall?.copyWith(color: AppColors.greyLight, fontSize: fontSize),
+                        hintStyle: textTheme.bodySmall?.copyWith(color: AppColors.darkGray, fontSize: fontSize),
                       ),
                       style: textTheme.bodySmall?.copyWith(color: AppColors.greyDark, fontSize: fontSize),
                       onSaved: (v) => _companionDocumentNumber = v,
@@ -1170,7 +1194,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
               initialValue: _companionHelpNeedsOtherText,
               decoration: inputDecoration.copyWith(
                 hintText: 'Describe brevemente...',
-                hintStyle: textTheme.bodySmall?.copyWith(color: AppColors.greyLight, fontSize: fontSize),
+                hintStyle: textTheme.bodySmall?.copyWith(color: AppColors.darkGray, fontSize: fontSize),
               ),
               style: textTheme.bodySmall?.copyWith(color: AppColors.greyDark, fontSize: fontSize),
               onSaved: (v) => _companionHelpNeedsOtherText = v,
@@ -1235,7 +1259,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
             maxLines: 5,
             decoration: inputDecoration.copyWith(
               hintText: 'Cuéntanos brevemente cualquier otro dato que consideres importante en tu camino hacia al empleo.',
-              hintStyle: textTheme.bodySmall?.copyWith(color: AppColors.greyLight, fontSize: fontSize),
+              hintStyle: textTheme.bodySmall?.copyWith(color: AppColors.darkGray, fontSize: fontSize),
             ),
             style: textTheme.bodySmall?.copyWith(color: AppColors.greyDark, fontSize: fontSize),
             onSaved: (v) => _companionOtherRelevantData = v,
@@ -1833,6 +1857,34 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     );
   }
 
+  Widget _buildStepperControls(BuildContext context, bool isLastStep, double contactBtnWidth) {
+    return Container(
+      height: Borders.kDefaultPaddingDouble * 2,
+      margin: EdgeInsets.only(top: Borders.kDefaultPaddingDouble * 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          if (currentStep != 0)
+            EnredaButton(
+              buttonTitle: StringConst.FORM_BACK,
+              width: contactBtnWidth,
+              onPressed: onStepCancel,
+            ),
+          SizedBox(width: Borders.kDefaultPaddingDouble),
+          isLoading
+              ? Center(child: CircularProgressIndicator(color: AppColors.primary300))
+              : EnredaButton(
+                  buttonTitle: isLastStep ? StringConst.FORM_CONFIRM : StringConst.FORM_NEXT,
+                  width: contactBtnWidth,
+                  buttonColor: AppColors.primaryColor,
+                  titleColor: AppColors.white,
+                  onPressed: onStepContinue,
+                ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     sendBasicAnalyticsEvent(context, "enreda_app_visit_sign_in_page");
@@ -1879,6 +1931,122 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
               if (snapshot.connectionState != ConnectionState.done) {
                 return Center(child: CircularProgressIndicator(color: AppColors.primary300));
               }
+
+              final formContent = RoundedContainer(
+                color: AppColors.white,
+                borderColor: Responsive.isMobile(context) ? Colors.transparent : AppColors.gre600,
+                margin: EdgeInsets.zero,
+                contentPadding: Responsive.isMobile(context)
+                    ? const EdgeInsets.all(12)
+                    : const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: isCompanionStep ? MainAxisSize.min : MainAxisSize.max,
+                  children: [
+                    if (isCompanionStep) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: Text(
+                          'Necesitamos alguna información básica para asesorarte mejor en tu camino hacia el empleo.\nRellena solo los campos que apliquen a tu situación.',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: AppColors.greyDark,
+                            height: 1.4,
+                            fontSize: responsiveSize(context, 13, 15, md: 14),
+                          ),
+                        ),
+                      ),
+                      const Divider(
+                        color: AppColors.greyUltraLight,
+                        thickness: 1.0,
+                        height: 24.0,
+                      ),
+                      const SizedBox(height: 8.0),
+                    ],
+                    Row(
+                      children: [
+                        isCompanionStep
+                            ? Text(
+                                'Solicitud de acompañamiento',
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  color: AppColors.primaryColor,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: responsiveSize(context, 18, 22, md: 20),
+                                ),
+                              )
+                            : CustomTextMedium(text: StringConst.FORM_CREATE_PROFILE),
+                        const Spacer(),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right: (Responsive.isMobile(context) || Responsive.isTablet(context)) ? 30.0 : 0.0,
+                          ),
+                          child: SizedBox(
+                            width: 34,
+                            child: PillTooltip(
+                              title: StringConst.PILL_TRAVEL_BEGINS,
+                              pillId: TrainingPill.TRAVEL_BEGINS_ID,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12.0),
+                    isCompanionStep
+                        ? CustomStepper(
+                            elevation: 0.0,
+                            physics: const NeverScrollableScrollPhysics(),
+                            type: Responsive.isMobile(context) ? CustomStepperType.vertical : CustomStepperType.horizontal,
+                            steps: getSteps(),
+                            currentStep: currentStep,
+                            onStepContinue: onStepContinue,
+                            onStepTapped: (step) {
+                              if (step == 2 && _needsCompanionship != true) return;
+                              goToStep(step);
+                            },
+                            onStepCancel: onStepCancel,
+                            controlsBuilder: (context, _) => _buildStepperControls(context, isLastStep, contactBtnWidth),
+                          )
+                        : Expanded(
+                            child: CustomStepper(
+                              elevation: 0.0,
+                              type: Responsive.isMobile(context) ? CustomStepperType.vertical : CustomStepperType.horizontal,
+                              steps: getSteps(),
+                              currentStep: currentStep,
+                              onStepContinue: onStepContinue,
+                              onStepTapped: (step) {
+                                if (step == 2 && _needsCompanionship != true) return;
+                                goToStep(step);
+                              },
+                              onStepCancel: onStepCancel,
+                              controlsBuilder: (context, _) => _buildStepperControls(context, isLastStep, contactBtnWidth),
+                            ),
+                          ),
+                  ],
+                ),
+              );
+
+              if (isCompanionStep) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+                  child: Center(
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: Responsive.isMobile(context)
+                            ? MediaQuery.of(context).size.width
+                            : MediaQuery.of(context).size.width * 0.7,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildCompanionBanner(context),
+                          formContent,
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+
               return Center(
                 child: Container(
                   constraints: BoxConstraints(
@@ -1889,115 +2057,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
                         ? MediaQuery.of(context).size.width
                         : MediaQuery.of(context).size.width * 0.7,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      if (isCompanionStep) _buildCompanionBanner(context),
-                      Expanded(
-                        child: RoundedContainer(
-                          color: AppColors.grey80,
-                          borderColor: Responsive.isMobile(context) ? Colors.transparent : AppColors.gre600,
-                          margin: EdgeInsets.zero,
-                          contentPadding: Responsive.isMobile(context)
-                              ? const EdgeInsets.all(12)
-                              : const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (isCompanionStep) ...[
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 12.0),
-                                  child: Text(
-                                    'Necesitamos alguna información básica para asesorarte mejor en tu camino hacia el empleo.\nRellena solo los campos que apliquen a tu situación.',
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: AppColors.greyDark,
-                                      height: 1.4,
-                                      fontSize: responsiveSize(context, 13, 15, md: 14),
-                                    ),
-                                  ),
-                                ),
-                                const Divider(
-                                  color: AppColors.greyUltraLight,
-                                  thickness: 1.0,
-                                  height: 24.0,
-                                ),
-                                const SizedBox(height: 8.0),
-                              ],
-                              Row(
-                                children: [
-                                  isCompanionStep
-                                      ? Text(
-                                          'Solicitud de acompañamiento',
-                                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                            color: AppColors.primaryColor,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: responsiveSize(context, 18, 22, md: 20),
-                                          ),
-                                        )
-                                      : CustomTextMedium(text: StringConst.FORM_CREATE_PROFILE),
-                                  const Spacer(),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: (Responsive.isMobile(context) || Responsive.isTablet(context)) ? 30.0 : 0.0,
-                                    ),
-                                    child: SizedBox(
-                                      width: 34,
-                                      child: PillTooltip(
-                                        title: StringConst.PILL_TRAVEL_BEGINS,
-                                        pillId: TrainingPill.TRAVEL_BEGINS_ID,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 12.0),
-                              Expanded(
-                                child: CustomStepper(
-                                  elevation: 0.0,
-                                  type: Responsive.isMobile(context) ? CustomStepperType.vertical : CustomStepperType.horizontal,
-                                  steps: getSteps(),
-                                  currentStep: currentStep,
-                                  onStepContinue: onStepContinue,
-                                  onStepTapped: (step) {
-                                    if (step == 2 && _needsCompanionship != true) return;
-                                    goToStep(step);
-                                  },
-                                  onStepCancel: onStepCancel,
-                                  controlsBuilder: (context, _) {
-                                    return Container(
-                                      height: Borders.kDefaultPaddingDouble * 2,
-                                      margin: EdgeInsets.only(top: Borders.kDefaultPaddingDouble * 2),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          if (currentStep != 0)
-                                            EnredaButton(
-                                              buttonTitle: StringConst.FORM_BACK,
-                                              width: contactBtnWidth,
-                                              onPressed: onStepCancel,
-                                            ),
-                                          SizedBox(width: Borders.kDefaultPaddingDouble),
-                                          isLoading
-                                              ? Center(child: CircularProgressIndicator(color: AppColors.primary300))
-                                              : EnredaButton(
-                                                  buttonTitle: isLastStep ? StringConst.FORM_CONFIRM : StringConst.FORM_NEXT,
-                                                  width: contactBtnWidth,
-                                                  buttonColor: AppColors.primaryColor,
-                                                  titleColor: AppColors.white,
-                                                  onPressed: onStepContinue,
-                                                ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: formContent,
                 ),
               );
             },

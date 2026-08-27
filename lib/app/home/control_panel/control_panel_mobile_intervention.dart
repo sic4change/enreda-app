@@ -236,6 +236,24 @@ class _ControlPanelMobileInterventionPageState extends State<ControlPanelMobileI
                 ),
               ),
             ),
+            InkWell(
+              onTap: () {
+                setState(() {
+                  WebHome.controller.selectIndex(9);
+                });
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Image.asset(
+                    'images/companion_banner_card.png',
+                    fit: BoxFit.contain,
+                    width: double.infinity,
+                  ),
+                ),
+              ),
+            ),
             SizedBox(height: 80),
           ],
         ),

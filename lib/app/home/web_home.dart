@@ -32,6 +32,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'account/personal_data_page.dart';
+import 'account/companion_data_page.dart';
 import 'control_panel/documentation_page.dart';
 import 'documentation/participant_documentation_page.dart';
 import 'models/userEnreda.dart';
@@ -395,6 +396,8 @@ class _WebHomeState extends State<WebHome> {
                                     return ParticipantDocumentationPage(participantUser: user);
                                   case 8:
                                     return const SesionCalendarPage();
+                                  case 9:
+                                    return const CompanionDataPage();
                                   default:
                                     return ResourcesPage();
                                 }

@@ -38,46 +38,54 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
   }
 
   Widget _buildBodyDesktop(BuildContext context) {
+    final hasEntity = widget.participantUser.assignedEntityId != null && widget.participantUser.assignedEntityId != "";
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15.0),
+              border: Border.all(color: AppColors.greyLight2.withOpacity(0.3), width: 1),
+            ),
+            child: _buildGamificationSection(context),
+          ),
+          SpaceH30(),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                margin: const EdgeInsets.only(top: 10.0, right: 10.0, left: 0.0, bottom: 10.0,),
-                padding: const EdgeInsets.all(Sizes.kDefaultPaddingDouble),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.rectangle,
-                  border: Border.all(color: AppColors.greyLight2.withOpacity(0.3), width: 1),
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: _buildCvSection(context),
-              ),
-              SpaceW30(),
               Expanded(
+                flex: 3,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildGamificationSection(context),
-                    SpaceH20(),
                     _buildCompetenciesSection(context),
                     SpaceH20(),
-                    widget.participantUser.assignedEntityId != null && widget.participantUser.assignedEntityId != "" ?
-                     ParticipantDocumentationList(participantUser: widget.participantUser,) :
-                    _buildResourcesSection(context),
-                    SpaceH8(),
-                    if(widget.participantUser.assignedEntityId != null && widget.participantUser.assignedEntityId != "")
-                      _buildContactSection(context),
+                    hasEntity
+                        ? ParticipantDocumentationList(participantUser: widget.participantUser)
+                        : _buildResourcesSection(context),
+                    SpaceH20(),
+                    _buildAccompanimentSection(context),
+                    SpaceH20(),
+                    if (hasEntity) _buildContactSection(context),
                   ],
                 ),
               ),
-              
-              
-              SpaceH40(),
+              SpaceW30(),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildCvSection(context),
+                    SpaceH20(),
+                    _buildCalendarSection(context),
+                  ],
+                ),
+              ),
             ],
           ),
         ],
@@ -94,6 +102,8 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
           _buildGamificationSection(context),
           SpaceH30(),
           _buildCompetenciesSection(context),
+          SpaceH30(),
+          _buildAccompanimentSection(context),
           SpaceH30(),
           _buildCvSection(context),
           SpaceH30(),
@@ -126,9 +136,10 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Responsive.isMobile(context) || Responsive.isDesktopS(context) ? Container() :
-              /*Container(
-                  height: 250,
-                  child: Image.asset(ImagePath.GAMIFICATION_LOGO, height: 250.0,)),*/
+              Container(
+                  height: 180,
+                  margin: const EdgeInsets.only(right: 16.0),
+                  child: Image.asset(ImagePath.GAMIFICATION_LOGO, height: 180.0,)),
               SpaceW8(),
               Expanded(
                 child: Container(
@@ -527,5 +538,41 @@ class _ParticipantControlPanelPageState extends State<ParticipantControlPanelPag
       userCvStepsCompleted++;
     }
     return userCvStepsCompleted;
+  }
+
+  Widget _buildAccompanimentSection(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          WebHome.controller.selectIndex(9);
+        });
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15.0),
+        child: Image.asset(
+          'images/companion_banner_card.png',
+          fit: BoxFit.contain,
+          width: double.infinity,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCalendarSection(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          WebHome.controller.selectIndex(8);
+        });
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15.0),
+        child: Image.asset(
+          'images/calendar_banner_card.png',
+          fit: BoxFit.contain,
+          width: double.infinity,
+        ),
+      ),
+    );
   }
 }

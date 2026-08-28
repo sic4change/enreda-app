@@ -8,12 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../services/auth.dart';
 import '../../../../utils/responsive.dart';
 import '../../../../values/values.dart';
 import '../../../common_widgets/custom_text.dart';
 import '../../../services/database.dart';
-import '../assistant/list_item_builder.dart';
 import '../models/documentCategory.dart';
 import '../models/personalDocumentType.dart';
 import '../models/userEnreda.dart';
@@ -268,6 +266,15 @@ class _DocumentItemTileState extends State<_DocumentItemTile> {
                           color: _showObservations
                               ? const Color(0xFF18C5C1)
                               : const Color(0xFF535A5F),
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              Icons.chat_bubble_outline_rounded,
+                              size: 18,
+                              color: _showObservations
+                                  ? const Color(0xFF18C5C1)
+                                  : const Color(0xFF535A5F),
+                            );
+                          },
                         ),
                       )
                     : const SizedBox(),

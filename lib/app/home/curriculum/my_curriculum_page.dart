@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:enreda_app/app/home/competencies/competency_tile.dart';
 import 'package:enreda_app/app/home/curriculum/add_educational_level.dart';
 import 'package:enreda_app/app/home/curriculum/experience_form_update.dart';
 import 'package:enreda_app/app/home/curriculum/experience_tile.dart';
+import 'package:enreda_app/app/home/curriculum/favourite_cvs_tab.dart';
 import 'package:enreda_app/app/home/curriculum/formation_form.dart';
 import 'package:enreda_app/app/home/curriculum/my-custom_cv.dart';
 import 'package:enreda_app/app/home/curriculum/reference_tile.dart';
@@ -13,6 +15,8 @@ import 'package:enreda_app/app/home/models/competency.dart';
 import 'package:enreda_app/app/home/models/country.dart';
 import 'package:enreda_app/app/home/models/education.dart';
 import 'package:enreda_app/app/home/models/experience.dart';
+import 'package:enreda_app/app/home/models/favourite_cv.dart';
+import 'package:enreda_app/app/home/models/interest.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 import 'package:enreda_app/app/home/models/province.dart';
 import 'package:enreda_app/app/home/models/trainingPill.dart';
@@ -39,6 +43,7 @@ import 'package:enreda_app/values/strings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -49,9 +54,10 @@ import '../../../values/values.dart';
 import '../../anallytics/analytics.dart';
 
 class MyCurriculumPage extends StatefulWidget {
-  const MyCurriculumPage({super.key, this.mini = false});
+  const MyCurriculumPage({super.key, this.mini = false, this.favouriteCV});
 
   final bool mini;
+  final FavouriteCV? favouriteCV;
 
   @override
   State<MyCurriculumPage> createState() => _MyCurriculumPageState();
@@ -113,6 +119,16 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   Stream<Province>? _provinceStream;
   Stream<City>? _cityStream;
 
+  // ── Favourite CVs ──
+  /// 0 = "Mi currículum", 1 = "Currículums favoritos"
+  int _activeTabIndex = 0;
+  List<Interest> _interestsCache = const [];
+  Stream<List<Interest>>? _interestsStream;
+  /// Non-null when the user opened a saved favourite CV from the tab.
+  FavouriteCV? _activeFavouriteCV;
+  // Interest stream subscription — keeps _interestsCache up to date silently.
+  StreamSubscription<List<Interest>>? _interestsSubscription;
+
   void setStateIfMounted(f) {
     if (mounted) setState(f);
   }
@@ -129,6 +145,16 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
 
     _userStream = database.userStream(email);
     _experiencesStream = database.myExperiencesStream(uid);
+    _interestsStream = database.interestStream();
+    _interestsSubscription = _interestsStream!.listen((list) {
+      _interestsCache = list;
+    });
+  }
+
+  @override
+  void dispose() {
+    _interestsSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -255,9 +281,12 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   myCustomReferences: myCustomReferences,
                   mySelectedReferences: mySelectedReferences,
                   myMaxEducation: myMaxEducation?.label ?? "",
+                  favouriteCV: _activeFavouriteCV,
+                  interests: _interestsCache,
                   onBack: () {
                     setState(() {
                       downloadStep = false;
+                      _activeFavouriteCV = null;
                     });
                   });
             }
@@ -409,104 +438,126 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
       contentPadding: Responsive.isMobile(context)
           ? EdgeInsets.all(Sizes.mainPadding)
           : EdgeInsets.all(Sizes.kDefaultPaddingDouble * 2),
-      child: SingleChildScrollView(
-        controller: ScrollController(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomTextMediumBold(text: StringConst.MY_CV),
-            MainContainer(
-              //height: MediaQuery.of(context).size.height,
-              padding: EdgeInsets.all(Sizes.mainPadding * 2),
-              margin: EdgeInsets.only(
-                top: Sizes.kDefaultPaddingDouble * 2.5,
-                left: 10,
-                right: 10,
-                bottom: 20,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Tab header ──────────────────────────────────────────────────────
+          _buildTabHeader(),
+          const SizedBox(height: 16),
+
+          // ── Tab content ─────────────────────────────────────────────────────
+          if (_activeTabIndex == 1)
+            Expanded(
+              child: FavouriteCVsTab(
+                user: user!,
+                onOpenFavourite: (cv) {
+                  setStateIfMounted(() {
+                    _activeFavouriteCV = cv;
+                    downloadStep = true;
+                  });
+                },
               ),
-              child: Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        fit: FlexFit.loose,
-                        child: Container(
-                            width: Responsive.isDesktop(context)
-                                ? MediaQuery.of(context).size.width * 0.3
-                                : Responsive.isDesktopS(context)
-                                    ? MediaQuery.of(context).size.width * 0.2
-                                    : 200,
-                            //height: double.infinity,
-                            padding: EdgeInsets.only(
-                              left: Sizes.mainPadding * 2,
-                              top: Sizes.mainPadding * 2,
-                            ),
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [
-                                AppColors.white,
-                                AppColors.primary020.withOpacity(0.13),
-                                AppColors.primary400.withOpacity(0.15),
-                              ],
-                            )),
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 50.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _buildMyProfilePhoto(user),
-                                  SpaceH20(),
-                                  _buildPersonalData(context, user),
-                                  SpaceH20(),
-                                  _buildAboutMe(context, user),
-                                  SpaceH20(),
-                                  _buildMyDataOfInterest(context, user),
-                                  SpaceH20(),
-                                  _buildMyLanguages(context, user),
-                                  SpaceH20(),
-                                  _buildMyReferences(context, user),
-                                ],
-                              ),
-                            )),
+            )
+          else
+            Expanded(
+              child: SingleChildScrollView(
+                controller: ScrollController(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MainContainer(
+                      padding: EdgeInsets.all(Sizes.mainPadding * 2),
+                      margin: EdgeInsets.only(
+                        top: Sizes.kDefaultPaddingDouble * 2.5,
+                        left: 10,
+                        right: 10,
+                        bottom: 20,
                       ),
-                      SpaceW40(),
-                      Flexible(
-                          fit: FlexFit.loose,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              right: Sizes.mainPadding * 2,
-                              top: Sizes.mainPadding * 2,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildCVHeader(context, user, profilePic,
-                                    competenciesNames),
-                                SpaceH30(),
-                                _buildMyEducation(context, user),
-                                SpaceH30(),
-                                _buildMySecondaryEducation(context, user),
-                                SpaceH30(),
-                                _buildMyExperiences(context, user),
-                                SpaceH30(),
-                              ],
-                            ),
-                          ))
-                    ],
-                  ),
-                  SpaceH30(),
-                  _buildMyCompetencies(context, user),
-                  SpaceH30(),
-                  _buildFinalCheck(context, user),
-                ],
+                      child: Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                fit: FlexFit.loose,
+                                child: Container(
+                                    width: Responsive.isDesktop(context)
+                                        ? MediaQuery.of(context).size.width * 0.3
+                                        : Responsive.isDesktopS(context)
+                                            ? MediaQuery.of(context).size.width * 0.2
+                                            : 200,
+                                    padding: EdgeInsets.only(
+                                      left: Sizes.mainPadding * 2,
+                                      top: Sizes.mainPadding * 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                      colors: [
+                                        AppColors.white,
+                                        AppColors.primary020.withOpacity(0.13),
+                                        AppColors.primary400.withOpacity(0.15),
+                                      ],
+                                    )),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(right: 50.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          _buildMyProfilePhoto(user),
+                                          SpaceH20(),
+                                          _buildPersonalData(context, user),
+                                          SpaceH20(),
+                                          _buildAboutMe(context, user),
+                                          SpaceH20(),
+                                          _buildMyDataOfInterest(context, user),
+                                          SpaceH20(),
+                                          _buildMyLanguages(context, user),
+                                          SpaceH20(),
+                                          _buildMyReferences(context, user),
+                                        ],
+                                      ),
+                                    )),
+                              ),
+                              SpaceW40(),
+                              Flexible(
+                                  fit: FlexFit.loose,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      right: Sizes.mainPadding * 2,
+                                      top: Sizes.mainPadding * 2,
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        _buildCVHeader(context, user, profilePic,
+                                            competenciesNames),
+                                        SpaceH30(),
+                                        _buildMyEducation(context, user),
+                                        SpaceH30(),
+                                        _buildMySecondaryEducation(context, user),
+                                        SpaceH30(),
+                                        _buildMyExperiences(context, user),
+                                        SpaceH30(),
+                                      ],
+                                    ),
+                                  ))
+                            ],
+                          ),
+                          SpaceH30(),
+                          _buildMyCompetencies(context, user),
+                          SpaceH30(),
+                          _buildFinalCheck(context, user),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -514,94 +565,114 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   Widget _myCurriculumMobile(BuildContext context, UserEnreda? user,
       String profilePic, List<String> competenciesNames) {
     final textTheme = Theme.of(context).textTheme;
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: Constants.mainPadding, vertical: Constants.mainPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Row 1: Back arrow and button "previsualizar y descargar"
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () {
-                    setStateIfMounted(() {
-                      WebHome.controller.selectIndex(0);
-                    });
-                  },
-                  child: Image.asset(ImagePath.ARROW_B, height: 30),
-                ),
-                _buildDownloadCV(),
-              ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── Tab header ───────────────────────────────────────────────────────
+        Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: Constants.mainPadding, vertical: 8),
+          child: _buildTabHeader(),
+        ),
+        Divider(color: AppColors.greyBorder, thickness: 1, height: 1),
+
+        // ── Tab content ──────────────────────────────────────────────────────
+        if (_activeTabIndex == 1)
+          Expanded(
+            child: FavouriteCVsTab(
+              user: user!,
+              onOpenFavourite: (_) {},
             ),
-            SpaceH16(),
-            // Row 2: Title "Mi currículum" aligned to the left
-            CustomTextMediumBold(text: StringConst.MY_CV),
-            SpaceH12(),
-            // Divider
-            Divider(color: AppColors.greyBorder, thickness: 1, height: 24),
-            // Header structure with photo, name, and information pill
-            _buildMyProfilePhoto(user),
-            SpaceH12(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    '${user?.firstName} ${user?.lastName}',
-                    style: textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: AppColors.primary900),
-                  ),
+          )
+        else
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Constants.mainPadding,
+                    vertical: Constants.mainPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Row 1: Back arrow and button "previsualizar y descargar"
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            setStateIfMounted(() {
+                              WebHome.controller.selectIndex(0);
+                            });
+                          },
+                          child: Image.asset(ImagePath.ARROW_B, height: 30),
+                        ),
+                        _buildDownloadCV(),
+                      ],
+                    ),
+                    SpaceH16(),
+                    // Header structure with photo, name, and information pill
+                    _buildMyProfilePhoto(user),
+                    SpaceH12(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${user?.firstName} ${user?.lastName}',
+                            style: textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: AppColors.primary900),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SpaceH8(),
+                    Container(
+                      height: 34,
+                      child: PillTooltip(
+                        title: StringConst.PILL_HOW_TO_DO_CV,
+                        pillId: TrainingPill.HOW_TO_DO_CV_ID,
+                      ),
+                    ),
+                    SpaceH24(),
+                    // 1. Datos personales
+                    _buildPersonalData(context, user),
+                    Divider(color: AppColors.greyBorder, thickness: 1, height: 40),
+                    // 2. Un poco más sobre mí
+                    _buildAboutMe(context, user),
+                    Divider(color: AppColors.greyBorder, thickness: 1, height: 40),
+                    // 3. Nivel educativo
+                    _buildMyEducation(context, user),
+                    SpaceH24(),
+                    _buildMySecondaryEducation(context, user),
+                    SpaceH24(),
+                    // 4. Experiencias
+                    _buildMyExperiences(context, user),
+                    SpaceH24(),
+                    // 5. Mis competencias
+                    _buildMyCompetencies(context, user),
+                    SpaceH24(),
+                    // 6. Datos de interés
+                    _buildMyDataOfInterest(context, user),
+                    SpaceH24(),
+                    // 7. Idiomas
+                    _buildMyLanguages(context, user),
+                    SpaceH24(),
+                    // 8. Referencias
+                    _buildMyReferences(context, user),
+                    SpaceH24(),
+                    // 9. Final check (Agree CV)
+                    _buildFinalCheck(context, user),
+                    SpaceH24(),
+                  ],
                 ),
-              ],
-            ),
-            SpaceH8(),
-            Container(
-              height: 34,
-              child: PillTooltip(
-                title: StringConst.PILL_HOW_TO_DO_CV,
-                pillId: TrainingPill.HOW_TO_DO_CV_ID,
               ),
             ),
-            SpaceH24(),
-            // 1. Datos personales
-            _buildPersonalData(context, user),
-            Divider(color: AppColors.greyBorder, thickness: 1, height: 40),
-            // 2. Un poco más sobre mí
-            _buildAboutMe(context, user),
-            Divider(color: AppColors.greyBorder, thickness: 1, height: 40),
-            // 3. Nivel educativo
-            _buildMyEducation(context, user),
-            SpaceH24(),
-            _buildMySecondaryEducation(context, user),
-            SpaceH24(),
-            // 4. Experiencias
-            _buildMyExperiences(context, user),
-            SpaceH24(),
-            // 5. Mis competencias
-            _buildMyCompetencies(context, user),
-            SpaceH24(),
-            // 6. Datos de interés
-            _buildMyDataOfInterest(context, user),
-            SpaceH24(),
-            // 7. Idiomas
-            _buildMyLanguages(context, user),
-            SpaceH24(),
-            // 8. Referencias
-            _buildMyReferences(context, user),
-            SpaceH24(),
-            // 9. Final check (Agree CV)
-            _buildFinalCheck(context, user),
-            SpaceH24(),
-          ],
-        ),
-      ),
+          ),
+      ],
     );
   }
 
@@ -631,6 +702,58 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             pillId: TrainingPill.HOW_TO_DO_CV_ID,
           ),
         ),
+      ],
+    );
+  }
+
+  // ─── Tab header ────────────────────────────────────────────────────────────
+
+  /// Renders the two-tab row: "Mi currículum" | "Currículums favoritos ♡".
+  Widget _buildTabHeader() {
+    final tabs = [
+      'Mi currículum',
+      'Currículums favoritos ♡',
+    ];
+    return Row(
+      children: [
+        for (int i = 0; i < tabs.length; i++) ...
+          [
+            InkWell(
+              onTap: () => setStateIfMounted(() => _activeTabIndex = i),
+              borderRadius: BorderRadius.circular(4),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8, right: 4, left: 4),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      tabs[i],
+                      style: GoogleFonts.outfit(
+                        fontSize: 16,
+                        fontWeight: _activeTabIndex == i
+                            ? FontWeight.w700
+                            : FontWeight.w400,
+                        color: _activeTabIndex == i
+                            ? AppColors.primary900
+                            : Colors.black45,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      height: 3,
+                      width: _activeTabIndex == i ? 60 : 0,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary900,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (i < tabs.length - 1) const SizedBox(width: 24),
+          ],
       ],
     );
   }
@@ -983,7 +1106,9 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
     var isEditable = false;
     final textController = TextEditingController();
     final focusNode = FocusNode();
-    textController.text = user?.aboutMe ?? '';
+    textController.text = (widget.favouriteCV != null)
+        ? (widget.favouriteCV!.aboutMe ?? '')
+        : (user?.aboutMe ?? '');
 
     return StatefulBuilder(builder: (context, setState) {
       return Column(
@@ -1164,6 +1289,10 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   competency.id == id &&
                   (user.competencies[id] == StringConst.BADGE_VALIDATED ||
                       user.competencies[id] == StringConst.BADGE_CERTIFIED)))
+              .where((competency) =>
+                  widget.favouriteCV == null ||
+                  widget.favouriteCV!.selectedCompetencies
+                      .contains(competency.name))
               .toList();
           return Container(
               width: double.infinity,
@@ -1424,6 +1553,11 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         () {
           myEducation = (myExperiences ?? [])
               .where((experience) => experience.type == 'Formativa')
+              .where((experience) =>
+                  widget.favouriteCV == null ||
+                  (experience.id != null &&
+                      widget.favouriteCV!.selectedEducationIds
+                          .contains(experience.id)))
               .toList();
           myCustomEducation = myEducation!.toList();
           mySelectedEducation =
@@ -1494,6 +1628,11 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         () {
           mySecondaryEducation = (myExperiences ?? [])
               .where((experience) => experience.type == 'Complementaria')
+              .where((experience) =>
+                  widget.favouriteCV == null ||
+                  (experience.id != null &&
+                      widget.favouriteCV!.selectedSecondaryEducationIds
+                          .contains(experience.id)))
               .toList();
           mySecondaryCustomEducation = mySecondaryEducation!.toList();
           mySecondarySelectedEducation =
@@ -1561,6 +1700,11 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         () {
           final myProfExperiences = (myExperiences ?? [])
               .where((experience) => experience.type == 'Profesional')
+              .where((experience) =>
+                  widget.favouriteCV == null ||
+                  (experience.id != null &&
+                      widget.favouriteCV!.selectedExperienceIds
+                          .contains(experience.id)))
               .toList();
           myCustomExperiences = myProfExperiences.toList();
           mySelectedExperiences =
@@ -1628,6 +1772,11 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
         () {
           myPersonalExperiences = (myExperiences ?? [])
               .where((experience) => experience.type == 'Personal')
+              .where((experience) =>
+                  widget.favouriteCV == null ||
+                  (experience.id != null &&
+                      widget.favouriteCV!.selectedPersonalExperienceIds
+                          .contains(experience.id)))
               .toList();
           myPersonalCustomExperiences = myPersonalExperiences!.toList();
           myPersonalSelectedExperiences =
@@ -1751,7 +1900,12 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
 
   Widget _buildMyDataOfInterest(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
-    final myDataOfInterest = user?.dataOfInterest ?? [];
+    final rawDataOfInterest = user?.dataOfInterest ?? [];
+    final myDataOfInterest = (widget.favouriteCV != null)
+        ? rawDataOfInterest
+            .where((d) => widget.favouriteCV!.selectedDataOfInterest.contains(d))
+            .toList()
+        : rawDataOfInterest;
 
     return Column(
       children: [
@@ -1812,7 +1966,12 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   Widget _buildMyLanguages(BuildContext context, UserEnreda? user) {
     final database = Provider.of<Database>(context, listen: false);
     final textTheme = Theme.of(context).textTheme;
-    final myLanguages = user?.languagesLevels ?? [];
+    final rawLanguages = user?.languagesLevels ?? [];
+    final myLanguages = (widget.favouriteCV != null)
+        ? rawLanguages
+            .where((l) => widget.favouriteCV!.selectedLanguageNames.contains(l.name))
+            .toList()
+        : rawLanguages;
 
     return Column(
       children: [
@@ -1909,6 +2068,11 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 myReferences = snapshot.data!
                     .where((certificationRequest) =>
                         certificationRequest.referenced == true)
+                    .where((ref) =>
+                        widget.favouriteCV == null ||
+                        (ref.certificationRequestId != null &&
+                            widget.favouriteCV!.selectedReferenceIds
+                                .contains(ref.certificationRequestId)))
                     .toList();
                 myCustomReferences =
                     myReferences!.map((element) => element).toList();

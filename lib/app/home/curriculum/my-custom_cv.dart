@@ -1,12 +1,16 @@
+import 'dart:async';
 import 'package:enreda_app/common_widgets/main_container.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
+import 'package:enreda_app/app/home/curriculum/favourite_cv_dialog.dart';
 import 'package:enreda_app/app/home/curriculum/pdf_generator/my_cv_multiple_pages.dart';
 import 'package:enreda_app/app/home/curriculum/pdf_generator/my_cv_one_page.dart';
 import 'package:enreda_app/app/home/models/certificationRequest.dart';
+import 'package:enreda_app/app/home/models/favourite_cv.dart';
+import 'package:enreda_app/app/home/models/interest.dart';
 import 'package:enreda_app/app/home/models/language.dart';
 
 import 'package:enreda_app/utils/const.dart';
@@ -21,6 +25,8 @@ import '../../../utils/responsive.dart';
 import '../../../values/strings.dart';
 import '../models/experience.dart';
 import '../models/userEnreda.dart';
+import 'package:provider/provider.dart';
+import 'package:enreda_app/services/database.dart';
 
 class MyCvModelsPage extends StatefulWidget {
   MyCvModelsPage({
@@ -59,9 +65,15 @@ class MyCvModelsPage extends StatefulWidget {
     required this.mySelectedReferences,
     required this.myMaxEducation,
     this.onBack,
+    this.favouriteCV,
+    this.interests = const [],
   }) : super(key: key);
 
   final VoidCallback? onBack;
+  /// When non-null, the page is opened from the Favourite CVs tab.
+  final FavouriteCV? favouriteCV;
+  /// Full list of interests — used for the edit-name/sector dialog.
+  final List<Interest> interests;
 
   final UserEnreda? user;
   final String? city;
@@ -124,30 +136,184 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
   List<int> mySelectedDatePersonalExperience = [];
   List<String> idSelectedDatePersonalExperience = [];
 
+  // State for favourite mode — mirrors widget.favouriteCV but is mutable so
+  // edits (name, sector) are reflected without rebuilding the parent.
+  FavouriteCV? _localFavouriteCV;
+
   @override
   void initState() {
     super.initState();
+    _localFavouriteCV = widget.favouriteCV;
     currentPrintingOption = printingOptions[0];
     _myMaxEducation = widget.myMaxEducation;
-    widget.mySelectedEducation.forEach((element) {
-      mySelectedDateEducation.add(element);
-      idSelectedDateEducation.add(widget.myEducation!.elementAt(element).id!);
-    });
-    widget.mySecondarySelectedEducation.forEach((element) {
-      mySelectedDateSecondaryEducation.add(element);
-      idSelectedDateSecondaryEducation
-          .add(widget.mySecondaryEducation!.elementAt(element).id!);
-    });
-    widget.mySelectedExperiences.forEach((element) {
-      mySelectedDateExperience.add(element);
-      idSelectedDateExperience
-          .add(widget.myExperiences!.elementAt(element).id!);
-    });
-    widget.myPersonalSelectedExperiences.forEach((element) {
-      mySelectedDatePersonalExperience.add(element);
-      idSelectedDatePersonalExperience
-          .add(widget.myPersonalExperiences!.elementAt(element).id!);
-    });
+
+    if (_localFavouriteCV != null) {
+      _initSelectionsFromFavourite(_localFavouriteCV!);
+    } else {
+      widget.mySelectedEducation.forEach((element) {
+        mySelectedDateEducation.add(element);
+        idSelectedDateEducation.add(widget.myEducation!.elementAt(element).id!);
+      });
+      widget.mySecondarySelectedEducation.forEach((element) {
+        mySelectedDateSecondaryEducation.add(element);
+        idSelectedDateSecondaryEducation
+            .add(widget.mySecondaryEducation!.elementAt(element).id!);
+      });
+      widget.mySelectedExperiences.forEach((element) {
+        mySelectedDateExperience.add(element);
+        idSelectedDateExperience
+            .add(widget.myExperiences!.elementAt(element).id!);
+      });
+      widget.myPersonalSelectedExperiences.forEach((element) {
+        mySelectedDatePersonalExperience.add(element);
+        idSelectedDatePersonalExperience
+            .add(widget.myPersonalExperiences!.elementAt(element).id!);
+      });
+    }
+  }
+
+  void _initSelectionsFromFavourite(FavouriteCV fav) {
+    // 1. Education (Formativa)
+    mySelectedDateEducation.clear();
+    idSelectedDateEducation.clear();
+    widget.mySelectedEducation.clear();
+    widget.myCustomEducation.clear();
+    final allEdu = widget.myEducation ?? [];
+    for (int i = 0; i < allEdu.length; i++) {
+      final edu = allEdu[i];
+      if (edu.id != null && fav.selectedEducationIds.contains(edu.id)) {
+        widget.mySelectedEducation.add(i);
+        mySelectedDateEducation.add(i);
+        idSelectedDateEducation.add(edu.id!);
+        widget.myCustomEducation.add(edu);
+      }
+    }
+
+    // 2. Secondary Education (Complementaria)
+    mySelectedDateSecondaryEducation.clear();
+    idSelectedDateSecondaryEducation.clear();
+    widget.mySecondarySelectedEducation.clear();
+    widget.mySecondaryCustomEducation.clear();
+    final allSecEdu = widget.mySecondaryEducation ?? [];
+    for (int i = 0; i < allSecEdu.length; i++) {
+      final edu = allSecEdu[i];
+      if (edu.id != null && fav.selectedSecondaryEducationIds.contains(edu.id)) {
+        widget.mySecondarySelectedEducation.add(i);
+        mySelectedDateSecondaryEducation.add(i);
+        idSelectedDateSecondaryEducation.add(edu.id!);
+        widget.mySecondaryCustomEducation.add(edu);
+      }
+    }
+
+    // 3. Experiences (Profesional)
+    mySelectedDateExperience.clear();
+    idSelectedDateExperience.clear();
+    widget.mySelectedExperiences.clear();
+    widget.myCustomExperiences.clear();
+    final allExp = widget.myExperiences ?? [];
+    for (int i = 0; i < allExp.length; i++) {
+      final exp = allExp[i];
+      if (exp.id != null && fav.selectedExperienceIds.contains(exp.id)) {
+        widget.mySelectedExperiences.add(i);
+        mySelectedDateExperience.add(i);
+        idSelectedDateExperience.add(exp.id!);
+        widget.myCustomExperiences.add(exp);
+      }
+    }
+
+    // 4. Personal Experiences
+    mySelectedDatePersonalExperience.clear();
+    idSelectedDatePersonalExperience.clear();
+    widget.myPersonalSelectedExperiences.clear();
+    widget.myPersonalCustomExperiences.clear();
+    final allPersExp = widget.myPersonalExperiences ?? [];
+    for (int i = 0; i < allPersExp.length; i++) {
+      final exp = allPersExp[i];
+      if (exp.id != null && fav.selectedPersonalExperienceIds.contains(exp.id)) {
+        widget.myPersonalSelectedExperiences.add(i);
+        mySelectedDatePersonalExperience.add(i);
+        idSelectedDatePersonalExperience.add(exp.id!);
+        widget.myPersonalCustomExperiences.add(exp);
+      }
+    }
+
+    // 5. Competencies
+    widget.mySelectedCompetencies.clear();
+    widget.myCustomCompetencies.clear();
+    for (int i = 0; i < widget.competenciesNames.length; i++) {
+      final name = widget.competenciesNames[i];
+      if (fav.selectedCompetencies.contains(name)) {
+        widget.mySelectedCompetencies.add(i);
+        widget.myCustomCompetencies.add(name);
+      }
+    }
+
+    // 6. Data of Interest
+    final allData = widget.user?.dataOfInterest ?? [];
+    widget.mySelectedDataOfInterest.clear();
+    widget.myCustomDataOfInterest.clear();
+    for (int i = 0; i < allData.length; i++) {
+      final item = allData[i];
+      if (fav.selectedDataOfInterest.contains(item)) {
+        widget.mySelectedDataOfInterest.add(i);
+        widget.myCustomDataOfInterest.add(item);
+      }
+    }
+
+    // 7. Languages
+    final allLanguages = widget.user?.languagesLevels ?? [];
+    widget.mySelectedLanguages.clear();
+    widget.myCustomLanguages.clear();
+    for (int i = 0; i < allLanguages.length; i++) {
+      final lang = allLanguages[i];
+      if (fav.selectedLanguageNames.contains(lang.name)) {
+        widget.mySelectedLanguages.add(i);
+        widget.myCustomLanguages.add(lang);
+      }
+    }
+
+    // 8. References
+    final allRefs = widget.myReferences ?? [];
+    widget.mySelectedReferences.clear();
+    widget.myCustomReferences.clear();
+    for (int i = 0; i < allRefs.length; i++) {
+      final ref = allRefs[i];
+      if (ref.certificationRequestId != null &&
+          fav.selectedReferenceIds.contains(ref.certificationRequestId)) {
+        widget.mySelectedReferences.add(i);
+        widget.myCustomReferences.add(ref);
+      }
+    }
+
+    // 9. About me
+    if (fav.aboutMe != null) {
+      widget.myCustomAboutMe = fav.aboutMe!;
+      _isSelectedAboutMe = widget.myCustomAboutMe.isNotEmpty;
+    }
+  }
+
+  Future<void> _autoSaveFavouriteIfInFavouriteMode() async {
+    if (_localFavouriteCV == null) return;
+    final draft = _createCurrentDraftCV(_localFavouriteCV!.userId);
+    final updated = _localFavouriteCV!.copyWith(
+      selectedExperienceIds: draft.selectedExperienceIds,
+      selectedPersonalExperienceIds: draft.selectedPersonalExperienceIds,
+      selectedEducationIds: draft.selectedEducationIds,
+      selectedSecondaryEducationIds: draft.selectedSecondaryEducationIds,
+      selectedCompetencies: draft.selectedCompetencies,
+      selectedDataOfInterest: draft.selectedDataOfInterest,
+      selectedLanguageNames: draft.selectedLanguageNames,
+      selectedReferenceIds: draft.selectedReferenceIds,
+      aboutMe: draft.aboutMe,
+      updatedAt: DateTime.now(),
+    );
+    _localFavouriteCV = updated;
+    try {
+      final database = Provider.of<Database>(context, listen: false);
+      await database.updateFavouriteCV(updated);
+    } catch (e) {
+      debugPrint('Auto-save favourite error: $e');
+    }
   }
 
   @override
@@ -188,15 +354,13 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Mi currículum",
-                style: GoogleFonts.rubik(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF054D5E),
-                ),
-              ),
+              // ── Page header: favourite mode vs. normal mode ──────────────────
+              if (_localFavouriteCV != null)
+                _buildFavouriteHeader(context)
+              else
+                _buildNormalHeader(context),
               const SizedBox(height: 10),
+              // ── Subtitle row ─────────────────────────────────────────────────
               Row(
                 children: [
                   SvgPicture.asset(
@@ -205,13 +369,23 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                     height: 24,
                   ),
                   const SizedBox(width: 8),
-                  const Text(
-                    "Elige qué información mostrar en tu currículum.",
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: 14,
+                  Expanded(
+                    child: Text(
+                      _localFavouriteCV != null
+                          ? 'Las modificaciones en "\u200b${_localFavouriteCV!.name}\u200b" se guardarán automáticamente.'
+                          : 'Elige qué información mostrar en tu currículum.',
+                      style: const TextStyle(
+                        color: Colors.black54,
+                        fontSize: 14,
+                      ),
                     ),
                   ),
+                  if (_localFavouriteCV != null)
+                    IconButton(
+                      tooltip: 'Eliminar currículum favorito',
+                      icon: const Icon(Icons.delete_outline, color: Colors.black38),
+                      onPressed: () => _confirmDeleteFavourite(context),
+                    ),
                 ],
               ),
               const SizedBox(height: 25),
@@ -660,25 +834,40 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               ],
             ),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                SvgPicture.asset(
-                  ImagePath.ICON_EXCLAMATION,
-                  width: 24,
-                  height: 24,
-                ),
-                const SizedBox(width: 8),
-                const Expanded(
-                  child: Text(
-                    "Elige qué información mostrar en tu currículum.",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
+            // ── Mobile title: favourite or normal ─────────────────────────────
+            if (_localFavouriteCV != null)
+              _buildFavouriteHeader(context)
+            else
+              _buildNormalHeader(context),
+            const SizedBox(height: 8),
+              Row(
+
+                children: [
+                  SvgPicture.asset(
+                    ImagePath.ICON_EXCLAMATION,
+                    width: 24,
+                    height: 24,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _localFavouriteCV != null
+                          ? 'Las modificaciones en "​${_localFavouriteCV!.name}​" se guardarán automáticamente.'
+                          : 'Elige qué información mostrar en tu currículum.',
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                  if (_localFavouriteCV != null)
+                    IconButton(
+                      tooltip: 'Eliminar currículum favorito',
+                      icon: const Icon(Icons.delete_outline, color: Colors.black38, size: 20),
+                      onPressed: () => _confirmDeleteFavourite(context),
+                    ),
+                ],
+              ),
             const SizedBox(height: 12),
             const Divider(
               height: 1,
@@ -831,7 +1020,172 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
     );
   }
 
+  // \u2500\u2500\u2500 Header helpers \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+
+  /// Shows the favourite CV name + pencil-edit icon. Tapping the pencil opens
+  /// [FavouriteCVDialog] to rename/re-sector the favourite.
+  Widget _buildFavouriteHeader(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Flexible(
+          child: Text(
+            _localFavouriteCV!.name,
+            style: GoogleFonts.rubik(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF054D5E),
+            ),
+          ),
+        ),
+        const SizedBox(width: 6),
+        InkWell(
+          borderRadius: BorderRadius.circular(6),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (_) => FavouriteCVDialog(
+                userId: widget.user?.userId ?? '',
+                interests: widget.interests,
+                existing: _localFavouriteCV,
+                onSaved: (updated) {
+                  setState(() => _localFavouriteCV = updated);
+                },
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Icon(Icons.edit_outlined,
+                size: 18, color: const Color(0xFF054D5E).withOpacity(0.7)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  FavouriteCV _createCurrentDraftCV(String userId) {
+    return FavouriteCV(
+      userId: userId,
+      name: '',
+      sectorId: '',
+      sectorName: '',
+      selectedExperienceIds: List.from(idSelectedDateExperience),
+      selectedPersonalExperienceIds: List.from(idSelectedDatePersonalExperience),
+      selectedEducationIds: List.from(idSelectedDateEducation),
+      selectedSecondaryEducationIds: List.from(idSelectedDateSecondaryEducation),
+      selectedCompetencies: List.from(widget.myCustomCompetencies),
+      selectedDataOfInterest: List.from(widget.myCustomDataOfInterest),
+      selectedLanguageNames: widget.myCustomLanguages
+          .map((l) => l.name)
+          .where((n) => n.isNotEmpty)
+          .toList(),
+      selectedReferenceIds: widget.myCustomReferences
+          .map((r) => r.certificationRequestId ?? '')
+          .where((id) => id.isNotEmpty)
+          .toList(),
+      aboutMe: widget.myCustomAboutMe,
+    );
+  }
+
+  /// Shows the plain "Mi curr\u00edculum" title + a "Guardar en favoritos" button.
+  Widget _buildNormalHeader(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          'Mi curr\u00edculum',
+          style: GoogleFonts.rubik(
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF054D5E),
+          ),
+        ),
+        const SizedBox(width: 12),
+        OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: Color(0xFF054D5E), width: 1),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25)),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          ),
+          icon: const Icon(Icons.favorite_border,
+              size: 15, color: Color(0xFF054D5E)),
+          label: Text(
+            'Guardar en favoritos',
+            style: GoogleFonts.outfit(
+                fontSize: 13,
+                color: const Color(0xFF054D5E),
+                fontWeight: FontWeight.w600),
+          ),
+          onPressed: widget.user == null
+              ? null
+              : () {
+                  final userId = widget.user!.userId ?? '';
+                  final draft = _createCurrentDraftCV(userId);
+                  showDialog(
+                    context: context,
+                    builder: (_) => FavouriteCVDialog(
+                      userId: userId,
+                      interests: widget.interests,
+                      draftCV: draft,
+                      onSaved: (saved) {
+                        setState(() => _localFavouriteCV = saved);
+                      },
+                    ),
+                  );
+                },
+        ),
+      ],
+    );
+  }
+
+  /// Asks the user to confirm deletion of the open favourite CV and, if
+  /// confirmed, deletes it from Firestore and navigates back.
+  Future<void> _confirmDeleteFavourite(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          '\u00bfEliminar curr\u00edculum?',
+          style: GoogleFonts.outfit(
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF054D5E),
+            fontSize: 18,
+          ),
+        ),
+        content: Text(
+          '\u00bfEst\u00e1s seguro de que deseas eliminar \u201c${_localFavouriteCV!.name}\u201d? Esta acci\u00f3n no se puede deshacer.',
+          style: GoogleFonts.outfit(fontSize: 14, color: Colors.black87),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.red.shade700,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Eliminar',
+                style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && mounted) {
+      final database = Provider.of<Database>(context, listen: false);
+      await database.deleteFavouriteCV(_localFavouriteCV!);
+      if (widget.onBack != null) widget.onBack!();
+    }
+  }
+
   Widget _buildAboutMe(BuildContext context) {
+
     String aboutMe = widget.user?.aboutMe ?? '';
     // Custom Colors
     final Color tealColor = Color(0xFF005B5B);
@@ -1827,6 +2181,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             widget.mySelectedDataOfInterest.add(index);
                           }
                         });
+                        _autoSaveFavouriteIfInFavouriteMode();
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),

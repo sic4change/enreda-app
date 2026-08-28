@@ -79,4 +79,8 @@ class APIPath {
   // Companion data — separate collection to avoid saturating the user document.
   static String companionDataCollection() => 'companionData';
   static String companionDataItem(String id) => 'companionData/$id';
+
+  // Favourite CVs — root collection indexed by userId.
+  static String favouriteCVs() => 'favouriteCVs';
+  static String favouriteCV(String id) => 'favouriteCVs/$id';
 }

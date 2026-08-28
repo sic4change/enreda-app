@@ -52,6 +52,7 @@ import '../app/home/models/activity.dart';
 import '../app/home/models/question.dart';
 import '../app/home/models/gamificationFlags.dart';
 import '../app/home/models/sesion.dart';
+import '../app/home/models/favourite_cv.dart';
 
 /// Opaque cursor returned by [Database.resourcesPage]. Hides the underlying
 /// Firestore [DocumentSnapshot] from UI layers so the resources browse flow
@@ -207,6 +208,12 @@ abstract class Database {
   Stream<CompanionData?> companionDataStream(String userId, String? email);
   Future<void> setCompanionData(CompanionData companionData);
   Stream<List<String>> nationsSpanishStream();
+
+  // ─── Favourite CVs ───────────────────────────────────────────────────────
+  Stream<List<FavouriteCV>> favouriteCVsStream(String userId);
+  Future<String> addFavouriteCV(FavouriteCV cv);
+  Future<void> updateFavouriteCV(FavouriteCV cv);
+  Future<void> deleteFavouriteCV(FavouriteCV cv);
 }
 
 class FirestoreDatabase implements Database {
@@ -1376,6 +1383,36 @@ class FirestoreDatabase implements Database {
     builder: (data, documentId) => data['translations']['es'].toString(),
     sort: (lhs, rhs) => lhs.compareTo(rhs),
   );
+
+  // ─── Favourite CVs ───────────────────────────────────────────────────────
+
+  @override
+  Stream<List<FavouriteCV>> favouriteCVsStream(String userId) =>
+      _service.collectionStream(
+        path: APIPath.favouriteCVs(),
+        queryBuilder: (query) => query.where('userId', isEqualTo: userId),
+        builder: (data, documentId) => FavouriteCV.fromMap(data, documentId),
+        sort: (lhs, rhs) => rhs.createdAt.compareTo(lhs.createdAt),
+      );
+
+  @override
+  Future<String> addFavouriteCV(FavouriteCV cv) async {
+    return await _service.addDataFile(
+      path: APIPath.favouriteCVs(),
+      data: cv.toMap(),
+    );
+  }
+
+  @override
+  Future<void> updateFavouriteCV(FavouriteCV cv) =>
+      _service.updateData(
+        path: APIPath.favouriteCV(cv.favouriteCVId!),
+        data: cv.copyWith(updatedAt: DateTime.now()).toMap(),
+      );
+
+  @override
+  Future<void> deleteFavouriteCV(FavouriteCV cv) =>
+      _service.deleteData(path: APIPath.favouriteCV(cv.favouriteCVId!));
 
 }
 

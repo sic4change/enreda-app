@@ -34,6 +34,7 @@ class ImagePath {
   static const String USER_DEFAULT = '$imageDir/user_default.jpg';
   static const String IMAGE_DEFAULT = '$imageDir/placeholder-image.png';
   static const String THUMBNAIL_DEFAULT = '$imageDir/default-thumbnail.png';
+  static const String FAVOURITE_CV_EMPTY = '$imageDir/favourite_cv_empty.png';
 
   //Competencies
   static const String EMPTY_BADGE_SAMPLE = '$imageDir/empty_900x503.png';

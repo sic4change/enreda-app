@@ -542,6 +542,7 @@ class StringConst {
   static const String SESION_CONFIRMAR_ASISTENCIA = "Confirmar Asistencia";
   static const String SESION_CANCELAR_ASISTENCIA = "Cancelar Asistencia";
   static const String SESION_ASISTENCIA_CONFIRMADA = "Asistencia confirmada";
+  static const String SESION_ASISTENCIA_CANCELADA = "Asistencia cancelada";
   static const String SESION_ATTENDANCE_ERROR =
       "No se pudo confirmar la asistencia. Inténtalo de nuevo.";
   static const String SESION_CANCEL_ERROR =

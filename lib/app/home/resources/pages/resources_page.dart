@@ -172,18 +172,12 @@ class _ResourcesPageState extends State<ResourcesPage> {
             widget._message = message.notification!.title ?? '';
         });
 
-        if (message.data["resourceId"] != null) {
+        if (message.data["type"] == "session_invitation") {
+          // Notificación de invitación a sesión → navegar al calendario
+          context.go(StringConst.PATH_CALENDAR);
+        } else if (message.data["resourceId"] != null) {
           context.push(
               '${StringConst.PATH_RESOURCES}/${message.data["resourceId"]}');
-          /**
-              Navigator.of(context).push(
-              MaterialPageRoute<void>(
-              fullscreenDialog: true,
-              builder: (context) =>  ResourceDetailNotificationPage(
-              resource: message.data["resourceId"]),
-              ),
-              );
-           */
         }
       });
       _firebaseMessaging.requestPermission(

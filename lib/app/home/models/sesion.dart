@@ -37,6 +37,7 @@ class Sesion {
     this.participantSubvenciones = const <String, String>{},
     this.reminderUserIds = const <String>[],
     this.confirmedParticipants = const <String>[],
+    this.rejectedParticipants = const <String>[],
   });
 
   /// Firestore document id.
@@ -115,6 +116,9 @@ class Sesion {
   /// Participants who confirmed they will attend ("Confirmar Asistencia").
   final List<String> confirmedParticipants;
 
+  /// Participants who explicitly rejected / cancelled assistance.
+  final List<String> rejectedParticipants;
+
   /// `true` when [scheduledAt] is today or in the future.
   bool get isUpcoming => !scheduledAt.isBefore(
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
@@ -147,6 +151,7 @@ class Sesion {
           _parseStringStringMap(data['participantSubvenciones']),
       reminderUserIds: _parseStringList(data['reminderUserIds']),
       confirmedParticipants: _parseStringList(data['confirmedParticipants']),
+      rejectedParticipants: _parseStringList(data['rejectedParticipants']),
     );
   }
 
@@ -193,6 +198,8 @@ class Sesion {
       'absentParticipants': absentParticipants,
       'participantSubvenciones': participantSubvenciones,
       'reminderUserIds': reminderUserIds,
+      'confirmedParticipants': confirmedParticipants,
+      'rejectedParticipants': rejectedParticipants,
     };
   }
 

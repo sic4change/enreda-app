@@ -804,7 +804,7 @@ class _SessionsPanel extends StatelessWidget {
         borderRadius: BorderRadius.circular(Sizes.RADIUS_16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary900.withOpacity(0.06),
+            color: AppColors.primary900.withValues(alpha: 0.06),
             blurRadius: Sizes.PADDING_16,
           ),
         ],
@@ -914,6 +914,8 @@ class _SessionsPanel extends StatelessWidget {
   Widget _row(Sesion s) => _ParticipantSesionRow(
         sesion: s,
         isConfirmed: s.confirmedParticipants.contains(currentUserId),
+        isRejected: s.rejectedParticipants.contains(currentUserId),
+        isMobile: isMobile,
         tecnicoNameFuture: tecnicoNameOf(s.tecnicoId),
         onConfirm: () => onConfirm(s),
         onCancel: () => onCancel(s),
@@ -1103,6 +1105,8 @@ class _ParticipantSesionRow extends StatelessWidget {
   const _ParticipantSesionRow({
     required this.sesion,
     required this.isConfirmed,
+    required this.isRejected,
+    required this.isMobile,
     required this.tecnicoNameFuture,
     required this.onConfirm,
     required this.onCancel,
@@ -1110,6 +1114,8 @@ class _ParticipantSesionRow extends StatelessWidget {
 
   final Sesion sesion;
   final bool isConfirmed;
+  final bool isRejected;
+  final bool isMobile;
   final Future<String?> tecnicoNameFuture;
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
@@ -1242,83 +1248,174 @@ class _ParticipantSesionRow extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: Sizes.PADDING_12),
-                isConfirmed
-                    // Figma "Cancelar Asistencia": 182×34 yellowDark capsule,
-                    // navy circle flush right with a yellow ✕. Tapping it
-                    // withdraws the confirmation (red dot on entidadSocial).
-                    ? InkWell(
-                        borderRadius: BorderRadius.circular(17),
-                        onTap: onCancel,
-                        child: Container(
-                          width: 182,
-                          height: 34,
-                          decoration: BoxDecoration(
-                            color: AppColors.yellowDark,
-                            borderRadius: BorderRadius.circular(17),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Center(
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      StringConst.SESION_CANCELAR_ASISTENCIA,
-                                      style: textTheme.bodyMedium?.copyWith(
-                                        color: AppColors.primary900,
-                                        fontWeight: FontWeight.w500,
-                                        letterSpacing: -0.26,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 34,
-                                height: 34,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.primary900,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.close_rounded,
-                                  size: 18,
-                                  color: AppColors.yellowDark,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    : ElevatedButton(
-                        onPressed: onConfirm,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary500,
-                          foregroundColor: AppColors.white,
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Sizes.PADDING_24,
-                            vertical: Sizes.PADDING_12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(Sizes.RADIUS_24),
-                          ),
-                        ),
-                        child: Text(
-                          StringConst.SESION_CONFIRMAR_ASISTENCIA,
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: AppColors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
+                _buildActionButtons(textTheme),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildActionButtons(TextTheme textTheme) {
+    if (isConfirmed) {
+      return InkWell(
+        borderRadius: BorderRadius.circular(17),
+        onTap: onCancel,
+        child: Container(
+          width: 182,
+          height: 34,
+          decoration: BoxDecoration(
+            color: AppColors.yellowDark,
+            borderRadius: BorderRadius.circular(17),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      StringConst.SESION_CANCELAR_ASISTENCIA,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: AppColors.primary900,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: -0.26,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                width: 34,
+                height: 34,
+                decoration: const BoxDecoration(
+                  color: AppColors.primary900,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.close_rounded,
+                  size: 18,
+                  color: AppColors.yellowDark,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final confirmBtn = ElevatedButton(
+      onPressed: onConfirm,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primary500,
+        foregroundColor: AppColors.white,
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(
+          horizontal: Sizes.PADDING_24,
+          vertical: Sizes.PADDING_12,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Sizes.RADIUS_24),
+        ),
+      ),
+      child: Text(
+        StringConst.SESION_CONFIRMAR_ASISTENCIA,
+        style: textTheme.bodyMedium?.copyWith(
+          color: AppColors.white,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+
+    final cancelBtn = isRejected
+        ? OutlinedButton(
+            onPressed: onCancel,
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: AppColors.yellowDark, width: 1.5),
+              padding: const EdgeInsets.symmetric(
+                horizontal: Sizes.PADDING_20,
+                vertical: Sizes.PADDING_12,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Sizes.RADIUS_24),
+              ),
+            ),
+            child: Text(
+              StringConst.SESION_ASISTENCIA_CANCELADA,
+              style: textTheme.bodyMedium?.copyWith(
+                color: AppColors.primary900,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          )
+        : InkWell(
+            borderRadius: BorderRadius.circular(17),
+            onTap: onCancel,
+            child: Container(
+              width: 182,
+              height: 34,
+              decoration: BoxDecoration(
+                color: AppColors.yellowDark,
+                borderRadius: BorderRadius.circular(17),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          StringConst.SESION_CANCELAR_ASISTENCIA,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: AppColors.primary900,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: -0.26,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: const BoxDecoration(
+                      color: AppColors.primary900,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close_rounded,
+                      size: 18,
+                      color: AppColors.yellowDark,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+
+    if (isMobile) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          confirmBtn,
+          const SizedBox(height: Sizes.PADDING_8),
+          cancelBtn,
+        ],
+      );
+    } else {
+      return Wrap(
+        spacing: Sizes.PADDING_12,
+        runSpacing: Sizes.PADDING_8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          confirmBtn,
+          cancelBtn,
+        ],
+      );
+    }
   }
 }
 

@@ -290,6 +290,19 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
       widget.myCustomAboutMe = fav.aboutMe!;
       _isSelectedAboutMe = widget.myCustomAboutMe.isNotEmpty;
     }
+
+    // 10. Photo & Personal data flags
+    _isSelectedPhoto = fav.showPhoto;
+    _isSelectedEmail = fav.showEmail;
+    widget.myCustomEmail = _isSelectedEmail ? (widget.user?.email ?? '') : '';
+    _isSelectedPhone = fav.showPhone;
+    widget.myCustomPhone = _isSelectedPhone ? (widget.user?.phone ?? '') : '';
+    _isSelectedMyCity = fav.showCity;
+    widget.myCustomCity = _isSelectedMyCity ? (widget.city ?? '') : '';
+    _isSelectedMyProvince = fav.showProvince;
+    widget.myCustomProvince = _isSelectedMyProvince ? (widget.province ?? '') : '';
+    _isSelectedMyCountry = fav.showCountry;
+    widget.myCustomCountry = _isSelectedMyCountry ? (widget.country ?? '') : '';
   }
 
   Future<void> _autoSaveFavouriteIfInFavouriteMode() async {
@@ -305,6 +318,12 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
       selectedLanguageNames: draft.selectedLanguageNames,
       selectedReferenceIds: draft.selectedReferenceIds,
       aboutMe: draft.aboutMe,
+      showPhoto: draft.showPhoto,
+      showEmail: draft.showEmail,
+      showPhone: draft.showPhone,
+      showCity: draft.showCity,
+      showProvince: draft.showProvince,
+      showCountry: draft.showCountry,
       updatedAt: DateTime.now(),
     );
     _localFavouriteCV = updated;
@@ -610,6 +629,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               setState(() {
                                 _isSelectedPhoto = !_isSelectedPhoto;
                               });
+                              _autoSaveFavouriteIfInFavouriteMode();
                             },
                             child: Stack(
                               alignment: Alignment.topRight,
@@ -880,6 +900,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                 setState(() {
                   _isSelectedPhoto = !_isSelectedPhoto;
                 });
+                _autoSaveFavouriteIfInFavouriteMode();
               },
               child: Stack(
                 children: [
@@ -1085,6 +1106,12 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
           .where((id) => id.isNotEmpty)
           .toList(),
       aboutMe: widget.myCustomAboutMe,
+      showPhoto: _isSelectedPhoto,
+      showEmail: _isSelectedEmail,
+      showPhone: _isSelectedPhone,
+      showCity: _isSelectedMyCity,
+      showProvince: _isSelectedMyProvince,
+      showCountry: _isSelectedMyCountry,
     );
   }
 
@@ -1201,6 +1228,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
               widget.myCustomAboutMe = "";
             }
           });
+          _autoSaveFavouriteIfInFavouriteMode();
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1290,6 +1318,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                     widget.myCustomEmail = "";
                   }
                 });
+                _autoSaveFavouriteIfInFavouriteMode();
               },
               child: Row(
                 children: [
@@ -1328,6 +1357,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                     widget.myCustomPhone = "";
                   }
                 });
+                _autoSaveFavouriteIfInFavouriteMode();
               },
               child: Row(
                 children: [
@@ -1396,6 +1426,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
             widget.myCustomCountry = "";
           }
         });
+        _autoSaveFavouriteIfInFavouriteMode();
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -1476,6 +1507,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               widget.mySelectedCompetencies.add(index);
                             }
                           });
+                          _autoSaveFavouriteIfInFavouriteMode();
                         },
                         child: Container(
                             padding: EdgeInsets.symmetric(
@@ -1575,6 +1607,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               }
                             }
                           });
+                          _autoSaveFavouriteIfInFavouriteMode();
                         },
                         child: Padding(
                           padding:
@@ -1730,6 +1763,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               }
                             }
                           });
+                          _autoSaveFavouriteIfInFavouriteMode();
                         },
                         child: Padding(
                             padding: const EdgeInsets.only(
@@ -1876,6 +1910,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               }
                             }
                           });
+                          _autoSaveFavouriteIfInFavouriteMode();
                         },
                         child: Padding(
                           padding:
@@ -2047,6 +2082,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                               }
                             }
                           });
+                          _autoSaveFavouriteIfInFavouriteMode();
                         },
                         child: Padding(
                             padding: const EdgeInsets.only(
@@ -2265,6 +2301,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             widget.mySelectedLanguages.add(index);
                           }
                         });
+                        _autoSaveFavouriteIfInFavouriteMode();
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -2369,6 +2406,7 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
                             widget.mySelectedReferences.add(index);
                           }
                         });
+                        _autoSaveFavouriteIfInFavouriteMode();
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),

@@ -708,11 +708,11 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
 
   // ─── Tab header ────────────────────────────────────────────────────────────
 
-  /// Renders the two-tab row: "Mi currículum" | "Currículums favoritos ♡".
+  /// Renders the two-tab row: "Mi currículum" | "Currículums favoritos".
   Widget _buildTabHeader() {
     final tabs = [
       'Mi currículum',
-      'Currículums favoritos ♡',
+      'Currículums favoritos',
     ];
     return Row(
       children: [
@@ -726,23 +726,40 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      tabs[i],
-                      style: GoogleFonts.outfit(
-                        fontSize: 16,
-                        fontWeight: _activeTabIndex == i
-                            ? FontWeight.w700
-                            : FontWeight.w400,
-                        color: _activeTabIndex == i
-                            ? AppColors.primary900
-                            : Colors.black45,
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          tabs[i],
+                          style: GoogleFonts.outfit(
+                            fontSize: 16,
+                            fontWeight: _activeTabIndex == i
+                                ? FontWeight.w700
+                                : FontWeight.w400,
+                            color: _activeTabIndex == i
+                                ? AppColors.primary900
+                                : Colors.black45,
+                          ),
+                        ),
+                        if (i == 1) ...[
+                          const SizedBox(width: 4),
+                          Icon(
+                            _activeTabIndex == 1
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            size: 18,
+                            color: _activeTabIndex == 1
+                                ? AppColors.primary900
+                                : Colors.black45,
+                          ),
+                        ],
+                      ],
                     ),
                     const SizedBox(height: 4),
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       height: 3,
-                      width: _activeTabIndex == i ? 60 : 0,
+                      width: _activeTabIndex == i ? (i == 1 ? 80 : 60) : 0,
                       decoration: BoxDecoration(
                         color: AppColors.primary900,
                         borderRadius: BorderRadius.circular(2),

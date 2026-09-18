@@ -20,6 +20,12 @@ class FavouriteCV {
     this.selectedLanguageNames = const [],
     this.selectedReferenceIds = const [],
     this.aboutMe,
+    this.showPhoto = true,
+    this.showEmail = true,
+    this.showPhone = true,
+    this.showCity = true,
+    this.showProvince = true,
+    this.showCountry = true,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),
@@ -58,6 +64,14 @@ class FavouriteCV {
   /// "About me" text saved at the time of creation/last edit.
   final String? aboutMe;
 
+  /// Visibility flags for personal data & photo.
+  final bool showPhoto;
+  final bool showEmail;
+  final bool showPhone;
+  final bool showCity;
+  final bool showProvince;
+  final bool showCountry;
+
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -87,6 +101,12 @@ class FavouriteCV {
       selectedLanguageNames: _strings(data['selectedLanguageNames']),
       selectedReferenceIds: _strings(data['selectedReferenceIds']),
       aboutMe: data['aboutMe'] as String?,
+      showPhoto: data['showPhoto'] as bool? ?? true,
+      showEmail: data['showEmail'] as bool? ?? true,
+      showPhone: data['showPhone'] as bool? ?? true,
+      showCity: data['showCity'] as bool? ?? true,
+      showProvince: data['showProvince'] as bool? ?? true,
+      showCountry: data['showCountry'] as bool? ?? true,
       createdAt: data['createdAt'] != null
           ? (data['createdAt'] as dynamic).toDate()
           : DateTime.now(),
@@ -112,6 +132,12 @@ class FavouriteCV {
       'selectedLanguageNames': selectedLanguageNames,
       'selectedReferenceIds': selectedReferenceIds,
       'aboutMe': aboutMe,
+      'showPhoto': showPhoto,
+      'showEmail': showEmail,
+      'showPhone': showPhone,
+      'showCity': showCity,
+      'showProvince': showProvince,
+      'showCountry': showCountry,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
     };
@@ -132,6 +158,12 @@ class FavouriteCV {
     List<String>? selectedLanguageNames,
     List<String>? selectedReferenceIds,
     String? aboutMe,
+    bool? showPhoto,
+    bool? showEmail,
+    bool? showPhone,
+    bool? showCity,
+    bool? showProvince,
+    bool? showCountry,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -155,6 +187,12 @@ class FavouriteCV {
           selectedLanguageNames ?? this.selectedLanguageNames,
       selectedReferenceIds: selectedReferenceIds ?? this.selectedReferenceIds,
       aboutMe: aboutMe ?? this.aboutMe,
+      showPhoto: showPhoto ?? this.showPhoto,
+      showEmail: showEmail ?? this.showEmail,
+      showPhone: showPhone ?? this.showPhone,
+      showCity: showCity ?? this.showCity,
+      showProvince: showProvince ?? this.showProvince,
+      showCountry: showCountry ?? this.showCountry,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

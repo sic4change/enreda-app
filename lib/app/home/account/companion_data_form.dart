@@ -344,6 +344,11 @@ class _CompanionDataFormState extends State<CompanionDataForm> {
       ),
     );
 
+    bool isSpanish(String? nat) =>
+        nat != null && (nat.trim().toLowerCase() == 'españa' || nat.trim().toLowerCase() == 'espana');
+    final hasSpanishNationality =
+        isSpanish(widget.user.nationality) || isSpanish(widget.user.nationalitySecond);
+
     return Form(
       key: _formKey,
       child: Column(
@@ -362,138 +367,35 @@ class _CompanionDataFormState extends State<CompanionDataForm> {
           ),
           const Divider(color: AppColors.greyUltraLight),
 
-          // ── Situación familiar ──────────────────────────────────────────────
-          sectionTitle('Situación familiar'),
-          fieldLabel(
-            '¿Tienes alguna responsabilidad familiar? ¿Tienes familiares en España?',
-          ),
-          TextFormField(
-            initialValue: _companionFamilySituation,
-            minLines: 2,
-            maxLines: 4,
-            decoration: inputDecoration.copyWith(
-              hintText:
-                  'Describe brevemente tu situación familiar en España...',
-              hintStyle: textTheme.bodySmall?.copyWith(
-                color: AppColors.darkGray,
-                fontSize: fontSize,
+          if (!hasSpanishNationality) ...[
+            // ── Situación familiar ──────────────────────────────────────────────
+            sectionTitle('Situación familiar'),
+            fieldLabel(
+              '¿Tienes alguna responsabilidad familiar? ¿Tienes familiares en España?',
+            ),
+            TextFormField(
+              initialValue: _companionFamilySituation,
+              minLines: 2,
+              maxLines: 4,
+              decoration: inputDecoration.copyWith(
+                hintText:
+                    'Describe brevemente tu situación familiar en España...',
+                hintStyle: textTheme.bodySmall?.copyWith(
+                  color: AppColors.darkGray,
+                  fontSize: fontSize,
+                ),
               ),
-            ),
-            style: textTheme.bodySmall?.copyWith(
-              color: AppColors.greyDark,
-              fontSize: fontSize,
-            ),
-            onSaved: (v) => _companionFamilySituation = v,
-            onChanged: (v) => _companionFamilySituation = v,
-          ),
-          SpaceH20(),
-
-          // ── Fecha de llegada ─────────────────────────────────────────────────
-          sectionTitle('Fecha de llegada a España'),
-          Row(
-            children: [
-              const Icon(
-                Icons.calendar_today_outlined,
-                size: 18,
+              style: textTheme.bodySmall?.copyWith(
                 color: AppColors.greyDark,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'Añade la fecha en la que llegaste a España',
-                  style: textTheme.bodySmall?.copyWith(
-                    color: AppColors.greyDark,
-                    fontWeight: FontWeight.w600,
-                    fontSize: fontSize,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            initialValue: _companionDateArriveSpain,
-            decoration: inputDecoration.copyWith(
-              hintText: '¿Recuerdas la fecha exacta? Indica el año, mes o día en que llegaste al país.',
-              hintStyle: textTheme.bodySmall?.copyWith(
-                color: AppColors.darkGray,
                 fontSize: fontSize,
               ),
+              onSaved: (v) => _companionFamilySituation = v,
+              onChanged: (v) => _companionFamilySituation = v,
             ),
-            style: textTheme.bodySmall?.copyWith(
-              color: AppColors.greyDark,
-              fontSize: fontSize,
-            ),
-            onSaved: (v) => _companionDateArriveSpain = v,
-            onChanged: (v) => _companionDateArriveSpain = v,
-          ),
-          SpaceH20(),
+            SpaceH20(),
 
-          // ── Situación administrativa ────────────────────────────────────────
-          fieldLabel('Situación administrativa'),
-          DropdownButtonFormField<String>(
-            value: _companionAdministrativeStatus,
-            isExpanded: true,
-            isDense: true,
-            decoration: inputDecoration.copyWith(hintText: 'Selecciona...'),
-            items: [
-              'Regular',
-              'Irregular',
-              'Protección Internacional',
-              'En trámite',
-              'No lo tengo claro',
-            ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-            onChanged: (v) {
-              setState(() {
-                _companionAdministrativeStatus = v;
-                if (v == 'Irregular') {
-                  _companionWorkPermit = false;
-                }
-              });
-            },
-            onSaved: (v) => _companionAdministrativeStatus = v,
-            style: textTheme.bodySmall?.copyWith(
-              color: AppColors.greyDark,
-              fontSize: fontSize,
-            ),
-          ),
-          SpaceH20(),
-
-          // ── Permiso de trabajo ───────────────────────────────────────────────
-          fieldLabel('Permiso de trabajo'),
-          Row(
-            children: [
-              Radio<bool>(
-                value: true,
-                groupValue: _companionWorkPermit,
-                activeColor: AppColors.primaryColor,
-                onChanged: (v) => setState(() => _companionWorkPermit = v),
-              ),
-              Text(
-                'Sí',
-                style: textTheme.bodySmall?.copyWith(
-                  fontSize: 15,
-                  color: AppColors.greyDark,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Radio<bool>(
-                value: false,
-                groupValue: _companionWorkPermit,
-                activeColor: AppColors.primaryColor,
-                onChanged: (v) => setState(() => _companionWorkPermit = v),
-              ),
-              Text(
-                'No',
-                style: textTheme.bodySmall?.copyWith(
-                  fontSize: 15,
-                  color: AppColors.greyDark,
-                ),
-              ),
-            ],
-          ),
-          if (_companionWorkPermit == true) ...[
-            const SizedBox(height: 8),
+            // ── Fecha de llegada ─────────────────────────────────────────────────
+            sectionTitle('Fecha de llegada a España'),
             Row(
               children: [
                 const Icon(
@@ -504,7 +406,7 @@ class _CompanionDataFormState extends State<CompanionDataForm> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Añade la fecha de renovación de tu permiso de trabajo.',
+                    'Añade la fecha en la que llegaste a España',
                     style: textTheme.bodySmall?.copyWith(
                       color: AppColors.greyDark,
                       fontWeight: FontWeight.w600,
@@ -516,17 +418,122 @@ class _CompanionDataFormState extends State<CompanionDataForm> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _companionWorkPermitRenewalDate,
-              decoration: inputDecoration,
+              initialValue: _companionDateArriveSpain,
+              decoration: inputDecoration.copyWith(
+                hintText: '¿Recuerdas la fecha exacta? Indica el año, mes o día en que llegaste al país.',
+                hintStyle: textTheme.bodySmall?.copyWith(
+                  color: AppColors.darkGray,
+                  fontSize: fontSize,
+                ),
+              ),
               style: textTheme.bodySmall?.copyWith(
                 color: AppColors.greyDark,
                 fontSize: fontSize,
               ),
-              onSaved: (v) => _companionWorkPermitRenewalDate = v,
-              onChanged: (v) => _companionWorkPermitRenewalDate = v,
+              onSaved: (v) => _companionDateArriveSpain = v,
+              onChanged: (v) => _companionDateArriveSpain = v,
             ),
+            SpaceH20(),
+
+            // ── Situación administrativa ────────────────────────────────────────
+            fieldLabel('Situación administrativa'),
+            DropdownButtonFormField<String>(
+              value: _companionAdministrativeStatus,
+              isExpanded: true,
+              isDense: true,
+              decoration: inputDecoration.copyWith(hintText: 'Selecciona...'),
+              items: [
+                'Regular',
+                'Irregular',
+                'Protección Internacional',
+                'En trámite',
+                'No lo tengo claro',
+              ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+              onChanged: (v) {
+                setState(() {
+                  _companionAdministrativeStatus = v;
+                  if (v == 'Irregular') {
+                    _companionWorkPermit = false;
+                  }
+                });
+              },
+              onSaved: (v) => _companionAdministrativeStatus = v,
+              style: textTheme.bodySmall?.copyWith(
+                color: AppColors.greyDark,
+                fontSize: fontSize,
+              ),
+            ),
+            SpaceH20(),
+
+            // ── Permiso de trabajo ───────────────────────────────────────────────
+            fieldLabel('Permiso de trabajo'),
+            Row(
+              children: [
+                Radio<bool>(
+                  value: true,
+                  groupValue: _companionWorkPermit,
+                  activeColor: AppColors.primaryColor,
+                  onChanged: (v) => setState(() => _companionWorkPermit = v),
+                ),
+                Text(
+                  'Sí',
+                  style: textTheme.bodySmall?.copyWith(
+                    fontSize: 15,
+                    color: AppColors.greyDark,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Radio<bool>(
+                  value: false,
+                  groupValue: _companionWorkPermit,
+                  activeColor: AppColors.primaryColor,
+                  onChanged: (v) => setState(() => _companionWorkPermit = v),
+                ),
+                Text(
+                  'No',
+                  style: textTheme.bodySmall?.copyWith(
+                    fontSize: 15,
+                    color: AppColors.greyDark,
+                  ),
+                ),
+              ],
+            ),
+            if (_companionWorkPermit == true) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.calendar_today_outlined,
+                    size: 18,
+                    color: AppColors.greyDark,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Añade la fecha de renovación de tu permiso de trabajo.',
+                      style: textTheme.bodySmall?.copyWith(
+                        color: AppColors.greyDark,
+                        fontWeight: FontWeight.w600,
+                        fontSize: fontSize,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                initialValue: _companionWorkPermitRenewalDate,
+                decoration: inputDecoration,
+                style: textTheme.bodySmall?.copyWith(
+                  color: AppColors.greyDark,
+                  fontSize: fontSize,
+                ),
+                onSaved: (v) => _companionWorkPermitRenewalDate = v,
+                onChanged: (v) => _companionWorkPermitRenewalDate = v,
+              ),
+            ],
+            SpaceH20(),
           ],
-          SpaceH20(),
 
           // ── Tipo de documento + Número ────────────────────────────────────
           Flex(

@@ -792,9 +792,9 @@ class _CompanionDataFormState extends State<CompanionDataForm> {
 
       final updatedCompanionData = CompanionData(
         companionDataId: widget.companionData?.companionDataId,
-        userId: widget.user.email.isNotEmpty
-            ? widget.user.email
-            : (widget.user.userId ?? ''),
+        userId: (widget.user.userId != null && widget.user.userId!.isNotEmpty)
+            ? widget.user.userId!
+            : widget.user.email,
         companionFamilySituation: _companionFamilySituation,
         companionDateArriveSpain: _companionDateArriveSpain,
         companionAdministrativeStatus: _companionAdministrativeStatus,

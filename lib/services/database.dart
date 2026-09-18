@@ -184,7 +184,7 @@ abstract class Database {
   Future<void> addResource(Resource resource);
   Future<void> setResource(Resource resource);
   Future<void> deleteResource(Resource resource);
-  Future<void> addUnemployedUser(UnemployedUser unemployedUser);
+  Future<String> addUnemployedUser(UnemployedUser unemployedUser);
   Future<void> addMentorUser(MentorUser mentorUser);
   Future<void> addOrganizationUser(OrganizationUser organizationUser);
   Future<void> addOrganization(Organization organization);
@@ -1186,8 +1186,8 @@ class FirestoreDatabase implements Database {
       _service.addData(path: APIPath.contacts(), data: contact.toMap());
 
   @override
-  Future<void> addUnemployedUser(UnemployedUser unemployedUser) =>
-      _service.addData(path: APIPath.users(), data: unemployedUser.toMap());
+  Future<String> addUnemployedUser(UnemployedUser unemployedUser) =>
+      _service.addDataFile(path: APIPath.users(), data: unemployedUser.toMap());
 
   @override
   Future<void> addCompanionData(CompanionData companionData) =>

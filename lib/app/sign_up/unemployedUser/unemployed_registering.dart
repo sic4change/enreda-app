@@ -348,7 +348,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
       try {
         final database = Provider.of<Database>(context, listen: false);
         setState(() => isLoading = true);
-        await database.addUnemployedUser(unemployedUser);
+        final newUserId = await database.addUnemployedUser(unemployedUser);
         // Save companion data if user requested accompaniment
         if (_needsCompanionship == true) {
           final helpNeedsList = List<String>.from(_companionHelpNeeds);
@@ -356,7 +356,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
             helpNeedsList.add('Otro: ${_companionHelpNeedsOtherText!}');
           }
           final companionData = CompanionData(
-            userId: _email ?? '',
+            userId: newUserId,
             companionFamilySituation: _companionFamilySituation,
             companionDateArriveSpain: _companionDateArriveSpain,
             companionAdministrativeStatus: _companionAdministrativeStatus,

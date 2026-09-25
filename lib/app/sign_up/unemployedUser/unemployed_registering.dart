@@ -372,10 +372,16 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
           await database.addCompanionData(companionData);
         }
         setState(() => isLoading = false);
+        final dialogTitle = _needsCompanionship == true
+            ? 'Hemos recibido tu solicitud'
+            : StringConst.FORM_SUCCESS;
+        final dialogContent = _needsCompanionship == true
+            ? 'Una persona de nuestro equipo se pondrá en contacto contigo.'
+            : StringConst.FORM_SUCCESS_MAIL;
         showAlertDialog(
           context,
-          title: StringConst.FORM_SUCCESS,
-          content: StringConst.FORM_SUCCESS_MAIL,
+          title: dialogTitle,
+          content: dialogContent,
           defaultActionText: StringConst.FORM_ACCEPT,
         ).then((value) {
           if (Constants.pendingResourceId != null) {
@@ -915,10 +921,27 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
     );
   }
 
-  bool get _hasSpanishNationality {
-    bool isSpanish(String? nat) =>
-        nat != null && (nat.trim().toLowerCase() == 'españa' || nat.trim().toLowerCase() == 'espana');
-    return isSpanish(selectedNationality) || isSpanish(selectedNationalitySecond);
+  bool get _hasResidenceNationalityMatch {
+    final currentCountryName = selectedCountry?.name ?? countryName;
+    if (currentCountryName.trim().isEmpty) return false;
+
+    bool matchesResidence(String? nat) {
+      if (nat == null || nat.trim().isEmpty) return false;
+      String normalize(String s) {
+        return s
+            .trim()
+            .toLowerCase()
+            .replaceAll('á', 'a')
+            .replaceAll('é', 'e')
+            .replaceAll('í', 'i')
+            .replaceAll('ó', 'o')
+            .replaceAll('ú', 'u')
+            .replaceAll('ñ', 'n');
+      }
+      return normalize(nat) == normalize(currentCountryName);
+    }
+
+    return matchesResidence(selectedNationality) || matchesResidence(selectedNationalitySecond);
   }
 
   Widget _buildFormCompanion(BuildContext context) {
@@ -979,7 +1002,7 @@ class _UnemployedRegisteringState extends State<UnemployedRegistering> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!_hasSpanishNationality) ...[
+          if (!_hasResidenceNationalityMatch) ...[
             // ── Situación familiar ──────────────────────────────────────────────
             sectionTitle('Situación familiar'),
             fieldLabel('¿Tienes alguna responsabilidad familiar? ¿Tienes familiares en España?'),

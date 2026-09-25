@@ -3,12 +3,12 @@ import 'package:enreda_app/app/home/models/userEnreda.dart';
 import 'package:enreda_app/app/home/web_home.dart';
 import 'package:enreda_app/common_widgets/custom_text.dart';
 import 'package:enreda_app/common_widgets/enreda_button.dart';
-import 'package:enreda_app/common_widgets/flex_row_column.dart';
 import 'package:enreda_app/common_widgets/rounded_container.dart';
 import 'package:enreda_app/common_widgets/show_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/show_exception_alert_dialog.dart';
 import 'package:enreda_app/common_widgets/spaces.dart';
 import 'package:enreda_app/services/database.dart';
+import 'package:enreda_app/services/location_cache.dart';
 import 'package:enreda_app/utils/adaptive.dart';
 import 'package:enreda_app/utils/const.dart';
 import 'package:enreda_app/utils/responsive.dart';
@@ -344,10 +344,40 @@ class _CompanionDataFormState extends State<CompanionDataForm> {
       ),
     );
 
-    bool isSpanish(String? nat) =>
-        nat != null && (nat.trim().toLowerCase() == 'españa' || nat.trim().toLowerCase() == 'espana');
-    final hasSpanishNationality =
-        isSpanish(widget.user.nationality) || isSpanish(widget.user.nationalitySecond);
+    String? getResidenceCountryName() {
+      final userCountry = widget.user.country;
+      if (userCountry == null || userCountry.trim().isEmpty) return null;
+      final countries = LocationCache.instance.countries;
+      for (final c in countries) {
+        if (c.countryId == userCountry || c.name.toLowerCase() == userCountry.toLowerCase()) {
+          return c.name;
+        }
+      }
+      return userCountry;
+    }
+
+    bool matchesResidence(String? nat, String? residenceCountry) {
+      if (nat == null || nat.trim().isEmpty || residenceCountry == null || residenceCountry.trim().isEmpty) {
+        return false;
+      }
+      String normalize(String s) {
+        return s
+            .trim()
+            .toLowerCase()
+            .replaceAll('á', 'a')
+            .replaceAll('é', 'e')
+            .replaceAll('í', 'i')
+            .replaceAll('ó', 'o')
+            .replaceAll('ú', 'u')
+            .replaceAll('ñ', 'n');
+      }
+      return normalize(nat) == normalize(residenceCountry);
+    }
+
+    final residenceCountryName = getResidenceCountryName();
+    final hasResidenceNationalityMatch =
+        matchesResidence(widget.user.nationality, residenceCountryName) ||
+        matchesResidence(widget.user.nationalitySecond, residenceCountryName);
 
     return Form(
       key: _formKey,
@@ -367,7 +397,7 @@ class _CompanionDataFormState extends State<CompanionDataForm> {
           ),
           const Divider(color: AppColors.greyUltraLight),
 
-          if (!hasSpanishNationality) ...[
+          if (!hasResidenceNationalityMatch) ...[
             // ── Situación familiar ──────────────────────────────────────────────
             sectionTitle('Situación familiar'),
             fieldLabel(
@@ -813,18 +843,29 @@ class _CompanionDataFormState extends State<CompanionDataForm> {
 
       try {
         final database = Provider.of<Database>(context, listen: false);
+        final isNewRequest = widget.companionData == null;
         setState(() => isLoading = true);
         await database.setCompanionData(updatedCompanionData);
         setState(() => isLoading = false);
 
         if (mounted) {
-          showAlertDialog(
-            context,
-            title: StringConst.UPDATED_DATA_TITLE,
-            content:
-                'Tus datos de acompañamiento se han actualizado correctamente.',
-            defaultActionText: StringConst.FORM_ACCEPT,
-          );
+          if (isNewRequest) {
+            showAlertDialog(
+              context,
+              title: 'Hemos recibido tu solicitud',
+              content:
+                  'Una persona de nuestro equipo se pondrá en contacto contigo.',
+              defaultActionText: 'Aceptar',
+            );
+          } else {
+            showAlertDialog(
+              context,
+              title: StringConst.UPDATED_DATA_TITLE,
+              content:
+                  'Tus datos de acompañamiento se han actualizado correctamente.',
+              defaultActionText: StringConst.FORM_ACCEPT,
+            );
+          }
         }
       } on FirebaseException catch (e) {
         if (mounted) {

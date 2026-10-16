@@ -151,23 +151,42 @@ class _MyCvModelsPageState extends State<MyCvModelsPage> {
       _initSelectionsFromFavourite(_localFavouriteCV!);
     } else {
       widget.mySelectedEducation.forEach((element) {
-        mySelectedDateEducation.add(element);
-        idSelectedDateEducation.add(widget.myEducation!.elementAt(element).id!);
+        if (widget.myEducation != null && element < widget.myEducation!.length) {
+          mySelectedDateEducation.add(element);
+          if (widget.myEducation!.elementAt(element).id != null) {
+            idSelectedDateEducation.add(widget.myEducation!.elementAt(element).id!);
+          }
+        }
       });
       widget.mySecondarySelectedEducation.forEach((element) {
-        mySelectedDateSecondaryEducation.add(element);
-        idSelectedDateSecondaryEducation
-            .add(widget.mySecondaryEducation!.elementAt(element).id!);
+        if (widget.mySecondaryEducation != null &&
+            element < widget.mySecondaryEducation!.length) {
+          mySelectedDateSecondaryEducation.add(element);
+          if (widget.mySecondaryEducation!.elementAt(element).id != null) {
+            idSelectedDateSecondaryEducation
+                .add(widget.mySecondaryEducation!.elementAt(element).id!);
+          }
+        }
       });
       widget.mySelectedExperiences.forEach((element) {
-        mySelectedDateExperience.add(element);
-        idSelectedDateExperience
-            .add(widget.myExperiences!.elementAt(element).id!);
+        if (widget.myExperiences != null &&
+            element < widget.myExperiences!.length) {
+          mySelectedDateExperience.add(element);
+          if (widget.myExperiences!.elementAt(element).id != null) {
+            idSelectedDateExperience
+                .add(widget.myExperiences!.elementAt(element).id!);
+          }
+        }
       });
       widget.myPersonalSelectedExperiences.forEach((element) {
-        mySelectedDatePersonalExperience.add(element);
-        idSelectedDatePersonalExperience
-            .add(widget.myPersonalExperiences!.elementAt(element).id!);
+        if (widget.myPersonalExperiences != null &&
+            element < widget.myPersonalExperiences!.length) {
+          mySelectedDatePersonalExperience.add(element);
+          if (widget.myPersonalExperiences!.elementAt(element).id != null) {
+            idSelectedDatePersonalExperience
+                .add(widget.myPersonalExperiences!.elementAt(element).id!);
+          }
+        }
       });
     }
   }

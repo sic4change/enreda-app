@@ -198,7 +198,58 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           builder: (context, expSnapshot) {
             if (!expSnapshot.hasData)
               return const Center(child: CircularProgressIndicator());
-            myExperiences = expSnapshot.data;
+            final allExp = expSnapshot.data ?? [];
+
+            final isMiniPreview = widget.mini && widget.favouriteCV != null;
+            final filterFav = isMiniPreview ? widget.favouriteCV : null;
+
+            // 1. Education (Formativa)
+            myEducation = allExp
+                .where((e) => e.type == 'Formativa')
+                .where((e) =>
+                    filterFav == null ||
+                    (e.id != null &&
+                        filterFav.selectedEducationIds.contains(e.id)))
+                .toList();
+            myCustomEducation = myEducation!.toList();
+            mySelectedEducation =
+                List.generate(myCustomEducation.length, (i) => i);
+
+            // 2. Secondary Education (Complementaria)
+            mySecondaryEducation = allExp
+                .where((e) => e.type == 'Complementaria')
+                .where((e) =>
+                    filterFav == null ||
+                    (e.id != null &&
+                        filterFav.selectedSecondaryEducationIds.contains(e.id)))
+                .toList();
+            mySecondaryCustomEducation = mySecondaryEducation!.toList();
+            mySecondarySelectedEducation =
+                List.generate(mySecondaryCustomEducation.length, (i) => i);
+
+            // 3. Professional Experiences (Profesional)
+            myExperiences = allExp
+                .where((e) => e.type == 'Profesional')
+                .where((e) =>
+                    filterFav == null ||
+                    (e.id != null &&
+                        filterFav.selectedExperienceIds.contains(e.id)))
+                .toList();
+            myCustomExperiences = myExperiences!.toList();
+            mySelectedExperiences =
+                List.generate(myCustomExperiences.length, (i) => i);
+
+            // 4. Personal Experiences (Personal)
+            myPersonalExperiences = allExp
+                .where((e) => e.type == 'Personal')
+                .where((e) =>
+                    filterFav == null ||
+                    (e.id != null &&
+                        filterFav.selectedPersonalExperienceIds.contains(e.id)))
+                .toList();
+            myPersonalCustomExperiences = myPersonalExperiences!.toList();
+            myPersonalSelectedExperiences =
+                List.generate(myPersonalCustomExperiences.length, (i) => i);
 
             // Use LocationCache for competencies instead of a new stream listener.
             List<Competency> competencies = LocationCache.instance.competencies;
@@ -281,7 +332,7 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
                   myCustomReferences: myCustomReferences,
                   mySelectedReferences: mySelectedReferences,
                   myMaxEducation: myMaxEducation?.label ?? "",
-                  favouriteCV: _activeFavouriteCV,
+                  favouriteCV: _activeFavouriteCV ?? widget.favouriteCV,
                   interests: _interestsCache,
                   onBack: () {
                     setState(() {
@@ -1080,10 +1131,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
             } else {
               return () {
                 final String? userId = user?.userId;
-                if (snapshotEducations.hasData && myExperiences != null) {
-                  final myEducationalExperiencies = (myExperiences ?? [])
-                      .where((experience) => experience.type == 'Formativa')
-                      .toList();
+                if (snapshotEducations.hasData && myEducation != null) {
+                  final myEducationalExperiencies = myEducation ?? [];
                   if (myEducationalExperiencies.isNotEmpty) {
                     final areEduactions = myEducationalExperiencies.any((exp) =>
                         exp.education != null && exp.education!.isNotEmpty);
@@ -1567,46 +1616,33 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ],
         ),
         SpaceH4(),
-        () {
-          myEducation = (myExperiences ?? [])
-              .where((experience) => experience.type == 'Formativa')
-              .where((experience) =>
-                  widget.favouriteCV == null ||
-                  (experience.id != null &&
-                      widget.favouriteCV!.selectedEducationIds
-                          .contains(experience.id)))
-              .toList();
-          myCustomEducation = myEducation!.toList();
-          mySelectedEducation =
-              List.generate(myCustomEducation.length, (i) => i);
-          return Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30.0),
-              color: Colors.white,
-            ),
-            child: myEducation!.isNotEmpty
-                ? Wrap(
-                    children: myEducation!
-                        .map((e) => Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SpaceH12(),
-                                Container(
-                                  width: double.infinity,
-                                  child: ExperienceTile(
-                                      experience: e, type: e.type),
-                                ),
-                                Divider(
-                                  color: AppColors.greyBorder,
-                                ),
-                              ],
-                            ))
-                        .toList(),
-                  )
-                : CustomTextBody(text: StringConst.NO_EDUCATION),
-          );
-        }(),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.white,
+          ),
+          child: (myEducation != null && myEducation!.isNotEmpty)
+              ? Wrap(
+                  children: myEducation!
+                      .map((e) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SpaceH12(),
+                              Container(
+                                width: double.infinity,
+                                child: ExperienceTile(
+                                    experience: e, type: e.type),
+                              ),
+                              Divider(
+                                color: AppColors.greyBorder,
+                              ),
+                            ],
+                          ))
+                      .toList(),
+                )
+              : CustomTextBody(text: StringConst.NO_EDUCATION),
+        ),
       ],
     );
   }
@@ -1642,46 +1678,34 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ],
         ),
         SpaceH4(),
-        () {
-          mySecondaryEducation = (myExperiences ?? [])
-              .where((experience) => experience.type == 'Complementaria')
-              .where((experience) =>
-                  widget.favouriteCV == null ||
-                  (experience.id != null &&
-                      widget.favouriteCV!.selectedSecondaryEducationIds
-                          .contains(experience.id)))
-              .toList();
-          mySecondaryCustomEducation = mySecondaryEducation!.toList();
-          mySecondarySelectedEducation =
-              List.generate(mySecondaryCustomEducation.length, (i) => i);
-          return Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30.0),
-              color: Colors.white,
-            ),
-            child: mySecondaryEducation!.isNotEmpty
-                ? Wrap(
-                    children: mySecondaryEducation!
-                        .map((e) => Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SpaceH12(),
-                                Container(
-                                  width: double.infinity,
-                                  child: ExperienceTile(
-                                      experience: e, type: e.type),
-                                ),
-                                Divider(
-                                  color: AppColors.greyBorder,
-                                ),
-                              ],
-                            ))
-                        .toList(),
-                  )
-                : CustomTextBody(text: StringConst.NO_EDUCATION),
-          );
-        }(),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.white,
+          ),
+          child: (mySecondaryEducation != null &&
+                  mySecondaryEducation!.isNotEmpty)
+              ? Wrap(
+                  children: mySecondaryEducation!
+                      .map((e) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SpaceH12(),
+                              Container(
+                                width: double.infinity,
+                                child: ExperienceTile(
+                                    experience: e, type: e.type),
+                              ),
+                              Divider(
+                                color: AppColors.greyBorder,
+                              ),
+                            ],
+                          ))
+                      .toList(),
+                )
+              : CustomTextBody(text: StringConst.NO_EDUCATION),
+        ),
       ],
     );
   }
@@ -1714,46 +1738,33 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ],
         ),
         SpaceH4(),
-        () {
-          final myProfExperiences = (myExperiences ?? [])
-              .where((experience) => experience.type == 'Profesional')
-              .where((experience) =>
-                  widget.favouriteCV == null ||
-                  (experience.id != null &&
-                      widget.favouriteCV!.selectedExperienceIds
-                          .contains(experience.id)))
-              .toList();
-          myCustomExperiences = myProfExperiences.toList();
-          mySelectedExperiences =
-              List.generate(myCustomExperiences.length, (i) => i);
-          return Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30.0),
-              color: Colors.white,
-            ),
-            child: myProfExperiences.isNotEmpty
-                ? Wrap(
-                    children: myProfExperiences
-                        .map((e) => Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SpaceH4(),
-                                Container(
-                                  width: double.infinity,
-                                  child: ExperienceTile(
-                                      experience: e, type: e.type),
-                                ),
-                                Divider(
-                                  color: AppColors.greyBorder,
-                                ),
-                              ],
-                            ))
-                        .toList(),
-                  )
-                : CustomTextBody(text: StringConst.NO_EXPERIENCE),
-          );
-        }(),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.white,
+          ),
+          child: (myExperiences != null && myExperiences!.isNotEmpty)
+              ? Wrap(
+                  children: myExperiences!
+                      .map((e) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SpaceH4(),
+                              Container(
+                                width: double.infinity,
+                                child: ExperienceTile(
+                                    experience: e, type: e.type),
+                              ),
+                              Divider(
+                                color: AppColors.greyBorder,
+                              ),
+                            ],
+                          ))
+                      .toList(),
+                )
+              : CustomTextBody(text: StringConst.NO_EXPERIENCE),
+        ),
       ],
     );
   }
@@ -1786,46 +1797,34 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
           ],
         ),
         SpaceH4(),
-        () {
-          myPersonalExperiences = (myExperiences ?? [])
-              .where((experience) => experience.type == 'Personal')
-              .where((experience) =>
-                  widget.favouriteCV == null ||
-                  (experience.id != null &&
-                      widget.favouriteCV!.selectedPersonalExperienceIds
-                          .contains(experience.id)))
-              .toList();
-          myPersonalCustomExperiences = myPersonalExperiences!.toList();
-          myPersonalSelectedExperiences =
-              List.generate(myPersonalCustomExperiences.length, (i) => i);
-          return Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30.0),
-              color: Colors.white,
-            ),
-            child: myPersonalExperiences!.isNotEmpty
-                ? Wrap(
-                    children: myPersonalExperiences!
-                        .map((e) => Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SpaceH4(),
-                                Container(
-                                  width: double.infinity,
-                                  child: ExperienceTile(
-                                      experience: e, type: e.type),
-                                ),
-                                Divider(
-                                  color: AppColors.greyBorder,
-                                ),
-                              ],
-                            ))
-                        .toList(),
-                  )
-                : CustomTextBody(text: StringConst.NO_EXPERIENCE),
-          );
-        }(),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.white,
+          ),
+          child: (myPersonalExperiences != null &&
+                  myPersonalExperiences!.isNotEmpty)
+              ? Wrap(
+                  children: myPersonalExperiences!
+                      .map((e) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SpaceH4(),
+                              Container(
+                                width: double.infinity,
+                                child: ExperienceTile(
+                                    experience: e, type: e.type),
+                              ),
+                              Divider(
+                                color: AppColors.greyBorder,
+                              ),
+                            ],
+                          ))
+                      .toList(),
+                )
+              : CustomTextBody(text: StringConst.NO_EXPERIENCE),
+        ),
       ],
     );
   }
@@ -2468,7 +2467,8 @@ class _MyCurriculumPageState extends State<MyCurriculumPage> {
   }
 
   Future<void> _hasEnoughExperiences(BuildContext context) async {
-    if (myCompetencies!.length < 3 || myExperiences!.length < 2) {
+    if ((myCompetencies?.length ?? 0) < 3 ||
+        (myExperiences?.length ?? 0) < 2) {
       await showCustomDialog(context,
           content:
               CustomTextBody(text: StringConst.ADD_MORE_EXPERIENCES_SUGGESTION),

@@ -20,128 +20,96 @@ class ExperienceTile extends StatelessWidget {
   final Experience experience;
   final String type;
 
+  bool get _isEducation =>
+      experience.type == 'Formativa' || experience.type == 'Complementaria';
+
+  static String _clean(String? value) => (value ?? '').trim();
+
+  /// Título: misma lógica que las plantillas del PDF del CV.
+  String _cvTitle() {
+    final activity = _clean(experience.activity);
+    if (_isEducation) {
+      final institution = _clean(experience.institution);
+      final nameFormation = _clean(experience.nameFormation);
+      if (institution.isNotEmpty && nameFormation.isNotEmpty) {
+        return '$institution - $nameFormation';
+      }
+      return institution.isNotEmpty ? institution : nameFormation;
+    }
+    if (experience.type == 'Personal') {
+      final subtype = _clean(experience.subtype);
+      final role = _clean(experience.activityRole);
+      if (subtype == 'Responsabilidades familiares' ||
+          subtype == 'Compromiso social') return subtype;
+      if (activity.isEmpty) return '';
+      return [subtype, role, activity].where((e) => e.isNotEmpty).join(' - ');
+    }
+    return activity;
+  }
+
+  /// Subtítulo: "puesto - organización" (experiencias) u organización (formaciones).
+  String _cvSubtitle() {
+    final organization = _clean(experience.organization);
+    if (_isEducation) return organization;
+    final position = _clean(experience.position);
+    return [position, organization].where((e) => e.isNotEmpty).join(' - ');
+  }
+
+  /// Actividades realizadas (solo experiencias profesionales, como en el PDF).
+  List<String> _cvActivities() {
+    if (experience.type != 'Profesional') return [];
+    final text = _clean(experience.professionActivitiesText);
+    final items = text.isNotEmpty
+        ? text.split(' / ')
+        : experience.professionActivities;
+    return items.map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+  }
+
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final DateFormat formatter = DateFormat('yyyy');
     bool dismissible = true;
     String startDate = experience.startDate != null ? formatter.format(experience.startDate!.toDate()) : '-';
     String endDate = experience.endDate != null ? formatter.format(experience.endDate!.toDate()) : 'Actualmente';
+    final title = _cvTitle();
+    final subtitle = _cvSubtitle();
+    final location = _clean(experience.location);
+    final activities = _cvActivities();
+    final bodyStyle = textTheme.bodySmall;
+    final boldStyle = textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold);
 
     return Row(
       children: [
         Expanded(
           child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-          if (experience.activity != null && experience.activityRole != null && experience.type != 'Formativa' && experience.type != 'Complementaria')
-            RichText(
-              text: TextSpan(
-                  text: '${experience.activityRole?.toUpperCase()} -',
-                  style: textTheme.bodySmall?.copyWith(
-                  ),
-                  children: [
-                    TextSpan(
-                      text: ' ${experience.activity?.toUpperCase()}',
-                      style: textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  ]),
-            ),
-
-          if((experience.type == 'Formativa' || experience.type == 'Complementaria') && experience.institution != '' && experience.nameFormation != '')
-            RichText(
-              text: TextSpan(
-                  text: '${experience.institution?.toUpperCase()} -',
-                  style: textTheme.bodySmall?.copyWith(
-                  ),
-                  children: [
-                    TextSpan(
-                      text: ' ${experience.nameFormation?.toUpperCase()}',
-                      style: textTheme.bodySmall?.copyWith(
-                      ),
-                    )
-                  ]),
-            ),
-          if(experience.subtype == 'Responsabilidades familiares' || experience.subtype == 'Compromiso social')
-            Text(
-              '${experience.subtype?.toUpperCase()}',
-              style: textTheme.bodySmall?.copyWith(
-              ),
-            ),
-          if(experience.subtype == 'Otro' && experience.position != null)
-            Text(
-              '${experience.position}',
-              style: textTheme.bodySmall?.copyWith(
-                fontSize: 14.0,
-              ),
-            ),
-          if(experience.subtype == 'Otro' && experience.position == null)
-            Container(),
-          if (experience.activity != null && experience.activityRole == null)
-            Text( experience.position == null || experience.position == "" ? '${experience.activity?.toUpperCase()}' : '${experience.position?.toUpperCase()} - ${experience.activity?.toUpperCase()}',
-                style: textTheme.bodySmall
-                    ?.copyWith()),
-          if (experience.position != null || experience.activity != null) SpaceH8(),
-          if (experience.organization != null && experience.organization != "") Column(
-            children: [
-              Text(
-                experience.organization!,
-                style: textTheme.bodySmall?.copyWith(
-                ),
-              ),
-              SpaceH8()
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              if (title.isNotEmpty) ...[
+                Text(title.toUpperCase(), style: boldStyle),
+                SpaceH4(),
+              ],
+              if (subtitle.isNotEmpty) ...[
+                Text(subtitle, style: boldStyle),
+                SpaceH4(),
+              ],
+              Text('$startDate / $endDate', style: bodyStyle),
+              if (location.isNotEmpty) ...[
+                SpaceH4(),
+                Text(location, style: bodyStyle),
+              ],
+              if (activities.isNotEmpty) ...[
+                SpaceH8(),
+                Text('Actividades realizadas:', style: boldStyle),
+                SpaceH4(),
+                ...activities.map((a) => Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0),
+                      child: Text('• $a', style: bodyStyle),
+                    )),
+              ],
+              SpaceH8(),
             ],
           ),
-          Text(
-            '$startDate / $endDate',
-            style: textTheme.bodySmall?.copyWith(),
-          ),
-          SpaceH8(),
-
-          if((experience.type == 'Formativa' || experience.type == 'Complementaria') && experience.extraData != '')
-            Column(
-              children: [
-                Text(
-                  experience.extraData!,
-                  style: textTheme.bodySmall?.copyWith(
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SpaceH8(),
-              ],
-            ),
-
-          Text(
-            experience.location,
-            style: textTheme.bodySmall?.copyWith(
-            ),
-          ),
-          /*
-                  Text('${experience.type}'),
-                  SpaceH12(),
-                  if (experience.subtype != null) Text(experience.subtype!),
-                  if (experience.subtype != null) SpaceH12(),
-                  */
-          // TODO: Profession activities
-          /*
-                  if (experience.peopleAffected != null)
-                    Text(experience.peopleAffected!),
-                  if (experience.peopleAffected != null) SpaceH12(),
-                  if (experience.organization != null) Text(experience.organization!),
-                  if (experience.organization != null) SpaceH12(),
-
-                  Text(experience.workType),
-                  SpaceH12(),
-                  Text(experience.context),
-                  SpaceH12(),
-                  Text(experience.contextPlace),
-                  SpaceH12(),
-                  */
-      ],
-    ),
         ),
 
         EditButton(
